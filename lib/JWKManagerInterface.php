@@ -2,8 +2,6 @@
 
 namespace SpomkyLabs\JOSE;
 
-use SpomkyLabs\JOSE\JWTInterface;
-
 /**
  * Interface representing a JSON Web Key Manager.
  */
@@ -22,5 +20,5 @@ interface JWKManagerInterface
     /**
      *
      */
-    public function createJWKSet();
+    public function createJWKSet(array $values = array());
 }

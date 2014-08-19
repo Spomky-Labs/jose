@@ -9,21 +9,21 @@ interface JWTInterface
 {
     /**
      * Set the payload of the JWT.
-     * 
+     *
      * @return self
      */
-    public function setPayload(array $payload);
-    
+    public function setPayload($payload);
+
     /**
      * Returns the payload of the JWT.
-     * 
-     * @return array
+     *
+     * @return mixed|null
      */
     public function getPayload();
 
     /**
      * Returns the header of the JWT.
-     * 
+     *
      * @return array
      */
     public function getHeader();
@@ -34,9 +34,4 @@ interface JWTInterface
      * @return self
      */
     public function setHeader(array $header);
-
-    /**
-     * @return boolean
-     */
-    public function isExpired();
 }

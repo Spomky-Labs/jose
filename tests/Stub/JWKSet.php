@@ -24,6 +24,7 @@ class JWKSet extends Base
     public function setKeys(array $keys)
     {
         $this->keys = $keys;
+
         return $this;
     }
 
@@ -34,6 +35,7 @@ class JWKSet extends Base
     public function addKey(JWKInterface $key)
     {
         $this->keys[] = $key;
+
         return $this;
     }
 

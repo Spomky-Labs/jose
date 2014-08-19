@@ -8,17 +8,17 @@ class NoneTest extends \PHPUnit_Framework_TestCase
 {
     public function testNoneSignAndVerify()
     {
-    	$none = new None;
+        $none = new None();
         $data = 'aaa';
 
-    	$signature = $none->sign($data);
+        $signature = $none->sign($data);
 
-    	$this->assertEquals($signature, '');
-    	$this->assertTrue($none->verify($data, $signature));
+        $this->assertEquals($signature, '');
+        $this->assertTrue($none->verify($data, $signature));
     }
     public function testMethods()
     {
-    	$none = new None;
+        $none = new None();
 
         $this->assertTrue($none->isPrivate());
         $this->assertEquals(array(

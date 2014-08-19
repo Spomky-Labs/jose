@@ -9,7 +9,7 @@ interface JWKEncryptInterface
 {
     /**
      * Encrypt data
-     * 
+     *
      * @return string
      */
     public function encrypt($data);

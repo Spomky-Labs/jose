@@ -1,12 +1,12 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests\Signature;
+namespace SpomkyLabs\JOSE\Tests\Encryption;
 
-use SpomkyLabs\JOSE\Signature\RSA as Base;
+use SpomkyLabs\JOSE\Encryption\AES as Base;
 
-class RSA extends Base
+class AES extends Base
 {
-    private $values;
+    private $values = array();
 
     public function getValue($key)
     {

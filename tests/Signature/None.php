@@ -19,6 +19,14 @@ class None extends Base
     public function setValues(array $values)
     {
         $this->values = $values;
+
+        return $this;
+    }
+
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+
         return $this;
     }
 }

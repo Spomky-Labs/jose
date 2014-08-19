@@ -11,18 +11,21 @@ class ECDSA extends Base
     public function setX($x)
     {
         $this->values['x'] = $x;
+
         return $this;
     }
 
     public function setY($y)
     {
         $this->values['y'] = $y;
+
         return $this;
     }
 
     public function setD($d)
     {
         $this->values['d'] = $d;
+
         return $this;
     }
 
@@ -42,12 +45,13 @@ class ECDSA extends Base
                 throw new \Exception("Curve $crv is not supported");
         }
         $this->values['crv'] = $crv;
+
         return $this;
     }
 
     public function getValue($key)
     {
-        return isset($this->values[$key])?$this->values[$key]:null;
+        return isset($this->values[$key]) ? $this->values[$key] : null;
     }
 
     public function getValues()
@@ -58,6 +62,14 @@ class ECDSA extends Base
     public function setValues(array $values)
     {
         $this->values = $values;
+
+        return $this;
+    }
+
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+
         return $this;
     }
 }

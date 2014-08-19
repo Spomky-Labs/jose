@@ -2,8 +2,6 @@
 
 namespace SpomkyLabs\JOSE;
 
-use SpomkyLabs\JOSE\JWKSetInterface;
-
 abstract class JWKSet implements JWKSetInterface
 {
     public function toPublic()
@@ -12,6 +10,7 @@ abstract class JWKSet implements JWKSetInterface
         foreach ($this->getKeys() as $key) {
             $result[] = $key->toPublic();
         }
+
         return $result;
     }
 
@@ -21,6 +20,7 @@ abstract class JWKSet implements JWKSetInterface
         foreach ($this->getKeys() as $key) {
             $result[] = $key->toPrivate();
         }
+
         return $result;
     }
 }

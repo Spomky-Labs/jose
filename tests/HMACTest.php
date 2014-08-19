@@ -8,7 +8,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 {
     public function testHS256SignAndVerify()
     {
-        $hmac = new Hmac;
+        $hmac = new Hmac();
         $hmac->setAlgorithm('HS256')
              ->setKey('foo');
         $data = 'aaa';
@@ -21,7 +21,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 
     public function testHS384SignAndVerify()
     {
-        $hmac = new Hmac;
+        $hmac = new Hmac();
         $hmac->setAlgorithm('HS384')
              ->setKey('foo');
         $data = 'aaa';
@@ -34,7 +34,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
 
     public function testHS512SignAndVerify()
     {
-        $hmac = new Hmac;
+        $hmac = new Hmac();
         $hmac->setAlgorithm('HS512')
              ->setKey('foo');
         $data = 'aaa';

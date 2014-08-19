@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\JOSE;
 
-use SpomkyLabs\JOSE\Base64Url;
 /**
 * Encode and decode data into Base64 Url Safe
 */
@@ -13,6 +12,7 @@ class RSAConverter
         $xml = self::fromArrayToXML($data);
         $rsa = new \Crypt_RSA();
         $rsa->loadKey($xml);
+
         return $rsa;
     }
 
@@ -39,6 +39,7 @@ class RSAConverter
             $result .= "\t<$element>$value</$element>\n";
         }
         $result .= "</RSAKeyPair>";
+
         return $result;
     }
 

@@ -9,7 +9,7 @@ interface JWKVerifyInterface
 {
     /**
      * Verify the signature of data
-     * 
+     *
      * @return boolean
      */
     public function verify($data, $signature);

@@ -16,7 +16,7 @@ interface JWKSetInterface
 
     /**
      * Returns the Compression Algorithm of the JWE.
-     * 
+     *
      * @return JWKInterface[] An array of keys stored in the key set
      */
     public function getKeys();
@@ -28,7 +28,7 @@ interface JWKSetInterface
     public function addKey(JWKInterface $key);
 
     /**
-     * 
+     *
      */
     public function isEmpty();
 }

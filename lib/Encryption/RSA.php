@@ -1,24 +1,20 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Signature;
+namespace SpomkyLabs\JOSE\Encryption;
 
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKSignInterface;
-use SpomkyLabs\JOSE\JWKVerifyInterface;
+use SpomkyLabs\JOSE\JWKEncryptInterface;
+use SpomkyLabs\JOSE\JWKDecryptInterface;
 use SpomkyLabs\JOSE\RSAConverter;
-use SpomkyLabs\JOSE\Base64Url;
 
 /**
- * This class handles signatures using RSA SSA PKCS1 and PSS.
- * It supports algorithms PS256/RS256, PS384/RS384 and PS512/RS512;
+ * This class handles encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
  */
-abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+abstract class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
 {
     public function toPrivate()
     {
-        $values = $this->getValues()+array(
-            'kty' => 'EC',
-        );
+        $values = $this->getValues();
 
         return $values;
     }
@@ -40,38 +36,36 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     /**
      * @inheritdoc
      */
-    public function verify($data, $signature)
+    public function encrypt($data)
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
-        $rsa->setHash($this->getHashAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
+        if ($this->getEncryptionMethod() === CRYPT_RSA_ENCRYPTION_OAEP) {
+            $rsa->setHash($this->getHashAlgorithm());
             $rsa->setMGFHash($this->getHashAlgorithm());
-            $rsa->setSaltLength(0);
         }
-        $rsa->setSignatureMode($this->getSignatureMethod());
+        $rsa->setEncryptionMode($this->getEncryptionMethod());
 
-        return $rsa->verify($data, Base64Url::decode($signature));
+        return $rsa->encrypt($data);
     }
 
     /**
      * @inheritdoc
      */
-    public function sign($data)
+    public function decrypt($data)
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(true));
         if (!$this->isPrivate()) {
             throw new \Exception("The private key is missing");
         }
 
-        $rsa->setHash($this->getHashAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
+        if ($this->getEncryptionMethod() === CRYPT_RSA_ENCRYPTION_OAEP) {
+            $rsa->setHash($this->getHashAlgorithm());
             $rsa->setMGFHash($this->getHashAlgorithm());
-            $rsa->setSaltLength(0);
         }
-        $rsa->setSignatureMode($this->getSignatureMethod());
+        $rsa->setEncryptionMode($this->getEncryptionMethod());
 
-        return Base64Url::encode($rsa->sign($data));
+        return $rsa->decrypt($data);
     }
 
     public function isPrivate()
@@ -85,32 +79,24 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     {
         $alg = $this->getValue('alg');
         switch ($alg) {
-            case 'RS256':
-            case 'PS256':
+            case 'RSA-OAEP':
+                return 'sha1';
+            case 'RSA-OAEP-256':
                 return 'sha256';
-            case 'RS384':
-            case 'PS384':
-                return 'sha384';
-            case 'RS512':
-            case 'PS512':
-                return 'sha512';
             default:
                 throw new \Exception("Algorithm $alg is not supported");
         }
     }
 
-    protected function getSignatureMethod()
+    protected function getEncryptionMethod()
     {
         $alg = $this->getValue('alg');
         switch ($alg) {
-            case 'RS256':
-            case 'RS384':
-            case 'RS512':
-                return CRYPT_RSA_SIGNATURE_PKCS1;
-            case 'PS256':
-            case 'PS384':
-            case 'PS512':
-                return CRYPT_RSA_SIGNATURE_PSS;
+            case 'RSA1_5':
+                return CRYPT_RSA_ENCRYPTION_PKCS1;
+            case 'RSA-OAEP':
+            case 'RSA-OAEP-256':
+                return CRYPT_RSA_ENCRYPTION_OAEP;
             default:
                 throw new \Exception("Algorithm $alg is not supported");
         }

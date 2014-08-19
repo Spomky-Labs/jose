@@ -35,6 +35,7 @@ abstract class Hmac implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
     public function sign($data)
     {
         $key = $this->getValue('k');
+
         return hash_hmac($this->getHashAlgorithm(), $data, $key);
     }
 

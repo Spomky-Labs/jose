@@ -5,12 +5,11 @@ namespace SpomkyLabs\JOSE\Tests;
 use SpomkyLabs\JOSE\Base64Url;
 use SpomkyLabs\JOSE\Tests\Signature\RSA;
 
-
 class RSATest extends \PHPUnit_Framework_TestCase
 {
     public function testRS256Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'RS256',
                 'kty' => 'RSA',
@@ -33,7 +32,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testRS384Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'RS384',
                 'kty' => 'RSA',
@@ -56,7 +55,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testRS512Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'RS512',
                 'kty' => 'RSA',
@@ -79,7 +78,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testPS256Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'PS256',
                 'kty' => 'RSA',
@@ -101,7 +100,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testPS384Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'PS384',
                 'kty' => 'RSA',
@@ -123,7 +122,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testPS512Sign()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'PS512',
                 'kty' => 'RSA',
@@ -149,7 +148,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
      */
     public function testUnsupportedLagorithm()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'none',
                 'kty' => 'RSA',
@@ -169,7 +168,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     public function testMethods()
     {
-        $rsa = new RSA;
+        $rsa = new RSA();
         $rsa->setValues(array(
                 'alg' => 'PS512',
                 'kty' => 'RSA',

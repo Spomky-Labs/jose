@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Base64Url;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 
 class JWSTest extends \PHPUnit_Framework_TestCase

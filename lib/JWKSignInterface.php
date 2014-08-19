@@ -9,7 +9,7 @@ interface JWKSignInterface
 {
     /**
      * Sign data
-     * 
+     *
      * @return string
      */
     public function sign($data);

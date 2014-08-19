@@ -12,56 +12,7 @@ This library aims to provide an implementation of:
 
 ## Status of implementations: ##
 
-* JWT:
-    * JWT are partially supported
-    * Supported:
-        * Compact Serialization Overview
-            * JWS
-    * Unsupported:
-        * JSON Serialization Overview
-        * Compact Serialization Overview
-            * JWE
-        * Unprotected headers
-
-* JWA:
-    * Supported algorithms:
-        * Signature:
-            * HS256, HS384, HS512
-            * ES256, ES384, ES512
-            * RS256, RS384, RS512
-            * PS256, PS384, PS512
-            * none
-        * Encryption:
-            * Not supported...
-    * Unsupported algorithms:
-        * Signature:
-            * All is done!
-        * Encryption:
-            * RSA
-            * RSA-OAEP
-            * RSA-OAEP-256
-            * A128KW
-            * A192KW
-            * A256KW
-            * dir
-            * ECDH-ES
-            * ECDH-ES+A128KW
-            * ECDH-ES+A192KW
-            * ECDH-ES+A256KW
-            * A128GCMKW
-            * A192GCMKW
-            * A256GCMKW
-            * PBES2-HS256+A128KW
-            * PBES2-HS384+A192KW
-            * PBES2-HS512+A256KW
-
-* JWK:
-    * Unsupported:
-        * Key use and key operations
-        * Key load from x5* parameters
-
-* JWKSet:
-    * JWKSet are fully supported
+[Please see this page](doc/Status.md).
 
 ## The Release Process ##
 

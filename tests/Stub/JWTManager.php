@@ -3,8 +3,6 @@
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManagerInterface;
-use SpomkyLabs\JOSE\Tests\Stub\JWS;
-use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
 use SpomkyLabs\JOSE\JWTManager as Base;
 
 /**
@@ -22,11 +20,12 @@ class JWTManager extends Base
     public function setKeyManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;
+
         return $this;
     }
 
     public function createJWT()
     {
-        return new JWT;
+        return new JWT();
     }
 }
