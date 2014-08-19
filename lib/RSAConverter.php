@@ -43,7 +43,7 @@ class RSAConverter
         return $result;
     }
 
-    protected function getElement($key)
+    protected static function getElement($key)
     {
         switch ($key) {
             case 'n':
