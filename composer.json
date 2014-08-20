@@ -30,5 +30,10 @@
    "suggest":{
       "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
       "ext-bcmath":"Required if GMP is not installed"
-   }
+   },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "0.0.x-dev"
+        }
+    }
 }

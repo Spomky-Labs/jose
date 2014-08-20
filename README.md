@@ -1,5 +1,12 @@
 # PHP JOSE Library
 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/build-status/master)
+[![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/JOSE.png)](http://hhvm.h4cc.de/package/Spomky-Labs/JOSE)
+
+[![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/stable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Total Downloads](https://poser.pugx.org/Spomky-Labs/JOSE/downloads.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Latest Unstable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/unstable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![License](https://poser.pugx.org/Spomky-Labs/JOSE/license.png)](https://packagist.org/packages/Spomky-Labs/JOSE)
+
 This library aims to provide an implementation of:
 
 * JW**S** [JSON Web Signature (draft 31)](http://tools.ietf.org/html/draft-jones-json-web-signature-31),
@@ -36,11 +43,11 @@ Whenever keeping backward compatibility is not possible, the feature, the enhanc
 
 This library needs at least
 
-* `PHP 5.3`
+* `PHP 5.4`
 * PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
 * `OpenSSL` library for PHP
 
-It has been successfully tested using `PHP 5.3` to `PHP 5.6` and `HHVM`
+It has been successfully tested using `PHP 5.4` to `PHP 5.6` and `HHVM`
 
 ## Installation ##
 
