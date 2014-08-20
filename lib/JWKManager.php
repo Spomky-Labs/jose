@@ -6,19 +6,18 @@ namespace SpomkyLabs\JOSE;
  */
 abstract class JWKManager implements JWKManagerInterface
 {
-    public function findJWKSetByHeader(array $header)
+    public function findJWKByHeader(array $header)
     {
-        $key_set = $this->createJWKSet();
         foreach ($this->getSupportedMethods() as $key => $method) {
             if (isset($header[$key])) {
                 $result = $this->$method($header[$key]);
                 if (null !== $result) {
-                    $key_set->addKey($result);
+                    return $result;
                 }
             }
         }
 
-        return $key_set;
+        return null;
     }
 
     protected function getSupportedMethods()

@@ -14,8 +14,8 @@ abstract class JWTManager implements JWTManagerInterface
     public function load($data)
     {
         //We try to identity if the data is a JSON object. In this case, we consider that data is a JWE or JWS Seralization object
-        if (json_decode($data,true) !== null) {
-            return $this->loadSerializedJson($data);
+        if (($json = json_decode($data,true)) !== null) {
+            return $this->loadSerializedJson($json);
         }
 
         //Else, we consider that data is a JWE or JWS Compact Seralized object
@@ -100,9 +100,50 @@ abstract class JWTManager implements JWTManagerInterface
     }
 
     /**
-     * @param string $data
+     * @param array $data
      */
     private function loadSerializedJson($data)
+    {
+        if (isset($data['signatures']) && is_array($data['signatures'])) {
+            return $this->loadSerializedJsonJWS($data);
+        } elseif (isset($data['recipients']) && is_array($data['recipients'])) {
+            return $this->loadSerializedJsonJWE($data);
+        }
+        throw new \InvalidArgumentException('Unable to load data');
+    }
+
+    /**
+     * @param array $data
+     */
+    private function loadSerializedJsonJWS($data)
+    {
+        foreach ($data['signatures'] as $signature) {
+
+            $jwk = $this->getKeyManager()->findJWKByHeader($signature['header']);
+
+            if ($jwk instanceof JWKInterface && $this->getKeyManager()->canVerify($jwk)) {
+
+                if ($jwk->verify($signature['protected'].".".$data['payload'], Base64Url::decode($signature['signature']))) {
+
+                    $payload = Base64Url::decode($data['payload']);
+                    $json = json_decode($payload,true);
+                    if (is_array($json)) {
+                        return $json;
+                    }
+
+                    return $payload;
+                } else {
+                    throw new \InvalidArgumentException('Invalid signature');
+                }
+            }
+        }
+        throw new \InvalidArgumentException('Unable to find the key used to sign this token');
+    }
+
+    /**
+     * @param array $data
+     */
+    private function loadSerializedJsonJWE($data)
     {
         throw new \Exception('Not implemented');
     }
@@ -134,17 +175,19 @@ abstract class JWTManager implements JWTManagerInterface
             "authentication_tag" => Base64Url::decode($parts[4]),
         );
 
-        $key_set = $this->getKeyManager()->findJWKSetByHeader($data['header']);
+        $jwk = $this->getKeyManager()->findJWKByHeader($data['header']);
 
-        foreach ($key_set->getKeys() as $key) {
-            if ($this->getKeyManager()->canDecrypt($key)) {
-                $cek = null;
-                try {
-                    $cek = $key->decrypt($data['encrypted_cek']);
-                } catch (\Exception $e) {}
-                if ($cek !== null) {
-                    return $this->decryptContent($data, $cek);
-                }
+        if ($jwk === null) {
+            throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
+        }
+
+        if ($this->getKeyManager()->canDecrypt($jwk)) {
+            $cek = null;
+            try {
+                $cek = $jwk->decrypt($data['encrypted_cek']);
+            } catch (\Exception $e) {}
+            if ($cek !== null) {
+                return $this->decryptContent($data, $cek);
             }
         }
         throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
@@ -163,7 +206,6 @@ abstract class JWTManager implements JWTManagerInterface
                 throw new \Exception("Authentication Tag verification failed");
             }
         }
-        //We must check the authentication tag here
 
         $dec = $key->decrypt($data['encrypted_data']);
 
@@ -198,22 +240,20 @@ abstract class JWTManager implements JWTManagerInterface
         $payload   = Base64Url::decode($parts[1]);
         $signature = Base64Url::decode($parts[2]);
 
-        $key_set = $this->getKeyManager()->findJWKSetByHeader($header);
+        $jwk = $this->getKeyManager()->findJWKByHeader($header);
 
-        if ($key_set->isEmpty()) {
-            throw new \Exception('Unable to find the key used for this token');
+        if ($jwk === null) {
+            throw new \InvalidArgumentException('Unable to find the key used to sign this token');
         }
 
-        foreach ($key_set->getKeys() as $key) {
-            if ($this->getKeyManager()->canVerify($key) && $key->verify($parts[0].".".$parts[1], $signature) === true) {
+        if ($this->getKeyManager()->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature) === true) {
 
-                $json = json_decode($payload,true);
-                if (is_array($json)) {
-                    return $json;
-                }
-
-                return $payload;
+            $json = json_decode($payload,true);
+            if (is_array($json)) {
+                return $json;
             }
+
+            return $payload;
         }
         throw new \InvalidArgumentException('Unable to find the key used to sign this token');
     }

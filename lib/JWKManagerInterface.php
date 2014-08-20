@@ -10,7 +10,7 @@ interface JWKManagerInterface
     /**
      *
      */
-    public function findJWKSetByHeader(array $header);
+    public function findJWKByHeader(array $header);
 
     /**
      *

@@ -1,25 +1,42 @@
 # Status of the implementation
 
-## JWT
-
-JWT are partially supported
+## Loading and Creation of JWT
 
 ### Supported
 
-* Compact Serialization Overview
+* JSON Compact Serialization Overview
     * JWS
+        * Plain text
+        * Array
+        * Raw
     * JWE:
-        * Plain text data
+        * Plain text
+        * Array
+        * Raw
         * jwk+json and jwkset+json content type
+* JSON Serialization Overview
+    * JWS (loading only)
+        * Plain text
+        * Array
+        * Raw data
 
 ### Unsupported
 
 * JSON Serialization Overview
-    * JWS
+    * JWS (creation only)
+        * Plain text
+        * Array
+        * Raw data
     * JWE
-* Unprotected headers
+        * Plain text
+        * Array
+        * Raw
+        * jwk+json and jwkset+json content type
 
 ## JWA
+
+All required algorithms are supported.
+
 ### Supported algorithms:
 
 * Signature:
@@ -68,6 +85,7 @@ JWKSet are partially supported
 ### Unsupported:
 
 * Key load from x5* parameters
+* Key load from jku parameter
 
 ## JWKSet:
 

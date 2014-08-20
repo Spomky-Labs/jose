@@ -25,7 +25,7 @@ trait JWK
     }
 
     /**
-     * @param string $key
+     * @param string       $key
      * @param string|false $value
      */
     public function setValue($key, $value)

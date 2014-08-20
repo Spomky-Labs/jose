@@ -38,7 +38,7 @@ interface JWKInterface
     /**
      * Get the value with a specific key
      *
-     * @param  string     $key The key
+     * @param  string $key The key
      * @return string
      */
     public function getValue($key);
