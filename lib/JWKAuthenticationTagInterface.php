@@ -8,10 +8,12 @@ namespace SpomkyLabs\JOSE;
 interface JWKAuthenticationTagInterface
 {
     /**
+     * @return string
      */
     public function calculateAuthenticationTag($data);
 
     /**
+     * @return boolean
      */
     public function checkAuthenticationTag($data);
 }

@@ -160,6 +160,9 @@ class AES  implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
         return $this;
     }
 
+    /**
+     * @param integer $length
+     */
     private function generateRandomString($length)
     {
         return crypt_random_string($length);

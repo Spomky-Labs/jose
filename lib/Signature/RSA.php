@@ -99,6 +99,9 @@ class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
     }
 
+    /**
+     * @return integer
+     */
     protected function getSignatureMethod()
     {
         $alg = $this->getValue('alg');

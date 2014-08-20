@@ -99,11 +99,17 @@ abstract class JWTManager implements JWTManagerInterface
         throw new \Exception('Not implemented');
     }
 
+    /**
+     * @param string $data
+     */
     private function loadSerializedJson($data)
     {
         throw new \Exception('Not implemented');
     }
 
+    /**
+     * @param string $data
+     */
     private function loadCompactSerializedJson($data)
     {
         $parts = explode('.', $data);

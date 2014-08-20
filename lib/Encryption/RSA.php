@@ -91,6 +91,9 @@ class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
         }
     }
 
+    /**
+     * @return integer
+     */
     protected function getEncryptionMethod()
     {
         $alg = $this->getValue('alg');

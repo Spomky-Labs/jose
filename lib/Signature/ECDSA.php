@@ -184,6 +184,9 @@ class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         return pack("H*",$this->convertDecToHex($value));
     }
 
+    /**
+     * @param string $value
+     */
     private function convertHexToBin($value)
     {
         return pack("H*",$value);

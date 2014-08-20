@@ -22,6 +22,7 @@ interface JWKSetInterface
     /**
      * Add a key in the key set
      * @param JWKInterface $key The key to add
+     * @return JWKSet
      */
     public function addKey(JWKInterface $key);
 

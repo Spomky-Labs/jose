@@ -8,10 +8,12 @@ namespace SpomkyLabs\JOSE;
 interface JWKContentEncryptionInterface
 {
     /**
+     * @return Encryption\AES
      */
     public function createCEK();
 
     /**
+     * @return Encryption\AES
      */
     public function createIV();
 }
