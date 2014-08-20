@@ -14,7 +14,9 @@ abstract class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 {
     public function toPrivate()
     {
-        $values = $this->getValues();
+        $values = $this->getValues()+array(
+            'kty' => 'RSA',
+        );
 
         return $values;
     }

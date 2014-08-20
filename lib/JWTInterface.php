@@ -29,6 +29,11 @@ interface JWTInterface
     public function getHeader();
 
     /**
+     * @return mixed
+     */
+    public function getHeaderValue($key);
+
+    /**
      * Set the header of the JWT.
      *
      * @return self

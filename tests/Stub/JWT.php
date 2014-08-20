@@ -17,6 +17,11 @@ class JWT implements JWTInterface
         return $this->header;
     }
 
+    public function getHeaderValue($key)
+    {
+        return isset($this->header[$key]) ? $this->header[$key] : null;
+    }
+
     public function getPayload()
     {
         return $this->payload;

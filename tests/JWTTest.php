@@ -5,6 +5,7 @@ namespace SpomkyLabs\JOSE\Tests;
 use SpomkyLabs\JOSE\Tests\Stub\JWT;
 use SpomkyLabs\JOSE\Tests\Signature\ECDSA;
 use SpomkyLabs\JOSE\Tests\Encryption\RSA;
+use SpomkyLabs\JOSE\Tests\Encryption\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
 
@@ -70,26 +71,53 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwk = new RSA();
         $jwk->setValues(array(
+            "kty" => "RSA",
             "alg" =>"RSA-OAEP-256",
             "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
             "e"   =>"AQAB",
             "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
         ));
 
-        $jwt = new JWT();
-        $jwt->setHeader(array(
-            "alg"=>"RSA-OAEP-256",
-            "enc"=>"A256CBC-HS512",
-            'iss'=>'spomky-labs',
-            'typ'=>'JOSE',
-            'cty'=>'jwk+json',
+        $jwe = $jwt_manager->convertToCompactSerializedJson(
+            $jwk,
+            $jwk,
+            array(
+                "alg"=>"RSA-OAEP-256",
+                "enc"=>"A256CBC-HS512",
+                'iss'=>'spomky-labs',
+                'typ'=>'JOSE',
         ));
-        $jwt->setPayload($jwk->toPrivate());
-
-        $jwe = $jwt_manager->convertToCompactSerializedJson($jwt,$jwk);
 
         $result = $jwt_manager->load($jwe);
         $this->assertInstanceOf('SpomkyLabs\JOSE\JWKInterface', $result);
+        $this->assertEquals($jwk, $result);
+    }
+
+    public function testCreateEncryptedPlainText()
+    {
+        $jwk_manager = new JWKManager();
+        $jwt_manager = new JWTManager();
+
+        $jwt_manager->setKeyManager($jwk_manager);
+
+        $jwk = new Dir();
+        $jwk->setValues(array(
+            "alg" =>"dir",
+            "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
+        ));
+
+        $jwe = $jwt_manager->convertToCompactSerializedJson(
+            "The true sign of intelligence is not knowledge but imagination.",
+            $jwk,
+            array(
+                "alg"=>"dir",
+                "enc"=>"A256CBC-HS512",
+                'typ'=>'JOSE',
+        ));
+
+        $result = $jwt_manager->load($jwe);
+
+        $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result->getPayload());
     }
 
     public function testLoadJWEFromIETFDraft()
@@ -98,8 +126,11 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwt_manager = new JWTManager();
 
         $jwt_manager->setKeyManager($jwk_manager);
+
+        //This JWE is an example taken from the JWE Draft 31
         $result = $jwt_manager->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
 
-        $this->assertEquals("Live long and prosper.", $result);
+        $this->assertInstanceOf('SpomkyLabs\JOSE\JWTInterface', $result);
+        $this->assertEquals("Live long and prosper.", $result->getPayload());
     }
 }

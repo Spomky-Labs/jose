@@ -16,7 +16,9 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 {
     public function toPrivate()
     {
-        return $this->getValues();
+        $values = $this->getValues()+array(
+            'kty' => 'AES',
+        );
     }
 
     public function toPublic()

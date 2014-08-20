@@ -30,16 +30,16 @@ interface JWTManagerInterface
     public function load($data);
 
     /**
-     * Convert a JWT object into its compact serialized Json representation.
-     * The conversion will use the JWK object to sign or encrypt.
-     * This function must try to encrypt first, if the key can not encrypt, it will try to sign.
+     * Convert a JWT/JWK/JWKSet object or a string into its compact serialized Json representation.
+     * The conversion will use the JWK object to sign or encrypt depending on the capabilityes of the key.
+     * If the input is a string, a JWK or a JWKSet object, only encryption is available.
      *
-     * @param  JWTInterface $jwt The JWT object
-     * @param  JWKInterface $jwk The JWK used to signed or encrypt
+     * @param  JWTInterface|JWKInterface|JWKSetInterface|string $input A JWT/JWK/JWKSet object or a string
+     * @param  JWKInterface                                     $jwk   The JWK used to signed or encrypt
      * @return string
-     * @throws Exception    If the key is not able to sign or encrypt
+     * @throws Exception                                        If the key is not able to sign or encrypt
      */
-    public function convertToCompactSerializedJson(JWTInterface $jwt, JWKInterface $jwk);
+    public function convertToCompactSerializedJson($input, JWKInterface $jwk, array $header = array());
 
     /**
      * Convert a JWT object into its serialized Json representation.

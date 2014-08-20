@@ -30,6 +30,7 @@ JWT are partially supported
     * none
 * Encryption:
     * Key Encryption:
+        * dir
         * RSA
         * RSA-OAEP
         * RSA-OAEP-256
@@ -45,7 +46,6 @@ JWT are partially supported
         * A128KW
         * A192KW
         * A256KW
-        * dir
         * ECDH-ES
         * ECDH-ES+A128KW
         * ECDH-ES+A192KW

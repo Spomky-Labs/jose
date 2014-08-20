@@ -39,7 +39,7 @@ class JWKManager extends Base
     protected function getSupportedMethods()
     {
         return parent::getSupportedMethods()+array(
-            'alg' => 'findJWKByAlgorithm'
+            'alg' => 'findJWKByAlgorithm',
         );
     }
 
@@ -51,6 +51,13 @@ class JWKManager extends Base
                 "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
                 "e"   =>"AQAB",
                 "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
+            ));
+        }
+
+        if ($alg === "dir") {
+            return $this->createJWK(array(
+                "alg" =>$alg,
+                "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q'
             ));
         }
 
@@ -85,6 +92,8 @@ class JWKManager extends Base
             case 'A192CBC-HS384':
             case 'A256CBC-HS512':
                 return 'SpomkyLabs\JOSE\Tests\Encryption\AES';
+            case 'dir':
+                return 'SpomkyLabs\JOSE\Tests\Encryption\Dir';
             default:
                 throw new \Exception("Unsupported algorithm $alg");
         }

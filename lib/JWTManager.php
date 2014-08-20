@@ -20,18 +20,30 @@ abstract class JWTManager implements JWTManagerInterface
         return $this->loadCompactSerializedJson($data);
     }
 
-    public function convertToCompactSerializedJson(JWTInterface $jwt, JWKInterface $jwk)
+    public function convertToCompactSerializedJson($input, JWKInterface $jwk, array $header = array())
     {
+        if (!is_string($input) && !$input instanceof JWTInterface && !$input instanceof JWKInterface && !$input instanceof JWKSetInterface) {
+            throw new \Exception("Unsupported input type");
+        }
+
         if (!$jwk->isPrivate()) {
             throw new \Exception("The key is not a private key");
         }
 
-        $header = Base64Url::encode(json_encode($jwt->getHeader()));
-
         //We try to encrypt first
         if ($this->canEncrypt($jwk)) {
+
+            $plaintext = '';
+            if (is_string($input)) {
+                $plaintext = $input;
+            } elseif ($input instanceof JWKInterface || $input instanceof JWKSetInterface) {
+                $header['cty'] = $input instanceof JWKInterface ? 'jwk+json' : 'jwkset+json';
+                $plaintext = json_encode($input->toPrivate());
+            }
+
+            $header['alg'] = $jwk->getValue('alg');
             $data = array(
-                'header'=>$jwt->getHeader(),
+                'header'=>$header,
             );
             $key = $this->getKeyManager()->createJWK(array(
                 "enc" =>$data['header']['enc'],
@@ -39,11 +51,18 @@ abstract class JWTManager implements JWTManagerInterface
             if (!$key instanceof JWKContentEncryptionInterface) {
                 throw new \Exception("The content encryption algorithm is not valid");
             }
-            $key->createIV()
-                ->createCEK();
+
+            $key->createIV();
+
+            if ($data['header']['alg'] === 'dir') {
+                $key->setValue('cek', $jwk->getValue('dir'));
+            } else {
+                $key->createCEK();
+            }
+
             $data['iv'] = $key->getValue('iv');
             $data['encrypted_cek'] = $jwk->encrypt($key->getValue('cek'));
-            $data['encrypted_data'] = $key->encrypt(is_array($jwt->getPayload()) ? json_encode($jwt->getPayload()) : $jwt->getPayload());
+            $data['encrypted_data'] = $key->encrypt($plaintext);
             $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
 
             return implode(".", array(
@@ -56,7 +75,13 @@ abstract class JWTManager implements JWTManagerInterface
         }
         //Then we try to sign
         if ($this->canSign($jwk)) {
-            $payload = Base64Url::encode(json_encode($jwt->getPayload()));
+
+            if (!$input instanceof JWTInterface) {
+                throw new \Exception("Only JWT object can be signed");
+            }
+
+            $header = Base64Url::encode(json_encode($input->getHeader()));
+            $payload = Base64Url::encode(json_encode($input->getPayload()));
             $signature = $jwk->sign($header.".".$payload);
 
             return $header.".".$payload.".".$signature;
@@ -103,9 +128,9 @@ abstract class JWTManager implements JWTManagerInterface
         foreach ($key_set->getKeys() as $key) {
             if ($this->canDecrypt($key)) {
                 $cek = null;
-                //try {
+                try {
                     $cek = $key->decrypt($data['encrypted_cek']);
-                //} catch (\Exception $e) {}
+                } catch (\Exception $e) {}
                 if ($cek !== null) {
                     return $this->decryptContent($data, $cek);
                 }
@@ -138,12 +163,15 @@ abstract class JWTManager implements JWTManagerInterface
                 case 'jwkset+json':
                     return $this->getKeyManager()->createJWKSet(json_decode($dec,true));
                 default:
-                    return $dec;
                     break;
             }
         }
 
-        return $dec;
+        $jwt = $this->createJWT();
+        $jwt->setHeader($data['header']);
+        $jwt->setPayload($dec);
+
+        return$jwt;
     }
 
     private function loadCompactSerializedJWS($parts)
