@@ -2,8 +2,8 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Base64Url;
-use SpomkyLabs\JOSE\Tests\Signature\RSA;
+use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\JOSE\Signature\RSA;
 
 class RSATest extends \PHPUnit_Framework_TestCase
 {
@@ -26,7 +26,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
         $signature = $rsa->sign($data);
 
-        $this->assertEquals('TUFfTDVxWndwWUlOcVB2Q1FzM0ZEM2FMeDJoNHByMXNEODVEczB1U1hQcW9EdHRIVVVvR2tFR2FJdEE4STdtWDBfWXpYS3RlNGpOamNveDd1QzN5ZWhqdGV4NER0Q21GZDBmbVpuRzBVZVF0dWVfZjl0WnJtWFoyZVNMaTJXVk9FckhEUFdJZzBHbXlGWFZEQVZURDRFNnBRV2VHZFVzeFVOZ29ReDU5LVVXY2dORUpNTlQwSGUxLUhOMVNaUVFieHFyNVRCNmRXelA4U2VjQlJvVUZyNGQ0aTdBcV9hVElac1VCYjhsZ3J4M1RtNllVY3R1OEFfTVotcUhycVZpaE5XTkk4N29HM012QlJuWWlfbnZCaGpjOEt0SGlPUTl1ZjFzRm1XZVFQTGo0em9FSmdpeTNtT0pFRmlSUVZ6dDV0WDhheGhPN2NEMFhkQUZvdmtFRWl3', Base64Url::encode($signature));
+        $this->assertEquals('MA_L5qZwpYINqPvCQs3FD3aLx2h4pr1sD85Ds0uSXPqoDttHUUoGkEGaItA8I7mX0_YzXKte4jNjcox7uC3yehjtex4DtCmFd0fmZnG0UeQtue_f9tZrmXZ2eSLi2WVOErHDPWIg0GmyFXVDAVTD4E6pQWeGdUsxUNgoQx59-UWcgNEJMNT0He1-HN1SZQQbxqr5TB6dWzP8SecBRoUFr4d4i7Aq_aTIZsUBb8lgrx3Tm6YUctu8A_MZ-qHrqVihNWNI87oG3MvBRnYi_nvBhjc8KtHiOQ9uf1sFmWeQPLj4zoEJgiy3mOJEFiRQVzt5tX8axhO7cD0XdAFovkEEiw', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($data, $signature));
     }
 
@@ -49,7 +49,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
         $signature = $rsa->sign($data);
 
-        $this->assertEquals('SDVmTmMzM2FsNDBKX09IbEU5YVo3bEFueW8wZmNEUnZmLVp0dE9lZmF3MU1RVElRVlJldS1jMENsOTZIdXI0RGFuQ3E5SGxSR05iQUk3WWNScTNmMUxqN0Rmbll1cnhFcUVBRy03RGhHeDlDeHFwbTRYQkNWVDU0T1hIWnQ2ZjdTQ3N6WWJzSUpGZVNDS1RkMWw5N2FpVm5BT09XY0l2ZE9ydndsb3RpNm5XcUI4X3ZnZjZfc1BrVHZaS09ZNzlHMDlxd1BIQmt1azh2dklKSWpabUVjN29sWlVlNTRFSEkwcHRmZV9udnVJaWNWLV9RV2w4VzZBRGJob1VPdm02bDZjdlJzcWdDdVlmTzZLWUpfbW5jM096YTRCd05pdm55WDJGRGVXUUswVmVHdzFuV090NDZhRklZRE1QdzVzNmlaQVh2SmlGS0I1eUQ0Qlk4U0FZZVFR', Base64Url::encode($signature));
+        $this->assertEquals('H5fNc33al40J_OHlE9aZ7lAnyo0fcDRvf-ZttOefaw1MQTIQVReu-c0Cl96Hur4DanCq9HlRGNbAI7YcRq3f1Lj7DfnYurxEqEAG-7DhGx9Cxqpm4XBCVT54OXHZt6f7SCszYbsIJFeSCKTd1l97aiVnAOOWcIvdOrvwloti6nWqB8_vgf6_sPkTvZKOY79G09qwPHBkuk8vvIJIjZmEc7olZUe54EHI0ptfe_nvuIicV-_QWl8W6ADbhoUOvm6l6cvRsqgCuYfO6KYJ_mnc3Oza4BwNivnyX2FDeWQK0VeGw1nWOt46aFIYDMPw5s6iZAXvJiFKB5yD4BY8SAYeQQ', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($data, $signature));
     }
 
@@ -72,7 +72,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
         $signature = $rsa->sign($data);
 
-        $this->assertEquals('ZUtWeEEtalN5b0NxRzd1c0ZuT3VHeS1NUzk2X0pVclVqNXVGQzFhUFdPaVZEVXJuekRkcTJYVHVCSVFVQlJ5LXNCbFk3TFdpTmtwSTY3c29NYXlXRHZLUjZWSDVORlJ3c2M5SkJORjlRUDhkVnVxNGdVNXh5UnNoTFBuZTJiU2RvV1V5UGJJc1lQd0FCNnV4dE9RRWhRSHdjSTMyMlJHZlNCbUgzX01HblltZHcyV1VnTl8xV0ltbktsTDNwY0ZBcVY3X0RxUUdaVktFTWZmWEU3MVhtdENEYnUzNEloWXRGUWFMbFpFQmN5YV9QekV2SDhlTkM4V205M2tubmZWUmMwWkFUb0tPM0RSRUpvZThtQUxDQWIxTV83S2xmYkRCYTJkU041RkRfS21qMlB2RkdjcF9mTEluLVZ6cEtrUDdKNlZPZU1SelJGV281YlROcm9DWG9n', Base64Url::encode($signature));
+        $this->assertEquals('eKVxA-jSyoCqG7usFnOuGy-MS96_JUrUj5uFC1aPWOiVDUrnzDdq2XTuBIQUBRy-sBlY7LWiNkpI67soMayWDvKR6VH5NFRwsc9JBNF9QP8dVuq4gU5xyRshLPne2bSdoWUyPbIsYPwAB6uxtOQEhQHwcI322RGfSBmH3_MGnYmdw2WUgN_1WImnKlL3pcFAqV7_DqQGZVKEMffXE71XmtCDbu34IhYtFQaLlZEBcya_PzEvH8eNC8Wm93knnfVRc0ZAToKO3DREJoe8mALCAb1M_7KlfbDBa2dSN5FD_Kmj2PvFGcp_fLIn-VzpKkP7J6VOeMRzRFWo5bTNroCXog', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($data, $signature));
     }
 
@@ -200,6 +200,6 @@ class RSATest extends \PHPUnit_Framework_TestCase
                 'dp' => 'aJrzw_kjWK9uDlTeaES2e4muv6bWbopYfrPHVWG7NPGoGdhnBnd70-jhgMEiTZSNU8VXw2u7prAR3kZ-kAp1DdwlqedYOzFsOJcPA0UZhbORyrBy30kbll_7u6CanFm6X4VyJxCpejd7jKNw6cCTFP1sfhWg5NVJ5EUTkPwE66M',
                 'dq' => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi' => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
-        ),$rsa->toPrivate());
+        ),$rsa->getValues());
     }
 }

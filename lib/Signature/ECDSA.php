@@ -10,7 +10,8 @@ use Mdanter\Ecc\GmpUtils;
 use Mdanter\Ecc\BcMathUtils;
 use Mdanter\Ecc\ModuleConfig;
 use Mdanter\Ecc\NISTcurve;
-use SpomkyLabs\JOSE\Base64Url;
+use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
@@ -19,20 +20,20 @@ use SpomkyLabs\JOSE\JWKVerifyInterface;
  * This class handles signatures using Elliptic Curves.
  * It supports algorithms ES256, ES384 and ES512;
  */
-abstract class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
 {
-    public function toPrivate()
-    {
-        $values = $this->getValues()+array(
-            'kty' => 'EC',
-        );
+    use JWK;
 
-        return $values;
+    protected $values = array('kty' => 'EC');
+
+    public function __toString()
+    {
+        return json_encode($this->getValues());
     }
 
     public function toPublic()
     {
-        $values = $this->toPrivate();
+        $values = $this->getValues();
 
         if ( isset($values['d'])) {
             unset($values['d']);
@@ -89,7 +90,7 @@ abstract class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterfa
             }
         }
 
-        return Base64Url::encode($this->convertHextoBin($R.$S));
+        return $this->convertHextoBin($R.$S);
     }
 
     /**
@@ -99,7 +100,7 @@ abstract class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterfa
     {
         $this->checkData();
 
-        $signature = $this->convertBinToHex(Base64Url::decode($signature));
+        $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
         if ( strlen($signature) !== 2*$part_length) {
             return false;
@@ -235,6 +236,61 @@ abstract class ECDSA implements JWKInterface, JWKSignInterface, JWKVerifyInterfa
     {
         if ($this->getValue('x') === null || $this->getValue('y') === null) {
             throw new \Exception("'x' or 'y' value is not dfined");
+        }
+    }
+
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+        switch ($key) {
+            case 'crv':
+                $this->updateAlgorithm();
+                break;
+            case 'alg':
+                $this->updateCurve();
+                break;
+            default:
+                break;
+        }
+
+        return $this;
+    }
+
+    private function updateAlgorithm()
+    {
+        $crv = $this->getValue('crv');
+        switch ($crv) {
+            case 'P-256':
+                $this->values['alg'] = 'ES256';
+                break;
+            case 'P-384':
+                $this->values['alg'] = 'ES384';
+                break;
+            case 'P-521':
+                $this->values['alg'] = 'ES512';
+                break;
+            default:
+                $this->setValue('crv',null);
+                throw new \Exception("Curve $crv is not supported");
+        }
+    }
+
+    private function updateCurve()
+    {
+        $alg = $this->getValue('alg');
+        switch ($alg) {
+            case 'ES256':
+                $this->values['crv'] = 'P-256';
+                break;
+            case 'ES384':
+                $this->values['crv'] = 'P-384';
+                break;
+            case 'ES512':
+                $this->values['crv'] = 'P-521';
+                break;
+            default:
+                $this->setValue('alg',null);
+                throw new \Exception("Algorithm $alg is not supported");
         }
     }
 }

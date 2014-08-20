@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Tests\Signature\None;
+use SpomkyLabs\JOSE\Signature\None;
 
 class NoneTest extends \PHPUnit_Framework_TestCase
 {
@@ -23,6 +23,6 @@ class NoneTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($none->isPrivate());
         $this->assertEquals(array(
                 'alg' => 'none',
-        ),$none->toPrivate());
+        ),$none->getValues());
     }
 }

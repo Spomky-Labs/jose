@@ -2,30 +2,30 @@
 
 namespace SpomkyLabs\JOSE\Signature;
 
+use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
-use SpomkyLabs\JOSE\RSAConverter;
-use SpomkyLabs\JOSE\Base64Url;
+use SpomkyLabs\JOSE\Util\RSAConverter;
 
 /**
  * This class handles signatures using RSA SSA PKCS1 and PSS.
  * It supports algorithms PS256/RS256, PS384/RS384 and PS512/RS512;
  */
-abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
 {
-    public function toPrivate()
-    {
-        $values = $this->getValues()+array(
-            'kty' => 'RSA',
-        );
+    use JWK;
 
-        return $values;
+    protected $values = array('kty' => 'RSA');
+
+    public function __toString()
+    {
+        return json_encode($this->getValues());
     }
 
     public function toPublic()
     {
-        $values = $this->toPrivate();
+        $values = $this->getValues();
 
         $keys = array('p', 'd', 'q', 'dp', 'dq', 'qi');
         foreach ($keys as $key) {
@@ -51,7 +51,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
         $rsa->setSignatureMode($this->getSignatureMethod());
 
-        return $rsa->verify($data, Base64Url::decode($signature));
+        return $rsa->verify($data, $signature);
     }
 
     /**
@@ -71,7 +71,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
         $rsa->setSignatureMode($this->getSignatureMethod());
 
-        return Base64Url::encode($rsa->sign($data));
+        return $rsa->sign($data);
     }
 
     public function isPrivate()

@@ -3,6 +3,7 @@
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManager as Base;
+use SpomkyLabs\JOSE\JWKSet;
 
 /**
  */
@@ -70,30 +71,30 @@ class JWKManager extends Base
             case 'ES256':
             case 'ES384':
             case 'ES512':
-                return 'SpomkyLabs\JOSE\Tests\Signature\ECDSA';
+                return 'SpomkyLabs\JOSE\Signature\ECDSA';
             case 'RS256':
             case 'RS384':
             case 'RS512':
             case 'PS256':
             case 'PS384':
             case 'PS512':
-                return 'SpomkyLabs\JOSE\Tests\Signature\RSA';
+                return 'SpomkyLabs\JOSE\Signature\RSA';
             case 'none':
-                return 'SpomkyLabs\JOSE\Tests\Signature\None';
+                return 'SpomkyLabs\JOSE\Signature\None';
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                return 'SpomkyLabs\JOSE\Tests\Signature\Hmac';
+                return 'SpomkyLabs\JOSE\Signature\Hmac';
             case 'RSA1_5':
             case 'RSA-OAEP':
             case 'RSA-OAEP-256':
-                return 'SpomkyLabs\JOSE\Tests\Encryption\RSA';
+                return 'SpomkyLabs\JOSE\Encryption\RSA';
             case 'A128CBC-HS256':
             case 'A192CBC-HS384':
             case 'A256CBC-HS512':
-                return 'SpomkyLabs\JOSE\Tests\Encryption\AES';
+                return 'SpomkyLabs\JOSE\Encryption\AES';
             case 'dir':
-                return 'SpomkyLabs\JOSE\Tests\Encryption\Dir';
+                return 'SpomkyLabs\JOSE\Encryption\Dir';
             default:
                 throw new \Exception("Unsupported algorithm $alg");
         }

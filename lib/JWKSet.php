@@ -2,25 +2,52 @@
 
 namespace SpomkyLabs\JOSE;
 
-abstract class JWKSet implements JWKSetInterface
+class JWKSet implements JWKSetInterface
 {
-    public function toPublic()
-    {
-        $result = array();
-        foreach ($this->getKeys() as $key) {
-            $result[] = $key->toPublic();
-        }
+    private $keys = array();
 
-        return $result;
+    public function getKeys()
+    {
+        return $this->keys;
     }
 
-    public function toPrivate()
+    /**
+     * Set keys in the Key Set
+     * @param array $keys An array with JWKInterface objects
+     */
+    public function setKeys(array $keys)
     {
-        $result = array();
-        foreach ($this->getKeys() as $key) {
-            $result[] = $key->toPrivate();
+        $this->keys = $keys;
+
+        return $this;
+    }
+
+    /**
+     * Set keys in the Key
+     * @param JWKInterface $key A JWKInterface objects
+     */
+    public function addKey(JWKInterface $key)
+    {
+        $this->keys[] = $key;
+
+        return $this;
+    }
+
+    public function isEmpty()
+    {
+        return count($this->getKeys()) === 0;
+    }
+
+    public function __toString()
+    {
+        $keys = $this->getKeys();
+        $result = array(
+            'keys'=>array(),
+        );
+        foreach ($keys as $key) {
+            $result['keys'][] = $key->getValues();
         }
 
-        return $result;
+        return json_encode($result);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Signature;
 
+use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
@@ -9,18 +10,20 @@ use SpomkyLabs\JOSE\JWKVerifyInterface;
 /**
  * This class is an abstract class that implements the none algorithm (plaintext)
  */
-abstract class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
 {
-    public function toPrivate()
+    use JWK;
+
+    protected $values = array('alg' => 'none');
+
+    public function __toString()
     {
-        return array(
-            'alg' => 'none',
-        );
+        return json_encode($this->getValues());
     }
 
     public function toPublic()
     {
-        return $this->toPrivate();
+        return $this->getValues();
     }
 
     public function isPrivate()
@@ -42,5 +45,20 @@ abstract class None implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
     public function verify($data, $signature)
     {
         return $signature === $this->sign($data);
+    }
+
+    public function getValue($key)
+    {
+        return null;
+    }
+
+    public function setValues(array $values)
+    {
+        return $this;
+    }
+
+    public function setValue($key, $value)
+    {
+        return $this;
     }
 }

@@ -23,9 +23,4 @@ class JWTManager extends Base
 
         return $this;
     }
-
-    public function createJWT()
-    {
-        return new JWT();
-    }
 }

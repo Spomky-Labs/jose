@@ -3,7 +3,7 @@
 namespace SpomkyLabs\JOSE;
 
 /**
- * This interface must be implemented with a JWKEncryptInterface or JWKDecryptInterface object to calculate and check an authentication tag
+ * This interface must be implemented with a JWK object used for content encryption to calculate and check an authentication tag
  */
 interface JWKAuthenticationTagInterface
 {

@@ -2,15 +2,15 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Tests\Signature\Hmac;
+use SpomkyLabs\JOSE\Signature\Hmac;
 
 class HMACTest extends \PHPUnit_Framework_TestCase
 {
     public function testHS256SignAndVerify()
     {
         $hmac = new Hmac();
-        $hmac->setAlgorithm('HS256')
-             ->setKey('foo');
+        $hmac->setValue('alg','HS256')
+             ->setValue('k','foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data);
@@ -22,8 +22,8 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     public function testHS384SignAndVerify()
     {
         $hmac = new Hmac();
-        $hmac->setAlgorithm('HS384')
-             ->setKey('foo');
+        $hmac->setValue('alg','HS384')
+             ->setValue('k','foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data);
@@ -35,8 +35,8 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     public function testHS512SignAndVerify()
     {
         $hmac = new Hmac();
-        $hmac->setAlgorithm('HS512')
-             ->setKey('foo');
+        $hmac->setValue('alg','HS512')
+             ->setValue('k','foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data);

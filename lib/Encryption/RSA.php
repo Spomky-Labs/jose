@@ -2,28 +2,29 @@
 
 namespace SpomkyLabs\JOSE\Encryption;
 
+use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKEncryptInterface;
 use SpomkyLabs\JOSE\JWKDecryptInterface;
-use SpomkyLabs\JOSE\RSAConverter;
+use SpomkyLabs\JOSE\Util\RSAConverter;
 
 /**
  * This class handles encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
  */
-abstract class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
+class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
 {
-    public function toPrivate()
-    {
-        $values = $this->getValues()+array(
-            'kty' => 'RSA',
-        );
+    use JWK;
 
-        return $values;
+    protected $values = array('kty' => 'RSA');
+
+    public function __toString()
+    {
+        return json_encode($this->getValues());
     }
 
     public function toPublic()
     {
-        $values = $this->toPrivate();
+        $values = $this->getValues();
 
         $keys = array('p', 'd', 'q', 'dp', 'dq', 'qi');
         foreach ($keys as $key) {

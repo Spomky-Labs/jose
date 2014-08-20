@@ -2,28 +2,30 @@
 
 namespace SpomkyLabs\JOSE\Encryption;
 
+use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKEncryptInterface;
 use SpomkyLabs\JOSE\JWKDecryptInterface;
 use SpomkyLabs\JOSE\JWKContentEncryptionInterface;
 use SpomkyLabs\JOSE\JWKAuthenticationTagInterface;
-use SpomkyLabs\JOSE\Base64Url;
+use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
  * This class handles encryption of text using A128CBC-HS256 or A256CBC-HS512 algorithms.
  */
-abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+class AES  implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
 {
-    public function toPrivate()
+    use JWK;
+    protected $values = array('kty' => 'AES');
+
+    public function __toString()
     {
-        $values = $this->getValues()+array(
-            'kty' => 'AES',
-        );
+        return json_encode($this->getValues());
     }
 
     public function toPublic()
     {
-        return $this->toPrivate();
+        return $this->getValues();
     }
 
     /**

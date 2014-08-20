@@ -5,11 +5,11 @@ namespace SpomkyLabs\JOSE;
 interface JWKInterface
 {
     /**
-     * Returns an array that represent the values of the private key
+     * Returns a strin that represent the key
      *
-     * @return array
+     * @return string
      */
-    public function toPrivate();
+    public function __toString();
 
     /**
      * Returns an array that represent the values of the public key
