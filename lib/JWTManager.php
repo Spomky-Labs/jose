@@ -145,7 +145,42 @@ abstract class JWTManager implements JWTManagerInterface
      */
     private function loadSerializedJsonJWE($data)
     {
-        throw new \Exception('Not implemented');
+        /*$data = array(
+            "encrypted_cek" => Base64Url::decode($parts[1]),
+        );*/
+
+        $prepared = array(
+            "header" => json_decode(Base64Url::decode($data['protected']), true),
+            "iv" => Base64Url::decode($data['iv']),
+            "encrypted_data" => Base64Url::decode($data['ciphertext']),
+            "authentication_tag" => Base64Url::decode($data['tag']),
+        );
+
+        foreach ($data['recipients'] as $recipient) {
+            $jwk = $this->getKeyManager()->findJWKByHeader(array_merge($prepared['header'], $recipient['header']));
+
+            if ($jwk !== null) {
+                if ($this->getKeyManager()->canDecrypt($jwk)) {
+                    $cek = null;
+                    try {
+                        $cek = $jwk->decrypt(Base64Url::decode($recipient['encrypted_key']));
+                    } catch (\Exception $e) {}
+                    if ($cek !== null) {
+                        $data = array(
+                            "header" => $prepared['header'],
+                            "encrypted_cek" => $recipient['encrypted_key'],
+                            "iv" => $prepared['iv'],
+                            "encrypted_data" => $prepared['encrypted_data'],
+                            "authentication_tag" => $prepared['authentication_tag'],
+                        );
+
+                        return $this->decryptContent($data, $cek);
+                    }
+                }
+            }
+        }
+
+        throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
     }
 
     /**

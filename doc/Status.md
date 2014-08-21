@@ -8,17 +8,19 @@
     * JWS
         * Plain text
         * Array
-        * Raw
     * JWE:
         * Plain text
         * Array
-        * Raw
         * jwk+json and jwkset+json content type
 * JSON Serialization Overview
     * JWS (loading only)
         * Plain text
         * Array
         * Raw data
+    * JWE (loading only)
+        * Plain text
+        * Array
+        * jwk+json and jwkset+json content type
 
 ### Unsupported
 
@@ -26,11 +28,9 @@
     * JWS (creation only)
         * Plain text
         * Array
-        * Raw data
-    * JWE
+    * JWE (creation only)
         * Plain text
         * Array
-        * Raw
         * jwk+json and jwkset+json content type
 
 ## JWA

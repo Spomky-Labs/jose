@@ -70,6 +70,10 @@ Look at [Extend classes](doc/Extend.md) for more informations and examples.
 
 Your classes are ready to use? Have a look at [How to use](doc/Use.md) to handle your first JWT objects.
 
+## Todo
+
+[Next modifications](doc/Todo.md).
+
 ## Contributing
 
 Requests for new features, bug fixed and all other ideas to make this library usefull are welcome. [Please follow these best practices](doc/Contributing.md).
