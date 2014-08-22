@@ -42,8 +42,8 @@ abstract class JWTManager implements JWTManagerInterface
                 $plaintext = $input->__toString();
             }
 
-            if(!isset($header['alg'])) {
-                $header['alg'] = $jwk->getValue('alg');
+            if(!$jwk->getValue('alg')) {
+                $jwk->setValue('alg', $header['alg']);
             }
             $data = array(
                 'header'=>$header,
@@ -79,7 +79,6 @@ abstract class JWTManager implements JWTManagerInterface
         }
         //Then we try to sign
         if ($this->getKeyManager()->canSign($jwk)) {
-
 
             if (!$jwk->isPrivate()) {
                 throw new \Exception("The key is not a private key");
