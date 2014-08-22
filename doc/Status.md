@@ -51,6 +51,7 @@ All required algorithms are supported.
         * RSA
         * RSA-OAEP
         * RSA-OAEP-256
+        * ECDH-ES
     * Content Encryption:
         * A128CBC-HS256
         * A192CBC-HS384
@@ -63,7 +64,6 @@ All required algorithms are supported.
         * A128KW
         * A192KW
         * A256KW
-        * ECDH-ES
         * ECDH-ES+A128KW
         * ECDH-ES+A192KW
         * ECDH-ES+A256KW

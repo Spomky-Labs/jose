@@ -12,5 +12,5 @@ interface JWKDecryptInterface
      *
      * @return mixed|null
      */
-    public function decrypt($data);
+    public function decrypt($data, array $header = array());
 }

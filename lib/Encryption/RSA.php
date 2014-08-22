@@ -39,7 +39,7 @@ class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
     /**
      * @inheritdoc
      */
-    public function encrypt($data)
+    public function encrypt($data, array &$header = array())
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
@@ -55,7 +55,7 @@ class RSA implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
     /**
      * @inheritdoc
      */
-    public function decrypt($data)
+    public function decrypt($data, array $header = array())
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(true));
         if (!$this->isPrivate()) {

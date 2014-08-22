@@ -31,10 +31,6 @@ abstract class JWTManager implements JWTManagerInterface
             throw new \Exception("Unsupported input type");
         }
 
-        if (!$jwk->isPrivate()) {
-            throw new \Exception("The key is not a private key");
-        }
-
         //We try to encrypt first
         if ($this->getKeyManager()->canEncrypt($jwk)) {
 
@@ -46,7 +42,9 @@ abstract class JWTManager implements JWTManagerInterface
                 $plaintext = $input->__toString();
             }
 
-            $header['alg'] = $jwk->getValue('alg');
+            if(!isset($header['alg'])) {
+                $header['alg'] = $jwk->getValue('alg');
+            }
             $data = array(
                 'header'=>$header,
             );
@@ -66,7 +64,8 @@ abstract class JWTManager implements JWTManagerInterface
             }
 
             $data['iv'] = $key->getValue('iv');
-            $data['encrypted_cek'] = $jwk->encrypt($key->getValue('cek'));
+            $data['encrypted_cek'] = $jwk->encrypt($key->getValue('cek'), $data['header']);
+
             $data['encrypted_data'] = $key->encrypt($plaintext);
             $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
 
@@ -80,6 +79,11 @@ abstract class JWTManager implements JWTManagerInterface
         }
         //Then we try to sign
         if ($this->getKeyManager()->canSign($jwk)) {
+
+
+            if (!$jwk->isPrivate()) {
+                throw new \Exception("The key is not a private key");
+            }
 
             if (!is_string($input)) {
                 throw new \Exception("Unsupported input type");
@@ -163,7 +167,7 @@ abstract class JWTManager implements JWTManagerInterface
                 if ($this->getKeyManager()->canDecrypt($jwk)) {
                     $cek = null;
                     try {
-                        $cek = $jwk->decrypt(Base64Url::decode($recipient['encrypted_key']));
+                        $cek = $jwk->decrypt(Base64Url::decode($recipient['encrypted_key']), $prepared['header']);
                     } catch (\Exception $e) {}
                     if ($cek !== null) {
                         $data = array(
@@ -213,19 +217,19 @@ abstract class JWTManager implements JWTManagerInterface
         $jwk = $this->getKeyManager()->findJWKByHeader($data['header']);
 
         if ($jwk === null) {
-            throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
+            throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
         }
 
         if ($this->getKeyManager()->canDecrypt($jwk)) {
             $cek = null;
             try {
-                $cek = $jwk->decrypt($data['encrypted_cek']);
+                $cek = $jwk->decrypt($data['encrypted_cek'], $data['header']);
             } catch (\Exception $e) {}
             if ($cek !== null) {
                 return $this->decryptContent($data, $cek);
             }
         }
-        throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
+        throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
     }
 
     private function decryptContent(array $data, $cek)

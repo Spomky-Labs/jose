@@ -28,7 +28,7 @@ class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
     /**
      * @inheritdoc
      */
-    public function encrypt($data)
+    public function encrypt($data, array &$header = array())
     {
         return '';
     }
@@ -36,7 +36,7 @@ class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
     /**
      * @inheritdoc
      */
-    public function decrypt($data)
+    public function decrypt($data, array $header = array())
     {
         return $this->getValue('dir');
     }

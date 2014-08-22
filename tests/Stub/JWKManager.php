@@ -4,12 +4,39 @@ namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManager as Base;
 use SpomkyLabs\JOSE\JWKSet;
+use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
  */
 class JWKManager extends Base
 {
     private $keys = array();
+
+    protected function findJWKByAPV($apv)
+    {
+        if ('Bob' === Base64Url::decode($apv)) {
+            return $this->createJWK(array(
+                "kty" =>"EC",
+                "alg" =>"ECDH-ES",
+                "crv" =>"P-256",
+                "x"   =>"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
+                "y"   =>"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck",
+                "d"   =>"VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw"
+            ));
+        }
+        if ('Alice' === Base64Url::decode($apv)) {
+            return $this->createJWK(array(
+                "kty" =>"EC",
+                "alg" =>"ECDH-ES",
+                "crv" =>"P-256",
+                "x"   =>"gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
+                "y"   =>"SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
+                "d"   =>"0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo"
+            ));
+        }
+
+        return null;
+    }
 
     protected function findJWKByKid($kid)
     {
@@ -62,6 +89,7 @@ class JWKManager extends Base
     {
         return parent::getSupportedMethods()+array(
             'alg' => 'findJWKByAlgorithm',
+            'apv' => 'findJWKByAPV',
         );
     }
 
@@ -116,6 +144,8 @@ class JWKManager extends Base
                 return 'SpomkyLabs\JOSE\Encryption\AES';
             case 'dir':
                 return 'SpomkyLabs\JOSE\Encryption\Dir';
+            case 'ECDH-ES':
+                return 'SpomkyLabs\JOSE\Encryption\ECDH';
             default:
                 throw new \Exception("Unsupported algorithm $alg");
         }

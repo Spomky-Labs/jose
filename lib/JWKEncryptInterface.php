@@ -12,5 +12,5 @@ interface JWKEncryptInterface
      *
      * @return string
      */
-    public function encrypt($data);
+    public function encrypt($data, array &$header = array());
 }

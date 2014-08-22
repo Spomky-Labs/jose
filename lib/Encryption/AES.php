@@ -13,7 +13,7 @@ use SpomkyLabs\JOSE\Util\Base64Url;
 /**
  * This class handles encryption of text using A128CBC-HS256 or A256CBC-HS512 algorithms.
  */
-class AES  implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
 {
     use JWK;
     protected $values = array('kty' => 'AES');
@@ -31,7 +31,7 @@ class AES  implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
     /**
      * @inheritdoc
      */
-    public function encrypt($data)
+    public function encrypt($data, array &$header = array())
     {
         $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
 
@@ -46,7 +46,7 @@ class AES  implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
     /**
      * @inheritdoc
      */
-    public function decrypt($data)
+    public function decrypt($data, array $header = array())
     {
         $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
 

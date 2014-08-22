@@ -4,6 +4,7 @@ namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Tests\Stub\JWT;
 use SpomkyLabs\JOSE\Signature\ECDSA;
+use SpomkyLabs\JOSE\Encryption\ECDH;
 use SpomkyLabs\JOSE\Encryption\RSA;
 use SpomkyLabs\JOSE\Encryption\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
@@ -123,6 +124,44 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load($jwe);
         $this->assertInstanceOf('SpomkyLabs\JOSE\JWKSetInterface', $result);
         $this->assertEquals($key_set, $result);
+    }
+
+    public function testCreateEncryptedWithECDH_ES()
+    {
+        $jwk_manager = new JWKManager();
+        $jwt_manager = new JWTManager();
+
+        $jwt_manager->setKeyManager($jwk_manager);
+
+        $jwk = new ECDH();
+        $jwk->setValues(array(
+            "kty" =>"EC",
+            "alg" =>"ECDH-ES",
+            "crv" =>"P-256",
+            "x"   =>"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
+            "y"   =>"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck"
+        ));
+
+        $jwe = $jwt_manager->convertToCompactSerializedJson(
+            "The true sign of intelligence is not knowledge but imagination.",
+            $jwk,
+            array(
+                "alg"=>"ECDH-ES",
+                "enc"=>"A256CBC-HS512",
+                "apu"=>"QWxpY2U",
+                "apv"=>"Qm9i",
+                "sender_private_key"=> array(
+                    "kty" =>"EC",
+                    "crv" =>"P-256",
+                    "x"   =>"gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
+                    "y"   =>"SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
+                    "d"   =>"0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo"
+                )
+            ));
+
+        $result = $jwt_manager->load($jwe);
+
+        $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
     }
 
     public function testCreateEncryptedPlainText()
