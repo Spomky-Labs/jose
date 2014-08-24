@@ -32,7 +32,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //We try to encrypt first
-        if ($this->getKeyManager()->canEncrypt($jwk)) {
+        if ($this->getKeyManager()->canEncrypt($jwk) && isset($header['enc']) && isset($header['alg'])) {
 
             $plaintext = '';
             if (is_string($input)) {
@@ -76,9 +76,7 @@ abstract class JWTManager implements JWTManagerInterface
                 Base64Url::encode($data['encrypted_data']),
                 Base64Url::encode($data['authentication_tag']),
             ));
-        }
-        //Then we try to sign
-        if ($this->getKeyManager()->canSign($jwk)) {
+        } elseif ($this->getKeyManager()->canSign($jwk) && isset($header['alg'])) {
 
             if (!$jwk->isPrivate()) {
                 throw new \Exception("The key is not a private key");
@@ -93,8 +91,9 @@ abstract class JWTManager implements JWTManagerInterface
             $signature = Base64Url::encode($jwk->sign($header.".".$payload));
 
             return $header.".".$payload.".".$signature;
+        } else {
+            throw new \Exception("The key can not sign or encrypt data");
         }
-        throw new \Exception("The key can not sign or encrypt data");
     }
 
     public function convertToSerializedJson(JWTInterface $jwt, JWKSetInterface $jwk_set)

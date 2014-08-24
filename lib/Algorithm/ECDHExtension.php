@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Encryption;
+namespace SpomkyLabs\JOSE\Algorithm;
 
 use Mdanter\Ecc\Point;
 

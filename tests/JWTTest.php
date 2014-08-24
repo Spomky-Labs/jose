@@ -3,10 +3,9 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Tests\Stub\JWT;
-use SpomkyLabs\JOSE\Signature\ECDSA;
-use SpomkyLabs\JOSE\Encryption\ECDH;
-use SpomkyLabs\JOSE\Encryption\RSA;
-use SpomkyLabs\JOSE\Encryption\Dir;
+use SpomkyLabs\JOSE\Algorithm\EC;
+use SpomkyLabs\JOSE\Algorithm\RSA;
+use SpomkyLabs\JOSE\Algorithm\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
 
@@ -28,8 +27,9 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
     public function testGetCompactSerializedJson()
     {
-        $jwk = new ECDSA();
+        $jwk = new EC();
         $jwk->setValue('crv','P-521')
+            ->setValue('alg','ES512')
             ->setValue('x',"AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
             ->setValue('y',"ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
             ->setValue('d',"AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
@@ -47,6 +47,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             $input,
             $jwk,
             array(
+                'alg'=>'ES512',
                 'jwk'=>$jwk->getValues(),
                 'jty'=>'JWT',
         ));
@@ -133,7 +134,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager->setKeyManager($jwk_manager);
 
-        $jwk = new ECDH();
+        $jwk = new EC();
         $jwk->setValues(array(
             "kty" =>"EC",
             "alg" =>"ECDH-ES",

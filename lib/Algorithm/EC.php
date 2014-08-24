@@ -1,27 +1,31 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Encryption;
+namespace SpomkyLabs\JOSE\Algorithm;
 
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
-//use Mdanter\Ecc\EcDH as ECDHExtension;
 use Mdanter\Ecc\GmpUtils;
+use Mdanter\Ecc\Signature;
 use Mdanter\Ecc\BcMathUtils;
 use Mdanter\Ecc\ModuleConfig;
 use Mdanter\Ecc\NISTcurve;
 use SpomkyLabs\JOSE\Util\Base64Url;
 use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
+use SpomkyLabs\JOSE\JWKSignInterface;
+use SpomkyLabs\JOSE\JWKVerifyInterface;
 use SpomkyLabs\JOSE\JWKEncryptInterface;
 use SpomkyLabs\JOSE\JWKDecryptInterface;
 use SpomkyLabs\JOSE\JWKContentEncryptionInterface;
 use SpomkyLabs\JOSE\JWKAuthenticationTagInterface;
 
 /**
- * This class handles encryption of text using ECDH algorithm.
+ * This class handles
+ *     - signatures using Elliptic Curves (ES256, ES384 and ES512).
+ *     - encryption of text using ECDH-ES algorithm.
  */
-class ECDH implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
 {
     use JWK;
 
@@ -46,6 +50,74 @@ class ECDH implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
     public function isPrivate()
     {
         return $this->getValue('d') !== null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function sign($data)
+    {
+        if (!$this->isPrivate()) {
+            throw new \Exception('This is not a private JWK');
+        }
+
+        $p     = $this->getGenerator();
+        $curve = $this->getCurve();
+        $x     = $this->convertBase64ToDec($this->getValue('x'));
+        $y     = $this->convertBase64ToDec($this->getValue('y'));
+        $d     = $this->convertBase64ToDec($this->getValue('d'));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+
+        if (ModuleConfig::hasGmp()) {
+            $k = GmpUtils::gmpRandom($p->getOrder());
+        } elseif (ModuleConfig::hasBcMath()) {
+            $k = BcMathUtils::bcrand($p->getOrder());
+        }
+
+        $public_key = new PublicKey($p, new Point($curve, $x, $y));
+        $private_key = new PrivateKey($public_key, $d);
+        $sign = $private_key->sign($hash, $k);
+
+        $R = $this->convertDecToHex($sign->getR());
+        $S = $this->convertDecToHex($sign->getS());
+
+        $part_length = $this->getSignaturePartLength();
+        if (strlen($R)!==$part_length) {
+            while (strlen($R)<$part_length) {
+                $R = "0".$R;
+            }
+        }
+        if (strlen($S)!==$part_length) {
+            while (strlen($S)<$part_length) {
+                $S = "0".$S;
+            }
+        }
+
+        return $this->convertHextoBin($R.$S);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function verify($data, $signature)
+    {
+        $signature = $this->convertBinToHex($signature);
+        $part_length = $this->getSignaturePartLength();
+        if ( strlen($signature) !== 2*$part_length) {
+            return false;
+        }
+
+        $p     = $this->getGenerator();
+        $curve = $this->getCurve();
+        $x     = $this->convertBase64ToDec($this->getValue('x'));
+        $y     = $this->convertBase64ToDec($this->getValue('y'));
+        $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
+        $S     = $this->convertHexToDec(substr($signature, $part_length));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+
+        $public_key = new PublicKey($p, new Point($curve, $x, $y));
+
+        return $public_key->verifies($hash, new Signature($R, $S));
     }
 
     /**
@@ -127,6 +199,36 @@ class ECDH implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
         }
     }
 
+    protected function getHashAlgorithm()
+    {
+        $crv = $this->getValue('crv');
+        switch ($crv) {
+            case 'P-256':
+                return 'SHA256';
+            case 'P-384':
+                return 'SHA384';
+            case 'P-521':
+                return 'SHA512';
+            default:
+                throw new \Exception("Curve $crv is not supported");
+        }
+    }
+
+    protected function getSignaturePartLength()
+    {
+        $crv = $this->getValue('crv');
+        switch ($crv) {
+            case 'P-256':
+                return 64;
+            case 'P-384':
+                return 96;
+            case 'P-521':
+                return 132;
+            default:
+                throw new \Exception("Curve $crv is not supported");
+        }
+    }
+
     private function convertDecToBin($value)
     {
         return pack("H*",$this->convertDecToHex($value));
@@ -186,49 +288,6 @@ class ECDH implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JW
         $value = unpack('H*',Base64Url::decode($value));
 
         return $this->convertHexToDec($value[1]);
-    }
-
-    public function setValue($key, $value)
-    {
-        $this->values[$key] = $value;
-        switch ($key) {
-            case 'crv':
-                $this->updateAlgorithm();
-                break;
-            case 'alg':
-                $this->updateCurve();
-                break;
-            default:
-                break;
-        }
-
-        return $this;
-    }
-
-    private function updateAlgorithm()
-    {
-        $crv = $this->getValue('crv');
-        switch ($crv) {
-            case 'P-256':
-                $this->values['alg'] = 'ECDH-ES';
-                break;
-            default:
-                $this->setValue('crv',null);
-                throw new \Exception("Curve $crv is not supported");
-        }
-    }
-
-    private function updateCurve()
-    {
-        $alg = $this->getValue('alg');
-        switch ($alg) {
-            case 'ECDH-ES':
-                $this->values['crv'] = 'P-256';
-                break;
-            default:
-                $this->setValue('alg',null);
-                throw new \Exception("Algorithm $alg is not supported");
-        }
     }
 
     public function calculateAuthenticationTag($data)

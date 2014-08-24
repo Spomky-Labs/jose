@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Encryption;
+namespace SpomkyLabs\JOSE\Algorithm;
 
 use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
