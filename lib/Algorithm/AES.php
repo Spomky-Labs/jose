@@ -59,6 +59,11 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         return true;
     }
 
+    public function isPublic()
+    {
+        return true;
+    }
+
     protected function getBlockLength()
     {
         $enc = $this->getValue('enc');

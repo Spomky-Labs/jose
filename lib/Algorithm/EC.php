@@ -44,7 +44,12 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
 
     public function isPrivate()
     {
-        return $this->getValue('d') !== null;
+        return $this->isPublic() && $this->getValue('d') !== null;
+    }
+
+    public function isPublic()
+    {
+        return $this->getValue('x') !== null && $this->getValue('y') !== null;
     }
 
     /**

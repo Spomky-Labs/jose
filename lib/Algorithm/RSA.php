@@ -114,6 +114,13 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         return $rsa->getPrivateKey() !== null;
     }
 
+    public function isPublic()
+    {
+        $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(true));
+
+        return $rsa->getPublicKey() !== null;
+    }
+
     /**
      * @return integer
      */

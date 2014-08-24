@@ -47,4 +47,9 @@ interface JWKInterface
      * @return boolean Return true if the key is private, else false
      */
     public function isPrivate();
+
+    /**
+     * @return boolean Return true if the key is public, else false
+     */
+    public function isPublic();
 }

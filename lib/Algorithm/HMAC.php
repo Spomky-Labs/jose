@@ -27,6 +27,11 @@ abstract class HMAC implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
         return $this->getValue('k') !== null;
     }
 
+    public function isPublic()
+    {
+        return $this->isPrivate();
+    }
+
     /**
      * @inheritdoc
      */

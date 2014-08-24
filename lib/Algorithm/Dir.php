@@ -40,4 +40,9 @@ abstract class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
     {
         return true;
     }
+
+    public function isPublic()
+    {
+        return true;
+    }
 }

@@ -26,6 +26,11 @@ abstract class None implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
         return true;
     }
 
+    public function isPublic()
+    {
+        return $this->isPrivate();
+    }
+
     /**
      * @inheritdoc
      */
