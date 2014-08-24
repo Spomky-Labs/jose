@@ -30,7 +30,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
     {
         $jwk = new EC();
         $jwk->setValue('crv','P-521')
-            ->setValue('alg','ES512')
             ->setValue('x',"AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
             ->setValue('y',"ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
             ->setValue('d',"AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
@@ -72,7 +71,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new RSA();
         $jwk->setValues(array(
             "kty" => "RSA",
-            "alg" =>"RSA-OAEP-256",
             "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
             "e"   =>"AQAB",
             "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
@@ -84,7 +82,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             array(
                 "alg"=>"RSA-OAEP-256",
                 "enc"=>"A256CBC-HS512",
-                'iss'=>'spomky-labs',
                 'typ'=>'JOSE',
         ));
 
@@ -105,7 +102,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new RSA();
         $jwk->setValues(array(
             "kty" => "RSA",
-            "alg" =>"RSA-OAEP-256",
             "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
             "e"   =>"AQAB",
             "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
@@ -138,7 +134,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new EC();
         $jwk->setValues(array(
             "kty" =>"EC",
-            "alg" =>"ECDH-ES",
             "crv" =>"P-256",
             "x"   =>"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
             "y"   =>"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck"
@@ -175,7 +170,6 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwk = new Dir();
         $jwk->setValues(array(
-            "alg" =>"dir",
             "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
         ));
 

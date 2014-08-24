@@ -42,16 +42,12 @@ abstract class JWTManager implements JWTManagerInterface
                 $plaintext = $input->__toString();
             }
 
-            if(!$jwk->getValue('alg')) {
-                $jwk->setValue('alg', $header['alg']);
-            }
             $data = array(
                 'header'=>$header,
             );
             $type = $this->getKeyManager()->getType($data['header']['enc']); 
             $key = $this->getKeyManager()->createJWK(array(
-                "kty" =>$type,
-                "enc" =>$data['header']['enc'],
+                "kty" =>$type
             ));
             if (!$key instanceof JWKContentEncryptionInterface) {
                 throw new \Exception("The content encryption algorithm is not valid");
@@ -68,7 +64,8 @@ abstract class JWTManager implements JWTManagerInterface
             $data['iv'] = $key->getValue('iv');
             $data['encrypted_cek'] = $jwk->encrypt($key->getValue('cek'), $data['header']);
 
-            $data['encrypted_data'] = $key->encrypt($plaintext);
+            $tmp_header = array("enc" =>$data['header']['enc']);
+            $data['encrypted_data'] = $key->encrypt($plaintext, $tmp_header);
             $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
 
             return implode(".", array(
@@ -88,11 +85,11 @@ abstract class JWTManager implements JWTManagerInterface
                 throw new \Exception("Unsupported input type");
             }
 
-            $header = Base64Url::encode(json_encode($header));
+            $header_ = Base64Url::encode(json_encode($header));
             $payload = Base64Url::encode($input);
-            $signature = Base64Url::encode($jwk->sign($header.".".$payload));
+            $signature = Base64Url::encode($jwk->sign($header_.".".$payload, $header));
 
-            return $header.".".$payload.".".$signature;
+            return $header_.".".$payload.".".$signature;
         } else {
             throw new \Exception("The key can not sign or encrypt data");
         }
@@ -126,8 +123,13 @@ abstract class JWTManager implements JWTManagerInterface
             $jwk = $this->getKeyManager()->findJWKByHeader($signature['header']);
 
             if ($jwk instanceof JWKInterface && $this->getKeyManager()->canVerify($jwk)) {
-
-                if ($jwk->verify($signature['protected'].".".$data['payload'], Base64Url::decode($signature['signature']))) {
+                $complete_header = array_merge(json_decode(Base64Url::decode($signature['protected']), true), $signature['header']);
+                
+                if ($jwk->verify(
+                        $signature['protected'].".".$data['payload'],
+                        Base64Url::decode($signature['signature']),
+                        $complete_header
+                    )) {
 
                     $payload = Base64Url::decode($data['payload']);
                     $json = json_decode($payload,true);
@@ -248,7 +250,7 @@ abstract class JWTManager implements JWTManagerInterface
             }
         }
 
-        $dec = $key->decrypt($data['encrypted_data']);
+        $dec = $key->decrypt($data['encrypted_data'], array('enc'=>$data['header']['enc']));
 
         if (isset($data['header']['cty'])) {
             switch ($data['header']['cty']) {
@@ -287,7 +289,7 @@ abstract class JWTManager implements JWTManagerInterface
             throw new \InvalidArgumentException('Unable to find the key used to sign this token');
         }
 
-        if ($this->getKeyManager()->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature) === true) {
+        if ($this->getKeyManager()->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature, $header) === true) {
 
             $json = json_decode($payload,true);
             if (is_array($json)) {

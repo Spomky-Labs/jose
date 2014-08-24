@@ -66,7 +66,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 
     protected function getBlockLength(array $header)
     {
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 return 128;
@@ -81,7 +81,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 
     protected function getHashAlgorithm(array $header)
     {
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 return 'sha256';
