@@ -3,9 +3,9 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Tests\Stub\JWT;
-use SpomkyLabs\JOSE\Algorithm\EC;
-use SpomkyLabs\JOSE\Algorithm\RSA;
-use SpomkyLabs\JOSE\Algorithm\Dir;
+use SpomkyLabs\JOSE\Tests\Algorithm\EC;
+use SpomkyLabs\JOSE\Tests\Algorithm\RSA;
+use SpomkyLabs\JOSE\Tests\Algorithm\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
 

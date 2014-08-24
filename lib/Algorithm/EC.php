@@ -11,7 +11,6 @@ use Mdanter\Ecc\BcMathUtils;
 use Mdanter\Ecc\ModuleConfig;
 use Mdanter\Ecc\NISTcurve;
 use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
@@ -25,12 +24,8 @@ use SpomkyLabs\JOSE\JWKAuthenticationTagInterface;
  *     - signatures using Elliptic Curves (ES256, ES384 and ES512).
  *     - encryption of text using ECDH-ES algorithm.
  */
-class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
 {
-    use JWK;
-
-    protected $values = array('kty' => 'EC');
-
     public function __toString()
     {
         return json_encode($this->getValues());
@@ -55,7 +50,7 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
     /**
      * @inheritdoc
      */
-    public function sign($data)
+    public function sign($data, array $header = array())
     {
         if (!$this->isPrivate()) {
             throw new \Exception('This is not a private JWK');
@@ -99,7 +94,7 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
     /**
      * @inheritdoc
      */
-    public function verify($data, $signature)
+    public function verify($data, $signature, array $header = array())
     {
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
@@ -229,7 +224,7 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
         }
     }
 
-    private function convertDecToBin($value)
+    protected function convertDecToBin($value)
     {
         return pack("H*",$this->convertDecToHex($value));
     }
@@ -237,26 +232,26 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
     /**
      * @param string $value
      */
-    private function convertHexToBin($value)
+    protected function convertHexToBin($value)
     {
         return pack("H*",$value);
     }
 
-    private function convertBinToHex($value)
+    protected function convertBinToHex($value)
     {
         $value = unpack('H*',$value);
 
         return $value[1];
     }
 
-    private function convertBinToDec($value)
+    protected function convertBinToDec($value)
     {
         $value = unpack('H*',$value);
 
         return $this->convertHexToDec($value[1]);
     }
 
-    private function convertDecToHex($value)
+    protected function convertDecToHex($value)
     {
         if (ModuleConfig::hasGmp()) {
             return GmpUtils::gmpDecHex($value);
@@ -267,7 +262,7 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
         }
     }
 
-    private function convertHexToDec($value)
+    protected function convertHexToDec($value)
     {
         if (ModuleConfig::hasGmp()) {
             return GmpUtils::gmpHexDec($value);
@@ -278,12 +273,12 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
         }
     }
 
-    private function convertDecToBase64($value)
+    protected function convertDecToBase64($value)
     {
         return Base64Url::encode($this->convertDecToHex($value));
     }
 
-    private function convertBase64ToDec($value)
+    protected function convertBase64ToDec($value)
     {
         $value = unpack('H*',Base64Url::decode($value));
 
@@ -360,7 +355,7 @@ class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncry
     /**
      * @param integer $length
      */
-    private function generateRandomString($length)
+    protected function generateRandomString($length)
     {
         return crypt_random_string($length);
     }

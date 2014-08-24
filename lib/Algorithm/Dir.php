@@ -2,19 +2,14 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKEncryptInterface;
 use SpomkyLabs\JOSE\JWKDecryptInterface;
 
 /**
  */
-class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
+abstract class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
 {
-    use JWK;
-
-    protected $values = array('kty' => 'dir');
-
     public function __toString()
     {
         return json_encode($this->getValues());

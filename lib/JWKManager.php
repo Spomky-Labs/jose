@@ -106,4 +106,39 @@ abstract class JWKManager implements JWKManagerInterface
         //If the JWK does not implement JWKVerifyInterface, we can not use it
         return $jwk instanceof JWKVerifyInterface;
     }
+
+    public function getType($value)
+    {
+        switch ($alg) {
+            case 'ES256':
+            case 'ES384':
+            case 'ES512':
+            case 'ECDH-ES':
+                return 'EC';
+            case 'RS256':
+            case 'RS384':
+            case 'RS512':
+            case 'PS256':
+            case 'PS384':
+            case 'PS512':
+            case 'RSA1_5':
+            case 'RSA-OAEP':
+            case 'RSA-OAEP-256':
+                return 'RSA';
+            case 'none':
+                return 'None';
+            case 'HS256':
+            case 'HS384':
+            case 'HS512':
+                return 'HMAC';
+            case 'A128CBC-HS256':
+            case 'A192CBC-HS384':
+            case 'A256CBC-HS512':
+                return 'AES';
+            case 'dir':
+                return 'Dir';
+            default:
+                throw new \Exception("Unsupported algorithm '$alg'");
+        }
+    }
 }

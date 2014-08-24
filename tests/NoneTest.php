@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Algorithm\None;
+use SpomkyLabs\JOSE\Tests\Algorithm\None;
 
 class NoneTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,7 +22,7 @@ class NoneTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($none->isPrivate());
         $this->assertEquals(array(
-                'alg' => 'none',
+                'kty' => 'none',
         ),$none->getValues());
     }
 }

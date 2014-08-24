@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Algorithm\HMAC;
+use SpomkyLabs\JOSE\Tests\Algorithm\HMAC;
 
 class HMACTest extends \PHPUnit_Framework_TestCase
 {

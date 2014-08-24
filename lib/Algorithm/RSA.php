@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
@@ -15,12 +14,8 @@ use SpomkyLabs\JOSE\Util\RSAConverter;
  *     - signatures PS256/RS256, PS384/RS384 and PS512/RS512.
  *     - encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
  */
-class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface
+abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface
 {
-    use JWK;
-
-    protected $values = array('kty' => 'RSA');
-
     public function __toString()
     {
         return json_encode($this->getValues());
@@ -78,7 +73,7 @@ class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncr
     /**
      * @inheritdoc
      */
-    public function verify($data, $signature)
+    public function verify($data, $signature, array $header = array())
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
@@ -95,7 +90,7 @@ class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncr
     /**
      * @inheritdoc
      */
-    public function sign($data)
+    public function sign($data, array $header = array())
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(true));
         if (!$this->isPrivate()) {

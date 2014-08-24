@@ -121,7 +121,7 @@ class JWKManager extends Base
             case 'ES384':
             case 'ES512':
             case 'ECDH-ES':
-                return 'SpomkyLabs\JOSE\Algorithm\EC';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\EC';
             case 'RS256':
             case 'RS384':
             case 'RS512':
@@ -131,19 +131,19 @@ class JWKManager extends Base
             case 'RSA1_5':
             case 'RSA-OAEP':
             case 'RSA-OAEP-256':
-                return 'SpomkyLabs\JOSE\Algorithm\RSA';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\RSA';
             case 'none':
-                return 'SpomkyLabs\JOSE\Algorithm\None';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\None';
             case 'HS256':
             case 'HS384':
             case 'HS512':
-                return 'SpomkyLabs\JOSE\Algorithm\HMAC';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\HMAC';
             case 'A128CBC-HS256':
             case 'A192CBC-HS384':
             case 'A256CBC-HS512':
-                return 'SpomkyLabs\JOSE\Algorithm\AES';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\AES';
             case 'dir':
-                return 'SpomkyLabs\JOSE\Algorithm\Dir';
+                return 'SpomkyLabs\JOSE\Tests\Algorithm\Dir';
             default:
                 throw new \Exception("Unsupported algorithm $alg");
         }

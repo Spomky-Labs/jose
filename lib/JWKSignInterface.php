@@ -12,5 +12,5 @@ interface JWKSignInterface
      *
      * @return string
      */
-    public function sign($data);
+    public function sign($data, array $header = array());
 }

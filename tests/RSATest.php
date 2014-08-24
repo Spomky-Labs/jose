@@ -3,7 +3,7 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Algorithm\RSA;
+use SpomkyLabs\JOSE\Tests\Algorithm\RSA;
 
 class RSATest extends \PHPUnit_Framework_TestCase
 {

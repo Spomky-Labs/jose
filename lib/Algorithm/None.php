@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use SpomkyLabs\JOSE\JWK;
 use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSignInterface;
 use SpomkyLabs\JOSE\JWKVerifyInterface;
@@ -10,12 +9,8 @@ use SpomkyLabs\JOSE\JWKVerifyInterface;
 /**
  * This class is an abstract class that implements the none algorithm (plaintext)
  */
-class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+abstract class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
 {
-    use JWK;
-
-    protected $values = array('alg' => 'none');
-
     public function __toString()
     {
         return json_encode($this->getValues());
@@ -34,7 +29,7 @@ class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     /**
      * @inheritdoc
      */
-    public function sign($data)
+    public function sign($data, array $header = array())
     {
         return '';
     }
@@ -42,7 +37,7 @@ class None implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     /**
      * @inheritdoc
      */
-    public function verify($data, $signature)
+    public function verify($data, $signature, array $header = array())
     {
         return $signature === $this->sign($data);
     }

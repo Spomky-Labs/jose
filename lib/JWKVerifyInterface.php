@@ -12,5 +12,5 @@ interface JWKVerifyInterface
      *
      * @return boolean
      */
-    public function verify($data, $signature);
+    public function verify($data, $signature, array $header = array());
 }

@@ -21,4 +21,9 @@ interface JWKManagerInterface
      *
      */
     public function createJWKSet(array $values = array());
+
+    /**
+     * 
+     */
+    public function getType($value);
 }

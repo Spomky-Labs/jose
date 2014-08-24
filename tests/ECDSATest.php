@@ -4,7 +4,7 @@ namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Util\Base64Url;
 use Mdanter\Ecc\ModuleConfig;
-use SpomkyLabs\JOSE\Algorithm\EC;
+use SpomkyLabs\JOSE\Tests\Algorithm\EC;
 
 class ECDSATest extends \PHPUnit_Framework_TestCase
 {
