@@ -48,7 +48,9 @@ abstract class JWTManager implements JWTManagerInterface
             $data = array(
                 'header'=>$header,
             );
+            $type = $this->getKeyManager()->getType($data['header']['enc']); 
             $key = $this->getKeyManager()->createJWK(array(
+                "kty" =>$type,
                 "enc" =>$data['header']['enc'],
             ));
             if (!$key instanceof JWKContentEncryptionInterface) {
@@ -232,7 +234,9 @@ abstract class JWTManager implements JWTManagerInterface
 
     private function decryptContent(array $data, $cek)
     {
+        $type = $this->getKeyManager()->getType($data['header']['enc']); 
         $key = $this->getKeyManager()->createJWK(array(
+            "kty" =>$type,
             "enc" =>$data['header']['enc'],
             "cek" =>$cek,
             "iv"  =>$data["iv"],

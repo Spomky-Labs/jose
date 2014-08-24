@@ -8,6 +8,7 @@ use SpomkyLabs\JOSE\Tests\Algorithm\RSA;
 use SpomkyLabs\JOSE\Tests\Algorithm\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
+use SpomkyLabs\JOSE\Util\Base64Url;
 
 class JWTTest extends \PHPUnit_Framework_TestCase
 {
@@ -15,9 +16,9 @@ class JWTTest extends \PHPUnit_Framework_TestCase
     {
         $jwk_manager = new JWKManager();
         $jwt_manager = new JWTManager();
-
+        
         $jwt_manager->setKeyManager($jwk_manager);
-        $result = $jwt_manager->load('eyJqd2siOnsiYWxnIjoibm9uZSJ9LCJpc3MiOiJzcG9ta3ktbGFicyJ9.eyJNeURhdGEiOiJJc1ZlcnlJbXBvcnRhbnQifQ.');
+        $result = $jwt_manager->load('eyJqd2siOnsia3R5Ijoibm9uZSJ9fQ.eyJNeURhdGEiOiJJc1ZlcnlJbXBvcnRhbnQifQ.');
 
         $this->assertEquals(array(
             'MyData'=>'IsVeryImportant'

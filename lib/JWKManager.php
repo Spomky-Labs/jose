@@ -109,7 +109,7 @@ abstract class JWKManager implements JWKManagerInterface
 
     public function getType($value)
     {
-        switch ($alg) {
+        switch ($value) {
             case 'ES256':
             case 'ES384':
             case 'ES512':
@@ -138,7 +138,7 @@ abstract class JWKManager implements JWKManagerInterface
             case 'dir':
                 return 'Dir';
             default:
-                throw new \Exception("Unsupported algorithm '$alg'");
+                throw new \Exception("Unsupported algorithm '$value'");
         }
     }
 }

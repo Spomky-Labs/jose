@@ -77,8 +77,10 @@ class JWKManager extends Base
 
     public function createJWK(array $values)
     {
-        $type = isset($values['alg']) ? $values['alg'] : (isset($values['enc']) ? $values['enc'] : '');
-        $class = $this->getClass($type);
+        if(!isset($values["kty"])) {
+            throw new \Exception("'kty' value is missing");
+        }
+        $class = $this->getClass($values["kty"]);
         $jwk = new $class();
         $jwk->setValues($values);
 
@@ -97,6 +99,7 @@ class JWKManager extends Base
     {
         if ($alg === "RSA1_5" || $alg === 'RSA-OAEP' || $alg === 'RSA-OAEP-256') {
             return $this->createJWK(array(
+                "kty" =>"RSA",
                 "alg" =>$alg,
                 "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
                 "e"   =>"AQAB",
@@ -106,6 +109,7 @@ class JWKManager extends Base
 
         if ($alg === "dir") {
             return $this->createJWK(array(
+                "kty" =>"dir",
                 "alg" =>$alg,
                 "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q'
             ));
@@ -114,38 +118,23 @@ class JWKManager extends Base
         return null;
     }
 
-    private function getClass($alg)
+    private function getClass($type)
     {
-        switch ($alg) {
-            case 'ES256':
-            case 'ES384':
-            case 'ES512':
-            case 'ECDH-ES':
+        switch ($type) {
+            case 'EC':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\EC';
-            case 'RS256':
-            case 'RS384':
-            case 'RS512':
-            case 'PS256':
-            case 'PS384':
-            case 'PS512':
-            case 'RSA1_5':
-            case 'RSA-OAEP':
-            case 'RSA-OAEP-256':
+            case 'RSA':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\RSA';
             case 'none':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\None';
-            case 'HS256':
-            case 'HS384':
-            case 'HS512':
+            case 'oct':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\HMAC';
-            case 'A128CBC-HS256':
-            case 'A192CBC-HS384':
-            case 'A256CBC-HS512':
+            case 'AES':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\AES';
             case 'dir':
                 return 'SpomkyLabs\JOSE\Tests\Algorithm\Dir';
             default:
-                throw new \Exception("Unsupported algorithm $alg");
+                throw new \Exception("Unsupported type $type");
         }
     }
 }
