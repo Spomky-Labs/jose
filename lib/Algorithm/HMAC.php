@@ -39,7 +39,7 @@ abstract class HMAC implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
     {
         $key = $this->getValue('k');
 
-        return hash_hmac($this->getHashAlgorithm(), $data, $key);
+        return hash_hmac($this->getHashAlgorithm($header), $data, $key);
     }
 
     /**
@@ -47,12 +47,20 @@ abstract class HMAC implements JWKInterface, JWKSignInterface, JWKVerifyInterfac
      */
     public function verify($data, $signature, array $header = array())
     {
-        return $signature === $this->sign($data);
+        return $signature === $this->sign($data, $header);
     }
 
-    protected function getHashAlgorithm()
+    protected function getAlgorithm($header)
     {
-        $alg = $this->getValue('alg');
+        if(isset($header['alg']) && $header['alg'] !== null) {
+            return $header['alg'];
+        }
+        return $this->getValue('alg');
+    }
+
+    protected function getHashAlgorithm($header)
+    {
+        $alg = $this->getAlgorithm($header);
         switch ($alg) {
             case 'HS256':
                 return 'sha256';

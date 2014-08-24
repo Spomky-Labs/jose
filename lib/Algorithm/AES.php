@@ -32,7 +32,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
 
         $aes = new \Crypt_AES(CRYPT_AES_MODE_CBC);
-        $aes->setBlockLength($this->getBlockLength());
+        $aes->setBlockLength($this->getBlockLength($header));
         $aes->setKey($k);
         $aes->setIV($this->getValue(('iv')));
 
@@ -47,7 +47,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
 
         $aes = new \Crypt_AES(CRYPT_AES_MODE_CBC);
-        $aes->setBlockLength($this->getBlockLength());
+        $aes->setBlockLength($this->getBlockLength($header));
         $aes->setKey($k);
         $aes->setIV($this->getValue(('iv')));
 
@@ -64,7 +64,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         return true;
     }
 
-    protected function getBlockLength()
+    protected function getBlockLength(array $header)
     {
         $enc = $this->getValue('enc');
         switch ($enc) {
@@ -79,7 +79,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         }
     }
 
-    protected function getHashAlgorithm()
+    protected function getHashAlgorithm(array $header)
     {
         $enc = $this->getValue('enc');
         switch ($enc) {
@@ -107,7 +107,7 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
             // NOTE: PHP doesn't support 64bit big endian, so handling upper & lower 32bit.
             pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
         ));
-        $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
+        $hash = hash_hmac($this->getHashAlgorithm($data['header']), $secured_input, $mac_key, true);
 
         return substr($hash, 0, strlen($hash)/2);
     }
@@ -117,10 +117,10 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         return $data['authentication_tag'] === $this->calculateAuthenticationTag($data);
     }
 
-    public function createIV()
+    public function createIV(array $header)
     {
         $iv = null;
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 $iv = $this->generateRandomString(128 / 8);
@@ -139,10 +139,10 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         return $this;
     }
 
-    public function createCEK()
+    public function createCEK(array $header)
     {
         $cek = null;
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 $cek = $this->generateRandomString(256 / 8);
@@ -167,5 +167,13 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
     protected function generateRandomString($length)
     {
         return crypt_random_string($length);
+    }
+
+    protected function getAlgorithm($header)
+    {
+        if(isset($header['enc']) && $header['enc'] !== null) {
+            return $header['enc'];
+        }
+        return $this->getValue('alg');
     }
 }

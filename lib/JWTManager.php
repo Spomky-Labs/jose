@@ -57,12 +57,12 @@ abstract class JWTManager implements JWTManagerInterface
                 throw new \Exception("The content encryption algorithm is not valid");
             }
 
-            $key->createIV();
+            $key->createIV($data['header']);
 
             if ($data['header']['alg'] === 'dir') {
                 $key->setValue('cek', $jwk->getValue('dir'));
             } else {
-                $key->createCEK();
+                $key->createCEK($data['header']);
             }
 
             $data['iv'] = $key->getValue('iv');

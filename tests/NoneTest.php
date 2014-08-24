@@ -11,10 +11,14 @@ class NoneTest extends \PHPUnit_Framework_TestCase
         $none = new None();
         $data = 'aaa';
 
-        $signature = $none->sign($data);
+        $signature = $none->sign($data, array(
+            'alg' => 'none',
+        ));
 
         $this->assertEquals($signature, '');
-        $this->assertTrue($none->verify($data, $signature));
+        $this->assertTrue($none->verify($data, $signature, array(
+            'alg' => 'none',
+        )));
     }
     public function testMethods()
     {

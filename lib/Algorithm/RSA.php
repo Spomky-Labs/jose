@@ -42,11 +42,11 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
-        if ($this->getEncryptionMethod() === CRYPT_RSA_ENCRYPTION_OAEP) {
-            $rsa->setHash($this->getHashAlgorithm());
-            $rsa->setMGFHash($this->getHashAlgorithm());
+        if ($this->getEncryptionMethod($header) === CRYPT_RSA_ENCRYPTION_OAEP) {
+            $rsa->setHash($this->getHashAlgorithm($header));
+            $rsa->setMGFHash($this->getHashAlgorithm($header));
         }
-        $rsa->setEncryptionMode($this->getEncryptionMethod());
+        $rsa->setEncryptionMode($this->getEncryptionMethod($header));
 
         return $rsa->encrypt($data);
     }
@@ -61,11 +61,11 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
             throw new \Exception("The private key is missing");
         }
 
-        if ($this->getEncryptionMethod() === CRYPT_RSA_ENCRYPTION_OAEP) {
-            $rsa->setHash($this->getHashAlgorithm());
-            $rsa->setMGFHash($this->getHashAlgorithm());
+        if ($this->getEncryptionMethod($header) === CRYPT_RSA_ENCRYPTION_OAEP) {
+            $rsa->setHash($this->getHashAlgorithm($header));
+            $rsa->setMGFHash($this->getHashAlgorithm($header));
         }
-        $rsa->setEncryptionMode($this->getEncryptionMethod());
+        $rsa->setEncryptionMode($this->getEncryptionMethod($header));
 
         return $rsa->decrypt($data);
     }
@@ -77,12 +77,12 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
-        $rsa->setHash($this->getHashAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
-            $rsa->setMGFHash($this->getHashAlgorithm());
+        $rsa->setHash($this->getHashAlgorithm($header));
+        if ($this->getSignatureMethod($header) === CRYPT_RSA_SIGNATURE_PSS) {
+            $rsa->setMGFHash($this->getHashAlgorithm($header));
             $rsa->setSaltLength(0);
         }
-        $rsa->setSignatureMode($this->getSignatureMethod());
+        $rsa->setSignatureMode($this->getSignatureMethod($header));
 
         return $rsa->verify($data, $signature);
     }
@@ -97,12 +97,12 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
             throw new \Exception("The private key is missing");
         }
 
-        $rsa->setHash($this->getHashAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
-            $rsa->setMGFHash($this->getHashAlgorithm());
+        $rsa->setHash($this->getHashAlgorithm($header));
+        if ($this->getSignatureMethod($header) === CRYPT_RSA_SIGNATURE_PSS) {
+            $rsa->setMGFHash($this->getHashAlgorithm($header));
             $rsa->setSaltLength(0);
         }
-        $rsa->setSignatureMode($this->getSignatureMethod());
+        $rsa->setSignatureMode($this->getSignatureMethod($header));
 
         return $rsa->sign($data);
     }
@@ -121,12 +121,20 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         return $rsa->getPublicKey() !== null;
     }
 
+    protected function getAlgorithm($header)
+    {
+        if(isset($header['alg']) && $header['alg'] !== null) {
+            return $header['alg'];
+        }
+        return $this->getValue('alg');
+    }
+
     /**
      * @return integer
      */
-    protected function getEncryptionMethod()
+    protected function getEncryptionMethod($header)
     {
-        $alg = $this->getValue('alg');
+        $alg = $this->getAlgorithm($header);
         switch ($alg) {
             case 'RSA1_5':
                 return CRYPT_RSA_ENCRYPTION_PKCS1;
@@ -138,9 +146,9 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
     }
 
-    protected function getHashAlgorithm()
+    protected function getHashAlgorithm($header)
     {
-        $alg = $this->getValue('alg');
+        $alg = $this->getAlgorithm($header);
         switch ($alg) {
             case 'RSA-OAEP':
                 return 'sha1';
@@ -162,9 +170,9 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     /**
      * @return integer
      */
-    protected function getSignatureMethod()
+    protected function getSignatureMethod($header)
     {
-        $alg = $this->getValue('alg');
+        $alg = $this->getAlgorithm($header);
         switch ($alg) {
             case 'RS256':
             case 'RS384':

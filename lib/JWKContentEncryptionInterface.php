@@ -10,10 +10,10 @@ interface JWKContentEncryptionInterface
     /**
      * @return Encryption\AES
      */
-    public function createCEK();
+    public function createCEK(array $header);
 
     /**
      * @return Encryption\AES
      */
-    public function createIV();
+    public function createIV(array $header);
 }

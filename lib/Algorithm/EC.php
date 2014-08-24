@@ -66,7 +66,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $x     = $this->convertBase64ToDec($this->getValue('x'));
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $d     = $this->convertBase64ToDec($this->getValue('d'));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
 
         if (ModuleConfig::hasGmp()) {
             $k = GmpUtils::gmpRandom($p->getOrder());
@@ -113,7 +113,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S     = $this->convertHexToDec(substr($signature, $part_length));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
 
         $public_key = new PublicKey($p, new Point($curve, $x, $y));
 
@@ -199,7 +199,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         }
     }
 
-    protected function getHashAlgorithm()
+    protected function getHashAlgorithm($header)
     {
         $crv = $this->getValue('crv');
         switch ($crv) {
@@ -303,7 +303,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
             // NOTE: PHP doesn't support 64bit big endian, so handling upper & lower 32bit.
             pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
         ));
-        $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
+        $hash = hash_hmac($this->getHashAlgorithm($header), $secured_input, $mac_key, true);
 
         return substr($hash, 0, strlen($hash)/2);
     }
@@ -313,10 +313,10 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         return $data['authentication_tag'] === $this->calculateAuthenticationTag($data);
     }
 
-    public function createIV()
+    public function createIV(array $header)
     {
         $iv = null;
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 $iv = $this->generateRandomString(128 / 8);
@@ -335,10 +335,10 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         return $this;
     }
 
-    public function createCEK()
+    public function createCEK(array $header)
     {
         $cek = null;
-        $enc = $this->getValue('enc');
+        $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 $cek = $this->generateRandomString(256 / 8);
@@ -363,5 +363,13 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
     protected function generateRandomString($length)
     {
         return crypt_random_string($length);
+    }
+
+    protected function getAlgorithm($header)
+    {
+        if(isset($header['enc']) && $header['enc'] !== null) {
+            return $header['enc'];
+        }
+        return $this->getValue('alg');
     }
 }
