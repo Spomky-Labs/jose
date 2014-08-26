@@ -29,6 +29,8 @@
 
 ### Unsupported
 
+* JWS and JWE header:
+    * `crit` parameter
 * JSON Serialization Overview
     * JWS (creation only)
         * Plain text
@@ -90,7 +92,6 @@ JWKSet are partially supported
 ### Unsupported:
 
 * Key load from x5* parameters
-* Key load from jku parameter
 
 ## JWKSet:
 
