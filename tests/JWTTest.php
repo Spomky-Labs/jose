@@ -254,4 +254,12 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("Live long and prosper.", $result);
     }
+
+    public function testLoadJWKFromUrl()
+    {
+        $jwk_manager = new JWKManager();
+
+        $result = $jwk_manager->loadFromUrl('https://www.googleapis.com/oauth2/v2/certs');
+        $this->assertInstanceOf('SpomkyLabs\JOSE\JWKSetInterface', $result);
+    }
 }

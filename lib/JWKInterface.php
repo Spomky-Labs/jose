@@ -32,6 +32,8 @@ interface JWKInterface
     public function getValues();
 
     /**
+     * @param string $key   The key
+     * @param mixed  $value The vale
      */
     public function setValue($key, $value);
 
@@ -39,7 +41,7 @@ interface JWKInterface
      * Get the value with a specific key
      *
      * @param  string $key The key
-     * @return string
+     * @return string      The value
      */
     public function getValue($key);
 

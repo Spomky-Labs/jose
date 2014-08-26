@@ -6,25 +6,42 @@ namespace SpomkyLabs\JOSE;
  */
 abstract class JWKManager implements JWKManagerInterface
 {
-    public function findJWKByHeader(array $header)
+    public function loadFromUrl($url)
     {
+        $content = json_decode(file_get_contents($url), true);
+        if(!is_array($content)) {
+            return null;
+        }
+        if(!isset($content['keys'])) {
+            return null;
+        }
+        return $this->createJWKSet($content['keys']);
+    }
+
+    public function findByHeader(array $header)
+    {
+        $keys = $this->createJWKSet();
         foreach ($this->getSupportedMethods() as $key => $method) {
             if (isset($header[$key])) {
                 $result = $this->$method($header[$key]);
-                if (null !== $result) {
-                    return $result;
+                if ($result instanceof JWKInterface) {
+                    $keys->addKey($result);
+                } elseif ($result instanceof JWKSetInterface) {
+                    foreach ($result->getKeys() as $jwk) {
+                        $keys->addKey($jwk);
+                    }
                 }
             }
         }
-
-        return null;
+        return $keys;
     }
 
     protected function getSupportedMethods()
     {
         return array(
             'kid' => 'findJWKByKid',
-            'jwk' => 'findJWKByJWK'
+            'jwk' => 'findJWKByJWK',
+            'jku' => 'findJWKByUrl'
         );
     }
 

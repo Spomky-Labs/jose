@@ -8,17 +8,22 @@ namespace SpomkyLabs\JOSE;
 interface CompressionInterface
 {
     /**
-     * @return string
+     * @param  string $name Name of the method to test
+     * @return boolean      Return the name of the method supported
      */
     public function getMethod();
 
     /**
-     * @return string
+     * Compress the data
+     * @param  string $data The data to compress
+     * @return string       The compressed data
      */
     public function compress($data);
 
     /**
-     * @return string
+     * Uncompress the data
+     * @param  string $data The data to uncompress
+     * @return string       The uncompressed data
      */
     public function uncompress($data);
 }
