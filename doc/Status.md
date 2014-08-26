@@ -22,6 +22,11 @@
         * Array
         * jwk+json and jwkset+json content type
 
+* Compression support for JWE objects:
+    * Deflate
+    * GZip
+    * ZLib
+
 ### Unsupported
 
 * JSON Serialization Overview
