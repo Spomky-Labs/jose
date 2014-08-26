@@ -72,6 +72,8 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
             $k = GmpUtils::gmpRandom($p->getOrder());
         } elseif (ModuleConfig::hasBcMath()) {
             $k = BcMathUtils::bcrand($p->getOrder());
+        } else {
+            throw new \RuntimeException("Please install BCMATH or GMP");
         }
 
         $public_key = new PublicKey($p, new Point($curve, $x, $y));
@@ -305,7 +307,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
             // NOTE: PHP doesn't support 64bit big endian, so handling upper & lower 32bit.
             pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
         ));
-        $hash = hash_hmac($this->getHashAlgorithm($header), $secured_input, $mac_key, true);
+        $hash = hash_hmac($this->getHashAlgorithm($data['header']), $secured_input, $mac_key, true);
 
         return substr($hash, 0, strlen($hash)/2);
     }
@@ -317,7 +319,6 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
 
     public function createIV(array $header)
     {
-        $iv = null;
         $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
@@ -339,7 +340,6 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
 
     public function createCEK(array $header)
     {
-        $cek = null;
         $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':

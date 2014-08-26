@@ -9,5 +9,9 @@ use SpomkyLabs\JOSE\Algorithm\AES as Base;
 class AES extends Base
 {
     use JWK;
-    protected $values = array('kty'=>'AES');
+
+    public function __construct()
+    {
+        $this->setValue('kty', 'AES');
+    }
 }

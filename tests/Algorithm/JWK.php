@@ -4,6 +4,8 @@ namespace SpomkyLabs\JOSE\Tests\Algorithm;
 
 trait JWK
 {
+    protected $values = array();
+    
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;
@@ -11,9 +13,6 @@ trait JWK
 
     public function setValue($key, $value)
     {
-        if ($key === 'kty') {
-            return $this;
-        }
         $this->values[$key] = $value;
 
         return $this;
@@ -26,12 +25,7 @@ trait JWK
 
     public function setValues(array $values)
     {
-        if (isset($values['kty'])) {
-            unset($values['kty']);
-        }
-        foreach ($values as $key => $value) {
-            $this->setValue($key, $value);
-        }
+        $this->values = $values;
 
         return $this;
     }

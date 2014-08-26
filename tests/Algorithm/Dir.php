@@ -9,5 +9,9 @@ use SpomkyLabs\JOSE\Algorithm\Dir as Base;
 class Dir extends Base
 {
     use JWK;
-    protected $values = array('kty'=>'dir');
+
+    public function __construct()
+    {
+        $this->setValue('kty', 'dir');
+    }
 }

@@ -9,5 +9,9 @@ use SpomkyLabs\JOSE\Algorithm\None as Base;
 class None extends Base
 {
     use JWK;
-    protected $values = array('kty'=>'none');
+
+    public function __construct()
+    {
+        $this->setValue('kty', 'none');
+    }
 }

@@ -9,5 +9,9 @@ use SpomkyLabs\JOSE\Algorithm\HMAC as Base;
 class HMAC extends Base
 {
     use JWK;
-    protected $values = array('kty'=>'oct');
+
+    public function __construct()
+    {
+        $this->setValue('kty', 'oct');
+    }
 }

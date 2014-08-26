@@ -180,7 +180,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
         ));
         $data = 'aaa';
 
-        $signature = $rsa->sign($data, array(
+        $rsa->sign($data, array(
             'alg' => 'none',
         ));
     }

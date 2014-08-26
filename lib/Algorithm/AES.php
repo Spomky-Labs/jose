@@ -119,7 +119,6 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 
     public function createIV(array $header)
     {
-        $iv = null;
         $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
@@ -141,7 +140,6 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 
     public function createCEK(array $header)
     {
-        $cek = null;
         $enc = $this->getAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
