@@ -73,7 +73,7 @@ class JWKManager extends Base
 
     public function createJWK(array $values)
     {
-        if(!isset($values["kty"])) {
+        if (!isset($values["kty"])) {
             throw new \Exception("'kty' value is missing");
         }
         $class = $this->getClass($values["kty"]);

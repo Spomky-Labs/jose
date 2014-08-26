@@ -123,9 +123,10 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
 
     protected function getAlgorithm($header)
     {
-        if(isset($header['alg']) && $header['alg'] !== null) {
+        if (isset($header['alg']) && $header['alg'] !== null) {
             return $header['alg'];
         }
+
         return $this->getValue('alg');
     }
 

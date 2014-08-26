@@ -171,9 +171,10 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
 
     protected function getAlgorithm($header)
     {
-        if(isset($header['enc']) && $header['enc'] !== null) {
+        if (isset($header['enc']) && $header['enc'] !== null) {
             return $header['enc'];
         }
+
         return $this->getValue('alg');
     }
 }

@@ -26,14 +26,14 @@ class ECDHExtension
     public function encrypt($string)
     {
         $key = hash("sha256", $this->agreed_key, true);
-        
+
         return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $key);
     }
 
     public function decrypt($string)
     {
         $key = hash("sha256", $this->agreed_key, true);
-        
+
         return mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $key);
     }
 }

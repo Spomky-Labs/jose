@@ -146,8 +146,9 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
             'x' => $sen_x,
             'y' => $sen_y
         );
-        
+
         $enc = $ext->encrypt($data);
+
         return $enc;
     }
 
@@ -166,6 +167,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $ext->setReceiverPoint(new Point($curve, $sen_x, $sen_y));
 
         $dec = $ext->decrypt($data);
+
         return $dec;
     }
 
@@ -367,9 +369,10 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
 
     protected function getAlgorithm($header)
     {
-        if(isset($header['enc']) && $header['enc'] !== null) {
+        if (isset($header['enc']) && $header['enc'] !== null) {
             return $header['enc'];
         }
+
         return $this->getValue('alg');
     }
 }

@@ -10,6 +10,7 @@ use SpomkyLabs\JOSE\Util\Base64Url;
 abstract class JWTManager implements JWTManagerInterface
 {
     abstract protected function getKeyManager();
+    abstract protected function getCompressionManager();
 
     public function load($data)
     {
@@ -45,7 +46,7 @@ abstract class JWTManager implements JWTManagerInterface
             $data = array(
                 'header'=>$header,
             );
-            $type = $this->getKeyManager()->getType($data['header']['enc']); 
+            $type = $this->getKeyManager()->getType($data['header']['enc']);
             $key = $this->getKeyManager()->createJWK(array(
                 "kty" =>$type
             ));
@@ -65,7 +66,20 @@ abstract class JWTManager implements JWTManagerInterface
             $data['encrypted_cek'] = $jwk->encrypt($key->getValue('cek'), $data['header']);
 
             $tmp_header = array("enc" =>$data['header']['enc']);
+
+            if (isset($data['header']['zip'])) {
+                $method = $this->getCompressionManager()->getCompressionMethod($data['header']['zip']);
+                if ($method === null) {
+                    throw new \Exception("Compression method '".$data['header']['zip']."' not supported");
+                }
+                $plaintext = $method->compress($plaintext);
+                if (!is_string($plaintext)) {
+                    throw new \Exception("Compression failed");
+                }
+            }
+
             $data['encrypted_data'] = $key->encrypt($plaintext, $tmp_header);
+
             $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
 
             return implode(".", array(
@@ -124,7 +138,7 @@ abstract class JWTManager implements JWTManagerInterface
 
             if ($jwk instanceof JWKInterface && $this->getKeyManager()->canVerify($jwk)) {
                 $complete_header = array_merge(json_decode(Base64Url::decode($signature['protected']), true), $signature['header']);
-                
+
                 if ($jwk->verify(
                         $signature['protected'].".".$data['payload'],
                         Base64Url::decode($signature['signature']),
@@ -236,7 +250,7 @@ abstract class JWTManager implements JWTManagerInterface
 
     private function decryptContent(array $data, $cek)
     {
-        $type = $this->getKeyManager()->getType($data['header']['enc']); 
+        $type = $this->getKeyManager()->getType($data['header']['enc']);
         $key = $this->getKeyManager()->createJWK(array(
             "kty" =>$type,
             "enc" =>$data['header']['enc'],
@@ -251,6 +265,17 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         $dec = $key->decrypt($data['encrypted_data'], array('enc'=>$data['header']['enc']));
+
+        if (isset($data['header']['zip'])) {
+            $method = $this->getCompressionManager()->getCompressionMethod($data['header']['zip']);
+            if ($method === null) {
+                throw new \Exception("Compression method '".$data['header']['zip']."' not supported");
+            }
+            $dec = $method->uncompress($dec);
+            if (!is_string($dec)) {
+                throw new \Exception("Decompression failed");
+            }
+        }
 
         if (isset($data['header']['cty'])) {
             switch ($data['header']['cty']) {

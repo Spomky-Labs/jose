@@ -17,6 +17,11 @@ class JWTManager extends Base
         return $this->jwk_manager;
     }
 
+    public function getCompressionManager()
+    {
+        return new CompressionManager();
+    }
+
     public function setKeyManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;

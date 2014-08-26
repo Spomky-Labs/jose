@@ -8,7 +8,6 @@ use SpomkyLabs\JOSE\Tests\Algorithm\RSA;
 use SpomkyLabs\JOSE\Tests\Algorithm\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
-use SpomkyLabs\JOSE\Util\Base64Url;
 
 class JWTTest extends \PHPUnit_Framework_TestCase
 {
@@ -16,7 +15,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
     {
         $jwk_manager = new JWKManager();
         $jwt_manager = new JWTManager();
-        
+
         $jwt_manager->setKeyManager($jwk_manager);
         $result = $jwt_manager->load('eyJqd2siOnsia3R5Ijoibm9uZSJ9fQ.eyJNeURhdGEiOiJJc1ZlcnlJbXBvcnRhbnQifQ.');
 
@@ -178,6 +177,33 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             $jwk,
             array(
                 "alg"=>"dir",
+                "enc"=>"A256CBC-HS512",
+                'typ'=>'JOSE',
+        ));
+
+        $result = $jwt_manager->load($jwe);
+
+        $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
+    }
+
+    public function testCreateEncryptedPlainTextUsingDeflate()
+    {
+        $jwk_manager = new JWKManager();
+        $jwt_manager = new JWTManager();
+
+        $jwt_manager->setKeyManager($jwk_manager);
+
+        $jwk = new Dir();
+        $jwk->setValues(array(
+            "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
+        ));
+
+        $jwe = $jwt_manager->convertToCompactSerializedJson(
+            "The true sign of intelligence is not knowledge but imagination.",
+            $jwk,
+            array(
+                "alg"=>"dir",
+                "zip"=>"deflate",
                 "enc"=>"A256CBC-HS512",
                 'typ'=>'JOSE',
         ));

@@ -6,15 +6,16 @@ trait JWK
 {
     public function getValue($key)
     {
-        return isset($this->values[$key])?$this->values[$key]:null;
+        return isset($this->values[$key]) ? $this->values[$key] : null;
     }
 
     public function setValue($key, $value)
     {
-        if($key === 'kty') {
+        if ($key === 'kty') {
             return $this;
         }
         $this->values[$key] = $value;
+
         return $this;
     }
 
@@ -25,12 +26,13 @@ trait JWK
 
     public function setValues(array $values)
     {
-        if(isset($values['kty'])) {
+        if (isset($values['kty'])) {
             unset($values['kty']);
         }
         foreach ($values as $key => $value) {
             $this->setValue($key, $value);
         }
+
         return $this;
     }
 }
