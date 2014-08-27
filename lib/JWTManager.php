@@ -33,7 +33,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //We try to encrypt first
-        if ($this->getKeyManager()->canEncrypt($jwk) && isset($header['enc']) && isset($header['alg'])) {
+        if ($jwk instanceof JWKEncryptInterface && $this->canEncrypt($jwk) && isset($header['enc']) && isset($header['alg'])) {
 
             $plaintext = '';
             if (is_string($input)) {
@@ -89,7 +89,7 @@ abstract class JWTManager implements JWTManagerInterface
                 Base64Url::encode($data['encrypted_data']),
                 Base64Url::encode($data['authentication_tag']),
             ));
-        } elseif ($this->getKeyManager()->canSign($jwk) && isset($header['alg'])) {
+        } elseif ($jwk instanceof JWKSignInterface && $this->canSign($jwk) && isset($header['alg'])) {
 
             if (!$jwk->isPrivate()) {
                 throw new \Exception("The key is not a private key");
@@ -137,7 +137,7 @@ abstract class JWTManager implements JWTManagerInterface
             $jwk_set = $this->getKeyManager()->findByHeader($signature['header']);
 
             foreach ($jwk_set->getKeys() as $jwk) {
-                if ($jwk instanceof JWKInterface && $this->getKeyManager()->canVerify($jwk)) {
+                if ($jwk instanceof JWKVerifyInterface && $this->canVerify($jwk)) {
                     $complete_header = array_merge(json_decode(Base64Url::decode($signature['protected']), true), $signature['header']);
 
                     if ($jwk->verify(
@@ -183,11 +183,11 @@ abstract class JWTManager implements JWTManagerInterface
 
             if (!$jwk_set->isEmpty()) {
                 foreach ($jwk_set->getKeys() as $jwk) {
-                    if ($this->getKeyManager()->canDecrypt($jwk)) {
+                    if ($jwk instanceof JWKDecryptInterface && $this->canDecrypt($jwk)) {
                         $cek = null;
                         try {
                             $cek = $jwk->decrypt(Base64Url::decode($recipient['encrypted_key']), $prepared['header']);
-                        } catch (\Exception $e) {}
+                        } catch (\Exception $e) {} //We just need to avoid exceptions
                         if ($cek !== null) {
                             $data = array(
                                 "header" => $prepared['header'],
@@ -241,11 +241,11 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         foreach ($jwk_set->getKeys() as $jwk) {
-            if ($this->getKeyManager()->canDecrypt($jwk)) {
+            if ($jwk instanceof JWKDecryptInterface && $this->canDecrypt($jwk)) {
                 $cek = null;
                 try {
                     $cek = $jwk->decrypt($data['encrypted_cek'], $data['header']);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {} //We just need to avoid exceptions
                 if ($cek !== null) {
                     return $this->decryptContent($data, $cek);
                 }
@@ -321,7 +321,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         foreach ($jwk_set->getKeys() as $jwk) {
-            if ($this->getKeyManager()->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature, $header) === true) {
+            if($jwk instanceof JWKVerifyInterface && $this->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature, $header) === true) {
 
                 $json = json_decode($payload,true);
                 if (is_array($json)) {
@@ -332,5 +332,73 @@ abstract class JWTManager implements JWTManagerInterface
             }
         }
         throw new \InvalidArgumentException('Unable to find the key used to sign this token');
+    }
+
+    protected function canEncrypt(JWKInterface $jwk)
+    {
+        //If "use" parameter is not null or not "enc", we can not use it
+        $use = $jwk->getValue('use');
+        if ($use !== null && $use !== "enc") {
+            return false;
+        }
+
+        //If "key_ops" parameter is not null or does not contain "encrypt", we can not use it
+        $key_ops = $jwk->getValue('key_ops');
+        if ($key_ops !== null && strpos($key_ops, "encrypt") === -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canDecrypt(JWKInterface $jwk)
+    {
+        //If "use" parameter is not null or not "enc", we can not use it
+        $use = $jwk->getValue('use');
+        if ($use !== null && $use !== "enc") {
+            return false;
+        }
+
+        //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
+        $key_ops = $jwk->getValue('key_ops');
+        if ($key_ops !== null && strpos($key_ops, "decrypt") === -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canSign(JWKInterface $jwk)
+    {
+        //If "use" parameter is not null or not "sig", we can not use it
+        $use = $jwk->getValue('use');
+        if ($use !== null && $use !== "sig") {
+            return false;
+        }
+
+        //If "key_ops" parameter is not null or does not contain "sign", we can not use it
+        $key_ops = $jwk->getValue('key_ops');
+        if ($key_ops !== null && strpos($key_ops, "sign") === -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function canVerify(JWKInterface $jwk)
+    {
+        //If "use" parameter is not null or not "sig", we can not use it
+        $use = $jwk->getValue('use');
+        if ($use !== null && $use !== "sig") {
+            return false;
+        }
+
+        //If "key_ops" parameter is not null or does not contain "verify", we can not use it
+        $key_ops = $jwk->getValue('key_ops');
+        if ($key_ops !== null && strpos($key_ops, "verify") === -1) {
+            return false;
+        }
+
+        return true;
     }
 }
