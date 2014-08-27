@@ -9,12 +9,12 @@ use SpomkyLabs\JOSE\Algorithm\AES as Base;
 class AES extends Base
 {
     protected $values = array();
-    
+
     public function __construct()
     {
         $this->setValue('kty', 'AES');
     }
-    
+
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;

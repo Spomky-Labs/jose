@@ -9,12 +9,13 @@ abstract class JWKManager implements JWKManagerInterface
     public function loadFromUrl($url)
     {
         $content = json_decode(file_get_contents($url), true);
-        if(!is_array($content)) {
+        if (!is_array($content)) {
             return null;
         }
-        if(!isset($content['keys'])) {
+        if (!isset($content['keys'])) {
             return null;
         }
+
         return $this->createJWKSet($content['keys']);
     }
 
@@ -33,6 +34,7 @@ abstract class JWKManager implements JWKManagerInterface
                 }
             }
         }
+
         return $keys;
     }
 

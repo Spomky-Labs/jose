@@ -14,7 +14,7 @@ class EC extends Base
     {
         $this->setValue('kty', 'EC');
     }
-    
+
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;

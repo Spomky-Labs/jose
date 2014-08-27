@@ -14,7 +14,7 @@ class Dir extends Base
     {
         $this->setValue('kty', 'dir');
     }
-    
+
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;

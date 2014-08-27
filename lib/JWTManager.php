@@ -321,7 +321,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         foreach ($jwk_set->getKeys() as $jwk) {
-            if($jwk instanceof JWKVerifyInterface && $this->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature, $header) === true) {
+            if ($jwk instanceof JWKVerifyInterface && $this->canVerify($jwk) && $jwk->verify($parts[0].".".$parts[1], $signature, $header) === true) {
 
                 $json = json_decode($payload,true);
                 if (is_array($json)) {

@@ -14,7 +14,7 @@ class HMAC extends Base
     {
         $this->setValue('kty', 'oct');
     }
-    
+
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;
