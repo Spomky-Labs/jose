@@ -43,11 +43,14 @@ Whenever keeping backward compatibility is not possible, the feature, the enhanc
 
 This library needs at least
 
-* `PHP 5.4`
+* `PHP 5.3`
 * PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
 * `OpenSSL` library for PHP
+* `phpseclib/phpseclib` library for RSA (encryption and signature) algorithms.
+* `mdanter/ecc` library for Elliptic Curves algorithms.
 
-It has been successfully tested using `PHP 5.4` to `PHP 5.6` and `HHVM`
+It has been successfully tested using `PHP 5.3` to `PHP 5.6`.
+Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
 
 ## Installation ##
 
@@ -62,13 +65,13 @@ The preferred way to install this library is to rely on Composer:
 
 ## Extend the library ##
 
-This library only contains the logic. You must extend all classes to define setters and getters.
+This library only contains the logic. You must extend classes (algorithms, compression, managers...) to define setters and getters.
 
 Look at [Extend classes](doc/Extend.md) for more informations and examples.
 
 ## How to use ##
 
-Your classes are ready to use? Have a look at [How to use](doc/Use.md) to handle your first JWT objects.
+Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
 ## Todo
 

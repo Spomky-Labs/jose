@@ -15,11 +15,11 @@ class CompressionManager implements CompressionManagerInterface
     public function getCompressionMethod($name)
     {
         switch ($name) {
-            case 'deflate':
+            case 'DEF':
                 return new Deflate();
-            case 'zlib':
+            case 'ZLIB':
                 return new ZLib();
-            case 'gzip':
+            case 'GZ':
                 return new GZip();
             default:
                 return null;

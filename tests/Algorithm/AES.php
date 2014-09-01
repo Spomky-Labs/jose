@@ -5,6 +5,8 @@ namespace SpomkyLabs\JOSE\Tests\Algorithm;
 use SpomkyLabs\JOSE\Algorithm\AES as Base;
 
 /**
+ * Simple class tu use AES encryption/decryption for tests.
+ * The class is exactly the same as other algorithms. We could use traits to avoid duplicated code lines, but tests will fail on PHP 5.3
  */
 class AES extends Base
 {

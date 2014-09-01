@@ -5,24 +5,11 @@ namespace SpomkyLabs\JOSE;
 interface JWKInterface
 {
     /**
-     * Returns a strin that represent the key
-     *
-     * @return string
-     */
-    public function __toString();
-
-    /**
-     * Returns an array that represent the values of the public key
+     * Returns an array that represents the values of the public key
      *
      * @return array
      */
     public function toPublic();
-
-    /**
-     * Set the values of the JWK object
-     * @param array $values A list of values usable by the JWK object
-     */
-    public function setValues(array $values);
 
     /**
      * Get all values stored in the JWK object
@@ -32,8 +19,10 @@ interface JWKInterface
     public function getValues();
 
     /**
+     * Set a value in the JWK object.
+     * 
      * @param string $key   The key
-     * @param mixed  $value The vale
+     * @param mixed  $value The value
      */
     public function setValue($key, $value);
 

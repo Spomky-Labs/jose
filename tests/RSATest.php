@@ -162,7 +162,7 @@ class RSATest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException Exception
-     * @expectedExceptionMessage Algorithm none is not supported
+     * @expectedExceptionMessage Algorithm 'none' is not supported
      */
     public function testUnsupportedLagorithm()
     {

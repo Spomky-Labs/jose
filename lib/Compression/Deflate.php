@@ -2,21 +2,21 @@
 
 namespace SpomkyLabs\JOSE\Compression;
 
-use SpomkyLabs\JOSE\CompressionInterface;
-
 /**
  * This interface is used by all compression methods
  */
-class Deflate implements CompressionInterface
+abstract class Deflate implements CompressionInterface
 {
+    abstract protected function getCompressionLevel();
+    
     public function getMethod()
     {
-        return 'deflate';
+        return 'DEF';
     }
 
     public function compress($data)
     {
-        return gzdeflate($data);
+        return gzdeflate($data, $this->getCompressionLevel());
     }
 
     public function uncompress($data)

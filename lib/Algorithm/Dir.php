@@ -3,18 +3,11 @@
 namespace SpomkyLabs\JOSE\Algorithm;
 
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKEncryptInterface;
-use SpomkyLabs\JOSE\JWKDecryptInterface;
 
 /**
  */
-abstract class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface
+abstract class Dir implements JWKInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
-    public function __toString()
-    {
-        return json_encode($this->getValues());
-    }
-
     public function toPublic()
     {
         return $this->getValues();
@@ -23,15 +16,20 @@ abstract class Dir implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
     /**
      * @inheritdoc
      */
-    public function encrypt($data, array &$header = array())
+    public function encryptKey($cek, array &$header = array(), JWKInterface $sender_key = null)
     {
         return '';
+    }
+
+    public function getKeySize(array $header)
+    {
+        return null;
     }
 
     /**
      * @inheritdoc
      */
-    public function decrypt($data, array $header = array())
+    public function decryptKey($encrypted_cek, array $header = array(), JWKInterface $sender_key = null)
     {
         return $this->getValue('dir');
     }

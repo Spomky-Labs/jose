@@ -28,4 +28,19 @@ class JWTManager extends Base
 
         return $this;
     }
+
+    protected function createCEK($size)
+    {
+        $this->generateRandomString($size / 8);
+    }
+
+    protected function createIV($size)
+    {
+        $this->generateRandomString($size / 8);
+    }
+
+    private function generateRandomString($length)
+    {
+        return crypt_random_string($length);
+    }
 }

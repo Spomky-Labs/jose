@@ -2,21 +2,21 @@
 
 namespace SpomkyLabs\JOSE\Compression;
 
-use SpomkyLabs\JOSE\CompressionInterface;
-
 /**
  * This interface is used by all compression methods
  */
-class ZLib implements CompressionInterface
+abstract class ZLib implements CompressionInterface
 {
+    abstract protected function getCompressionLevel();
+
     public function getMethod()
     {
-        return 'zlib';
+        return 'ZLIB';
     }
 
     public function compress($data)
     {
-        return gzcompress($data);
+        return gzcompress($data, $this->getCompressionLevel());
     }
 
     public function uncompress($data)
