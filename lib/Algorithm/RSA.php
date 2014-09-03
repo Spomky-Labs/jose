@@ -42,10 +42,6 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
         return $rsa->encrypt($cek);
     }
 
-    public function getKeySize(array $header)
-    {
-    }
-
     /**
      * @inheritdoc
      */

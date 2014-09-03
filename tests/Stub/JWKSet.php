@@ -1,7 +1,8 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\JOSE\Tests\Stub;
 
+use SpomkyLabs\JOSE\JWKInterface;
 use SpomkyLabs\JOSE\JWKSet as Base;
 
 class JWKSet extends Base

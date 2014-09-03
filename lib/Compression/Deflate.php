@@ -5,10 +5,13 @@ namespace SpomkyLabs\JOSE\Compression;
 /**
  * This interface is used by all compression methods
  */
-abstract class Deflate implements CompressionInterface
+class Deflate implements CompressionInterface
 {
-    abstract protected function getCompressionLevel();
-    
+    protected function getCompressionLevel()
+    {
+        return -1;
+    }
+
     public function getMethod()
     {
         return 'DEF';

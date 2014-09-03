@@ -3,7 +3,6 @@
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManager as Base;
-use SpomkyLabs\JOSE\Tests\JWKSet;
 use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
@@ -134,7 +133,7 @@ class JWKManager extends Base
         return array(
             'findJWKByJWK',
             'findJWKByKid',
-            'findJWKByJku',
+            //'findJWKByJku',
             'findJWKByAPV',
             'findJWKByAlgorithm',
         );

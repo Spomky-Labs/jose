@@ -5,6 +5,14 @@ namespace SpomkyLabs\JOSE;
 interface JWKInterface
 {
     /**
+     * Return the representation of the key as described in the JWK Draft 31
+     *
+     * @see IETF JWK Draft 31, Appendix A.1
+     * @return string
+     */
+    public function __toString();
+
+    /**
      * Returns an array that represents the values of the public key
      *
      * @return array
@@ -20,7 +28,7 @@ interface JWKInterface
 
     /**
      * Set a value in the JWK object.
-     * 
+     *
      * @param string $key   The key
      * @param mixed  $value The value
      */

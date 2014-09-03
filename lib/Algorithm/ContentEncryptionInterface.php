@@ -15,4 +15,8 @@ interface ContentEncryptionInterface
      * @return string
      */
     public function calculateAuthenticationTag($cek, $iv, $encrypted_data, array $header);
+
+    public function getIVSize(array $header);
+
+    public function getCEKSize(array $header);
 }

@@ -3,9 +3,9 @@
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\CompressionManagerInterface;
-use SpomkyLabs\JOSE\Compression\Deflate;
-use SpomkyLabs\JOSE\Compression\ZLib;
-use SpomkyLabs\JOSE\Compression\GZip;
+use SpomkyLabs\JOSE\Tests\Compression\Deflate;
+use SpomkyLabs\JOSE\Tests\Compression\ZLib;
+use SpomkyLabs\JOSE\Tests\Compression\GZip;
 
 /**
  * Class representing a JSON Web Signature.

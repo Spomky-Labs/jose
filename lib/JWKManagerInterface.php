@@ -9,7 +9,7 @@ interface JWKManagerInterface
 {
     /**
      * Find keys using the header
-     * 
+     *
      * @param  array           $header The header
      * @return JWKSetInterface A set of keys
      */

@@ -7,7 +7,10 @@ namespace SpomkyLabs\JOSE\Compression;
  */
 abstract class ZLib implements CompressionInterface
 {
-    abstract protected function getCompressionLevel();
+    protected function getCompressionLevel()
+    {
+        return -1;
+    }
 
     public function getMethod()
     {

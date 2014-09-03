@@ -17,6 +17,11 @@ class RSA extends Base
         $this->setValue('kty', 'RSA');
     }
 
+    public function __toString()
+    {
+        return json_encode($this->getValues());
+    }
+
     public function getValue($key)
     {
         return isset($this->values[$key]) ? $this->values[$key] : null;

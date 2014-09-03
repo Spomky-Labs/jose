@@ -149,21 +149,6 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         die();*/
     }
 
-    public function getKeySize(array $header)
-    {
-        $crv = $this->getValue('crv');
-        switch ($crv) {
-            case 'P-256':
-                return 256;
-            case 'P-384':
-                return 384;
-            case 'P-521':
-                return 512;
-            default:
-                throw new \Exception("Curve $crv is not supported");
-        }
-    }
-
     /**
      * @inheritdoc
      */

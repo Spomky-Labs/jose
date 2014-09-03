@@ -74,53 +74,6 @@ abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentD
         return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $header);
     }
 
-    /*public function createIV(array $header)
-    {
-        $enc = $this->getEncryptionAlgorithm($header);
-        switch ($enc) {
-            case 'A128CBC-HS256':
-                $iv = $this->generateRandomString(128 / 8);
-                break;
-            case 'A192CBC-HS384':
-                $iv = $this->generateRandomString(192 / 8);
-                break;
-            case 'A256CBC-HS512':
-                $iv = $this->generateRandomString(256 / 8);
-                break;
-            default:
-                throw new \Exception("Algorithm $enc is not supported");
-        }
-        $this->setValue('iv', $iv);
-
-        return $this;
-    }
-
-    public function createCEK(array $header)
-    {
-        $enc = $this->getEncryptionAlgorithm($header);
-        switch ($enc) {
-            case 'A128CBC-HS256':
-                $cek = $this->generateRandomString(256 / 8);
-                break;
-            case 'A192CBC-HS384':
-                $cek = $this->generateRandomString(384 / 8);
-                break;
-            case 'A256CBC-HS512':
-                $cek = $this->generateRandomString(512 / 8);
-                break;
-            default:
-                throw new \Exception("Algorithm $enc is not supported");
-        }
-        $this->setValue('cek', $cek);
-
-        return $this;
-    }
-
-    protected function generateRandomString($length)
-    {
-        return crypt_random_string($length);
-    }*/
-
     protected function getEncryptionAlgorithm(array $header)
     {
         $enc = $header['enc'];
@@ -144,6 +97,21 @@ abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentD
                 return 'sha512';
             default:
                 throw new \Exception("Algorithm $enc is not supported");
+        }
+    }
+
+    public function getKeySize(array $header)
+    {
+        $alg = $header['enc'];
+        switch ($alg) {
+            case 'A128CBC-HS256':
+                return 256;
+            case 'A192CBC-HS384':
+                return 384;
+            case 'A256CBC-HS512':
+                return 512;
+            default:
+                throw new \Exception("Encryption algorithm '$alg' is not supported");
         }
     }
 }

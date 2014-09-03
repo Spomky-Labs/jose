@@ -21,11 +21,6 @@ abstract class Dir implements JWKInterface, KeyEncryptionInterface, KeyDecryptio
         return '';
     }
 
-    public function getKeySize(array $header)
-    {
-        return null;
-    }
-
     /**
      * @inheritdoc
      */

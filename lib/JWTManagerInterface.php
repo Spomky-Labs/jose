@@ -27,27 +27,27 @@ interface JWTManagerInterface
     /**
      * Sign a string or an array and convert it into its JSON (Compact) Serialized representation.
      *
-     * @param  boolean         $compact        If true, the result will be a JSON Compact Serialized JWT. The argument $operation_keys must contain only one private key
-     * @param  string|array    $input          A JWK/JWKSet object, a string or an array
-     * @param  array           $header         The header. MUST at least contain 'alg' value
-     * @param  JWKSetInterface $operation_keys A JWK used to signed or encrypt the input.
-     * 
-     * @return string       The JSON (Compact) Serialized representation
-     * @throws Exception    If a key was not able to sign
+     * @param boolean         $compact        If true, the result will be a JSON Compact Serialized JWT. The argument $operation_keys must contain only one private key
+     * @param string|array    $input          A JWK/JWKSet object, a string or an array
+     * @param JWKSetInterface $operation_keys An array that contain, for each signature, an index 'key' (JWKInterface object) used to signed the input, an index 'protected' (array) with the protected header (MUST contain at least index 'alg') and index 'header' (optionnal) to add unprotected header for the signature.
+     *
+     * @return string    The JSON (Compact) Serialized representation
+     * @throws Exception
      */
-    //public function signAndConvert($compact, $input, array $header, JWKSetInterface $operation_key);
+    public function signAndConvert($compact, $input, array $operation_keys);
 
     /**
      * Encrypt a string, an array, a JWK or a JWKSet object and convert it into its JSON (Compact) Serialized representation.
      *
-     * @param  boolean         $compact    If true, the result will be a JSON Compact Serialized JWT. The argument $recipients must contain only one recipient key
-     * @param  string|array    $input      A JWK/JWKSet object, a string or an array
-     * @param  array           $header     The header. MUST at least contain 'alg' and 'enc' values
-     * @param  JWKSetInterface $recipients A list of array that contain, per recipient, the public key ('key'), a protected header ('header'), an unprotected header (optionnal, 'unprotected'),.
-     * @param  JWKInterface    $sender_key If the input if encrypted, some algorithm may require the key of the sender (e.g.: ECDH-ES, PBES-*).
+     * @param boolean         $compact            If true, the result will be a JSON Compact Serialized JWT. The argument $recipients must contain only one recipient key
+     * @param string|array    $input              A JWK/JWKSet object, a string or an array
+     * @param JWKSetInterface $operation_keys     An array that contain, for each recipient, an index 'key' (JWKInterface object) used to encrypt the CEK, an index 'header' (optionnal array) with the unprotected header.
+     * @param array           $protected_header   The protected header.
+     * @param array           $unprotected_header The unprotected header (optionnal).
+     * @param JWKInterface    $sender_key         If the input if encrypted, some algorithm may require the key of the sender (e.g.: ECDH-ES, PBES-*).
      *
-     * @return string       The JSON Compact Serialized representation
-     * @throws Exception    If a key was not able to encrypt
+     * @return string    The JSON (Compact) Serialized representation
+     * @throws Exception
      */
-    //public function encryptAndConvert($compact, $input, array $header, JWKSetInterface $recipients, JWKInterface $sender_key = null);
+    public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = null, array $unprotected_header = null, JWKInterface $sender_key = null);
 }
