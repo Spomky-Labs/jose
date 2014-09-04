@@ -14,6 +14,7 @@ matrix:
 before_script:
     - curl -s http://getcomposer.org/installer | php
     - php composer.phar update --dev --no-interaction
+    - echo "extension = gmp.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
 script:
     - mkdir -p build/logs
