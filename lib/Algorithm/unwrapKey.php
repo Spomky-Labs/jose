@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-interface KeyUnwrapInterface
+interface unwrapKey
 {
     public function unwrapKey($wrapped_cek, array $header = array());
 }

@@ -127,10 +127,6 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $curve = $this->getCurve();
         $rec_x = $this->convertBase64ToDec($this->getValue('x'));
         $rec_y = $this->convertBase64ToDec($this->getValue('y'));
-        $rec_d = $this->convertBase64ToDec($this->getValue('d'));
-
-        $sen_x = $this->convertBase64ToDec($sender_key->getValue('x'));
-        $sen_y = $this->convertBase64ToDec($sender_key->getValue('y'));
         $sen_d = $this->convertBase64ToDec($sender_key->getValue('d'));
 
         $ext1 = new ECDHExtension($p, $sen_d);

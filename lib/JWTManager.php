@@ -177,30 +177,30 @@ abstract class JWTManager implements JWTManagerInterface
     private function loadSerializedJsonJWE($data, array &$headers = array())
     {
         $jwt_protected_header = array();
-        if(isset($data['protected'])) {
+        if (isset($data['protected'])) {
             $jwt_protected_header = json_decode(Base64Url::decode($data['protected']), true);
         }
         $jwt_unprotected_header = array();
-        if(isset($data['unprotected'])) {
+        if (isset($data['unprotected'])) {
             $jwt_unprotected_header = $data['unprotected'];
         }
         $jwt_iv = null;
-        if(isset($data['iv'])) {
+        if (isset($data['iv'])) {
             $jwt_iv = Base64Url::decode($data['iv']);
         }
-        $jwt_aad = null;
-        if(isset($data['aad'])) {
+        //$jwt_aad = null;
+        if (isset($data['aad'])) {
             $jwt_aad = Base64Url::decode($data['aad']);
         }
         $jwt_tag = null;
-        if(isset($data['tag'])) {
+        if (isset($data['tag'])) {
             $jwt_tag = Base64Url::decode($data['tag']);
         }
         $jwt_ciphertext = Base64Url::decode($data['ciphertext']);
 
         foreach ($data['recipients'] as $recipient) {
             $recipient_header = array();
-            if(isset($recipient['header'])) {
+            if (isset($recipient['header'])) {
                 $recipient_header = $recipient['header'];
             }
             $complete_header = array_merge($jwt_protected_header, $jwt_unprotected_header, $recipient_header);
@@ -210,10 +210,8 @@ abstract class JWTManager implements JWTManagerInterface
             if (!$jwk_set->isEmpty()) {
                 foreach ($jwk_set->getKeys() as $jwk) {
                     if ($jwk instanceof KeyDecryptionInterface && $this->canDecryptCEK($jwk)) {
-                        $jwt_decrypted_cek = null;
                         $jwt_decrypted_cek = $jwk->decryptKey(Base64Url::decode($recipient['encrypted_key']), $complete_header);
                         if ($jwt_decrypted_cek !== null) {
-
                             return $this->decryptContent($jwt_ciphertext, $jwt_decrypted_cek, $jwt_iv, $jwt_tag, $jwt_protected_header, $jwt_unprotected_header, $recipient_header, $complete_header, $headers);
                         }
                     }
@@ -252,13 +250,13 @@ abstract class JWTManager implements JWTManagerInterface
             }
         }
 
-        if(count($jwt_protected_header)) {
+        if (count($jwt_protected_header)) {
             $headers["protected"] = $jwt_protected_header;
         }
-        if(count($jwt_unprotected_header)) {
+        if (count($jwt_unprotected_header)) {
             $headers["unprotected"] = $jwt_unprotected_header;
         }
-        if(count($recipient_header)) {
+        if (count($recipient_header)) {
             $headers["header"] = $recipient_header;
         }
         $this->convertJWTContent($complete_header, $jwt_payload);
@@ -312,6 +310,7 @@ abstract class JWTManager implements JWTManagerInterface
             throw new \Exception("Unsupported input type");
         }
 
+        $signatures = array();
         $jwt_payload = Base64Url::encode($input);
         foreach ($operation_keys as $operation) {
             if (!isset($operation['protected'])) {
@@ -356,9 +355,9 @@ abstract class JWTManager implements JWTManagerInterface
         ));
     }
 
-    public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = null, array $unprotected_header = null, JWKInterface $sender_key = null)
+    public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = array(), array $unprotected_header = array(), JWKInterface $sender_key = null)
     {
-        if($compact === false) {
+        if ($compact === false) {
             throw new \Exception("JSON Serialized representation is not supported");
         }
 
@@ -373,10 +372,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         $jwt_header = array();
-        if($protected_header !== null) {
+        if ($protected_header !== null) {
             $jwt_header = array_merge($jwt_header, $protected_header);
         }
-        if($unprotected_header !== null) {
+        if ($unprotected_header !== null) {
             $jwt_header = array_merge($jwt_header, $unprotected_header);
         }
 
@@ -403,16 +402,16 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         $jwt_iv = null;
-        if($key->getIVSize($jwt_header) !== null) {
+        if ($key->getIVSize($jwt_header) !== null) {
             $jwt_iv = $this->createIV($key->getIVSize($jwt_header));
         }
 
         $jwt_cek = null;
-        if($jwt_header["alg"] === "dir") {
+        if ($jwt_header["alg"] === "dir") {
             $tmp = $operation_keys[0]['key'];
             $jwt_cek = $tmp->getValue("dir");
         } else {
-            if($key->getCEKSize($jwt_header) !== null) {
+            if ($key->getCEKSize($jwt_header) !== null) {
                 $jwt_cek = $this->createCEK($key->getCEKSize($jwt_header));
             }
         }
@@ -425,14 +424,14 @@ abstract class JWTManager implements JWTManagerInterface
 
             $jwk = $operation_key['key'];
             $complete_header = $jwt_header;
-            if(isset($operation_key['header'])) {
+            if (isset($operation_key['header'])) {
                 $complete_header = array_merge($complete_header, $operation_key['header']);
             }
 
             $tmp = array(
                 "encrypted_key" => $jwk->encryptKey($jwt_cek, $protected_header, $sender_key)
             );
-            if(isset($operation_key['header'])) {
+            if (isset($operation_key['header'])) {
                 $tmp["header"] = $operation_key['header'];
             }
             $recipients[] = $tmp;
