@@ -9,8 +9,8 @@ interface SignatureInterface
 {
     /**
      * Sign data
-     * @param  string $input  The input
-     * @param  array  $header The header
+     * @param string $input  The input
+     * @param array  $header The header
      *
      * @return string
      */

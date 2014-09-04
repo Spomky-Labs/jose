@@ -39,6 +39,9 @@ class JWTManager extends Base
         return $this->generateRandomString($size / 8);
     }
 
+    /**
+     * @param integer $length
+     */
     private function generateRandomString($length)
     {
         return crypt_random_string($length);

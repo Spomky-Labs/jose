@@ -95,7 +95,12 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
         }
         $rsa->setSignatureMode($this->getSignatureMethod($header));
 
-        return $rsa->sign($data);
+        $result = $rsa->sign($data);
+        if ($result === false) {
+            throw new \Exception("An error occured during the creation of the signature");
+        }
+
+        return $result;
     }
 
     public function isPrivate()

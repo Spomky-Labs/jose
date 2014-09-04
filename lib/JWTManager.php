@@ -238,7 +238,7 @@ abstract class JWTManager implements JWTManagerInterface
     }
 
     /**
-     * @param string $jwk_encrypted_data
+     * @param string      $jwk_encrypted_data
      * @param string|null $jwt_iv
      * @param string|null $jwt_authentication_tag
      */
