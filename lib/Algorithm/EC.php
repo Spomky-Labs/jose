@@ -136,6 +136,10 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
 
         $enc = $ext1->encrypt($cek);
 
+        if($enc === false) {
+            throw new \Exception("An error occured during the encryption of the CEK");
+        }
+
         return $enc;
     }
 

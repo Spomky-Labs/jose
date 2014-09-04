@@ -23,6 +23,9 @@ class ECDHExtension
         $this->agreed_key = Point::mul($this->senderSecret, $this->receiverPoint)->getX();
     }
 
+    /**
+     * @param string $string
+     */
     public function encrypt($string)
     {
         $key = hash("sha256", $this->agreed_key, true);
