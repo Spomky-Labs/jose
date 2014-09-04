@@ -188,10 +188,11 @@ abstract class JWTManager implements JWTManagerInterface
         if (isset($data['iv'])) {
             $jwt_iv = Base64Url::decode($data['iv']);
         }
-        //$jwt_aad = null;
+        //AAD not supported yet
+        /*$jwt_aad = null;
         if (isset($data['aad'])) {
             $jwt_aad = Base64Url::decode($data['aad']);
-        }
+        }*/
         $jwt_tag = null;
         if (isset($data['tag'])) {
             $jwt_tag = Base64Url::decode($data['tag']);
@@ -424,9 +425,9 @@ abstract class JWTManager implements JWTManagerInterface
 
             $jwk = $operation_key['key'];
             $complete_header = $jwt_header;
-            if (isset($operation_key['header'])) {
+            /*if (isset($operation_key['header'])) {
                 $complete_header = array_merge($complete_header, $operation_key['header']);
-            }
+            }*/
 
             $tmp = array(
                 "encrypted_key" => $jwk->encryptKey($jwt_cek, $protected_header, $sender_key)
@@ -457,14 +458,14 @@ abstract class JWTManager implements JWTManagerInterface
             ));
         }
 
-        return array(
+        return json_encode(array(
             "protected" => Base64Url::encode(json_encode($protected_header)),
             "unprotected" => $unprotected_header,
             "iv" => Base64Url::encode($jwt_iv),
             "ciphertext" => Base64Url::encode($encrypted_data),
             "tag" => Base64Url::encode($jwt_tag),
             "recipients" => $recipients
-        );
+        ));
     }
 
     /*public function convertToCompactSerializedJson($input, JWKInterface $jwk, array $header = array())
