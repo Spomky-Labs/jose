@@ -5,7 +5,9 @@ namespace SpomkyLabs\JOSE\Algorithm;
 interface KeyDecryptionInterface
 {
     /**
-     * @param string $encrypted_cek
+     * [decryptKey description]
+     * @param  string $encrypted_cek The encrypted CEK
+     * @param  array  $header        The header
      *
      * @return string|false
      */

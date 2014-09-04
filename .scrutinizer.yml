@@ -8,7 +8,8 @@ tools:
     php_analyzer: true
     sensiolabs_security_checker: true
     php_code_coverage: true
-    php_cpd: true
+    php_sim: true
+    php_cpd: false
     php_pdepend:
         excluded_dirs: [vendor/*, doc/*, tests/*]
 filter:
