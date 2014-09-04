@@ -6,6 +6,8 @@ use SpomkyLabs\JOSE\Util\Base64Url;
 use SpomkyLabs\JOSE\Algorithm\VerificationInterface;
 use SpomkyLabs\JOSE\Algorithm\SignatureInterface;
 use SpomkyLabs\JOSE\Algorithm\KeyDecryptionInterface;
+use SpomkyLabs\JOSE\Algorithm\KeyEncryptionInterface;
+use SpomkyLabs\JOSE\Algorithm\ContentEncryptionInterface;
 use SpomkyLabs\JOSE\Algorithm\ContentDecryptionInterface;
 
 /**
@@ -162,7 +164,7 @@ abstract class JWTManager implements JWTManagerInterface
                 $jwt_decrypted_cek = $jwk->decryptKey($jwk_encrypted_cek, $jwt_header);
 
                 if ($jwt_decrypted_cek !== null) {
-                    return $this->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, $jwt_header, $jwt_header, $headers);
+                    return $this->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, $jwt_header, array(), array(), $jwt_header, $headers);
                 }
             }
         }
@@ -174,11 +176,11 @@ abstract class JWTManager implements JWTManagerInterface
      */
     private function loadSerializedJsonJWE($data, array &$headers = array())
     {
-        $jwt_protected_header = null;
+        $jwt_protected_header = array();
         if(isset($data['protected'])) {
             $jwt_protected_header = json_decode(Base64Url::decode($data['protected']), true);
         }
-        $jwt_unprotected_header = null;
+        $jwt_unprotected_header = array();
         if(isset($data['unprotected'])) {
             $jwt_unprotected_header = $data['unprotected'];
         }
@@ -197,20 +199,11 @@ abstract class JWTManager implements JWTManagerInterface
         $jwt_ciphertext = Base64Url::decode($data['ciphertext']);
 
         foreach ($data['recipients'] as $recipient) {
-            $recipient_header = null;
+            $recipient_header = array();
             if(isset($recipient['header'])) {
                 $recipient_header = $recipient['header'];
             }
-            $complete_header = array();
-            if($jwt_protected_header!==null) {
-                $complete_header = array_merge($complete_header, $jwt_protected_header);
-            }
-            if($jwt_unprotected_header!==null) {
-                $complete_header = array_merge($complete_header, $jwt_unprotected_header);
-            }
-            if($recipient_header!==null) {
-                $complete_header = array_merge($complete_header, $recipient_header);
-            }
+            $complete_header = array_merge($jwt_protected_header, $jwt_unprotected_header, $recipient_header);
 
             $jwk_set = $this->getKeyManager()->findByHeader($complete_header);
 
@@ -218,19 +211,10 @@ abstract class JWTManager implements JWTManagerInterface
                 foreach ($jwk_set->getKeys() as $jwk) {
                     if ($jwk instanceof KeyDecryptionInterface && $this->canDecryptCEK($jwk)) {
                         $jwt_decrypted_cek = null;
-                        //try {
-                            $jwt_decrypted_cek = $jwk->decryptKey(Base64Url::decode($recipient['encrypted_key']), $complete_header);
-                        //} catch (\Exception $e) {} //We just need to avoid exceptions
+                        $jwt_decrypted_cek = $jwk->decryptKey(Base64Url::decode($recipient['encrypted_key']), $complete_header);
                         if ($jwt_decrypted_cek !== null) {
-                            /*$data = array(
-                                "header" => $prepared['header'],
-                                "encrypted_cek" => $recipient['encrypted_key'],
-                                "iv" => $prepared['iv'],
-                                "encrypted_data" => $prepared['encrypted_data'],
-                                "authentication_tag" => $prepared['authentication_tag'],
-                            );*/
 
-                            return $this->decryptContent($jwt_ciphertext, $jwt_decrypted_cek, $jwt_iv, $jwt_tag, $jwt_protected_header, $complete_header, $headers);
+                            return $this->decryptContent($jwt_ciphertext, $jwt_decrypted_cek, $jwt_iv, $jwt_tag, $jwt_protected_header, $jwt_unprotected_header, $recipient_header, $complete_header, $headers);
                         }
                     }
                 }
@@ -240,7 +224,7 @@ abstract class JWTManager implements JWTManagerInterface
         throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
     }
 
-    private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $complete_header, array &$headers)
+    private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $jwt_unprotected_header, array $recipient_header, array $complete_header, array &$headers)
     {
         $type = $this->getKeyManager()->getType($complete_header['enc']);
         $key = $this->getKeyManager()->createJWK(array(
@@ -268,7 +252,15 @@ abstract class JWTManager implements JWTManagerInterface
             }
         }
 
-        $headers = $complete_header;
+        if(count($jwt_protected_header)) {
+            $headers["protected"] = $jwt_protected_header;
+        }
+        if(count($jwt_unprotected_header)) {
+            $headers["unprotected"] = $jwt_unprotected_header;
+        }
+        if(count($recipient_header)) {
+            $headers["header"] = $recipient_header;
+        }
         $this->convertJWTContent($complete_header, $jwt_payload);
 
         return $jwt_payload;
@@ -382,111 +374,156 @@ abstract class JWTManager implements JWTManagerInterface
 
         $jwt_header = array();
         if($protected_header !== null) {
-            $jwt_header = array_merge($protected_header);
+            $jwt_header = array_merge($jwt_header, $protected_header);
         }
         if($unprotected_header !== null) {
-            $jwt_header = array_merge($unprotected_header);
+            $jwt_header = array_merge($jwt_header, $unprotected_header);
         }
+
+        //When using not compact format, we must determine the key management mode first
 
         $type = $this->getKeyManager()->getType($jwt_header['enc']);
         $key = $this->getKeyManager()->createJWK(array(
             "kty" =>$type
         ));
 
-        $jwt_iv = null;
-        if($key->getKeySize($jwt_header) !== null) {
-            $jwt_iv = $this->createIV($key->getKeySize($jwt_header));
+        if (!$key instanceof ContentEncryptionInterface) {
+            throw new \Exception("The content encryption algorithm is not valid");
         }
 
-        foreach ($operation_keys as $operation) {
-            
+        if (isset($jwt_header['zip'])) {
+            $method = $this->getCompressionManager()->getCompressionMethod($jwt_header['zip']);
+            if ($method === null) {
+                throw new \Exception("Compression method '".$jwt_header['zip']."' not supported");
+            }
+            $input = $method->compress($input);
+            if (!is_string($input)) {
+                throw new \Exception("Compression failed");
+            }
         }
+
+        $jwt_iv = null;
+        if($key->getIVSize($jwt_header) !== null) {
+            $jwt_iv = $this->createIV($key->getIVSize($jwt_header));
+        }
+
+        $jwt_cek = null;
+        if($jwt_header["alg"] === "dir") {
+            $tmp = $operation_keys[0]['key'];
+            $jwt_cek = $tmp->getValue("dir");
+        } else {
+            if($key->getCEKSize($jwt_header) !== null) {
+                $jwt_cek = $this->createCEK($key->getCEKSize($jwt_header));
+            }
+        }
+
+        $encrypted_data = $key->encryptContent($input, $jwt_cek, $jwt_iv, $jwt_header);
+
+        $recipients = array();
+
+        foreach ($operation_keys as $operation_key) {
+
+            $jwk = $operation_key['key'];
+            $complete_header = $jwt_header;
+            if(isset($operation_key['header'])) {
+                $complete_header = array_merge($complete_header, $operation_key['header']);
+            }
+
+            $tmp = array(
+                "encrypted_key" => $jwk->encryptKey($jwt_cek, $protected_header, $sender_key)
+            );
+            if(isset($operation_key['header'])) {
+                $tmp["header"] = $operation_key['header'];
+            }
+            $recipients[] = $tmp;
+        }
+
+        if (count($recipients) === 0) {
+            throw new \Exception("No recipient");
+        }
+
+        if (count($recipients) > 1 && $compact === true) {
+            throw new \Exception("Can not compact when using multiple recipients");
+        }
+
+        $jwt_tag = $key->calculateAuthenticationTag($jwt_cek, $jwt_iv, $encrypted_data, $protected_header);
+
+        if (count($recipients) === 1 && $compact === true) {
+            return implode(".", array(
+                Base64Url::encode(json_encode($protected_header)),
+                Base64Url::encode($recipients[0]['encrypted_key']),
+                Base64Url::encode($jwt_iv),
+                Base64Url::encode($encrypted_data),
+                Base64Url::encode($jwt_tag),
+            ));
+        }
+
+        return array(
+            "protected" => Base64Url::encode(json_encode($protected_header)),
+            "unprotected" => $unprotected_header,
+            "iv" => Base64Url::encode($jwt_iv),
+            "ciphertext" => Base64Url::encode($encrypted_data),
+            "tag" => Base64Url::encode($jwt_tag),
+            "recipients" => $recipients
+        );
     }
 
     /*public function convertToCompactSerializedJson($input, JWKInterface $jwk, array $header = array())
     {
-        if (is_array($input)) {
-            $input = json_encode($input);
+        $plaintext = '';
+        if (is_string($input)) {
+            $plaintext = $input;
+        } elseif ($input instanceof JWKInterface || $input instanceof JWKSetInterface) {
+            $header['cty'] = $input instanceof JWKInterface ? 'jwk+json' : 'jwkset+json';
+            $plaintext = $input->__toString();
         }
-        if (!is_string($input) && !$input instanceof JWTInterface && !$input instanceof JWKInterface && !$input instanceof JWKSetInterface) {
-            throw new \Exception("Unsupported input type");
+
+        $data = array(
+            'header'=>$header,
+        );
+        $type = $this->getKeyManager()->getType($data['header']['enc']);
+        $key = $this->getKeyManager()->createJWK(array(
+            "kty" =>$type
+        ));
+        if (!$key instanceof JWKContentEncryptionInterface) {
+            throw new \Exception("The content encryption algorithm is not valid");
         }
 
-        //We try to encrypt first
-        if ($jwk instanceof JWKEncryptInterface && $this->canEncrypt($jwk) && isset($header['enc']) && isset($header['alg'])) {
+        $this->createIV($data['header']['alg']);
 
-            $plaintext = '';
-            if (is_string($input)) {
-                $plaintext = $input;
-            } elseif ($input instanceof JWKInterface || $input instanceof JWKSetInterface) {
-                $header['cty'] = $input instanceof JWKInterface ? 'jwk+json' : 'jwkset+json';
-                $plaintext = $input->__toString();
-            }
-
-            $data = array(
-                'header'=>$header,
-            );
-            $type = $this->getKeyManager()->getType($data['header']['enc']);
-            $key = $this->getKeyManager()->createJWK(array(
-                "kty" =>$type
-            ));
-            if (!$key instanceof JWKContentEncryptionInterface) {
-                throw new \Exception("The content encryption algorithm is not valid");
-            }
-
-            $this->createIV($data['header']['alg']);
-
-            if ($data['header']['alg'] === 'dir') {
-                $key->setValue('cek', $jwk->getValue('dir'));
-            } else {
-                $this->createCEK($data['header']['alg']);
-            }
-
-            $data['iv'] = $key->getValue('iv');
-            $data['encrypted_cek'] = $jwk->encryptKey($key->getValue('cek'), $data['header']);
-
-            $tmp_header = array("enc" =>$data['header']['enc']);
-
-            if (isset($data['header']['zip'])) {
-                $method = $this->getCompressionManager()->getCompressionMethod($data['header']['zip']);
-                if ($method === null) {
-                    throw new \Exception("Compression method '".$data['header']['zip']."' not supported");
-                }
-                $plaintext = $method->compress($plaintext);
-                if (!is_string($plaintext)) {
-                    throw new \Exception("Compression failed");
-                }
-            }
-
-            $data['encrypted_data'] = $key->encryptContent($plaintext, $key->getValue('cek'), $key->getValue('iv'), $tmp_header);
-
-            $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
-
-            return implode(".", array(
-                Base64Url::encode(json_encode($data['header'])),
-                Base64Url::encode($data['encrypted_cek']),
-                Base64Url::encode($data['iv']),
-                Base64Url::encode($data['encrypted_data']),
-                Base64Url::encode($data['authentication_tag']),
-            ));
-        } elseif ($jwk instanceof SignatureInterface && $this->canSign($jwk) && isset($header['alg'])) {
-
-            if (!$jwk->isPrivate()) {
-                throw new \Exception("The key is not a private key");
-            }
-
-            if (!is_string($input)) {
-                throw new \Exception("Unsupported input type");
-            }
-
-            $header_ = Base64Url::encode(json_encode($header));
-            $payload = Base64Url::encode($input);
-            $signature = Base64Url::encode($jwk->sign($header_.".".$payload, $header));
-
-            return $header_.".".$payload.".".$signature;
+        if ($data['header']['alg'] === 'dir') {
+            $key->setValue('cek', $jwk->getValue('dir'));
         } else {
-            throw new \Exception("The key can not sign or encrypt data");
+            $this->createCEK($data['header']['alg']);
         }
+
+        $data['iv'] = $key->getValue('iv');
+        $data['encrypted_cek'] = $jwk->encryptKey($key->getValue('cek'), $data['header']);
+
+        $tmp_header = array("enc" =>$data['header']['enc']);
+
+        if (isset($data['header']['zip'])) {
+            $method = $this->getCompressionManager()->getCompressionMethod($data['header']['zip']);
+            if ($method === null) {
+                throw new \Exception("Compression method '".$data['header']['zip']."' not supported");
+            }
+            $plaintext = $method->compress($plaintext);
+            if (!is_string($plaintext)) {
+                throw new \Exception("Compression failed");
+            }
+        }
+
+        $data['encrypted_data'] = $key->encryptContent($plaintext, $key->getValue('cek'), $key->getValue('iv'), $tmp_header);
+
+        $data['authentication_tag'] = $key->calculateAuthenticationTag($data);
+
+        return implode(".", array(
+            Base64Url::encode(json_encode($data['header'])),
+            Base64Url::encode($data['encrypted_cek']),
+            Base64Url::encode($data['iv']),
+            Base64Url::encode($data['encrypted_data']),
+            Base64Url::encode($data['authentication_tag']),
+        ));
     }*/
 
     protected function canEncryptCEK(JWKInterface $jwk)

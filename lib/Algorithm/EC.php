@@ -141,12 +141,6 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $enc = $ext1->encrypt($cek);
 
         return $enc;
-
-        /*$ext2 = new ECDHExtension($p, $rec_d);
-        $ext2->setReceiverPoint(new Point($curve, $sen_x, $sen_y));
-
-        var_dump($ext2->decrypt($enc));
-        die();*/
     }
 
     /**

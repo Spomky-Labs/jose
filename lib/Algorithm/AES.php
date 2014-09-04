@@ -100,7 +100,7 @@ abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentD
         }
     }
 
-    public function getKeySize(array $header)
+    private function getKeySize(array $header)
     {
         $alg = $header['enc'];
         switch ($alg) {
@@ -113,5 +113,15 @@ abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentD
             default:
                 throw new \Exception("Encryption algorithm '$alg' is not supported");
         }
+    }
+
+    public function getIVSize(array $header)
+    {
+        return $this->getKeySize($header);
+    }
+
+    public function getCEKSize(array $header)
+    {
+        return $this->getKeySize($header);
     }
 }

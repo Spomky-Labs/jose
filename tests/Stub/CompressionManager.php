@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
-use SpomkyLabs\JOSE\CompressionManagerInterface;
+use SpomkyLabs\JOSE\Compression\CompressionManagerInterface;
 use SpomkyLabs\JOSE\Tests\Compression\Deflate;
 use SpomkyLabs\JOSE\Tests\Compression\ZLib;
 use SpomkyLabs\JOSE\Tests\Compression\GZip;

@@ -16,6 +16,39 @@ class RSAConverter
         return $rsa;
     }
 
+    public static function fromCertificateToArray($certificate, $passphrase = null)
+    {
+        $res = openssl_pkey_get_private($certificate, $passphrase);
+        if($res === false) {
+            $res = openssl_pkey_get_public($certificate);
+        }
+        if($res === false) {
+            throw new \Exception("Unable to load the certificate");
+        }
+        $details = openssl_pkey_get_details($res);
+        if($details === false) {
+            throw new \Exception("Unable to get details of the certificate");
+        }
+        if(!is_array($details) || !isset($details['rsa'])) {
+            throw new \Exception("Certificate is not a valid RSA certificate");
+        }
+        $values = $details['rsa'];
+        $result = array('kty'=>'RSA');
+        foreach ($values as $key => $value) {
+            $value = Base64Url::encode($value);
+            if($key === "dmp1") {
+                $result["dp"] = $value;
+            } elseif($key === "dmq1") {
+                $result["dq"] = $value;
+            } elseif($key === "iqmp") {
+                $result["qi"] = $value;
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
     public static function fromArrayToXML(array $data)
     {
         $result = "<RSAKeyPair>\n";

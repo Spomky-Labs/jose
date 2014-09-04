@@ -31,12 +31,12 @@ class JWTManager extends Base
 
     protected function createCEK($size)
     {
-        $this->generateRandomString($size / 8);
+        return $this->generateRandomString($size / 8);
     }
 
     protected function createIV($size)
     {
-        $this->generateRandomString($size / 8);
+        return $this->generateRandomString($size / 8);
     }
 
     private function generateRandomString($length)

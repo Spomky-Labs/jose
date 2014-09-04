@@ -172,10 +172,12 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw', $header);
 
         $this->assertEquals("Live long and prosper.", $result);
-        $this->assertEquals(array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256'), $header);
+        $this->assertEquals(array(
+            'protected' => array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256')
+        ), $header);
     }
 
-    /*public function testCreateEncryptedJWK()
+    public function testCreateEncryptedJWK()
     {
         $jwk_manager = new JWKManager();
         $jwt_manager = new JWTManager();
@@ -190,18 +192,33 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
         ));
 
-        $jwe = $jwt_manager->convertToCompactSerializedJson(
+        $jwe = $jwt_manager->encryptAndConvert(
+            true,
             $jwk,
-            $jwk,
+            array(array(
+                'key' =>$jwk
+            )),
             array(
+                'typ'=>'JOSE',
+                'jty'=>'JWT',
                 "alg"=>"RSA-OAEP-256",
                 "enc"=>"A256CBC-HS512",
-                'typ'=>'JOSE',
-        ));
+            )
+        );
 
-        $result = $jwt_manager->load($jwe);
+        $headers = array();
+        $result = $jwt_manager->load($jwe, $headers);
         $this->assertInstanceOf('SpomkyLabs\JOSE\JWKInterface', $result);
         $this->assertEquals($jwk, $result);
+        $this->assertEquals(array(
+            'protected' => array(
+                'typ'=>'JOSE',
+                'jty'=>'JWT',
+                "alg"=>"RSA-OAEP-256",
+                "enc"=>"A256CBC-HS512",
+                "cty"=>"jwk+json",
+            )
+        ),$headers);
     }
 
     public function testCreateEncryptedJWKSet()
@@ -223,19 +240,33 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $key_set->addKey($jwk);
 
-        $jwe = $jwt_manager->convertToCompactSerializedJson(
+        $jwe = $jwt_manager->encryptAndConvert(
+            true,
             $key_set,
-            $jwk,
+            array(array(
+                'key' =>$jwk
+            )),
             array(
+                'typ'=>'JOSE',
+                'jty'=>'JWT',
                 "alg"=>"RSA-OAEP-256",
                 "enc"=>"A256CBC-HS512",
-                'iss'=>'spomky-labs',
-                'typ'=>'JOSE',
-        ));
+            )
+        );
 
-        $result = $jwt_manager->load($jwe);
+        $headers = array();
+        $result = $jwt_manager->load($jwe, $headers);
         $this->assertInstanceOf('SpomkyLabs\JOSE\JWKSetInterface', $result);
         $this->assertEquals($key_set, $result);
+        $this->assertEquals(array(
+            'protected' => array(
+                'typ'=>'JOSE',
+                'jty'=>'JWT',
+                "alg"=>"RSA-OAEP-256",
+                "enc"=>"A256CBC-HS512",
+                "cty"=>"jwkset+json",
+            )
+        ),$headers);
     }
 
     public function testCreateEncryptedWithECDH_ES()
@@ -245,35 +276,42 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager->setKeyManager($jwk_manager);
 
-        $jwk = new EC();
-        $jwk->setValues(array(
+        $recipient_jwk = new EC();
+        $recipient_jwk->setValues(array(
             "kty" =>"EC",
             "crv" =>"P-256",
             "x"   =>"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
             "y"   =>"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck"
         ));
 
-        $jwe = $jwt_manager->convertToCompactSerializedJson(
+        $sender_jwk = new EC();
+        $sender_jwk->setValues(array(
+            "kty" =>"EC",
+            "crv" =>"P-256",
+            "x"   =>"gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
+            "y"   =>"SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
+            "d"   =>"0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo"
+        ));
+
+        $jwe = $jwt_manager->encryptAndConvert(
+            true,
             "The true sign of intelligence is not knowledge but imagination.",
-            $jwk,
+            array(array(
+                'key' =>$recipient_jwk
+            )),
             array(
                 "alg"=>"ECDH-ES",
                 "enc"=>"A256CBC-HS512",
                 "apu"=>"QWxpY2U",
                 "apv"=>"Qm9i",
-                "sender_private_key"=> array(
-                    "kty" =>"EC",
-                    "crv" =>"P-256",
-                    "x"   =>"gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
-                    "y"   =>"SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
-                    "d"   =>"0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo"
-                )
-            ));
+            ),
+            array(),
+            $sender_jwk);
 
         $result = $jwt_manager->load($jwe);
 
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
-    }*/
+    }
 
     public function testCreateEncryptedPlainText()
     {
@@ -289,26 +327,30 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         ));
 
         $jwe = $jwt_manager->encryptAndConvert(
-            false, //Compact
+            true, //Compact
             "The true sign of intelligence is not knowledge but imagination.", // Input
-            array(
-                'key'=>$jwk,
-                'header'=>array(
-                    "alg"=>"dir",
-                )
-            ),
+            array(array(
+                'key'=>$jwk
+            )),
             array(
                 "enc"=>"A256CBC-HS512",
                 'typ'=>'JOSE',
+                "alg"=>"dir",
             )
         );
 
-        $result = $jwt_manager->load($jwe);
+        $headers = array();
+        $result = $jwt_manager->load($jwe, $headers);
 
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
+        $this->assertEquals(array("protected"=>array(
+            "enc"=>"A256CBC-HS512",
+            'typ'=>'JOSE',
+            "alg"=>"dir"
+        )), $headers);
     }
 
-    /*public function testCreateEncryptedPlainTextUsingDeflate()
+    public function testCreateEncryptedPlainTextUsingDeflate()
     {
         $jwk_manager = new JWKManager();
         $jwt_manager = new JWTManager();
@@ -318,22 +360,34 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new Dir();
         $jwk->setValues(array(
             "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
+
         ));
 
-        $jwe = $jwt_manager->convertToCompactSerializedJson(
-            "The true sign of intelligence is not knowledge but imagination.",
-            $jwk,
+        $jwe = $jwt_manager->encryptAndConvert(
+            true, //Compact
+            "The true sign of intelligence is not knowledge but imagination.", // Input
+            array(array(
+                'key'=>$jwk
+            )),
             array(
-                "alg"=>"dir",
-                "zip"=>"deflate",
                 "enc"=>"A256CBC-HS512",
                 'typ'=>'JOSE',
-        ));
+                "alg"=>"dir",
+                'zip' => 'DEF'
+            )
+        );
 
-        $result = $jwt_manager->load($jwe);
+        $headers = array();
+        $result = $jwt_manager->load($jwe, $headers);
 
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
-    }*/
+        $this->assertEquals(array("protected"=>array(
+            "enc"=>"A256CBC-HS512",
+            'typ'=>'JOSE',
+            "alg"=>"dir",
+            'zip' => 'DEF'
+        )), $headers);
+    }
 
     public function testLoadJWSSerializedJson()
     {
@@ -378,11 +432,16 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("Live long and prosper.", $result);
         $this->assertEquals(array(
-            'enc' => "A128CBC-HS256",
-            'jku' => "https://server.example.com/keys.jwks",
-            'alg' => "RSA1_5",
-            'kid' => "2011-04-29"
+            'protected' => array(
+                'enc' => "A128CBC-HS256",
             ),
+            'unprotected' => array(
+                'jku' => "https://server.example.com/keys.jwks",
+            ),
+            "header" =>array(
+                'alg' => "RSA1_5",
+                'kid' => "2011-04-29"
+            )),
             $headers
         );
     }
