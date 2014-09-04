@@ -17,7 +17,15 @@ abstract class JWTManager implements JWTManagerInterface
 {
     abstract protected function getKeyManager();
     abstract protected function getCompressionManager();
+
+    /**
+     * @param integer $size
+     */
     abstract protected function createCEK($size);
+
+    /**
+     * @param integer $size
+     */
     abstract protected function createIV($size);
 
     /**

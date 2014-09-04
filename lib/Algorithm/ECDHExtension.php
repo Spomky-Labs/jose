@@ -30,6 +30,9 @@ class ECDHExtension
         return mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $string, MCRYPT_MODE_CBC, $key);
     }
 
+    /**
+     * @param string $string
+     */
     public function decrypt($string)
     {
         $key = hash("sha256", $this->agreed_key, true);

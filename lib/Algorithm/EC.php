@@ -229,6 +229,9 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         return pack("H*",$value);
     }
 
+    /**
+     * @param string $value
+     */
     protected function convertBinToHex($value)
     {
         $value = unpack('H*',$value);
