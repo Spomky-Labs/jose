@@ -55,7 +55,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $x     = $this->convertBase64ToDec($this->getValue('x'));
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $d     = $this->convertBase64ToDec($this->getValue('d'));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
 
         if (ModuleConfig::hasGmp()) {
             $k = GmpUtils::gmpRandom($p->getOrder());
@@ -104,7 +104,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S     = $this->convertHexToDec(substr($signature, $part_length));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
 
         $public_key = new PublicKey($p, new Point($curve, $x, $y));
 
@@ -186,7 +186,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         }
     }
 
-    protected function getHashAlgorithm($header)
+    protected function getHashAlgorithm()
     {
         $crv = $this->getValue('crv');
         switch ($crv) {

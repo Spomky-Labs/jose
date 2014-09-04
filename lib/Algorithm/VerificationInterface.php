@@ -9,6 +9,10 @@ interface VerificationInterface
 {
     /**
      * Verify the signature of data
+     * 
+     * @param  string $input     The input
+     * @param  string $signature The signature to verify
+     * @param  array  $header    The header
      *
      * @return boolean
      */

@@ -435,8 +435,8 @@ abstract class JWTManager implements JWTManagerInterface
         foreach ($operation_keys as $operation_key) {
 
             $jwk = $operation_key['key'];
-            $complete_header = $jwt_header;
-            /*if (isset($operation_key['header'])) {
+            /*$complete_header = $jwt_header;
+            if (isset($operation_key['header'])) {
                 $complete_header = array_merge($complete_header, $operation_key['header']);
             }*/
 
