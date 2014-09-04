@@ -47,6 +47,9 @@ abstract class JWTManager implements JWTManagerInterface
         throw new \InvalidArgumentException('Unable to load the input');
     }
 
+    /**
+     * @param string $input
+     */
     private function loadCompactSerializedJson($input, array &$headers)
     {
         $parts = explode('.', $input);
@@ -99,6 +102,9 @@ abstract class JWTManager implements JWTManagerInterface
         return $jwt_payload;
     }
 
+    /**
+     * @param string $signature
+     */
     private function verifySignature($protected_header, $unprotected_header, $payload, $signature)
     {
         if ($protected_header === null && $unprotected_header === null) {
@@ -223,6 +229,11 @@ abstract class JWTManager implements JWTManagerInterface
         throw new \InvalidArgumentException('Unable to find the key used to encrypt this token');
     }
 
+    /**
+     * @param string $jwk_encrypted_data
+     * @param string|null $jwt_iv
+     * @param string|null $jwt_authentication_tag
+     */
     private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $jwt_unprotected_header, array $recipient_header, array $complete_header, array &$headers)
     {
         $type = $this->getKeyManager()->getType($complete_header['enc']);

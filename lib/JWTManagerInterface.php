@@ -17,7 +17,7 @@ interface JWTManagerInterface
      *       - a JWKSet (an encrypted key set that contains private materials) @see JWK section 7
      *
      * @param  string    $input   A string that represents a JSON Web Token message
-     * @param  array     $headers An optionnal array that will contain the headers used to decrypt or verify the signature.
+     * @param  array     $header An optionnal array that will contain the headers used to decrypt or verify the signature.
      * @throws Exception If a signature has not been verified or if decryption failed
      *
      * @return string|array|JWKInterface|JWKSetInterface If the JWT have been loaded, this result will contain the payload depending on the content type.

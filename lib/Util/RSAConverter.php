@@ -16,6 +16,10 @@ class RSAConverter
         return $rsa;
     }
 
+    /**
+     * @param string $certificate
+     * @param string $passphrase
+     */
     public static function fromCertificateToArray($certificate, $passphrase = null)
     {
         $res = openssl_pkey_get_private($certificate, $passphrase);

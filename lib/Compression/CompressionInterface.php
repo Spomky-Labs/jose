@@ -8,7 +8,6 @@ namespace SpomkyLabs\JOSE\Compression;
 interface CompressionInterface
 {
     /**
-     * @param  string  $name Name of the method to test
      * @return boolean Return the name of the method supported
      */
     public function getMethod();
