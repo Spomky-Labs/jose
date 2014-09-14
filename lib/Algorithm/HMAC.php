@@ -3,20 +3,13 @@
 namespace SpomkyLabs\JOSE\Algorithm;
 
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKSignInterface;
-use SpomkyLabs\JOSE\JWKVerifyInterface;
 
 /**
  * This class handles signatures using HMAC.
  * It supports algorithms HS256, HS384 and HS512;
  */
-abstract class HMAC implements JWKInterface, JWKSignInterface, JWKVerifyInterface
+abstract class HMAC implements JWKInterface, SignatureInterface, VerificationInterface
 {
-    public function __toString()
-    {
-        return json_encode($this->getValues());
-    }
-
     public function toPublic()
     {
         return $this->getValues();

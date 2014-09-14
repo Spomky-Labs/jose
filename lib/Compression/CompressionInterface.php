@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\JOSE\Compression;
 
 /**
  * This interface is used by all compression methods
@@ -8,7 +8,6 @@ namespace SpomkyLabs\JOSE;
 interface CompressionInterface
 {
     /**
-     * @param  string  $name Name of the method to test
      * @return boolean Return the name of the method supported
      */
     public function getMethod();

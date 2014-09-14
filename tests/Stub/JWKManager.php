@@ -3,7 +3,6 @@
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManager as Base;
-use SpomkyLabs\JOSE\JWKSet;
 use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
@@ -12,9 +11,13 @@ class JWKManager extends Base
 {
     private $keys = array();
 
-    protected function findJWKByAPV($apv)
+    protected function findJWKByAPV($header)
     {
-        if ('Bob' === Base64Url::decode($apv)) {
+        if (!isset($header['apv'])) {
+            return null;
+        }
+
+        if ('Bob' === Base64Url::decode($header['apv'])) {
             return $this->createJWK(array(
                 "kty" =>"EC",
                 "crv" =>"P-256",
@@ -23,7 +26,7 @@ class JWKManager extends Base
                 "d"   =>"VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw"
             ));
         }
-        if ('Alice' === Base64Url::decode($apv)) {
+        if ('Alice' === Base64Url::decode($header['apv'])) {
             return $this->createJWK(array(
                 "kty" =>"EC",
                 "crv" =>"P-256",
@@ -36,28 +39,53 @@ class JWKManager extends Base
         return null;
     }
 
-    protected function findJWKByKid($kid)
+    protected function findJWKByJWK($header)
     {
-        if ($kid === '2010-12-29') {
-            return $this->createJWK(array(
-                "kty" =>"RSA",
-                "n"   =>"ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ",
-                "e"   =>"AQAB",
-                "d"   =>"Eq5xpGnNCivDflJsRQBXHx1hdR1k6Ulwe2JZD50LpXyWPEAeP88vLNO97IjlA7_GQ5sLKMgvfTeXZx9SE-7YwVol2NXOoAJe46sui395IW_GO-pWJ1O0BkTGoVEn2bKVRUCgu-GjBVaYLU6f3l9kJfFNS3E0QbVdxzubSu3Mkqzjkn439X0M_V51gfpRLI9JYanrC4D4qAdGcopV_0ZHHzQlBjudU2QvXt4ehNYTCBr6XCLQUShb1juUO1ZdiYoFaFQT5Tw8bGUl_x_jTj3ccPDVZFD9pIuhLhBOneufuBiB4cS98l2SR_RQyGWSeWjnczT0QU91p1DhOVRuOopznQ"
-            ));
+        if (!isset($header['jwk'])) {
+            return null;
         }
 
-        if ($kid === 'e9bc097a-ce51-4036-9562-d2ade882db0d') {
-            return $this->createJWK(array(
-                "kty" =>"EC",
-                "crv" =>"P-256",
-                "x"   =>"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-                "y"   =>"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-                "d"   =>"jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI"
-            ));
+        return $this->createJWK($header['jwk']);
+    }
+
+    protected function findJWKByKid($header)
+    {
+        if (!isset($header['kid'])) {
+            return null;
+        }
+        switch ($header['kid']) {
+            case '2010-12-29':
+                return $this->createJWK(array(
+                    "kty" =>"RSA",
+                    "n"   =>"ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ",
+                    "e"   =>"AQAB",
+                    "d"   =>"Eq5xpGnNCivDflJsRQBXHx1hdR1k6Ulwe2JZD50LpXyWPEAeP88vLNO97IjlA7_GQ5sLKMgvfTeXZx9SE-7YwVol2NXOoAJe46sui395IW_GO-pWJ1O0BkTGoVEn2bKVRUCgu-GjBVaYLU6f3l9kJfFNS3E0QbVdxzubSu3Mkqzjkn439X0M_V51gfpRLI9JYanrC4D4qAdGcopV_0ZHHzQlBjudU2QvXt4ehNYTCBr6XCLQUShb1juUO1ZdiYoFaFQT5Tw8bGUl_x_jTj3ccPDVZFD9pIuhLhBOneufuBiB4cS98l2SR_RQyGWSeWjnczT0QU91p1DhOVRuOopznQ"
+                ));
+
+            case 'e9bc097a-ce51-4036-9562-d2ade882db0d':
+                return $this->createJWK(array(
+                    "kty" =>"EC",
+                    "crv" =>"P-256",
+                    "x"   =>"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
+                    "y"   =>"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+                    "d"   =>"jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI"
+                ));
+
+            case '123456789':
+                return $this->createJWK(array(
+                    "kty" =>"RSA",
+                    'n' => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e' => 'AQAB',
+                    'p' => '5BGU1c7af_5sFyfsa-onIJgo5BZu8uHvz3Uyb8OA0a-G9UPO1ShLYjX0wUfhZcFB7fwPtgmmYAN6wKGVce9eMAbX4PliPk3r-BcpZuPKkuLk_wFvgWAQ5Hqw2iEuwXLV0_e8c2gaUt_hyMC5-nFc4v0Bmv6NT6Pfry-UrK3BKWc',
+                    'd' => 'Kp0KuZwCZGL1BLgsVM-N0edMNitl9wN5Hf2WOYDoIqOZNAEKzdJuenIMhITJjRFUX05GVL138uyp2js_pqDdY9ipA7rAKThwGuDdNphZHech9ih3DGEPXs-YpmHqvIbCd3GoGm38MKwxYkddEpFnjo8rKna1_BpJthrFxjDRhw9DxJBycOdH2yWTyp62ZENPvneK40H2a57W4QScTgfecZqD59m2fGUaWaX5uUmIxaEmtGoJnd9RE4oywKhgN7_TK7wXRlqA4UoRPiH2ACrdU-_cLQL9Jc0u0GqZJK31LDbOeN95QgtSCc72k3Vtzy3CrVpp5TAA67s1Gj9Skn-CAQ',
+                    'q' => 'zPD-B-nrngwF-O99BHvb47XGKR7ON8JCI6JxavzIkusMXCB8rMyYW8zLs68L8JLAzWZ34oMq0FPUnysBxc5nTF8Nb4BZxTZ5-9cHfoKrYTI3YWsmVW2FpCJFEjMs4NXZ28PBkS9b4zjfS2KhNdkmCeOYU0tJpNfwmOTI90qeUdU',
+                    'dp' => 'aJrzw_kjWK9uDlTeaES2e4muv6bWbopYfrPHVWG7NPGoGdhnBnd70-jhgMEiTZSNU8VXw2u7prAR3kZ-kAp1DdwlqedYOzFsOJcPA0UZhbORyrBy30kbll_7u6CanFm6X4VyJxCpejd7jKNw6cCTFP1sfhWg5NVJ5EUTkPwE66M',
+                    'dq' => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
+                    'qi' => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
+                ));
         }
 
-        return isset($this->keys[$kid]) ? $this->keys[$kid] : null;
+        return isset($this->keys[$header['kid']]) ? $this->keys[$header['kid']] : null;
     }
 
     public function createJWKSet(array $values = array())
@@ -69,6 +97,23 @@ class JWKManager extends Base
         }
 
         return $key_set;
+    }
+
+    public function findJWKByJku($header)
+    {
+        if (!isset($header["jku"])) {
+            return null;
+        }
+
+        $content = json_decode(file_get_contents($header["jku"]), true);
+        if (!is_array($content)) {
+            return null;
+        }
+        if (!isset($content['keys'])) {
+            return null;
+        }
+
+        return $this->createJWKSet($content['keys']);
     }
 
     public function createJWK(array $values)
@@ -85,18 +130,24 @@ class JWKManager extends Base
 
     protected function getSupportedMethods()
     {
-        return parent::getSupportedMethods()+array(
-            'alg' => 'findJWKByAlgorithm',
-            'apv' => 'findJWKByAPV',
+        return array(
+            'findJWKByJWK',
+            'findJWKByKid',
+            //'findJWKByJku',
+            'findJWKByAPV',
+            'findJWKByAlgorithm',
         );
     }
 
-    protected function findJWKByAlgorithm($alg)
+    protected function findJWKByAlgorithm($header)
     {
+        if (!isset($header['alg'])) {
+            return null;
+        }
+        $alg = $header['alg'];
         if ($alg === "RSA1_5" || $alg === 'RSA-OAEP' || $alg === 'RSA-OAEP-256') {
             return $this->createJWK(array(
                 "kty" =>"RSA",
-                "alg" =>$alg,
                 "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
                 "e"   =>"AQAB",
                 "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
@@ -106,7 +157,6 @@ class JWKManager extends Base
         if ($alg === "dir") {
             return $this->createJWK(array(
                 "kty" =>"dir",
-                "alg" =>$alg,
                 "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q'
             ));
         }

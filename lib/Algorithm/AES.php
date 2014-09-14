@@ -3,22 +3,13 @@
 namespace SpomkyLabs\JOSE\Algorithm;
 
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKEncryptInterface;
-use SpomkyLabs\JOSE\JWKDecryptInterface;
-use SpomkyLabs\JOSE\JWKContentEncryptionInterface;
-use SpomkyLabs\JOSE\JWKAuthenticationTagInterface;
 use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
- * This class handles encryption of text using A128CBC-HS256 or A256CBC-HS512 algorithms.
+ * This class handles encryption of text using A128CBC-HS256, A192CBC-HS384 or A256CBC-HS512 algorithms.
  */
-abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentDecryptionInterface
 {
-    public function __toString()
-    {
-        return json_encode($this->getValues());
-    }
-
     public function toPublic()
     {
         return $this->getValues();
@@ -27,31 +18,28 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
     /**
      * @inheritdoc
      */
-    public function encrypt($data, array &$header = array())
+    public function encryptContent($input, $cek, $iv, array &$header = array())
     {
-        $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
+        $k = substr($cek, strlen($cek)/2);
 
-        $aes = new \Crypt_AES(CRYPT_AES_MODE_CBC);
-        $aes->setBlockLength($this->getBlockLength($header));
+        $aes = new \Crypt_AES();
+        $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
         $aes->setKey($k);
-        $aes->setIV($this->getValue(('iv')));
+        $aes->setIV($iv);
 
-        return $aes->encrypt($data);
+        return $aes->encrypt($input);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function decrypt($data, array $header = array())
+    public function decryptContent($input, $cek, $iv, array $header)
     {
-        $k = substr($this->getValue('cek'), strlen($this->getValue('cek'))/2);
+        $k = substr($cek, strlen($cek)/2);
 
-        $aes = new \Crypt_AES(CRYPT_AES_MODE_CBC);
-        $aes->setBlockLength($this->getBlockLength($header));
+        $aes = new \Crypt_AES();
+        $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
         $aes->setKey($k);
-        $aes->setIV($this->getValue(('iv')));
+        $aes->setIV($iv);
 
-        return $aes->decrypt($data);
+        return $aes->decrypt($input);
     }
 
     public function isPrivate()
@@ -64,24 +52,42 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         return true;
     }
 
-    protected function getBlockLength(array $header)
+    public function calculateAuthenticationTag($cek, $iv, $encrypted_data, array $header)
     {
-        $enc = $this->getAlgorithm($header);
-        switch ($enc) {
-            case 'A128CBC-HS256':
-                return 128;
-            case 'A192CBC-HS384':
-                return 192;
-            case 'A256CBC-HS512':
-                return 256;
-            default:
-                throw new \Exception("Algorithm $enc is not supported");
+        $mac_key          = substr($cek, 0, strlen($cek)/2);
+        $encoded_header   = Base64Url::encode(json_encode($header));
+        $auth_data_length = strlen($encoded_header);
+
+        $secured_input = implode('', array(
+            $encoded_header,
+            $iv,
+            $encrypted_data,
+            pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
+        ));
+        $hash = hash_hmac($this->getHashAlgorithm($header), $secured_input, $mac_key, true);
+
+        return substr($hash, 0, strlen($hash)/2);
+    }
+
+    public function checkAuthenticationTag($authentication_tag, $cek, $iv, $encrypted_data, array $header)
+    {
+        return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $header);
+    }
+
+    protected function getEncryptionAlgorithm(array $header)
+    {
+        $enc = $header['enc'];
+        $alg = $this->getValue('alg');
+        if ($alg !== null && $alg === $enc) {
+            throw new \Exception("The algorithm used by this key is '$alg', but the header tried to use '$enc'");
         }
+
+        return $enc;
     }
 
     protected function getHashAlgorithm(array $header)
     {
-        $enc = $this->getAlgorithm($header);
+        $enc = $this->getEncryptionAlgorithm($header);
         switch ($enc) {
             case 'A128CBC-HS256':
                 return 'sha256';
@@ -94,85 +100,28 @@ abstract class AES implements JWKInterface, JWKEncryptInterface, JWKDecryptInter
         }
     }
 
-    public function calculateAuthenticationTag($data)
+    private function getKeySize(array $header)
     {
-        $mac_key          = substr($this->getValue('cek'), 0, strlen($this->getValue('cek'))/2);
-        $auth_data        = Base64Url::encode(json_encode($data['header']));
-        $auth_data_length = strlen($auth_data);
-
-        $secured_input = implode('', array(
-            $auth_data,
-            $data['iv'],
-            $data['encrypted_data'],
-            // NOTE: PHP doesn't support 64bit big endian, so handling upper & lower 32bit.
-            pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
-        ));
-        $hash = hash_hmac($this->getHashAlgorithm($data['header']), $secured_input, $mac_key, true);
-
-        return substr($hash, 0, strlen($hash)/2);
-    }
-
-    public function checkAuthenticationTag($data)
-    {
-        return $data['authentication_tag'] === $this->calculateAuthenticationTag($data);
-    }
-
-    public function createIV(array $header)
-    {
-        $enc = $this->getAlgorithm($header);
-        switch ($enc) {
+        $alg = $header['enc'];
+        switch ($alg) {
             case 'A128CBC-HS256':
-                $iv = $this->generateRandomString(128 / 8);
-                break;
+                return 256;
             case 'A192CBC-HS384':
-                $iv = $this->generateRandomString(192 / 8);
-                break;
+                return 384;
             case 'A256CBC-HS512':
-                $iv = $this->generateRandomString(256 / 8);
-                break;
+                return 512;
             default:
-                throw new \Exception("Algorithm $enc is not supported");
+                throw new \Exception("Encryption algorithm '$alg' is not supported");
         }
-        $this->setValue('iv', $iv);
-
-        return $this;
     }
 
-    public function createCEK(array $header)
+    public function getIVSize(array $header)
     {
-        $enc = $this->getAlgorithm($header);
-        switch ($enc) {
-            case 'A128CBC-HS256':
-                $cek = $this->generateRandomString(256 / 8);
-                break;
-            case 'A192CBC-HS384':
-                $cek = $this->generateRandomString(384 / 8);
-                break;
-            case 'A256CBC-HS512':
-                $cek = $this->generateRandomString(512 / 8);
-                break;
-            default:
-                throw new \Exception("Algorithm $enc is not supported");
-        }
-        $this->setValue('cek', $cek);
-
-        return $this;
+        return $this->getKeySize($header);
     }
 
-    /**
-     * @param integer $length
-     */
-    protected function generateRandomString($length)
+    public function getCEKSize(array $header)
     {
-        return crypt_random_string($length);
-    }
-
-    protected function getAlgorithm($header)
-    {
-        if (isset($header['enc']) && $header['enc'] !== null) {
-            return $header['enc'];
-        }
-
-        return $this->getValue('alg');
+        return $this->getKeySize($header);
     }
 }

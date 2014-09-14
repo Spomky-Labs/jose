@@ -5,6 +5,8 @@ namespace SpomkyLabs\JOSE\Tests\Algorithm;
 use SpomkyLabs\JOSE\Algorithm\RSA as Base;
 
 /**
+ * Simple class tu use RSA encryption/decryption/signature/verification for tests.
+ * The class is exactly the same as other algorithms. We could use traits to avoid duplicated code lines, but tests will fail on PHP 5.3
  */
 class RSA extends Base
 {
@@ -13,6 +15,11 @@ class RSA extends Base
     public function __construct()
     {
         $this->setValue('kty', 'RSA');
+    }
+
+    public function __toString()
+    {
+        return json_encode($this->getValues());
     }
 
     public function getValue($key)

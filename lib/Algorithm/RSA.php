@@ -3,10 +3,6 @@
 namespace SpomkyLabs\JOSE\Algorithm;
 
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKSignInterface;
-use SpomkyLabs\JOSE\JWKVerifyInterface;
-use SpomkyLabs\JOSE\JWKEncryptInterface;
-use SpomkyLabs\JOSE\JWKDecryptInterface;
 use SpomkyLabs\JOSE\Util\RSAConverter;
 
 /**
@@ -14,13 +10,8 @@ use SpomkyLabs\JOSE\Util\RSAConverter;
  *     - signatures PS256/RS256, PS384/RS384 and PS512/RS512.
  *     - encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
  */
-abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface
+abstract class RSA implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
-    public function __toString()
-    {
-        return json_encode($this->getValues());
-    }
-
     public function toPublic()
     {
         $values = $this->getValues();
@@ -38,7 +29,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
     /**
      * @inheritdoc
      */
-    public function encrypt($data, array &$header = array())
+    public function encryptKey($cek, array &$header = array(), JWKInterface $sender_key = null)
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 
@@ -48,13 +39,13 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
         $rsa->setEncryptionMode($this->getEncryptionMethod($header));
 
-        return $rsa->encrypt($data);
+        return $rsa->encrypt($cek);
     }
 
     /**
      * @inheritdoc
      */
-    public function decrypt($data, array $header = array())
+    public function decryptKey($encrypted_key, array $header = array())
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(true));
         if (!$this->isPrivate()) {
@@ -67,7 +58,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
         $rsa->setEncryptionMode($this->getEncryptionMethod($header));
 
-        return $rsa->decrypt($data);
+        return $rsa->decrypt($encrypted_key);
     }
 
     /**
@@ -104,7 +95,12 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
         }
         $rsa->setSignatureMode($this->getSignatureMethod($header));
 
-        return $rsa->sign($data);
+        $result = $rsa->sign($data);
+        if ($result === false) {
+            throw new \Exception("An error occured during the creation of the signature");
+        }
+
+        return $result;
     }
 
     public function isPrivate()
@@ -164,7 +160,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
             case 'PS512':
                 return 'sha512';
             default:
-                throw new \Exception("Algorithm $alg is not supported");
+                throw new \Exception("Algorithm '$alg' is not supported");
         }
     }
 
@@ -184,7 +180,7 @@ abstract class RSA implements JWKInterface, JWKSignInterface, JWKVerifyInterface
             case 'PS512':
                 return CRYPT_RSA_SIGNATURE_PSS;
             default:
-                throw new \Exception("Algorithm $alg is not supported");
+                throw new \Exception("Algorithm '$alg' is not supported");
         }
     }
 

@@ -12,25 +12,14 @@ use Mdanter\Ecc\ModuleConfig;
 use Mdanter\Ecc\NISTcurve;
 use SpomkyLabs\JOSE\Util\Base64Url;
 use SpomkyLabs\JOSE\JWKInterface;
-use SpomkyLabs\JOSE\JWKSignInterface;
-use SpomkyLabs\JOSE\JWKVerifyInterface;
-use SpomkyLabs\JOSE\JWKEncryptInterface;
-use SpomkyLabs\JOSE\JWKDecryptInterface;
-use SpomkyLabs\JOSE\JWKContentEncryptionInterface;
-use SpomkyLabs\JOSE\JWKAuthenticationTagInterface;
 
 /**
  * This class handles
  *     - signatures using Elliptic Curves (ES256, ES384 and ES512).
  *     - encryption of text using ECDH-ES algorithm.
  */
-abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface, JWKEncryptInterface, JWKDecryptInterface, JWKContentEncryptionInterface, JWKAuthenticationTagInterface
+abstract class EC implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
-    public function __toString()
-    {
-        return json_encode($this->getValues());
-    }
-
     public function toPublic()
     {
         $values = $this->getValues();
@@ -66,7 +55,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $x     = $this->convertBase64ToDec($this->getValue('x'));
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $d     = $this->convertBase64ToDec($this->getValue('d'));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
 
         if (ModuleConfig::hasGmp()) {
             $k = GmpUtils::gmpRandom($p->getOrder());
@@ -115,7 +104,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S     = $this->convertHexToDec(substr($signature, $part_length));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm($header),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
 
         $public_key = new PublicKey($p, new Point($curve, $x, $y));
 
@@ -125,31 +114,31 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
     /**
      * @inheritdoc
      */
-    public function encrypt($data, array &$header = array())
+    public function encryptKey($cek, array &$header = array(), JWKInterface $sender_key = null)
     {
-        //x & y === pub key of the receiver
-        //pub->x & pub->y === pub key of the sender
+        if (!$sender_key instanceof EC) {
+            throw new \Exception("The sender key is mandatory using ECDH-ES key encryption");
+        }
+        if ($this->getValue('crv') !== $sender_key->getValue('crv')) {
+            throw new \Exception("Sender and recipient have keys with different curves");
+        }
 
-        $p      = $this->getGenerator();
-        $curve  = $this->getCurve();
-        $rec_x  = $this->convertBase64ToDec($this->getValue('x'));
-        $rec_y  = $this->convertBase64ToDec($this->getValue('y'));
-        $sen_x  = $header['sender_private_key']['x'];
-        $sen_y  = $header['sender_private_key']['y'];
-        $sen_d = $this->convertBase64ToDec($header['sender_private_key']['d']);
+        $p     = $this->getGenerator();
+        $curve = $this->getCurve();
+        $rec_x = $this->convertBase64ToDec($this->getValue('x'));
+        $rec_y = $this->convertBase64ToDec($this->getValue('y'));
+        $sen_d = $this->convertBase64ToDec($sender_key->getValue('d'));
 
-        $ext = new ECDHExtension($p, $sen_d);
-        $ext->setReceiverPoint(new Point($curve, $rec_x, $rec_y));
+        $ext1 = new ECDHExtension($p, $sen_d);
+        $ext1->setReceiverPoint(new Point($curve, $rec_x, $rec_y));
 
-        unset($header['sender_private_key']);
-        $header['epk'] = array(
-            "kty"=>"EC",
-            "crv"=>"P-256",
-            'x' => $sen_x,
-            'y' => $sen_y
-        );
+        $header['epk'] = $sender_key->toPublic();
 
-        $enc = $ext->encrypt($data);
+        $enc = $ext1->encrypt($cek);
+
+        if($enc === false) {
+            throw new \Exception("An error occured during the encryption of the CEK");
+        }
 
         return $enc;
     }
@@ -157,7 +146,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
     /**
      * @inheritdoc
      */
-    public function decrypt($data, array $header = array())
+    public function decryptKey($encrypted_cek, array $header = array())
     {
         $p      = $this->getGenerator();
         $curve  = $this->getCurve();
@@ -168,9 +157,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         $ext = new ECDHExtension($p, $rec_d);
         $ext->setReceiverPoint(new Point($curve, $sen_x, $sen_y));
 
-        $dec = $ext->decrypt($data);
-
-        return $dec;
+        return $ext->decrypt($encrypted_cek);
     }
 
     protected function getCurve()
@@ -203,7 +190,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         }
     }
 
-    protected function getHashAlgorithm($header)
+    protected function getHashAlgorithm()
     {
         $crv = $this->getValue('crv');
         switch ($crv) {
@@ -246,6 +233,9 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         return pack("H*",$value);
     }
 
+    /**
+     * @param string $value
+     */
     protected function convertBinToHex($value)
     {
         $value = unpack('H*',$value);
@@ -294,7 +284,7 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         return $this->convertHexToDec($value[1]);
     }
 
-    public function calculateAuthenticationTag($data)
+    /*public function calculateAuthenticationTag($data)
     {
         $mac_key          = substr($this->getValue('cek'), 0, strlen($this->getValue('cek'))/2);
         $auth_data        = Base64Url::encode(json_encode($data['header']));
@@ -359,13 +349,10 @@ abstract class EC implements JWKInterface, JWKSignInterface, JWKVerifyInterface,
         return $this;
     }
 
-    /**
-     * @param integer $length
-     */
     protected function generateRandomString($length)
     {
         return crypt_random_string($length);
-    }
+    }*/
 
     protected function getAlgorithm($header)
     {

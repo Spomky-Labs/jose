@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\JOSE\Compression;
 
 /**
  * This interface is used by all compression methods

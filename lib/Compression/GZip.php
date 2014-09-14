@@ -2,21 +2,24 @@
 
 namespace SpomkyLabs\JOSE\Compression;
 
-use SpomkyLabs\JOSE\CompressionInterface;
-
 /**
  * This interface is used by all compression methods
  */
 class GZip implements CompressionInterface
 {
+    protected function getCompressionLevel()
+    {
+        return -1;
+    }
+
     public function getMethod()
     {
-        return 'gzip';
+        return 'GZ';
     }
 
     public function compress($data)
     {
-        return gzencode($data);
+        return gzencode($data, $this->getCompressionLevel());
     }
 
     public function uncompress($data)
