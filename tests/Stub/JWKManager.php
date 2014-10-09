@@ -83,6 +83,26 @@ class JWKManager extends Base
                     'dq' => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                     'qi' => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
                 ));
+
+            case '71ee230371d19630bc17fb90ccf20ae632ad8cf8':
+                return $this->createJWK(array(
+                    "kty" => "RSA",
+                    "alg" => "RS256",
+                    "use" => "sig",
+                    "kid" => "71ee230371d19630bc17fb90ccf20ae632ad8cf8",
+                    "n"   => "vnMTRCMvsS04M1yaKR112aB8RxOkWHFixZO68wCRlVLxK4ugckXVD_Ebcq-kms1T2XpoWntVfBuX40r2GvcD9UsTFt_MZlgd1xyGwGV6U_tfQUll5mKxCPjr60h83LXKJ_zmLXIqkV8tAoIg78a5VRWoms_0Bn09DKT3-RBWFjk=",
+                    "e"   => "AQAB"
+                ));
+
+            case '02491f945c951adf156f370788e8ccdabf8877a8':
+                return $this->createJWK(array(
+                    "kty" => "RSA",
+                    "alg" => "RS256",
+                    "use" => "sig",
+                    "kid" => "02491f945c951adf156f370788e8ccdabf8877a8",
+                    "n"   => "rI67uHIDWDgCy_Ut-FhhjTCkEcqzoO80IRgdpk_fJHlDmXhMTJKPizxbIEMs0wRHRZpwH-4D20thpnQB5Mgx6-XM9kOvcYpHSdcYME77BwX6uQG-hw2w77NOhYiCSZCLzx-5ld5Wjy0dympL-ExqQw-wrWipMX7NQhIbJqVbZ18=",
+                    "e"   => "AQAB"
+                ));
         }
 
         return isset($this->keys[$header['kid']]) ? $this->keys[$header['kid']] : null;
