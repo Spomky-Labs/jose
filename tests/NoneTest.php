@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Tests\Algorithm\None;
+use SpomkyLabs\JOSE\Algorithm\None;
 
 class NoneTest extends \PHPUnit_Framework_TestCase
 {

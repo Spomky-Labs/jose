@@ -3,17 +3,19 @@
 namespace SpomkyLabs\JOSE;
 
 use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Algorithm\VerificationInterface;
-use SpomkyLabs\JOSE\Algorithm\SignatureInterface;
-use SpomkyLabs\JOSE\Algorithm\KeyDecryptionInterface;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryptionInterface;
-use SpomkyLabs\JOSE\Algorithm\ContentEncryptionInterface;
-use SpomkyLabs\JOSE\Algorithm\ContentDecryptionInterface;
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
+use Jose\KeyOperation\VerificationInterface;
+use Jose\KeyOperation\SignatureInterface;
+use Jose\KeyOperation\KeyDecryptionInterface;
+use Jose\KeyOperation\KeyEncryptionInterface;
+use Jose\KeyOperation\ContentEncryptionInterface;
+use Jose\KeyOperation\ContentDecryptionInterface;
 
 /**
  * Class representing a JSON Web Token Manager.
  */
-abstract class JWTManager implements JWTManagerInterface
+abstract class JWTManager
 {
     abstract protected function getKeyManager();
     abstract protected function getCompressionManager();
@@ -142,7 +144,7 @@ abstract class JWTManager implements JWTManagerInterface
 
         $jwk_set = $this->getKeyManager()->findByHeader($complete_header);
 
-        if (!$jwk_set->isEmpty()) {
+        if (!empty($jwk_set)) {
             foreach ($jwk_set->getKeys() as $jwk) {
                 if ($this->canVerify($jwk)) {
                     if ($jwk->verify(
@@ -169,7 +171,7 @@ abstract class JWTManager implements JWTManagerInterface
 
         $jwk_set = $this->getKeyManager()->findByHeader($jwt_header);
 
-        if ($jwk_set->isEmpty()) {
+        if (empty($jwk_set)) {
             throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
         }
 
@@ -222,7 +224,7 @@ abstract class JWTManager implements JWTManagerInterface
 
             $jwk_set = $this->getKeyManager()->findByHeader($complete_header);
 
-            if (!$jwk_set->isEmpty()) {
+            if (!empty($jwk_set)) {
                 foreach ($jwk_set->getKeys() as $jwk) {
                     if ($jwk instanceof KeyDecryptionInterface && $this->canDecryptCEK($jwk)) {
                         $jwt_decrypted_cek = $jwk->decryptKey(Base64Url::decode($recipient['encrypted_key']), $complete_header);
@@ -260,7 +262,7 @@ abstract class JWTManager implements JWTManagerInterface
         $jwt_payload = $key->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $complete_header);
 
         if (isset($complete_header['zip'])) {
-            $method = $this->getCompressionManager()->getCompressionMethod($complete_header['zip']);
+            $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
             if ($method === null) {
                 throw new \Exception("Compression method '".$complete_header['zip']."' not supported");
             }
@@ -385,7 +387,7 @@ abstract class JWTManager implements JWTManagerInterface
             $input = json_encode($input);
         } elseif ($input instanceof JWKInterface || $input instanceof JWKSetInterface) {
             $protected_header['cty'] = $input instanceof JWKInterface ? 'jwk+json' : 'jwkset+json';
-            $input = $input->__toString();
+            $input = json_encode($input);
         }
         if (!is_string($input)) {
             throw new \Exception("Unsupported input type");
@@ -411,7 +413,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         if (isset($jwt_header['zip'])) {
-            $method = $this->getCompressionManager()->getCompressionMethod($jwt_header['zip']);
+            $method = $this->getCompressionManager()->getCompressionAlgorithm($jwt_header['zip']);
             if ($method === null) {
                 throw new \Exception("Compression method '".$jwt_header['zip']."' not supported");
             }
@@ -521,7 +523,7 @@ abstract class JWTManager implements JWTManagerInterface
         $tmp_header = array("enc" =>$data['header']['enc']);
 
         if (isset($data['header']['zip'])) {
-            $method = $this->getCompressionManager()->getCompressionMethod($data['header']['zip']);
+            $method = $this->getCompressionManager()->getCompressionAlgorithm($data['header']['zip']);
             if ($method === null) {
                 throw new \Exception("Compression method '".$data['header']['zip']."' not supported");
             }

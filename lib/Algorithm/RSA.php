@@ -2,7 +2,12 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use SpomkyLabs\JOSE\JWKInterface;
+use Jose\JWK;
+use Jose\JWKInterface;
+use Jose\KeyOperation\SignatureInterface;
+use Jose\KeyOperation\VerificationInterface;
+use Jose\KeyOperation\KeyEncryptionInterface;
+use Jose\KeyOperation\KeyDecryptionInterface;
 use SpomkyLabs\JOSE\Util\RSAConverter;
 
 /**
@@ -10,8 +15,36 @@ use SpomkyLabs\JOSE\Util\RSAConverter;
  *     - signatures PS256/RS256, PS384/RS384 and PS512/RS512.
  *     - encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
  */
-abstract class RSA implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
+class RSA implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
+    use JWK;
+
+    protected $values = array('kty' => 'RSA');
+
+    public function getValue($key)
+    {
+        return array_key_exists($key, $this->getValues()) ? $this->values[$key] : null;
+    }
+
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+
+        return $this;
+    }
+
+    public function setValues(array $values)
+    {
+        $this->values = $values;
+
+        return $this;
+    }
+
     public function toPublic()
     {
         $values = $this->getValues();
@@ -117,21 +150,24 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
         return $rsa->getPublicKey() !== null;
     }
 
-    protected function getAlgorithm($header)
+    /*protected function getAlgorithm($header)
     {
         if (isset($header['alg']) && $header['alg'] !== null) {
             return $header['alg'];
         }
 
         return $this->getValue('alg');
-    }
+    }*/
 
     /**
      * @return integer
      */
     protected function getEncryptionMethod($header)
     {
-        $alg = $this->getAlgorithm($header);
+        $alg = $this->getAlgorithm();
+        if (null === $alg && isset($header['alg'])) {
+            $alg = $header['alg'];
+        }
         switch ($alg) {
             case 'RSA1_5':
                 return CRYPT_RSA_ENCRYPTION_PKCS1;
@@ -145,7 +181,10 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
 
     protected function getHashAlgorithm($header)
     {
-        $alg = $this->getAlgorithm($header);
+        $alg = $this->getAlgorithm();
+        if (null === $alg && isset($header['alg'])) {
+            $alg = $header['alg'];
+        }
         switch ($alg) {
             case 'RSA-OAEP':
                 return 'sha1';
@@ -169,7 +208,10 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
      */
     protected function getSignatureMethod($header)
     {
-        $alg = $this->getAlgorithm($header);
+        $alg = $this->getAlgorithm();
+        if (null === $alg && isset($header['alg'])) {
+            $alg = $header['alg'];
+        }
         switch ($alg) {
             case 'RS256':
             case 'RS384':

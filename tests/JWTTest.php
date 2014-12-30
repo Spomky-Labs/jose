@@ -3,9 +3,9 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Tests\Stub\JWT;
-use SpomkyLabs\JOSE\Tests\Algorithm\EC;
-use SpomkyLabs\JOSE\Tests\Algorithm\RSA;
-use SpomkyLabs\JOSE\Tests\Algorithm\Dir;
+use SpomkyLabs\JOSE\Algorithm\EC;
+use SpomkyLabs\JOSE\Algorithm\RSA;
+use SpomkyLabs\JOSE\Algorithm\Dir;
 use SpomkyLabs\JOSE\Tests\Stub\JWTManager;
 use SpomkyLabs\JOSE\Tests\Stub\JWKManager;
 
@@ -206,7 +206,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $headers = array();
         $result = $jwt_manager->load($jwe, $headers);
-        $this->assertInstanceOf('SpomkyLabs\JOSE\JWKInterface', $result);
+        $this->assertInstanceOf('Jose\JWKInterface', $result);
         $this->assertEquals($jwk, $result);
         $this->assertEquals(array(
             'protected' => array(
@@ -254,7 +254,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $headers = array();
         $result = $jwt_manager->load($jwe, $headers);
-        $this->assertInstanceOf('SpomkyLabs\JOSE\JWKSetInterface', $result);
+        $this->assertInstanceOf('Jose\JWKSetInterface', $result);
         $this->assertEquals($key_set, $result);
         $this->assertEquals(array(
             'protected' => array(

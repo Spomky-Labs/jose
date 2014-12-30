@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d1339f18023e205f615b7e5ff9d3b3ee",
+    "hash": "49a8a8d7d45405c62151210386745ccd",
     "packages": [
         {
             "name": "mdanter/ecc",
@@ -162,6 +162,60 @@
                 "x509"
             ],
             "time": "2014-11-10 03:08:59"
+        },
+        {
+            "name": "spomky-labs/jose-interface",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/jose-interface.git",
+                "reference": "4b4c1e62adb6e12e4ad95708afc06cb0278b77f3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/4b4c1e62adb6e12e4ad95708afc06cb0278b77f3",
+                "reference": "4b4c1e62adb6e12e4ad95708afc06cb0278b77f3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jose\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/jose-interface/contributors"
+                }
+            ],
+            "description": "JSON Object Signing and Encryption interfaces for PHP.",
+            "homepage": "https://github.com/Spomky-Labs/jose-interface",
+            "keywords": [
+                "JOSE",
+                "JWE",
+                "JWK",
+                "JWKSet",
+                "JWS",
+                "jwa",
+                "jwt"
+            ],
+            "time": "2014-12-30 13:23:00"
         }
     ],
     "packages-dev": [
@@ -959,7 +1013,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "spomky-labs/jose-interface": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

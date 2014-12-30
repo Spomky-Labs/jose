@@ -4,6 +4,10 @@ namespace SpomkyLabs\JOSE\Tests\Stub;
 
 use SpomkyLabs\JOSE\JWKManagerInterface;
 use SpomkyLabs\JOSE\JWTManager as Base;
+use SpomkyLabs\JOSE\Compression\CompressionManager;
+use SpomkyLabs\JOSE\Compression\Deflate;
+use SpomkyLabs\JOSE\Compression\GZip;
+use SpomkyLabs\JOSE\Compression\ZLib;
 
 /**
  * Class representing a JSON Web Signature.
@@ -11,6 +15,7 @@ use SpomkyLabs\JOSE\JWTManager as Base;
 class JWTManager extends Base
 {
     private $jwk_manager;
+    private $compression_manager = null;
 
     public function getKeyManager()
     {
@@ -19,7 +24,14 @@ class JWTManager extends Base
 
     public function getCompressionManager()
     {
-        return new CompressionManager();
+        if (null === $this->compression_manager) {
+            $this->compression_manager = new CompressionManager();
+            $this->compression_manager->addCompressionAlgorithm(new Deflate())
+                                      ->addCompressionAlgorithm(new GZip())
+                                      ->addCompressionAlgorithm(new ZLib());
+        }
+
+        return $this->compression_manager;
     }
 
     public function setKeyManager(JWKManagerInterface $jwk_manager)

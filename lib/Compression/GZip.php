@@ -2,19 +2,33 @@
 
 namespace SpomkyLabs\JOSE\Compression;
 
+use Jose\Compression\CompressionInterface;
+
 /**
- * This interface is used by all compression methods
+ * This class implements the compression algorithm GZ (GZip).
+ * This compression algorithm is not part of the specification.
  */
 class GZip implements CompressionInterface
 {
-    protected function getCompressionLevel()
+    protected $compression_level = -1;
+
+    public function setCompressionLevel($level)
     {
-        return -1;
+        if (!is_numeric($level) || $level < -1 || $level > 9) {
+            throw new \InvalidArgumentException("The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library. ");
+        }
+
+        return $this;
     }
 
-    public function getMethod()
+    public function getCompressionLevel()
     {
-        return 'GZ';
+        return $this->compression_level;
+    }
+
+    public function isMethodSupported($method)
+    {
+        return 'GZ' === $method;
     }
 
     public function compress($data)

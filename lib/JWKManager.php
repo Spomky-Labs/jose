@@ -2,6 +2,9 @@
 
 namespace SpomkyLabs\JOSE;
 
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
+
 /**
  */
 abstract class JWKManager implements JWKManagerInterface

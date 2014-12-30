@@ -2,23 +2,38 @@
 
 namespace SpomkyLabs\JOSE;
 
-abstract class JWKSet implements JWKSetInterface
+use Jose\JWKSet as Base;
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
+
+class JWKSet implements JWKSetInterface
 {
-    public function isEmpty()
+    use Base;
+
+    protected $keys = array();
+
+    public function getKeys()
     {
-        return count($this->getKeys()) === 0;
+        return $this->keys;
     }
 
-    public function __toString()
+    /**
+     * Set keys in the Key
+     * @param JWKInterface $key A JWKInterface objects
+     */
+    public function addKey(JWKInterface $key)
     {
-        $keys = $this->getKeys();
-        $result = array(
-            'keys' => array(),
-        );
-        foreach ($keys as $key) {
-            $result['keys'][] = $key->getValues();
+        $this->keys[] = $key;
+
+        return $this;
+    }
+
+    public function removeKey($key)
+    {
+        if (isset($this->keys[$key])) {
+            unset($this->keys[$key]);
         }
 
-        return json_encode($result);
+        return $this;
     }
 }

@@ -23,6 +23,7 @@
     },
     "require": {
         "php": ">=5.3",
+        "spomky-labs/jose-interface": "@dev",
         "lib-openssl": "*",
         "phpseclib/phpseclib": ">=0.3.5",
         "mdanter/ecc": "~0.2"

@@ -2,21 +2,54 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
+use Jose\JWK;
+use Jose\JWKInterface;
+use Jose\KeyOperation\SignatureInterface;
+use Jose\KeyOperation\VerificationInterface;
+use Jose\KeyOperation\KeyEncryptionInterface;
+use Jose\KeyOperation\KeyDecryptionInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
 use Mdanter\Ecc\Signature;
 use Mdanter\Ecc\EccFactory;
 use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\JWKInterface;
 
 /**
  * This class handles
  *     - signatures using Elliptic Curves (ES256, ES384 and ES512).
  *     - encryption of text using ECDH-ES algorithm.
  */
-abstract class EC implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
+class EC implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
+    use JWK;
+
+    protected $values = array('kty' => 'EC');
+
+    public function getValue($key)
+    {
+        return array_key_exists($key, $this->getValues()) ? $this->values[$key] : null;
+    }
+
+    public function getValues()
+    {
+        return $this->values;
+    }
+
+    public function setValue($key, $value)
+    {
+        $this->values[$key] = $value;
+
+        return $this;
+    }
+
+    public function setValues(array $values)
+    {
+        $this->values = $values;
+
+        return $this;
+    }
+
     public function toPublic()
     {
         $values = $this->getValues();

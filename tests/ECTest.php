@@ -3,7 +3,7 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Tests\Algorithm\EC;
+use SpomkyLabs\JOSE\Algorithm\EC;
 
 class ECTest extends \PHPUnit_Framework_TestCase
 {

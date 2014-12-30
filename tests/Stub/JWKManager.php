@@ -2,6 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests\Stub;
 
+use SpomkyLabs\JOSE\JWKSet;
 use SpomkyLabs\JOSE\JWKManager as Base;
 use SpomkyLabs\JOSE\Util\Base64Url;
 
@@ -188,17 +189,17 @@ class JWKManager extends Base
     {
         switch ($type) {
             case 'EC':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\EC';
+                return 'SpomkyLabs\JOSE\Algorithm\EC';
             case 'RSA':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\RSA';
+                return 'SpomkyLabs\JOSE\Algorithm\RSA';
             case 'none':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\None';
+                return 'SpomkyLabs\JOSE\Algorithm\None';
             case 'oct':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\HMAC';
+                return 'SpomkyLabs\JOSE\Algorithm\HMAC';
             case 'AES':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\AES';
+                return 'SpomkyLabs\JOSE\Algorithm\AES';
             case 'dir':
-                return 'SpomkyLabs\JOSE\Tests\Algorithm\Dir';
+                return 'SpomkyLabs\JOSE\Algorithm\Dir';
             default:
                 throw new \Exception("Unsupported type $type");
         }
