@@ -43,13 +43,13 @@ Whenever keeping backward compatibility is not possible, the feature, the enhanc
 
 This library needs at least
 
-* `PHP 5.3`
+* `PHP 5.4`
 * PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
 * `OpenSSL` library for PHP
 * `phpseclib/phpseclib` library for RSA (encryption and signature) algorithms.
 * `mdanter/ecc` library for Elliptic Curves algorithms.
 
-It has been successfully tested using `PHP 5.3` to `PHP 5.6`.
+It has been successfully tested using `PHP 5.4` to `PHP 5.6`.
 Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
 
 ## Installation ##

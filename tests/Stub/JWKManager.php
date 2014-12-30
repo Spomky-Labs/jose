@@ -36,8 +36,6 @@ class JWKManager extends Base
                 "d"   => "0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo",
             ));
         }
-
-        return;
     }
 
     protected function findJWKByJWK($header)
@@ -181,8 +179,6 @@ class JWKManager extends Base
                 "dir" => 'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
             ));
         }
-
-        return;
     }
 
     private function getClass($type)

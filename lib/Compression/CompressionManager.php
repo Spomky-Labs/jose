@@ -26,7 +26,5 @@ class CompressionManager implements CompressionManagerInterface
                 return $algorithm;
             }
         }
-
-        return;
     }
 }
