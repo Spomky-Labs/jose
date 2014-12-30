@@ -27,6 +27,6 @@ class NoneTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($none->isPrivate());
         $this->assertEquals(array(
                 'kty' => 'none',
-        ),$none->getValues());
+        ), $none->getValues());
     }
 }

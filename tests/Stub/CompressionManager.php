@@ -22,7 +22,7 @@ class CompressionManager implements CompressionManagerInterface
             case 'GZ':
                 return new GZip();
             default:
-                return null;
+                return;
         }
     }
 }

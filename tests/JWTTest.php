@@ -21,14 +21,14 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load('eyJqd2siOnsia3R5Ijoibm9uZSJ9fQ.eyJNeURhdGEiOiJJc1ZlcnlJbXBvcnRhbnQifQ.', $header);
 
         $this->assertEquals(array(
-            'MyData'=>'IsVeryImportant'
+            'MyData' => 'IsVeryImportant',
             ),
             $result);
 
-        $this->assertEquals(array(array('protected'=>array(
-            'jwk'=>array(
-                'kty' => 'none'
-            )))),
+        $this->assertEquals(array(array('protected' => array(
+            'jwk' => array(
+                'kty' => 'none',
+            ), ))),
             $header);
     }
 
@@ -43,13 +43,13 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load('eyJraWQiOjEyMzQ1Njc4OSwiYWxnIjoiUFM1MTIifQ.eyJNeURhdGEiOiJJc1ZlcnlJbXBvcnRhbnQifQ.hB1IAB1IbZFyha0EMt999A6LxGhoDfMHfcwYalZk_dSQtVvzDkZnU3ZOMU-xQB6OjaRbQXNKTqTPuZk9sPySwWw9QTxb9EDgLWUvSB-Ug2zocLoznUtkLGE2dzRD6AeHMGyS4_YCmutPa5hkzaeXoJT8W6ZRvnb7Usbs6mMbPLhKhAPV_250r78jCkra5YCIcgg065qjuD0KVDQcHv7130N-wcVZm3e4RAIpGtpSImdzCZx3MwkR1kEoqelSavrb96AJaNbMNhJx8s_G1UpT61kMM_6jmY9r8bSy2Zi34rTk6nqt39xw3-FNeYwb9VO_36JV75sklu8iRQwVBlSFjg', $header);
 
         $this->assertEquals(array(
-            'MyData'=>'IsVeryImportant'
+            'MyData' => 'IsVeryImportant',
             ),
             $result);
 
-        $this->assertEquals(array(array('protected'=>array(
+        $this->assertEquals(array(array('protected' => array(
             'kid' => 123456789,
-            'alg' => 'PS512'
+            'alg' => 'PS512',
             ))),
             $header);
     }
@@ -57,14 +57,14 @@ class JWTTest extends \PHPUnit_Framework_TestCase
     public function testGetCompactSerializedJson()
     {
         $jwk = new EC();
-        $jwk->setValue('crv','P-521')
-            ->setValue('x',"AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
-            ->setValue('y',"ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
-            ->setValue('d',"AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
+        $jwk->setValue('crv', 'P-521')
+            ->setValue('x', "AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
+            ->setValue('y', "ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
+            ->setValue('d', "AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
 
         $input = array(
-            'iss'=>'spomky-labs',
-            'MyData'=>'IsVeryImportant'
+            'iss' => 'spomky-labs',
+            'MyData' => 'IsVeryImportant',
         );
 
         $jwt_manager = new JWTManager();
@@ -75,15 +75,15 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             true, //Compact
             $input, //The input
             array(array(
-                'key' =>$jwk,
-                'protected'=>array(
-                    'alg'=>'ES512',
-                    'jwk'=>$jwk->toPublic(),
-                    'jty'=>'JWT',
+                'key' => $jwk,
+                'protected' => array(
+                    'alg' => 'ES512',
+                    'jwk' => $jwk->toPublic(),
+                    'jty' => 'JWT',
                 ),
                 'header' => array(
                     'not' => 'important',
-                )
+                ),
             ))
         );
 
@@ -91,31 +91,30 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load($jws, $header);
 
         $this->assertEquals(array(
-            'iss'=>'spomky-labs',
-            'MyData'=>'IsVeryImportant'
+            'iss' => 'spomky-labs',
+            'MyData' => 'IsVeryImportant',
             ),
             $result);
 
-        $this->assertEquals(array(array('protected'=>array(
-                'alg'=>'ES512',
-                'jwk'=>$jwk->toPublic(),
-                'jty'=>'JWT',
+        $this->assertEquals(array(array('protected' => array(
+                'alg' => 'ES512',
+                'jwk' => $jwk->toPublic(),
+                'jty' => 'JWT',
             ))),
             $header);
-
     }
 
     public function testGetSerializedJson()
     {
         $jwk = new EC();
-        $jwk->setValue('crv','P-521')
-            ->setValue('x',"AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
-            ->setValue('y',"ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
-            ->setValue('d',"AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
+        $jwk->setValue('crv', 'P-521')
+            ->setValue('x', "AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
+            ->setValue('y', "ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
+            ->setValue('d', "AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
 
         $input = array(
-            'iss'=>'spomky-labs',
-            'MyData'=>'IsVeryImportant'
+            'iss' => 'spomky-labs',
+            'MyData' => 'IsVeryImportant',
         );
 
         $jwt_manager = new JWTManager();
@@ -126,15 +125,15 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             false, //Not compact
             $input, //The input
             array(array(
-                'key' =>$jwk,
-                'protected'=>array(
-                    'alg'=>'ES512',
-                    'jwk'=>$jwk->toPublic(),
-                    'jty'=>'JWT',
+                'key' => $jwk,
+                'protected' => array(
+                    'alg' => 'ES512',
+                    'jwk' => $jwk->toPublic(),
+                    'jty' => 'JWT',
                 ),
                 'header' => array(
                     'not' => 'important',
-                )
+                ),
             ))
         );
 
@@ -142,22 +141,21 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load($jws, $header);
 
         $this->assertEquals(array(
-            'iss'=>'spomky-labs',
-            'MyData'=>'IsVeryImportant'
+            'iss' => 'spomky-labs',
+            'MyData' => 'IsVeryImportant',
             ),
             $result);
 
         $this->assertEquals(array(array(
-            'protected'=>array(
-                'alg'=>'ES512',
-                'jwk'=>$jwk->toPublic(),
-                'jty'=>'JWT',
+            'protected' => array(
+                'alg' => 'ES512',
+                'jwk' => $jwk->toPublic(),
+                'jty' => 'JWT',
             ),
-            'header'=>array(
+            'header' => array(
                 'not' => 'important',
-            ))),
+            ), )),
             $header);
-
     }
 
     public function testLoadJWEFromIETFDraft()
@@ -173,7 +171,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("Live long and prosper.", $result);
         $this->assertEquals(array(
-            'protected' => array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256')
+            'protected' => array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256'),
         ), $header);
     }
 
@@ -187,22 +185,22 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new RSA();
         $jwk->setValues(array(
             "kty" => "RSA",
-            "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
-            "e"   =>"AQAB",
-            "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
+            "n"   => "sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
+            "e"   => "AQAB",
+            "d"   => "VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
         ));
 
         $jwe = $jwt_manager->encryptAndConvert(
             true,
             $jwk,
             array(array(
-                'key' =>$jwk
+                'key' => $jwk,
             )),
             array(
-                'typ'=>'JOSE',
-                'jty'=>'JWT',
-                "alg"=>"RSA-OAEP-256",
-                "enc"=>"A256CBC-HS512",
+                'typ' => 'JOSE',
+                'jty' => 'JWT',
+                "alg" => "RSA-OAEP-256",
+                "enc" => "A256CBC-HS512",
             )
         );
 
@@ -212,13 +210,13 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($jwk, $result);
         $this->assertEquals(array(
             'protected' => array(
-                'typ'=>'JOSE',
-                'jty'=>'JWT',
-                "alg"=>"RSA-OAEP-256",
-                "enc"=>"A256CBC-HS512",
-                "cty"=>"jwk+json",
-            )
-        ),$headers);
+                'typ' => 'JOSE',
+                'jty' => 'JWT',
+                "alg" => "RSA-OAEP-256",
+                "enc" => "A256CBC-HS512",
+                "cty" => "jwk+json",
+            ),
+        ), $headers);
     }
 
     public function testCreateEncryptedJWKSet()
@@ -233,9 +231,9 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $jwk = new RSA();
         $jwk->setValues(array(
             "kty" => "RSA",
-            "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
-            "e"   =>"AQAB",
-            "d"   =>"VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
+            "n"   => "sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
+            "e"   => "AQAB",
+            "d"   => "VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ",
         ));
 
         $key_set->addKey($jwk);
@@ -244,13 +242,13 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             true,
             $key_set,
             array(array(
-                'key' =>$jwk
+                'key' => $jwk,
             )),
             array(
-                'typ'=>'JOSE',
-                'jty'=>'JWT',
-                "alg"=>"RSA-OAEP-256",
-                "enc"=>"A256CBC-HS512",
+                'typ' => 'JOSE',
+                'jty' => 'JWT',
+                "alg" => "RSA-OAEP-256",
+                "enc" => "A256CBC-HS512",
             )
         );
 
@@ -260,13 +258,13 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($key_set, $result);
         $this->assertEquals(array(
             'protected' => array(
-                'typ'=>'JOSE',
-                'jty'=>'JWT',
-                "alg"=>"RSA-OAEP-256",
-                "enc"=>"A256CBC-HS512",
-                "cty"=>"jwkset+json",
-            )
-        ),$headers);
+                'typ' => 'JOSE',
+                'jty' => 'JWT',
+                "alg" => "RSA-OAEP-256",
+                "enc" => "A256CBC-HS512",
+                "cty" => "jwkset+json",
+            ),
+        ), $headers);
     }
 
     public function testCreateEncryptedWithECDH_ES()
@@ -278,32 +276,32 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $recipient_jwk = new EC();
         $recipient_jwk->setValues(array(
-            "kty" =>"EC",
-            "crv" =>"P-256",
-            "x"   =>"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
-            "y"   =>"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck"
+            "kty" => "EC",
+            "crv" => "P-256",
+            "x"   => "weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ",
+            "y"   => "e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck",
         ));
 
         $sender_jwk = new EC();
         $sender_jwk->setValues(array(
-            "kty" =>"EC",
-            "crv" =>"P-256",
-            "x"   =>"gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
-            "y"   =>"SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
-            "d"   =>"0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo"
+            "kty" => "EC",
+            "crv" => "P-256",
+            "x"   => "gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
+            "y"   => "SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
+            "d"   => "0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo",
         ));
 
         $jwe = $jwt_manager->encryptAndConvert(
             true,
             "The true sign of intelligence is not knowledge but imagination.",
             array(array(
-                'key' =>$recipient_jwk
+                'key' => $recipient_jwk,
             )),
             array(
-                "alg"=>"ECDH-ES",
-                "enc"=>"A256CBC-HS512",
-                "apu"=>"QWxpY2U",
-                "apv"=>"Qm9i",
+                "alg" => "ECDH-ES",
+                "enc" => "A256CBC-HS512",
+                "apu" => "QWxpY2U",
+                "apv" => "Qm9i",
             ),
             array(),
             $sender_jwk);
@@ -322,7 +320,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwk = new Dir();
         $jwk->setValues(array(
-            "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
+            "dir" => 'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
 
         ));
 
@@ -330,12 +328,12 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             true, //Compact
             "The true sign of intelligence is not knowledge but imagination.", // Input
             array(array(
-                'key'=>$jwk
+                'key' => $jwk,
             )),
             array(
-                "enc"=>"A256CBC-HS512",
-                'typ'=>'JOSE',
-                "alg"=>"dir",
+                "enc" => "A256CBC-HS512",
+                'typ' => 'JOSE',
+                "alg" => "dir",
             )
         );
 
@@ -343,10 +341,10 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load($jwe, $headers);
 
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
-        $this->assertEquals(array("protected"=>array(
-            "enc"=>"A256CBC-HS512",
-            'typ'=>'JOSE',
-            "alg"=>"dir"
+        $this->assertEquals(array("protected" => array(
+            "enc" => "A256CBC-HS512",
+            'typ' => 'JOSE',
+            "alg" => "dir",
         )), $headers);
     }
 
@@ -359,7 +357,7 @@ class JWTTest extends \PHPUnit_Framework_TestCase
 
         $jwk = new Dir();
         $jwk->setValues(array(
-            "dir" =>'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
+            "dir" => 'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
 
         ));
 
@@ -367,13 +365,13 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             true, //Compact
             "The true sign of intelligence is not knowledge but imagination.", // Input
             array(array(
-                'key'=>$jwk
+                'key' => $jwk,
             )),
             array(
-                "enc"=>"A256CBC-HS512",
-                'typ'=>'JOSE',
-                "alg"=>"dir",
-                'zip' => 'DEF'
+                "enc" => "A256CBC-HS512",
+                'typ' => 'JOSE',
+                "alg" => "dir",
+                'zip' => 'DEF',
             )
         );
 
@@ -381,11 +379,11 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $result = $jwt_manager->load($jwe, $headers);
 
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result);
-        $this->assertEquals(array("protected"=>array(
-            "enc"=>"A256CBC-HS512",
-            'typ'=>'JOSE',
-            "alg"=>"dir",
-            'zip' => 'DEF'
+        $this->assertEquals(array("protected" => array(
+            "enc" => "A256CBC-HS512",
+            'typ' => 'JOSE',
+            "alg" => "dir",
+            'zip' => 'DEF',
         )), $headers);
     }
 
@@ -400,22 +398,22 @@ class JWTTest extends \PHPUnit_Framework_TestCase
         $header = array();
         $result = $jwt_manager->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","signatures":[{"protected":"eyJhbGciOiJSUzI1NiJ9","header":{"kid":"2010-12-29"},"signature":"cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw"},{"protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}]}', $header);
         $this->assertEquals(array(
-            'iss' =>"joe",
-            'exp' =>1300819380,
-            'http://example.com/is_root' =>true,
+            'iss' => "joe",
+            'exp' => 1300819380,
+            'http://example.com/is_root' => true,
         ), $result);
         $this->assertEquals(array(
             array(
-                'protected'=>array(
-                    'alg' => 'RS256'
-                ),'header'=>array(
-                    'kid' => '2010-12-29'
-            )),array(
-                'protected'=>array(
-                    'alg' => 'ES256'
-                ),'header'=>array(
-                    'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d'
-            ))
+                'protected' => array(
+                    'alg' => 'RS256',
+                ), 'header' => array(
+                    'kid' => '2010-12-29',
+            ), ), array(
+                'protected' => array(
+                    'alg' => 'ES256',
+                ), 'header' => array(
+                    'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            ), ),
         ), $header);
     }
 
@@ -438,10 +436,10 @@ class JWTTest extends \PHPUnit_Framework_TestCase
             'unprotected' => array(
                 'jku' => "https://server.example.com/keys.jwks",
             ),
-            "header" =>array(
+            "header" => array(
                 'alg' => "RSA1_5",
-                'kid' => "2011-04-29"
-            )),
+                'kid' => "2011-04-29",
+            ), ),
             $headers
         );
     }

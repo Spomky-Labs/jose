@@ -9,7 +9,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     public function testHS256SignAndVerify()
     {
         $hmac = new HMAC();
-        $hmac->setValue('k','foo');
+        $hmac->setValue('k', 'foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data, array(
@@ -25,7 +25,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     public function testHS384SignAndVerify()
     {
         $hmac = new HMAC();
-        $hmac->setValue('k','foo');
+        $hmac->setValue('k', 'foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data, array(
@@ -41,7 +41,7 @@ class HMACTest extends \PHPUnit_Framework_TestCase
     public function testHS512SignAndVerify()
     {
         $hmac = new HMAC();
-        $hmac->setValue('k','foo');
+        $hmac->setValue('k', 'foo');
         $data = 'aaa';
 
         $signature = $hmac->sign($data, array(

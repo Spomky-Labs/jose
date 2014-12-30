@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use Mdanter\Ecc\Point;
+use Mdanter\Ecc\PointInterface;
 
 class ECDHExtension
 {
@@ -11,16 +11,16 @@ class ECDHExtension
     private $senderSecret;
     private $agreed_key;
 
-    public function __construct(Point $generator, $senderSecret)
+    public function __construct(PointInterface $generator, $senderSecret)
     {
         $this->generator   = $generator;
         $this->senderSecret = $senderSecret;
     }
 
-    public function setReceiverPoint(Point $receiverPoint)
+    public function setReceiverPoint(PointInterface $receiverPoint)
     {
         $this->receiverPoint = $receiverPoint;
-        $this->agreed_key = Point::mul($this->senderSecret, $this->receiverPoint)->getX();
+        $this->agreed_key = $this->receiverPoint->mul($this->senderSecret)->getX();
     }
 
     /**

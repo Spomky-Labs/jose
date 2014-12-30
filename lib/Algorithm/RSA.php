@@ -18,7 +18,7 @@ abstract class RSA implements JWKInterface, SignatureInterface, VerificationInte
 
         $keys = array('p', 'd', 'q', 'dp', 'dq', 'qi');
         foreach ($keys as $key) {
-            if ( isset($values[$key])) {
+            if (isset($values[$key])) {
                 unset($values[$key]);
             }
         }

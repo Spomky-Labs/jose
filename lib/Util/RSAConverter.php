@@ -3,8 +3,8 @@
 namespace SpomkyLabs\JOSE\Util;
 
 /**
-* Encode and decode data into Base64 Url Safe
-*/
+ * Encode and decode data into Base64 Url Safe
+ */
 class RSAConverter
 {
     public static function fromArrayToRSA_Crypt(array $data)
@@ -37,7 +37,7 @@ class RSAConverter
             throw new \Exception("Certificate is not a valid RSA certificate");
         }
         $values = $details['rsa'];
-        $result = array('kty'=>'RSA');
+        $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
             if ($key === "dmp1") {

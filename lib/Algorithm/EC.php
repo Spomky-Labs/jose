@@ -5,11 +5,8 @@ namespace SpomkyLabs\JOSE\Algorithm;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
-use Mdanter\Ecc\GmpUtils;
 use Mdanter\Ecc\Signature;
-use Mdanter\Ecc\BcMathUtils;
-use Mdanter\Ecc\ModuleConfig;
-use Mdanter\Ecc\NISTcurve;
+use Mdanter\Ecc\EccFactory;
 use SpomkyLabs\JOSE\Util\Base64Url;
 use SpomkyLabs\JOSE\JWKInterface;
 
@@ -24,7 +21,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
     {
         $values = $this->getValues();
 
-        if ( isset($values['d'])) {
+        if (isset($values['d'])) {
             unset($values['d']);
         }
 
@@ -50,35 +47,31 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
             throw new \Exception('This is not a private JWK');
         }
 
+        $adapter = EccFactory::getAdapter();
+
         $p     = $this->getGenerator();
         $curve = $this->getCurve();
         $x     = $this->convertBase64ToDec($this->getValue('x'));
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $d     = $this->convertBase64ToDec($this->getValue('d'));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        if (ModuleConfig::hasGmp()) {
-            $k = GmpUtils::gmpRandom($p->getOrder());
-        } elseif (ModuleConfig::hasBcMath()) {
-            $k = BcMathUtils::bcrand($p->getOrder());
-        } else {
-            throw new \RuntimeException("Please install BCMATH or GMP");
-        }
+        $k = $adapter->rand($p->getOrder());
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y));
-        $private_key = new PrivateKey($public_key, $d);
+        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $adapter), $adapter);
+        $private_key = new PrivateKey($public_key, $d, $adapter);
         $sign = $private_key->sign($hash, $k);
 
         $R = $this->convertDecToHex($sign->getR());
         $S = $this->convertDecToHex($sign->getS());
 
         $part_length = $this->getSignaturePartLength();
-        if (strlen($R)!==$part_length) {
+        if (strlen($R) !== $part_length) {
             while (strlen($R)<$part_length) {
                 $R = "0".$R;
             }
         }
-        if (strlen($S)!==$part_length) {
+        if (strlen($S) !== $part_length) {
             while (strlen($S)<$part_length) {
                 $S = "0".$S;
             }
@@ -94,9 +87,11 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
     {
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if ( strlen($signature) !== 2*$part_length) {
+        if (strlen($signature) !== 2*$part_length) {
             return false;
         }
+
+        $adapter = EccFactory::getAdapter();
 
         $p     = $this->getGenerator();
         $curve = $this->getCurve();
@@ -104,9 +99,9 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $y     = $this->convertBase64ToDec($this->getValue('y'));
         $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S     = $this->convertHexToDec(substr($signature, $part_length));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(),$data));
+        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y));
+        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $adapter), $adapter);
 
         return $public_key->verifies($hash, new Signature($R, $S));
     }
@@ -123,6 +118,8 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
             throw new \Exception("Sender and recipient have keys with different curves");
         }
 
+        $adapter = EccFactory::getAdapter();
+
         $p     = $this->getGenerator();
         $curve = $this->getCurve();
         $rec_x = $this->convertBase64ToDec($this->getValue('x'));
@@ -130,13 +127,13 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $sen_d = $this->convertBase64ToDec($sender_key->getValue('d'));
 
         $ext1 = new ECDHExtension($p, $sen_d);
-        $ext1->setReceiverPoint(new Point($curve, $rec_x, $rec_y));
+        $ext1->setReceiverPoint(new Point($curve, $rec_x, $rec_y, $p->getOrder(), $adapter));
 
         $header['epk'] = $sender_key->toPublic();
 
         $enc = $ext1->encrypt($cek);
 
-        if($enc === false) {
+        if ($enc === false) {
             throw new \Exception("An error occured during the encryption of the CEK");
         }
 
@@ -148,6 +145,8 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
      */
     public function decryptKey($encrypted_cek, array $header = array())
     {
+        $adapter = EccFactory::getAdapter();
+
         $p      = $this->getGenerator();
         $curve  = $this->getCurve();
         $rec_d  = $this->convertBase64ToDec($this->getValue('d'));
@@ -155,7 +154,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $sen_y  = $this->convertBase64ToDec($header['epk']['y']);
 
         $ext = new ECDHExtension($p, $rec_d);
-        $ext->setReceiverPoint(new Point($curve, $sen_x, $sen_y));
+        $ext->setReceiverPoint(new Point($curve, $sen_x, $sen_y, $p->getOrder(), $adapter));
 
         return $ext->decrypt($encrypted_cek);
     }
@@ -165,11 +164,11 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         $crv = $this->getValue('crv');
         switch ($crv) {
             case 'P-256':
-                return NISTcurve::curve256();
+                return EccFactory::getNistCurves()->curve256();
             case 'P-384':
-                return NISTcurve::curve384();
+                return EccFactory::getNistCurves()->curve384();
             case 'P-521':
-                return NISTcurve::curve521();
+                return EccFactory::getNistCurves()->curve521();
             default:
                 throw new \Exception("Curve $crv is not supported");
         }
@@ -178,13 +177,14 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
     protected function getGenerator()
     {
         $crv = $this->getValue('crv');
+
         switch ($crv) {
             case 'P-256':
-                return NISTcurve::generator256();
+                return EccFactory::getNistCurves()->generator256();
             case 'P-384':
-                return NISTcurve::generator384();
+                return EccFactory::getNistCurves()->generator384();
             case 'P-521':
-                return NISTcurve::generator521();
+                return EccFactory::getNistCurves()->generator521();
             default:
                 throw new \Exception("Curve $crv is not supported");
         }
@@ -222,7 +222,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
 
     protected function convertDecToBin($value)
     {
-        return pack("H*",$this->convertDecToHex($value));
+        return pack("H*", $this->convertDecToHex($value));
     }
 
     /**
@@ -230,7 +230,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
      */
     protected function convertHexToBin($value)
     {
-        return pack("H*",$value);
+        return pack("H*", $value);
     }
 
     /**
@@ -238,38 +238,30 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
      */
     protected function convertBinToHex($value)
     {
-        $value = unpack('H*',$value);
+        $value = unpack('H*', $value);
 
         return $value[1];
     }
 
     protected function convertBinToDec($value)
     {
-        $value = unpack('H*',$value);
+        $value = unpack('H*', $value);
 
         return $this->convertHexToDec($value[1]);
     }
 
     protected function convertDecToHex($value)
     {
-        if (ModuleConfig::hasGmp()) {
-            return GmpUtils::gmpDecHex($value);
-        } elseif (ModuleConfig::hasBcMath()) {
-            return BcMathUtils::bcdechex($value);
-        } else {
-            throw new \RuntimeException("Please install BCMATH or GMP");
-        }
+        $adapter = EccFactory::getAdapter();
+
+        return $adapter->decHex($value);
     }
 
     protected function convertHexToDec($value)
     {
-        if (ModuleConfig::hasGmp()) {
-            return GmpUtils::gmpHexDec($value);
-        } elseif (ModuleConfig::hasBcMath()) {
-            return BcMathUtils::bchexdec($value);
-        } else {
-            throw new \RuntimeException("Please install BCMATH or GMP");
-        }
+        $adapter = EccFactory::getAdapter();
+
+        return $adapter->hexDec($value);
     }
 
     protected function convertDecToBase64($value)
@@ -279,7 +271,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
 
     protected function convertBase64ToDec($value)
     {
-        $value = unpack('H*',Base64Url::decode($value));
+        $value = unpack('H*', Base64Url::decode($value));
 
         return $this->convertHexToDec($value[1]);
     }
@@ -352,7 +344,7 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
     protected function generateRandomString($length)
     {
         return crypt_random_string($length);
-    }*/
+    }
 
     protected function getAlgorithm($header)
     {
@@ -361,5 +353,5 @@ abstract class EC implements JWKInterface, SignatureInterface, VerificationInter
         }
 
         return $this->getValue('alg');
-    }
+    }*/
 }

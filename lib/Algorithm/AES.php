@@ -62,7 +62,7 @@ abstract class AES implements JWKInterface, ContentEncryptionInterface, ContentD
             $encoded_header,
             $iv,
             $encrypted_data,
-            pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8)
+            pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8),
         ));
         $hash = hash_hmac($this->getHashAlgorithm($header), $secured_input, $mac_key, true);
 

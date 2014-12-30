@@ -13,7 +13,7 @@ abstract class JWKSet implements JWKSetInterface
     {
         $keys = $this->getKeys();
         $result = array(
-            'keys'=>array(),
+            'keys' => array(),
         );
         foreach ($keys as $key) {
             $result['keys'][] = $key->getValues();

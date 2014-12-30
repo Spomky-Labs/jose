@@ -6,8 +6,8 @@ interface KeyDecryptionInterface
 {
     /**
      * [decryptKey description]
-     * @param  string $encrypted_cek The encrypted CEK
-     * @param  array  $header        The header
+     * @param string $encrypted_cek The encrypted CEK
+     * @param array  $header        The header
      *
      * @return string|false
      */

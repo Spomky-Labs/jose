@@ -8,12 +8,16 @@
     "authors": [
         {
             "name": "Florent Morselli",
-            "homepage": "https://github.com/Spomky-Labs/JOSE/contributors"
+            "homepage": "https://github.com/Spomky-Labs/jose/contributors"
         }
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\JOSE\\":  "lib/",
+            "SpomkyLabs\\JOSE\\":  "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
             "SpomkyLabs\\JOSE\\Tests\\":  "tests/"
         }
     },
@@ -21,11 +25,10 @@
         "php": ">=5.3",
         "lib-openssl": "*",
         "phpseclib/phpseclib": ">=0.3.5",
-        "mdanter/ecc": "*@dev"
+        "mdanter/ecc": "~0.2"
     },
     "require-dev": {
-        "phpunit/phpunit": "4.*",
-        "satooshi/php-coveralls": "0.*"
+        "phpunit/phpunit": "4.*"
     },
    "suggest":{
       "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",

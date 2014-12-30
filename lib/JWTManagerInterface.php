@@ -22,7 +22,7 @@ interface JWTManagerInterface
      *
      * @return string|array|JWKInterface|JWKSetInterface If the JWT have been loaded, this result will contain the payload depending on the content type.
      */
-    public function load($input,array &$header = array());
+    public function load($input, array &$header = array());
 
     /**
      * Sign a string or an array and convert it into its JSON (Compact) Serialized representation.
