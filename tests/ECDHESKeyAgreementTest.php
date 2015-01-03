@@ -3,8 +3,6 @@
 namespace SpomkyLabs\JOSE\Tests;
 
 use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES;
 use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A128KW;
 use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A192KW;
 use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A256KW;
