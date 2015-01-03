@@ -30,10 +30,10 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
                ->setValue("y", "SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps")
                ->setValue("d", "0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo");
 
-        $expected = Base64Url::decode("VqqN6vgjbSBcIijNcacQGg");
-
-        $ecdh_es = new ECDH_ES();
         $this->markTestIncomplete("This test passed when 'apu' and 'apv' parameters are forced. They are not yet supported by this implementation and this test is marked as incomplete. This mark will be removed when these parameter will be supported.");
+
+        //$expected = Base64Url::decode("VqqN6vgjbSBcIijNcacQGg");
+        //$ecdh_es = new ECDH_ES();
         //$this->assertEquals($expected, $ecdh_es->getAgreementKey($sender, $receiver, "A128GCM", 128));
     }
 

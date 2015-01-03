@@ -100,8 +100,6 @@ class RSAKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         }
         $cek = hex2bin(implode("", $cek));
 
-        $from_specification = Base64Url::decode("OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg");
-
         $rsa_oaep_256 = new RSA_OAEP_256();
         $encrypted = $rsa_oaep_256->encryptKey($jwk, $cek);
 

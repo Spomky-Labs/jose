@@ -32,7 +32,7 @@ abstract class ECDH_ES_AESKW implements KeyAgreementWrappingInterface, Additiona
     }
 
     /**
-     * @param string $encryption_algorithm
+     * @param string  $encryption_algorithm
      * @param integer $encryption_key_length
      */
     private function getAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_algorithm, $encryption_key_length)
