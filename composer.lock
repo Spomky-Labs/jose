@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "49a8a8d7d45405c62151210386745ccd",
+    "hash": "ff9c3ff4181fcfc4881403d3c1ee85db",
     "packages": [
         {
             "name": "mdanter/ecc",
@@ -164,24 +164,79 @@
             "time": "2014-11-10 03:08:59"
         },
         {
+            "name": "spomky-labs/aes-key-wrap",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
+                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
+                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AESKW\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/aes-key-wrap/contributors"
+                }
+            ],
+            "description": "AES Kew Wrap for PHP.",
+            "homepage": "https://github.com/Spomky-Labs/aes-key-wrap",
+            "keywords": [
+                "A128KW",
+                "A192KW",
+                "A256KW",
+                "RFC3394",
+                "aes",
+                "key",
+                "wrap"
+            ],
+            "time": "2015-01-02 10:49:23"
+        },
+        {
             "name": "spomky-labs/jose-interface",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "4b4c1e62adb6e12e4ad95708afc06cb0278b77f3"
+                "reference": "9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/4b4c1e62adb6e12e4ad95708afc06cb0278b77f3",
-                "reference": "4b4c1e62adb6e12e4ad95708afc06cb0278b77f3",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d",
+                "reference": "9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.4"
             },
             "require-dev": {
-                "phpunit/phpunit": "~4.0"
+                "phpunit/phpunit": "4.*"
             },
             "type": "library",
             "extra": {
@@ -212,10 +267,11 @@
                 "JWK",
                 "JWKSet",
                 "JWS",
+                "Jot",
                 "jwa",
                 "jwt"
             ],
-            "time": "2014-12-30 13:23:00"
+            "time": "2015-01-03 08:02:33"
         }
     ],
     "packages-dev": [
@@ -930,16 +986,16 @@
         },
         {
             "name": "sebastian/version",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/version.git",
-                "reference": "b6e1f0cf6b9e1ec409a0d3e2f2a5fb0998e36b43"
+                "reference": "a77d9123f8e809db3fbdea15038c27a95da4058b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/b6e1f0cf6b9e1ec409a0d3e2f2a5fb0998e36b43",
-                "reference": "b6e1f0cf6b9e1ec409a0d3e2f2a5fb0998e36b43",
+                "url": "https://api.github.com/repos/sebastianbergmann/version/zipball/a77d9123f8e809db3fbdea15038c27a95da4058b",
+                "reference": "a77d9123f8e809db3fbdea15038c27a95da4058b",
                 "shasum": ""
             },
             "type": "library",
@@ -961,7 +1017,7 @@
             ],
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
-            "time": "2014-03-07 15:35:33"
+            "time": "2014-12-15 14:25:24"
         },
         {
             "name": "symfony/yaml",

@@ -3,9 +3,8 @@
 namespace SpomkyLabs\JOSE;
 
 use Jose\JWS as Base;
-use Jose\JWSInterface;
 
-class JWS extends JWT implements JWSInterface
+class JWS extends Base
 {
-    use Base;
+    use JWable;
 }

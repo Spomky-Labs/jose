@@ -4,12 +4,9 @@ namespace SpomkyLabs\JOSE;
 
 use Jose\JWKSet as Base;
 use Jose\JWKInterface;
-use Jose\JWKSetInterface;
 
-class JWKSet implements JWKSetInterface
+class JWKSet extends Base
 {
-    use Base;
-
     protected $keys = array();
 
     public function getKeys()

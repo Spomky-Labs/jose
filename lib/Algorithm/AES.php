@@ -2,54 +2,18 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use Jose\JWK;
-use Jose\JWKInterface;
-use Jose\KeyOperation\ContentEncryptionInterface;
-use Jose\KeyOperation\ContentDecryptionInterface;
+use Jose\Operation\ContentEncryptionInterface;
 use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
  * This class handles encryption of text using A128CBC-HS256, A192CBC-HS384 or A256CBC-HS512 algorithms.
  */
-class AES implements JWKInterface, ContentEncryptionInterface, ContentDecryptionInterface
+class AES implements ContentEncryptionInterface
 {
-    use JWK;
-
-    protected $values = array('kty' => 'AES');
-
-    public function getValue($key)
-    {
-        return array_key_exists($key, $this->getValues()) ? $this->values[$key] : null;
-    }
-
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    public function setValue($key, $value)
-    {
-        $this->values[$key] = $value;
-
-        return $this;
-    }
-
-    public function setValues(array $values)
-    {
-        $this->values = $values;
-
-        return $this;
-    }
-
-    public function toPublic()
-    {
-        return $this->getValues();
-    }
-
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, array &$header = array())
+    public function encryptContent($input, $cek, $iv, array $header = array())
     {
         $k = substr($cek, strlen($cek)/2);
 
@@ -71,16 +35,6 @@ class AES implements JWKInterface, ContentEncryptionInterface, ContentDecryption
         $aes->setIV($iv);
 
         return $aes->decrypt($input);
-    }
-
-    public function isPrivate()
-    {
-        return true;
-    }
-
-    public function isPublic()
-    {
-        return true;
     }
 
     public function calculateAuthenticationTag($cek, $iv, $encrypted_data, array $header)

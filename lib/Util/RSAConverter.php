@@ -101,7 +101,7 @@ class RSAConverter
             case 'qi':
                 return "InverseQ";
             default:
-                throw new \Exception("Key '$key' is not supported");
+                break;
         }
     }
 }

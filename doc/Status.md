@@ -59,6 +59,9 @@ This library aims to implement all algorithms, but focuses on required and recom
         * RSA-OAEP (o)
         * RSA-OAEP-256 (o)
         * ECDH-ES (+)
+        * A128KW (r)
+        * A192KW (o)
+        * A256KW (r)
     * Content Encryption:
         * A128CBC-HS256 (*)
         * A192CBC-HS384 (o)
@@ -68,9 +71,6 @@ This library aims to implement all algorithms, but focuses on required and recom
 
 * Encryption:
     * Key Encryption:
-        * A128KW (r)
-        * A192KW (o)
-        * A256KW (r)
         * ECDH-ES+A128KW (r)
         * ECDH-ES+A192KW (0)
         * ECDH-ES+A256KW (r)

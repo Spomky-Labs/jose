@@ -5,6 +5,7 @@ namespace SpomkyLabs\JOSE;
 use SpomkyLabs\JOSE\Util\Base64Url;
 use Jose\JWKInterface;
 use Jose\JWKSetInterface;
+use Jose\JWKAgreementKeyExtension;
 use Jose\KeyOperation\VerificationInterface;
 use Jose\KeyOperation\SignatureInterface;
 use Jose\KeyOperation\KeyDecryptionInterface;
@@ -178,12 +179,13 @@ abstract class JWTManager
         foreach ($jwk_set->getKeys() as $jwk) {
             if ($this->canDecryptCEK($jwk)) {
                 $jwt_decrypted_cek = $jwk->decryptKey($jwk_encrypted_cek, $jwt_header);
-
                 if ($jwt_decrypted_cek !== null) {
                     return $this->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, $jwt_header, array(), array(), $jwt_header, $headers);
                 }
             }
         }
+        var_dump($jwt_header);
+        var_dump($jwk_set);
         throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
     }
 
@@ -455,6 +457,16 @@ abstract class JWTManager
             if (isset($operation_key['header'])) {
                 $tmp["header"] = $operation_key['header'];
             }
+            if ($sender_key instanceof JWKAgreementKeyExtension) {
+                if ($compact === false) {
+                    if (!isset($tmp['header'])) {
+                        $tmp['header'] = array();
+                    }
+                    $tmp["header"] += $sender_key->getAgreementKey();
+                } else {
+                    $protected_header += $sender_key->getAgreementKey();
+                }
+            }
             $recipients[] = $tmp;
         }
 
@@ -560,10 +572,6 @@ abstract class JWTManager
             return false;
         }
 
-        if (!$jwk->isPublic()) {
-            return false;
-        }
-
         return $jwk instanceof KeyEncryptionInterface;
     }
 
@@ -578,10 +586,6 @@ abstract class JWTManager
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
         $key_ops = $jwk->getValue('key_ops');
         if ($key_ops !== null && (strpos($key_ops, "unwrapKey") === -1 || strpos($key_ops, "deriveBits") === -1)) {
-            return false;
-        }
-
-        if (!$jwk->isPrivate()) {
             return false;
         }
 
@@ -602,10 +606,6 @@ abstract class JWTManager
             return false;
         }
 
-        if (!$jwk->isPublic()) {
-            return false;
-        }
-
         return $jwk instanceof ContentEncryptionInterface;
     }
 
@@ -620,10 +620,6 @@ abstract class JWTManager
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
         $key_ops = $jwk->getValue('key_ops');
         if ($key_ops !== null && strpos($key_ops, "decrypt") === -1) {
-            return false;
-        }
-
-        if (!$jwk->isPrivate()) {
             return false;
         }
 
@@ -644,10 +640,6 @@ abstract class JWTManager
             return false;
         }
 
-        if (!$jwk->isPrivate()) {
-            return false;
-        }
-
         return $jwk instanceof SignatureInterface;
     }
 
@@ -662,10 +654,6 @@ abstract class JWTManager
         //If "key_ops" parameter is not null or does not contain "verify", we can not use it
         $key_ops = $jwk->getValue('key_ops');
         if ($key_ops !== null && strpos($key_ops, "verify") === -1) {
-            return false;
-        }
-
-        if (!$jwk->isPublic()) {
             return false;
         }
 

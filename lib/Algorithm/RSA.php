@@ -2,67 +2,28 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use Jose\JWK;
 use Jose\JWKInterface;
-use Jose\KeyOperation\SignatureInterface;
-use Jose\KeyOperation\VerificationInterface;
-use Jose\KeyOperation\KeyEncryptionInterface;
-use Jose\KeyOperation\KeyDecryptionInterface;
+use Jose\Operation\SignatureInterface;
+use Jose\Operation\KeyEncryptionInterface;
 use SpomkyLabs\JOSE\Util\RSAConverter;
 
 /**
  * This class handles
- *     - signatures PS256/RS256, PS384/RS384 and PS512/RS512.
- *     - encryption of CEK using RSA, RSA-OAEP or RSA-OAEP-256.
+ *     - signatures:
+ *       - PS256/RS256
+ *       - PS384/RS384
+ *       - PS512/RS512
+ *     - encryption of CEK using:
+ *       - RSA
+ *       - RSA-OAEP
+ *       - RSA-OAEP-256
  */
-class RSA implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
+class RSA implements SignatureInterface, KeyEncryptionInterface
 {
-    use JWK;
-
-    protected $values = array('kty' => 'RSA');
-
-    public function getValue($key)
-    {
-        return array_key_exists($key, $this->getValues()) ? $this->values[$key] : null;
-    }
-
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    public function setValue($key, $value)
-    {
-        $this->values[$key] = $value;
-
-        return $this;
-    }
-
-    public function setValues(array $values)
-    {
-        $this->values = $values;
-
-        return $this;
-    }
-
-    public function toPublic()
-    {
-        $values = $this->getValues();
-
-        $keys = array('p', 'd', 'q', 'dp', 'dq', 'qi');
-        foreach ($keys as $key) {
-            if (isset($values[$key])) {
-                unset($values[$key]);
-            }
-        }
-
-        return $values;
-    }
-
     /**
      * @inheritdoc
      */
-    public function encryptKey($cek, array &$header = array(), JWKInterface $sender_key = null)
+    public function encryptKey($cek, array $header = array(), JWKInterface $sender_key = null)
     {
         $rsa = RSAConverter::fromArrayToRSA_Crypt($this->getKeyData(false));
 

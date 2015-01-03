@@ -2,53 +2,30 @@
 
 namespace SpomkyLabs\JOSE\Algorithm;
 
-use Jose\JWK;
 use Jose\JWKInterface;
-use Jose\KeyOperation\SignatureInterface;
-use Jose\KeyOperation\VerificationInterface;
-use Jose\KeyOperation\KeyEncryptionInterface;
-use Jose\KeyOperation\KeyDecryptionInterface;
+use Jose\JWKAgreementKeyExtension;
+use Jose\Operation\SignatureInterface;
+use Jose\Operation\VerificationInterface;
+use Jose\Operation\KeyEncryptionInterface;
+use Jose\Operation\KeyDecryptionInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
 use Mdanter\Ecc\Signature;
 use Mdanter\Ecc\EccFactory;
 use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\JOSE\JWK;
 
 /**
  * This class handles
  *     - signatures using Elliptic Curves (ES256, ES384 and ES512).
  *     - encryption of text using ECDH-ES algorithm.
  */
-class EC implements JWKInterface, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
+class EC implements JWKInterface, JWKAgreementKeyExtension, SignatureInterface, VerificationInterface, KeyEncryptionInterface, KeyDecryptionInterface
 {
     use JWK;
 
     protected $values = array('kty' => 'EC');
-
-    public function getValue($key)
-    {
-        return array_key_exists($key, $this->getValues()) ? $this->values[$key] : null;
-    }
-
-    public function getValues()
-    {
-        return $this->values;
-    }
-
-    public function setValue($key, $value)
-    {
-        $this->values[$key] = $value;
-
-        return $this;
-    }
-
-    public function setValues(array $values)
-    {
-        $this->values = $values;
-
-        return $this;
-    }
 
     public function toPublic()
     {
@@ -61,14 +38,19 @@ class EC implements JWKInterface, SignatureInterface, VerificationInterface, Key
         return $values;
     }
 
-    public function isPrivate()
+    public function getAgreementKey()
     {
-        return $this->isPublic() && $this->getValue('d') !== null;
-    }
+        $agreement = array(
+            "epk" => array(
+                'x' => $this->getValue('x'),
+                'y' => $this->getValue('y'),
+                'crv' => $this->getValue('crv'),
+            ),
+        );
+        $agreement["apv"] = Base64Url::encode("Bob");
+        $agreement["apu"] = Base64Url::encode("Alice");
 
-    public function isPublic()
-    {
-        return $this->getValue('x') !== null && $this->getValue('y') !== null;
+        return $agreement;
     }
 
     /**
@@ -76,9 +58,9 @@ class EC implements JWKInterface, SignatureInterface, VerificationInterface, Key
      */
     public function sign($data, array $header = array())
     {
-        if (!$this->isPrivate()) {
+        /*if (!$this->isPrivate()) {
             throw new \Exception('This is not a private JWK');
-        }
+        }*/
 
         $adapter = EccFactory::getAdapter();
 
@@ -142,7 +124,7 @@ class EC implements JWKInterface, SignatureInterface, VerificationInterface, Key
     /**
      * @inheritdoc
      */
-    public function encryptKey($cek, array &$header = array(), JWKInterface $sender_key = null)
+    public function encryptKey($cek, array $header = array(), JWKInterface $sender_key = null)
     {
         if (!$sender_key instanceof EC) {
             throw new \Exception("The sender key is mandatory using ECDH-ES key encryption");
@@ -162,7 +144,7 @@ class EC implements JWKInterface, SignatureInterface, VerificationInterface, Key
         $ext1 = new ECDHExtension($p, $sen_d);
         $ext1->setReceiverPoint(new Point($curve, $rec_x, $rec_y, $p->getOrder(), $adapter));
 
-        $header['epk'] = $sender_key->toPublic();
+        //$header['epk'] = $sender_key->getEphemeralPublicKey();
 
         $enc = $ext1->encrypt($cek);
 
