@@ -224,12 +224,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d"
+                "reference": "8075a001c649a2e535c0e0b835cb300cf1c9c43d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d",
-                "reference": "9feb73e3dfa1a4b2a7eb1d996fecf7f5a1e3b07d",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/8075a001c649a2e535c0e0b835cb300cf1c9c43d",
+                "reference": "8075a001c649a2e535c0e0b835cb300cf1c9c43d",
                 "shasum": ""
             },
             "require": {
@@ -271,7 +271,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2015-01-03 08:02:33"
+            "time": "2015-01-03 19:20:49"
         }
     ],
     "packages-dev": [

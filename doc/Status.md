@@ -39,8 +39,8 @@
 
 ## JWA
 
-All required algorithms are supported (marked with a *).
-Some Optionnal (o), Recommended (r) and Recommended+ (+) algorithms are also supported.
+All **required** algorithms are supported (marked with a *).
+Some **Optionnal** (o), **Recommended** (r) and **Recommended+** (+) algorithms are also supported.
 
 This library aims to implement all algorithms, but focuses on required and recommended+ ones.
 
@@ -87,7 +87,7 @@ This library aims to implement all algorithms, but focuses on required and recom
 
 ## JWK:
 
-JWK are partially supported (implementation is not finished, some interfaces are missing).
+JWKSet are fully supported
 
 ## JWKSet:
 

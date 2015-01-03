@@ -8,7 +8,7 @@ use SpomkyLabs\JOSE\Util\Base64Url;
 /**
  * This class handles encryption of text using A128CBC-HS256, A192CBC-HS384 or A256CBC-HS512 algorithms.
  */
-class AES implements ContentEncryptionInterface
+abstract class AES implements ContentEncryptionInterface
 {
     /**
      * @inheritdoc
