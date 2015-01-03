@@ -4,6 +4,10 @@ namespace SpomkyLabs\JOSE\Util;
 
 class ConcatKDF
 {
+    /**
+     * @param string $encryption_algorithm
+     * @param integer $encryption_key_size
+     */
     public static function generate($Z, $encryption_algorithm, $encryption_key_size, $apu = "", $apv = "")
     {
         $encryption_segments = array(
