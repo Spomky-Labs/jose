@@ -52,12 +52,18 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         return substr($hash, 0, strlen($hash)/2);
     }
 
+    /**
+     * @param string $authentication_tag
+     */
     public function checkAuthenticationTag($authentication_tag, $cek, $iv, $encrypted_data, $encoded_header)
     {
         return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $encoded_header);
     }
 
-    abstract protected function getHashAlgorithm();
+    /**
+ * @return string
+ */
+abstract protected function getHashAlgorithm();
     abstract protected function getKeySize();
 
     public function getIVSize()
