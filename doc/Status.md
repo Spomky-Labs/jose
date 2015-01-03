@@ -7,25 +7,36 @@
 * JSON Compact Serialization Overview
     * JWS (creation and loading):
         * Plain text
-        * Array
+        * JWT
     * JWE (creation and loading):
         * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
+        * JWT
+        * jwk+json content type
+        * jwkset+json content type
+* JSON Flattened Serialization Overview
+    * JWS (creation and loading):
+        * Plain text
+        * JWT
+    * JWE (creation and loading):
+        * Plain text
+        * JWT
+        * jwk+json content type
+        * jwkset+json content type
 * JSON Serialization Overview
     * JWS (creation and loading):
         * Plain text
-        * Array
+        * JWT
         * Raw data
     * JWE (loading only):
         * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
+        * JWT
+        * jwk+json content type
+        * jwkset+json content type
 
 * Compression support for JWE objects:
-    * Deflate (DEF)
-    * GZip (GZ)
-    * ZLib (ZLIB)
+    * Deflate —DEF—
+    * GZip —GZ— (this compression method is not described in the specification)
+    * ZLib —ZLIB— (this compression method is not described in the specification)
 
 ### Unsupported
 
@@ -34,8 +45,9 @@
 * JSON Serialization Overview
     * JWE (creation only)
         * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
+        * JWT
+        * jwk+json content type
+        * jwkset+json content type
 
 ## JWA
 
@@ -59,6 +71,9 @@ This library aims to implement all algorithms, but focuses on required and recom
         * RSA-OAEP (o)
         * RSA-OAEP-256 (o)
         * ECDH-ES (+)
+        * ECDH-ES+A128KW (r)
+        * ECDH-ES+A192KW (0)
+        * ECDH-ES+A256KW (r)
         * A128KW (r)
         * A192KW (o)
         * A256KW (r)
@@ -71,9 +86,6 @@ This library aims to implement all algorithms, but focuses on required and recom
 
 * Encryption:
     * Key Encryption:
-        * ECDH-ES+A128KW (r)
-        * ECDH-ES+A192KW (0)
-        * ECDH-ES+A256KW (r)
         * A128GCMKW (o)
         * A192GCMKW (o)
         * A256GCMKW (o)
@@ -87,7 +99,7 @@ This library aims to implement all algorithms, but focuses on required and recom
 
 ## JWK:
 
-JWKSet are fully supported
+JWK are fully supported
 
 ## JWKSet:
 
