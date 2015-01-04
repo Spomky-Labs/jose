@@ -14,7 +14,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAgreementKey()
     {
-        $header = array("enc" => "A128GCM");
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -31,6 +30,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
         $this->markTestIncomplete("This test passed when 'apu' and 'apv' parameters are forced. They are not yet supported by this implementation and this test is marked as incomplete. This mark will be removed when these parameter will be supported.");
 
+        //$header = array("enc" => "A128GCM");
         //$expected = Base64Url::decode("VqqN6vgjbSBcIijNcacQGg");
         //$ecdh_es = new ECDH_ES();
         //$this->assertEquals($expected, $ecdh_es->getAgreementKey($receiver, 128, $header));

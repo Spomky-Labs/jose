@@ -184,8 +184,6 @@ abstract class JWTManager
                 }
             }
         }
-        var_dump($jwt_header);
-        var_dump($jwk_set);
         throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
     }
 

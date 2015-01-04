@@ -11,6 +11,5 @@ class RSA1_5 extends RSA
 
     public function getHashAlgorithm()
     {
-        return;
     }
 }
