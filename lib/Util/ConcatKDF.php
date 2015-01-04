@@ -23,6 +23,9 @@ class ConcatKDF
         return substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size/8);
     }
 
+    /**
+     * @param integer $value
+     */
     private static function toInt32Bits($value)
     {
         return hex2bin(str_pad(dechex($value), 8, "0", STR_PAD_LEFT));
