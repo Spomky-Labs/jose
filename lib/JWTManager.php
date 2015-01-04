@@ -4,37 +4,52 @@ namespace SpomkyLabs\JOSE;
 
 use SpomkyLabs\JOSE\Util\Base64Url;
 use Jose\JWKInterface;
+use Jose\JWTInterface;
 use Jose\JWKSetInterface;
-use Jose\JWKAgreementKeyExtension;
-use Jose\KeyOperation\VerificationInterface;
-use Jose\KeyOperation\SignatureInterface;
-use Jose\KeyOperation\KeyDecryptionInterface;
-use Jose\KeyOperation\KeyEncryptionInterface;
-use Jose\KeyOperation\ContentEncryptionInterface;
-use Jose\KeyOperation\ContentDecryptionInterface;
+use Jose\JWTManagerInterface;
+use Jose\Operation\SignatureInterface;
 
 /**
  * Class representing a JSON Web Token Manager.
  */
-abstract class JWTManager
+abstract class JWTManager implements JWTManagerInterface
 {
+    /**
+     * @return Jose\JWKManagerInterface
+     */
     abstract protected function getKeyManager();
+
+    /**
+     * @return Jose\JWAManagerInterface
+     */
+    abstract protected function getAlgorithmManager();
+
+    /**
+     * @return Jose\Compression\CompressionManagerInterface
+     */
     abstract protected function getCompressionManager();
 
     /**
-     * @param integer $size
+     * @param  integer $size The size of the CEK in bytes
+     * @return string
      */
     abstract protected function createCEK($size);
 
     /**
-     * @param integer $size
+     * @param  integer $size The size of the IV in bytes
+     * @return string
      */
     abstract protected function createIV($size);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function load($input, array &$headers = array())
+    public function verify($input)
+    {
+    }
+
+/**
+ * {@inheritdoc}
+ */
+    //public function load($input, array &$headers = array())
+    public function load($input, $verify_signature = true)
     {
         //We try to identity if the data is a JSON object. In this case, we consider that data is a JWE or JWS Seralization object
         if (is_array($data = json_decode($input, true))) {
@@ -323,61 +338,93 @@ abstract class JWTManager
     /**** CONVERSION ****/
     /********************/
 
-    public function signAndConvert($compact, $input, array $operation_keys)
+    public function sign($jwt, JWKSetInterface $keys, $serialization = self::JSON_COMPACT_SERIALIZATION)
     {
-        if (is_array($input)) {
-            $input = json_encode($input);
+        if ($jwt instanceof JWKInterface || $jwt instanceof JWKSetInterface) {
+            $input = new JWT();
+            $input->setPayload($jwt);
+            $jwt = $input;
         }
-        if (!is_string($input)) {
-            throw new \Exception("Unsupported input type");
+        if (!$jwt instanceof JWTInterface) {
+            throw new \InvalidArgumentException("Unsupported input type");
         }
 
         $signatures = array();
-        $jwt_payload = Base64Url::encode($input);
-        foreach ($operation_keys as $operation) {
-            if (!isset($operation['protected'])) {
-                throw new \Exception("Invalid operation information. Index 'protected' is missing");
+        $jwt_payload = Base64Url::encode($jwt->getPayload());
+        foreach ($keys as $key) {
+            $jwt_protected = $jwt->getProtectedHeader();
+            $jwt_header = $jwt->getUnprotectedHeader();
+            $alg = $jwt->getAlgorithm();
+
+            if ($alg === null) {
+                $alg = $key->getAlgorithm();
             }
-            if (!isset($operation['protected']['alg'])) {
-                throw new \Exception("Invalid protected header. Index 'alg' is missing");
+
+            if (null === $alg) {
+                throw new \RuntimeException("No 'alg' parameter set in the header or the key.");
             }
-            if (!isset($operation['key']) || !$operation['key'] instanceof JWKInterface) {
-                throw new \Exception("Invalid key. Index 'key' is missing or not a valid JWKInterface object");
+
+            $algorithm = $this->getAlgorithmManager()->getAlgorithm($alg);
+            if (null === $algorithm) {
+                throw new \RuntimeException("The algorithm '$alg' is not supported.");
             }
-            $key = $operation['key'];
+            if (!$algorithm instanceof SignatureInterface) {
+                throw new \RuntimeException("The algorithm '$alg' is not supported.");
+            }
+
             if (!$this->canSign($key)) {
-                throw new \Exception("Invalid key. Signature is not handled by the key");
+                throw new \RuntimeException("Invalid key. Signature is not handled by the key");
             }
 
-            $tmp = array();
-            $tmp['protected'] = Base64Url::encode(json_encode($operation['protected']));
-            if (isset($operation['header']) && is_array($operation['header'])) {
-                $tmp['header'] = $operation['header'];
+            $protected = Base64Url::encode(json_encode($jwt_protected));
+            $signature = Base64Url::encode($algorithm->sign($key, $protected.".".$jwt_payload, $jwt_protected));
+            switch ($serialization) {
+                case self::JSON_COMPACT_SERIALIZATION:
+                    $signatures[] = $protected.".".$jwt_payload.".".$signature;
+                    break;
+                case self::JSON_FLATTENED_SERIALIZATION:
+                    $result = array(
+                        "payload" => $jwt_payload,
+                        "protected" => $protected,
+                        "signature" => $signature,
+                    );
+                    if (!empty($jwt_header)) {
+                        $result["header"] = $jwt_header;
+                    }
+                    $signatures[] = json_encode($result);
+                    break;
+                case self::JSON_SERIALIZATION:
+                    $result = array(
+                        "protected" => $protected,
+                        "signature" => $signature,
+                    );
+                    if (!empty($jwt_header)) {
+                        $result["header"] = $jwt_header;
+                    }
+                    $signatures['signatures'][] = $result;
+                    break;
+                default:
+                    throw new \RuntimeException("The serialization methode '$serialization' is not supported");
             }
-            $tmp['signature'] = Base64Url::encode($key->sign($tmp['protected'].".".$jwt_payload, $operation['protected']));
-
-            $signatures[] = $tmp;
         }
 
         if (count($signatures) === 0) {
-            throw new \Exception("No signature created");
-        }
+            throw new \RuntimeException("No signature created");
+        } elseif (count($signatures) === 1) {
+            if (array_key_exists("signatures", $signatures)) {
+                $signatures["payload"] = $jwt_payload;
 
-        if (count($signatures) > 1 && $compact === true) {
-            throw new \Exception("Can not compact when using multiple signatures");
-        }
+                return json_encode($signatures);
+            }
 
-        if (count($signatures) === 1 && $compact === true) {
-            return $signatures[0]['protected'].".".$jwt_payload.".".$signatures[0]['signature'];
+            return current($signatures);
+        } else {
+            return $signatures;
         }
-
-        return json_encode(array(
-            'payload'    => $jwt_payload,
-            'signatures' => $signatures,
-        ));
     }
 
-    public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = array(), array $unprotected_header = array(), JWKInterface $sender_key = null)
+    //public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = array(), array $unprotected_header = array(), JWKInterface $sender_key = null)
+    public function encrypt($input, JWKSetInterface $keys, JWKInterface $sender_key = null, $serialization = self::JSON_COMPACT_SERIALIZATION)
     {
         if ($compact === false) {
             throw new \Exception("JSON Serialized representation is not supported");
@@ -559,102 +606,102 @@ abstract class JWTManager
     protected function canEncryptCEK(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "enc", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "enc") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "encrypt", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && (strpos($key_ops, "wrapKey") === -1 || strpos($key_ops, "deriveKey") === -1)) {
             return false;
         }
 
-        return $jwk instanceof KeyEncryptionInterface;
+        return true;
     }
 
     protected function canDecryptCEK(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "enc", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "enc") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && (strpos($key_ops, "unwrapKey") === -1 || strpos($key_ops, "deriveBits") === -1)) {
             return false;
         }
 
-        return $jwk instanceof KeyDecryptionInterface;
+        return true;
     }
 
     protected function canEncryptContent(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "enc", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "enc") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "encrypt") === -1) {
             return false;
         }
 
-        return $jwk instanceof ContentEncryptionInterface;
+        return true;
     }
 
     protected function canDecryptContent(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "enc", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "enc") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "decrypt") === -1) {
             return false;
         }
 
-        return $jwk instanceof ContentDecryptionInterface;
+        return true;
     }
 
     protected function canSign(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "sig", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "sig") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "sign", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "sign") === -1) {
             return false;
         }
 
-        return $jwk instanceof SignatureInterface;
+        return true;
     }
 
     protected function canVerify(JWKInterface $jwk)
     {
         //If "use" parameter is not null and not "sig", we can not use it
-        $use = $jwk->getValue('use');
+        $use = $jwk->getPublicKeyUse();
         if ($use !== null && $use !== "sig") {
             return false;
         }
 
         //If "key_ops" parameter is not null or does not contain "verify", we can not use it
-        $key_ops = $jwk->getValue('key_ops');
+        $key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "verify") === -1) {
             return false;
         }
 
-        return $jwk instanceof VerificationInterface;
+        return true;
     }
 }

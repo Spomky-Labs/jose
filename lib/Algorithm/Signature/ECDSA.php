@@ -98,15 +98,15 @@ abstract class ECDSA implements SignatureInterface
         return $value[1];
     }
 
-    /**
+/**
  * @return string
  */
 protected function convertDecToHex($value)
-    {
-        $adapter = EccFactory::getAdapter();
+{
+    $adapter = EccFactory::getAdapter();
 
-        return $adapter->decHex($value);
-    }
+    return $adapter->decHex($value);
+}
 
     protected function convertHexToDec($value)
     {

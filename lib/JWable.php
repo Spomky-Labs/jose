@@ -48,16 +48,16 @@ trait JWable
         return $this;
     }
 
-    /**
+/**
  * @param string $key
  * @param string $value
  */
 public function setUnprotectedHeaderValue($key, $value)
-    {
-        $this->unprotected_headers[$key] = $value;
+{
+    $this->unprotected_headers[$key] = $value;
 
-        return $this;
-    }
+    return $this;
+}
 
     public function setPayload($payload)
     {

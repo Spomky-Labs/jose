@@ -10,8 +10,6 @@ use SpomkyLabs\JOSE\Util\Base64Url;
  */
 class JWKManager extends Base
 {
-    private $keys = array();
-
     protected function findByAPV($header)
     {
         if (!isset($header['apv'])) {
@@ -94,8 +92,6 @@ class JWKManager extends Base
                     "e"   => "AQAB",
                 ));
         }
-
-        return isset($this->keys[$header['kid']]) ? $this->keys[$header['kid']] : null;
     }
 
     public function createJWKSet(array $values = array())
@@ -142,7 +138,7 @@ class JWKManager extends Base
                 'findByKid',
                 'findByAPV',
                 'findByAlgorithm',
-            ),
+            )
         );
     }
 

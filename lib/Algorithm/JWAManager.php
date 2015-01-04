@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\JOSE\Algorithm;
 
 use Jose\JWAManager as Base;
 use Jose\JWAInterface;
@@ -19,7 +19,7 @@ class JWAManager extends Base
      */
     public function getAlgorithm($algorithm)
     {
-        return array_key_exists($algorithm, $this->algorithms)?$this->algorithms[$algorithm]:null;
+        return array_key_exists($algorithm, $this->algorithms) ? $this->algorithms[$algorithm] : null;
     }
 
     public function addAlgorithm(JWAInterface $algorithm)
@@ -27,6 +27,7 @@ class JWAManager extends Base
         if (!$this->isAlgorithmSupported($algorithm->getAlgorithmName())) {
             $this->algorithms[$algorithm->getAlgorithmName()] = $algorithm;
         }
+
         return $this;
     }
 
@@ -37,12 +38,13 @@ class JWAManager extends Base
             $name = $algorithm->getAlgorithmName();
         } elseif (is_string($algorithm)) {
             $name = $algorithm;
-        }else {
+        } else {
             throw new \InvalidArgumentException("Argument must be a string or a JWAInterface object.");
         }
         if (array_key_exists($name, $this->algorithms)) {
             unset($this->algorithms[$name]);
         }
+
         return $this;
     }
 }

@@ -27,6 +27,6 @@ class Dir implements DirectEncryptionInterface
 
     public function getAlgorithmName()
     {
-        return "Dir";
+        return "dir";
     }
 }
