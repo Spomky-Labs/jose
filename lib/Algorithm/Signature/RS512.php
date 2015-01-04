@@ -13,4 +13,9 @@ class RS512 extends RSA
     {
         return CRYPT_RSA_SIGNATURE_PKCS1;
     }
+
+    public function getAlgorithmName()
+    {
+        return "RS512";
+    }
 }

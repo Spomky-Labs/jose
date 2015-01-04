@@ -20,4 +20,9 @@ class PBES2_HS512_A256KW extends PBES2_AESKW
     {
         return 256/8;
     }
+
+    public function getAlgorithmName()
+    {
+        return "PBES2-HS512+A256KW";
+    }
 }

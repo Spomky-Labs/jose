@@ -16,4 +16,9 @@ class A192CBC_HS384 extends AESCBC_HS
     {
         return 384;
     }
+
+    public function getAlgorithmName()
+    {
+        return "A192CBC-HS384";
+    }
 }

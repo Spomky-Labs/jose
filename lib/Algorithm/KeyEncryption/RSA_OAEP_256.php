@@ -13,4 +13,9 @@ class RSA_OAEP_256 extends RSA
     {
         return "sha256";
     }
+
+    public function getAlgorithmName()
+    {
+        return "RSA-OAEP-256";
+    }
 }

@@ -12,4 +12,9 @@ class HS384 extends HMAC
     {
         return 'sha384';
     }
+
+    public function getAlgorithmName()
+    {
+        return "HS384";
+    }
 }

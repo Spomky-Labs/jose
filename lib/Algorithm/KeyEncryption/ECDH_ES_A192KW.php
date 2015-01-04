@@ -10,4 +10,9 @@ class ECDH_ES_A192KW extends ECDH_ES_AESKW
     {
         return new Wrapper();
     }
+
+    public function getAlgorithmName()
+    {
+        return "ECDH-ES+A192KW";
+    }
 }

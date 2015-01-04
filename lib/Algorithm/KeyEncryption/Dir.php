@@ -24,4 +24,9 @@ class Dir implements DirectEncryptionInterface
 
         return $cek;
     }
+
+    public function getAlgorithmName()
+    {
+        return "Dir";
+    }
 }

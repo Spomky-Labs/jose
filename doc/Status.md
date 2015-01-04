@@ -77,6 +77,9 @@ This library aims to implement all algorithms, but focuses on required and recom
         * A128KW (r)
         * A192KW (o)
         * A256KW (r)
+        * PBES2-HS256+A128KW (o)
+        * PBES2-HS384+A192KW (o)
+        * PBES2-HS512+A256KW (o)
     * Content Encryption:
         * A128CBC-HS256 (*)
         * A192CBC-HS384 (o)
@@ -89,9 +92,6 @@ This library aims to implement all algorithms, but focuses on required and recom
         * A128GCMKW (o)
         * A192GCMKW (o)
         * A256GCMKW (o)
-        * PBES2-HS256+A128KW (o)
-        * PBES2-HS384+A192KW (o)
-        * PBES2-HS512+A256KW (o)
     * Content Encryption:
         * A128GCM (r)
         * A192GCM (o)

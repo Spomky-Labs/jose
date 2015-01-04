@@ -13,4 +13,9 @@ class RS256 extends RSA
     {
         return CRYPT_RSA_SIGNATURE_PKCS1;
     }
+
+    public function getAlgorithmName()
+    {
+        return "RS256";
+    }
 }

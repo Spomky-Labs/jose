@@ -12,7 +12,7 @@ class JWKManager extends Base
 {
     private $keys = array();
 
-    protected function findJWKByAPV($header)
+    protected function findByAPV($header)
     {
         if (!isset($header['apv'])) {
             return;
@@ -38,16 +38,7 @@ class JWKManager extends Base
         }
     }
 
-    protected function findJWKByJWK($header)
-    {
-        if (!isset($header['jwk'])) {
-            return;
-        }
-
-        return $this->createJWK($header['jwk']);
-    }
-
-    protected function findJWKByKid($header)
+    protected function findByKid($header)
     {
         if (!isset($header['kid'])) {
             return;
@@ -118,7 +109,7 @@ class JWKManager extends Base
         return $key_set;
     }
 
-    public function findJWKByJku($header)
+    public function findByJku($header)
     {
         if (!isset($header["jku"])) {
             return;
@@ -137,11 +128,7 @@ class JWKManager extends Base
 
     public function createJWK(array $values)
     {
-        if (!isset($values["kty"])) {
-            throw new \Exception("'kty' value is missing");
-        }
-        $class = $this->getClass($values["kty"]);
-        $jwk = new $class();
+        $jwk = new JWK();
         $jwk->setValues($values);
 
         return $jwk;
@@ -149,16 +136,17 @@ class JWKManager extends Base
 
     protected function getSupportedMethods()
     {
-        return array(
-            'findJWKByJWK',
-            'findJWKByKid',
-            //'findJWKByJku',
-            'findJWKByAPV',
-            'findJWKByAlgorithm',
+        return array_merge(
+            parent::getSupportedMethods(),
+            array(
+                'findByKid',
+                'findByAPV',
+                'findByAlgorithm',
+            ),
         );
     }
 
-    protected function findJWKByAlgorithm($header)
+    protected function findByAlgorithm($header)
     {
         if (!isset($header['alg'])) {
             return;
@@ -178,26 +166,6 @@ class JWKManager extends Base
                 "kty" => "dir",
                 "dir" => 'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
             ));
-        }
-    }
-
-    private function getClass($type)
-    {
-        switch ($type) {
-            case 'EC':
-                return 'SpomkyLabs\JOSE\Algorithm\EC';
-            case 'RSA':
-                return 'SpomkyLabs\JOSE\Algorithm\RSA';
-            case 'none':
-                return 'SpomkyLabs\JOSE\Algorithm\None';
-            case 'oct':
-                return 'SpomkyLabs\JOSE\Algorithm\HMAC';
-            case 'AES':
-                return 'SpomkyLabs\JOSE\Algorithm\AES';
-            case 'dir':
-                return 'SpomkyLabs\JOSE\Algorithm\Dir';
-            default:
-                throw new \Exception("Unsupported type $type");
         }
     }
 }

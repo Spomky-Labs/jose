@@ -22,4 +22,9 @@ class A192KW extends AESKW
             throw new \InvalidArgumentException("The key size is not valid");
         }
     }
+
+    public function getAlgorithmName()
+    {
+        return "A192KW";
+    }
 }

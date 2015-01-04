@@ -12,4 +12,9 @@ class HS256 extends HMAC
     {
         return 'sha256';
     }
+
+    public function getAlgorithmName()
+    {
+        return "HS256";
+    }
 }

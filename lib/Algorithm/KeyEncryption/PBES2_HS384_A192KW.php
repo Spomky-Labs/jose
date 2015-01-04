@@ -20,4 +20,9 @@ class PBES2_HS384_A192KW extends PBES2_AESKW
     {
         return 192/8;
     }
+
+    public function getAlgorithmName()
+    {
+        return "PBES2-HS384+A192KW";
+    }
 }

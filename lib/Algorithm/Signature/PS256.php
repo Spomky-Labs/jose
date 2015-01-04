@@ -13,4 +13,9 @@ class PS256 extends RSA
     {
         return CRYPT_RSA_SIGNATURE_PSS;
     }
+
+    public function getAlgorithmName()
+    {
+        return "PS256";
+    }
 }

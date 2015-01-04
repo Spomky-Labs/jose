@@ -27,4 +27,9 @@ class ES384 extends ECDSA
     {
         return 96;
     }
+
+    public function getAlgorithmName()
+    {
+        return "ES384";
+    }
 }

@@ -51,6 +51,11 @@ class ECDH_ES implements KeyAgreementInterface
         return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
     }
 
+    public function getAlgorithmName()
+    {
+        return "ECDH-ES";
+    }
+
     private function checkKey(JWKInterface $key1, JWKInterface $key2)
     {
         if ("EC" !== $key1->getKeyType() || "EC" !== $key2->getKeyType()) {

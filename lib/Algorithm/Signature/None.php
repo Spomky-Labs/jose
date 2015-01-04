@@ -34,4 +34,9 @@ class None implements SignatureInterface
             throw new \InvalidArgumentException("The key is not valid");
         }
     }
+
+    public function getAlgorithmName()
+    {
+        return "none";
+    }
 }

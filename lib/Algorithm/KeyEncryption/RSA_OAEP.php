@@ -13,4 +13,9 @@ class RSA_OAEP extends RSA
     {
         return "sha1";
     }
+
+    public function getAlgorithmName()
+    {
+        return "RSA-OAEP";
+    }
 }
