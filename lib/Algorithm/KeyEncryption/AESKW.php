@@ -8,7 +8,7 @@ use Jose\Operation\KeyWrappingInterface;
 
 abstract class AESKW implements KeyWrappingInterface
 {
-    public function wrapKey(JWKInterface $key, $cek)
+    public function wrapKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
@@ -16,7 +16,7 @@ abstract class AESKW implements KeyWrappingInterface
         return $wrapper->wrap(Base64Url::decode($key->getValue("k")), $cek);
     }
 
-    public function unwrapKey(JWKInterface $key, $encryted_cek)
+    public function unwrapKey(JWKInterface $key, $encryted_cek, array $header)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
@@ -27,7 +27,7 @@ abstract class AESKW implements KeyWrappingInterface
     protected function checkKey(JWKInterface $key)
     {
         if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \RuntimeException("The key is not valid");
+            throw new \InvalidArgumentException("The key is not valid");
         }
     }
 

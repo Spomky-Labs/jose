@@ -14,6 +14,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAgreementKey()
     {
+        $header = array("enc" => "A128GCM");
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -32,11 +33,12 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
         //$expected = Base64Url::decode("VqqN6vgjbSBcIijNcacQGg");
         //$ecdh_es = new ECDH_ES();
-        //$this->assertEquals($expected, $ecdh_es->getAgreementKey($sender, $receiver, "A128GCM", 128));
+        //$this->assertEquals($expected, $ecdh_es->getAgreementKey($receiver, 128, $header));
     }
 
     public function testGetAgreementKeyWithA128KeyWrap()
     {
+        $header = array("enc" => "A128GCM");
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -58,13 +60,14 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode("", $cek));
 
         $ecdh_es = new ECDH_ES_A128KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, "A128GCM", 128);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 128, $header);
 
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($sender, $receiver, $encrypted_cek, "A128GCM", 128));
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
     }
 
     public function testGetAgreementKeyWithA192KeyWrap()
     {
+        $header = array("enc" => "A192GCM");
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -86,13 +89,14 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode("", $cek));
 
         $ecdh_es = new ECDH_ES_A192KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, "A192GCM", 192);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 192, $header);
 
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($sender, $receiver, $encrypted_cek, "A192GCM", 192));
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
     }
 
     public function testGetAgreementKeyWithA256KeyWrap()
     {
+        $header = array("enc" => "A256GCM");
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -114,8 +118,8 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode("", $cek));
 
         $ecdh_es = new ECDH_ES_A256KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, "A256GCM", 256);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 256, $header);
 
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($sender, $receiver, $encrypted_cek, "A256GCM", 256));
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 256, $header));
     }
 }

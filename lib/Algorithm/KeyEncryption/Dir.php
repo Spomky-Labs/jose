@@ -12,14 +12,14 @@ class Dir implements DirectEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function getCEK(JWKInterface $key)
+    public function getCEK(JWKInterface $key, array &$header)
     {
         if ("dir" !== $key->getType()) {
-            throw new \RuntimeException("The key is not a direct key");
+            throw new \InvalidArgumentException("The key is not a direct key");
         }
         $cek = $key->getValue('dir');
         if (empty($cek) || !is_string($cek)) {
-            throw new \RuntimeException("The key does not have 'dir' parameter or parameter returned an invalid value");
+            throw new \InvalidArgumentException("The key does not have 'dir' parameter or parameter returned an invalid value");
         }
 
         return $cek;

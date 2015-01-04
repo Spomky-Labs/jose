@@ -1,8 +1,8 @@
-# Status of the implementation
+# Status of the implementation #
 
-## Loading and Creation of JWT
+## JWT ##
 
-### Supported
+### Supported ###
 
 * JSON Compact Serialization Overview
     * JWS (creation and loading):
@@ -35,10 +35,10 @@
 
 * Compression support for JWE objects:
     * Deflate —DEF—
-    * GZip —GZ— (this compression method is not described in the specification)
-    * ZLib —ZLIB— (this compression method is not described in the specification)
+    * GZip —GZ— *(this compression method is not described in the specification)*
+    * ZLib —ZLIB— *(this compression method is not described in the specification)*
 
-### Unsupported
+### Unsupported ###
 
 * JWS and JWE header:
     * `crit` parameter
@@ -49,14 +49,14 @@
         * jwk+json content type
         * jwkset+json content type
 
-## JWA
+## JWA ##
 
 All **required** algorithms are supported (marked with a *).
 Some **Optionnal** (o), **Recommended** (r) and **Recommended+** (+) algorithms are also supported.
 
 This library aims to implement all algorithms, but focuses on required and recommended+ ones.
 
-### Supported algorithms:
+### Supported algorithms ###
 
 * Signature:
     * HS256 (*), HS384 (o), HS512 (o)
@@ -82,7 +82,7 @@ This library aims to implement all algorithms, but focuses on required and recom
         * A192CBC-HS384 (o)
         * A256CBC-HS512 (*)
 
-### Unsupported algorithms:
+### Unsupported algorithms ###
 
 * Encryption:
     * Key Encryption:
@@ -97,16 +97,16 @@ This library aims to implement all algorithms, but focuses on required and recom
         * A192GCM (o)
         * A256GCM (r)
 
-## JWK:
+## JWK ##
 
 JWK are fully supported
 
-## JWKSet:
+## JWKSet ##
 
 JWKSet are fully supported
 
-## JWKManager:
+## JWKManager ##
 
-### Unsupported
+This project provides a key manager. This manager is able to find keys according to the header of data loaded.
 
-* Key load from x5* parameters
+You can extend it to add your own methods to find specific keys using header values. For example, if you manage your keys using X509 thumprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.

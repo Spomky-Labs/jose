@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ff9c3ff4181fcfc4881403d3c1ee85db",
+    "hash": "83c983b65f617a803f41ad7d7b820e40",
     "packages": [
         {
             "name": "mdanter/ecc",
@@ -224,12 +224,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "f8cc600594a3addfb333cde46e01c95ffab8a0b4"
+                "reference": "a18c248c3f676514c769f087cf6486de2d57021c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/f8cc600594a3addfb333cde46e01c95ffab8a0b4",
-                "reference": "f8cc600594a3addfb333cde46e01c95ffab8a0b4",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/a18c248c3f676514c769f087cf6486de2d57021c",
+                "reference": "a18c248c3f676514c769f087cf6486de2d57021c",
                 "shasum": ""
             },
             "require": {
@@ -271,7 +271,57 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2015-01-03 21:42:51"
+            "time": "2015-01-04 10:32:25"
+        },
+        {
+            "name": "spomky-labs/pbkdf2",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/pbkdf2.git",
+                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/pbkdf2/zipball/d672d1a4d585b41d3b7895fb6a333d03c83762ba",
+                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PBKDF2\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/pbkdf2/contributors"
+                }
+            ],
+            "description": "Password Based Key Derivation Function 2",
+            "homepage": "https://github.com/Spomky-Labs/pbkdf2",
+            "keywords": [
+                "RFC2898",
+                "RFC6070",
+                "pbkdf2"
+            ],
+            "time": "2015-01-04 13:56:30"
         }
     ],
     "packages-dev": [

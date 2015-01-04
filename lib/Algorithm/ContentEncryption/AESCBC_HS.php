@@ -12,7 +12,7 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv)
+    public function encryptContent($input, $cek, $iv, array &$header)
     {
         $k = substr($cek, strlen($cek)/2);
 
@@ -24,7 +24,7 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         return $aes->encrypt($input);
     }
 
-    public function decryptContent($input, $cek, $iv)
+    public function decryptContent($input, $cek, $iv, array $header)
     {
         $k = substr($cek, strlen($cek)/2);
 
@@ -60,7 +60,7 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $encoded_header);
     }
 
-    /**
+/**
  * @return string
  */
 abstract protected function getHashAlgorithm();

@@ -13,6 +13,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128CBC_HS256EncryptAndDecrypt()
     {
+        $header = array();
         $algorithm = new A128CBC_HS256();
 
         $K                   = $this->convertArrayToBinString([4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207]);
@@ -22,7 +23,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $aad                 = $this->convertArrayToBinString([101, 121, 74, 104, 98, 71, 99, 105, 79, 105, 74, 66, 77, 84, 73, 52, 83, 49, 99, 105, 76, 67, 74, 108, 98, 109, 77, 105, 79, 105, 74, 66, 77, 84, 73, 52, 81, 48, 74, 68, 76, 85, 104, 84, 77, 106, 85, 50, 73, 110, 48]);
         $expected_T          = $this->convertArrayToBinString([83, 73, 191, 98, 104, 205, 211, 128, 201, 189, 199, 133, 32, 38, 194, 85]);
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header);
         $T          = $algorithm->calculateAuthenticationTag($K, $iv, $cyphertext, $aad);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
@@ -44,6 +45,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128CBC_HS256EncryptAndDecrypt_Bis()
     {
+        $header = array();
         $algorithm = new A128CBC_HS256();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
@@ -53,7 +55,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
         $expected_T          = hex2bin("652c3fa36b0a7c5b3219fab3a30bc1c4");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header);
         $T          = $algorithm->calculateAuthenticationTag($K, $iv, $cyphertext, $aad);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
@@ -66,6 +68,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192CBC_HS384EncryptAndDecrypt()
     {
+        $header = array();
         $algorithm = new A192CBC_HS384();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f");
@@ -75,7 +78,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
         $expected_T          = hex2bin("8490ac0e58949bfe51875d733f93ac2075168039ccc733d7");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header);
         $T          = $algorithm->calculateAuthenticationTag($K, $iv, $cyphertext, $aad);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
@@ -88,6 +91,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256CBC_HS512EncryptAndDecrypt()
     {
+        $header = array();
         $algorithm = new A256CBC_HS512();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f");
@@ -97,7 +101,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
         $expected_T          = hex2bin("4dd3b4c088a7f45c216839645b2012bf2e6269a8c56a816dbc1b267761955bc5");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header);
         $T          = $algorithm->calculateAuthenticationTag($K, $iv, $cyphertext, $aad);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);

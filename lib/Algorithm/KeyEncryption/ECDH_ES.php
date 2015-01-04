@@ -4,13 +4,12 @@ namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
 use Jose\Operation\KeyAgreementInterface;
-use Jose\Operation\AdditionalHeaderParametersInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\EccFactory;
 use SpomkyLabs\JOSE\Util\Base64Url;
 use SpomkyLabs\JOSE\Util\ConcatKDF;
 
-class ECDH_ES implements KeyAgreementInterface, AdditionalHeaderParametersInterface
+class ECDH_ES implements KeyAgreementInterface
 {
     private $adapter;
 
@@ -19,21 +18,7 @@ class ECDH_ES implements KeyAgreementInterface, AdditionalHeaderParametersInterf
         $this->adapter = EccFactory::getAdapter();
     }
 
-    public function getAdditionalHeaderParameters(JWKInterface $sender_key, JWKInterface $receiver_key = null)
-    {
-        $params = array(
-            "epk" => array(
-                "kty" => $sender_key->getKeyType(),
-                "crv" => $sender_key->getValue("crv"),
-                "x"   => $sender_key->getValue("x"),
-                "y"   => $sender_key->getValue("y"),
-            ),
-        );
-
-        return $params;
-    }
-
-    public function getAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_algorithm, $encryption_key_length)
+    public function getAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
     {
         $this->checkKey($sender_key, $receiver_key);
 
@@ -54,7 +39,16 @@ class ECDH_ES implements KeyAgreementInterface, AdditionalHeaderParametersInterf
         $receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
         $agreed_key = $receiver_point->mul($sen_d)->getX();
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $encryption_algorithm, $encryption_key_length);
+        $header = array_merge($header, array(
+            "epk" => array(
+                "kty" => $sender_key->getKeyType(),
+                "crv" => $sender_key->getValue("crv"),
+                "x"   => $sender_key->getValue("x"),
+                "y"   => $sender_key->getValue("y"),
+            ),
+        ));
+
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
     }
 
     private function checkKey(JWKInterface $key1, JWKInterface $key2)

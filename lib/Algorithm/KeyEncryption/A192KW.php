@@ -19,7 +19,7 @@ class A192KW extends AESKW
     {
         parent::checkKey($key);
         if (24 !== strlen(Base64Url::decode($key->getValue("k")))) {
-            throw new \RuntimeException("The key size is not valid");
+            throw new \InvalidArgumentException("The key size is not valid");
         }
     }
 }

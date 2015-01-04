@@ -27,6 +27,7 @@
         "lib-openssl": "*",
         "phpseclib/phpseclib": ">=0.3.5",
         "mdanter/ecc": "~0.2",
+        "spomky-labs/pbkdf2": "~0.1",
         "spomky-labs/aes-key-wrap": "~0.1"
     },
     "require-dev": {
