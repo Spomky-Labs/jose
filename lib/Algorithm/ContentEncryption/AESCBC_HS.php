@@ -60,10 +60,10 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $encoded_header);
     }
 
-/**
- * @return string
- */
-abstract protected function getHashAlgorithm();
+    /**
+     * @return string
+     */
+    abstract protected function getHashAlgorithm();
     abstract protected function getKeySize();
 
     public function getIVSize()

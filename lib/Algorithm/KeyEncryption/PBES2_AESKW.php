@@ -24,7 +24,11 @@ abstract class PBES2_AESKW implements KeyWrappingInterface
         $header["p2s"] = Base64Url::encode($salt);
         $header["p2c"] = $count;
 
-        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size);
+        if (function_exists('hash_pbkdf2')) {
+            $derived_key = hash_pbkdf2($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size, true);
+        } else {
+            $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size);
+        }
 
         return $wrapper->wrap($derived_key, $cek);
     }
@@ -41,7 +45,11 @@ abstract class PBES2_AESKW implements KeyWrappingInterface
         $count = $header["p2c"];
         $password = Base64Url::decode($key->getValue("k"));
 
-        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $salt, $count, $key_size);
+        if (function_exists('hash_pbkdf2')) {
+            $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size, true);
+        } else {
+            $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $salt, $count, $key_size);
+        }
 
         return $wrapper->unwrap($derived_key, $encryted_cek);
     }
