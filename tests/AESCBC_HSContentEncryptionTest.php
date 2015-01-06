@@ -123,6 +123,10 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad, $T)));
     }
 
+    /**
+     * @param string $class
+     * @param string $name
+     */
     protected static function getMethod($class, $name)
     {
         $class = new \ReflectionClass($class);
