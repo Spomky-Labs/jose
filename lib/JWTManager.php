@@ -41,34 +41,29 @@ abstract class JWTManager implements JWTManagerInterface
      */
     abstract protected function createIV($size);
 
-    public function verify($input)
+    /**
+     * {@inheritdoc}
+     */
+    public function load($input)
     {
-    }
-
-/**
- * {@inheritdoc}
- */
-    //public function load($input, array &$headers = array())
-    public function load($input, $verify_signature = true)
-    {
-        //We try to identity if the data is a JSON object. In this case, we consider that data is a JWE or JWS Seralization object
+        //We try to identity if the data is a JSON object. In this case, we consider that data is a JWE or JWS (Flattened) Seralization object
         if (is_array($data = json_decode($input, true))) {
-            return $this->loadSerializedJson($data, $headers);
+            return $this->loadSerializedJson($data);
         }
 
         //Else, we consider that data is a JWE or JWS Compact Seralized object
-        return $this->loadCompactSerializedJson($input, $headers);
+        return $this->loadCompactSerializedJson($input);
     }
 
     /**
      * @param array $input
      */
-    private function loadSerializedJson($input, array &$headers)
+    private function loadSerializedJson($input)
     {
         if (isset($input['signatures']) && is_array($input['signatures'])) {
-            return $this->loadSerializedJsonJWS($input, $headers);
+            return $this->loadSerializedJsonJWS($input);
         } elseif (isset($input['recipients']) && is_array($input['recipients'])) {
-            return $this->loadSerializedJsonJWE($input, $headers);
+            return $this->loadSerializedJsonJWE($input);
         }
         throw new \InvalidArgumentException('Unable to load the input');
     }
@@ -76,40 +71,46 @@ abstract class JWTManager implements JWTManagerInterface
     /**
      * @param string $input
      */
-    private function loadCompactSerializedJson($input, array &$headers)
+    private function loadCompactSerializedJson($input)
     {
         $parts = explode('.', $input);
 
         switch (count($parts)) {
             case 3:
-                return $this->loadCompactSerializedJWS($parts, $headers);
+                // We suppose it is a JWS object
+                return $this->loadCompactSerializedJWS($parts);
             case 5:
-                return $this->loadCompactSerializedJWE($parts, $headers);
+                // We suppose it is a JWE object
+                return $this->loadCompactSerializedJWE($parts);
             default:
                 throw new \InvalidArgumentException('Unable to load the input');
         }
     }
 
-    private function loadCompactSerializedJWS($parts, array &$headers)
+    private function loadCompactSerializedJWS($parts)
     {
         $jwt_header    = $parts[0];
         $jwt_payload   = $parts[1];
         $jwt_signature = Base64Url::decode($parts[2]);
 
         $result = $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature);
+        $header = json_decode(Base64Url::decode($jwt_header), true);
 
-        $headers[] = $result;
         $jwt_payload = Base64Url::decode($jwt_payload);
 
-        $this->convertJWTContent(json_decode(Base64Url::decode($jwt_header), true), $jwt_payload);
+        $this->convertJWTContent($header, $jwt_payload);
+        
+        $result = new JWS();
+        $result->setPayload($jwt_payload)
+               ->setProtectedHeader($header);
 
-        return $jwt_payload;
+        return $result;
     }
 
     /**
      * @param array $data
      */
-    private function loadSerializedJsonJWS($data, array &$headers)
+    private function loadSerializedJsonJWS($data)
     {
         $jwt_payload = $data['payload'];
         foreach ($data['signatures'] as $signature) {
@@ -177,7 +178,7 @@ abstract class JWTManager implements JWTManagerInterface
         }
     }
 
-    private function loadCompactSerializedJWE($parts, array &$headers)
+    private function loadCompactSerializedJWE($parts)
     {
         $jwt_header             = json_decode(Base64Url::decode($parts[0]), true);
         $jwk_encrypted_cek      = Base64Url::decode($parts[1]);
@@ -205,7 +206,7 @@ abstract class JWTManager implements JWTManagerInterface
     /**
      * @param array $data
      */
-    private function loadSerializedJsonJWE($data, array &$headers = array())
+    private function loadSerializedJsonJWE($data = array())
     {
         $jwt_protected_header = array();
         if (isset($data['protected'])) {
@@ -259,7 +260,7 @@ abstract class JWTManager implements JWTManagerInterface
      * @param string|null $jwt_iv
      * @param string|null $jwt_authentication_tag
      */
-    private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $jwt_unprotected_header, array $recipient_header, array $complete_header, array &$headers)
+    private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $jwt_unprotected_header, array $recipient_header, array $complete_header)
     {
         $type = $this->getKeyManager()->getType($complete_header['enc']);
         $key = $this->getKeyManager()->createJWK(array(

@@ -133,7 +133,7 @@ class JWKManager extends Base
     protected function getSupportedMethods()
     {
         return array_merge(
-            parent::getSupportedMethods(),
+            //parent::getSupportedMethods(),
             array(
                 'findByKid',
                 'findByAPV',
