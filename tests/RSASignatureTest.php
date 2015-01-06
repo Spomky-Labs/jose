@@ -182,9 +182,12 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager = $this->loadJWTManager();
         $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
         $this->assertEquals('eyJhbGciOiJSUzI1NiJ9.YWFh.TdTeYwpH9rvs3AiH0qRzhVGC9MqqEZgf_qGttOtskmd-JZGibAAR9ElsoXYizriDx1xCZ3m8yOEmri9213_jsb8W-cfy49SQ2E1DhSStLcq-8xeqRPaI-DtFztbK-DzaQw_wNNv5nw9f-xAITaMArMMOvHZ40MO0nLPxHtAqTSMVAnRWx57YAA8UcS_E2nLp1Dx-Bn3cg_iV9ixy1dCqfKCrfo9ttOuAYGBKCTCcwl3ThcdfTUptpxdrr66SCTXqK6ix0EkcXnFRH7-iwuwr-Kdo6FriEH_j-nVrHGwWxbom3Od2_xPsA2TRFeQYF5COMvuiNyYh-qFYqS6MPGomhQ', $signature);
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
@@ -214,10 +217,13 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
         $keys->addKey($key);
 
         $jwt_manager = $this->loadJWTManager();
-        $signature = $jwt_manager->sign($input, $keys, JWTManager::JSON_COMPACT_SERIALIZATION);
+        $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
         $this->assertEquals('eyJhbGciOiJSUzM4NCJ9.YWFh.TM-oIguSp5Wpddx3SmntJKfIwkivk0sq2WuovsWjPPX4RuwaTloMM3YpE6OIstMCL9_HX93SMZ2bzLqGfI9OEIUEkMQ7o2oSOyaxoncyuQLo8awUBIl-fp7DLw7wuig1hfyKpgMeJfdJ_R_gYIcRfuRG4l0NOB0kh4CNBtMhSLkyPgcXZoF8KqogasVoHqAsoQr15MUevotE53akN3ozPJlkjmNLsSa6bN2V0bPl0UmhX01HTvBsqVkaiudgQXOphZySmoMQX7Qa_2QCvrb-lIiY4tMxd4U_l0tzvqE9-jzDd2PKJ0P1rZ8ZN2J9XCO2pqIyPufvTfIutVc81KLiFA', $signature);
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
@@ -248,9 +254,12 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager = $this->loadJWTManager();
         $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
         $this->assertEquals('eyJhbGciOiJSUzUxMiJ9.YWFh.fy_mMC2CGTb5Z8n0M_alAvg0SxUV_cdaFc7co5DlxDbXOyuj-WN7ns_Mhfp2coJpMlVKs2jLGXtysd2gM3chX9oLXFEBp-fr5O66E0iNmAofxryh660xDxi8ASMyKfFXyJ-H84ztzwIlvuk7DyEYt0qcfnAsY5CYYhEb_5fPvrp_FCRudxq_KYRRtQvKQ-esrI8cw24KxYn6c2Bj2g7U3_RGnr47WdjRYyyWwhwHgqei-MNCE8IrBap6ust07E-ziA7fCh0JEHB--93naazN_yqU6asAEFSzLel-_cy4mbRp9BTwYhP7SBNn4xpYfVd392VqQdwYwDnWeuHe0jlLLA', $signature);
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
@@ -281,8 +290,11 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager = $this->loadJWTManager();
         $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
@@ -313,8 +325,11 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager = $this->loadJWTManager();
         $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
@@ -345,8 +360,11 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $jwt_manager = $this->loadJWTManager();
         $signature = $jwt_manager->sign($input, $keys);
+        if (!is_string($signature)) {
+            $this->fail("The signature is not a valid JSON Compact Seralization object");
+        }
 
-        $result = $jwt_manager->load($signature, true);
+        $result = $jwt_manager->load($signature);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("aaa", $result->getPayload());
