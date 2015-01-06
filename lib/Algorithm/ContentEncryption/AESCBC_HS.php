@@ -3,6 +3,7 @@
 namespace SpomkyLabs\JOSE\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
+use SpomkyLabs\JOSE\Util\Base64Url;
 
 /**
  *
@@ -12,20 +13,26 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, array &$header)
+    public function encryptContent($input, $cek, $iv, array &$header, &$aad)
     {
         $k = substr($cek, strlen($cek)/2);
+        $encoded_header = Base64Url::encode(json_encode($header));
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
         $aes->setKey($k);
         $aes->setIV($iv);
 
-        return $aes->encrypt($input);
+        $cyphertext = $aes->encrypt($input);
+        $aad = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $encoded_header);
+
+        return $cyphertext;
     }
 
-    public function decryptContent($input, $cek, $iv, array $header)
+    public function decryptContent($input, $cek, $iv, array $header, $aad)
     {
+        $encoded_header = Base64Url::encode(json_encode($header));
+        $this->checkAuthenticationTag($input, $cek, $iv, $encoded_header, $aad);
         $k = substr($cek, strlen($cek)/2);
 
         $aes = new \Crypt_AES();
@@ -36,7 +43,7 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         return $aes->decrypt($input);
     }
 
-    public function calculateAuthenticationTag($cek, $iv, $encrypted_data, $encoded_header)
+    protected function calculateAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header)
     {
         $mac_key          = substr($cek, 0, strlen($cek)/2);
         $auth_data_length = strlen($encoded_header);
@@ -55,9 +62,9 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
     /**
      * @param string $authentication_tag
      */
-    public function checkAuthenticationTag($authentication_tag, $cek, $iv, $encrypted_data, $encoded_header)
+    protected function checkAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header, $authentication_tag)
     {
-        return $authentication_tag === $this->calculateAuthenticationTag($cek, $iv, $encrypted_data, $encoded_header);
+        return $authentication_tag === $this->calculateAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header);
     }
 
     /**

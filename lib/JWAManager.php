@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm;
+namespace SpomkyLabs\JOSE;
 
 use Jose\JWAManager as Base;
 use Jose\JWAInterface;
@@ -33,7 +33,6 @@ class JWAManager extends Base
 
     public function removeAlgorithm($algorithm)
     {
-        $name = null;
         if ($algorithm instanceof JWAInterface) {
             $name = $algorithm->getAlgorithmName();
         } elseif (is_string($algorithm)) {

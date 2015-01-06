@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\JOSE\Tests;
 
-use SpomkyLabs\JOSE\Algorithm\JWAManager;
+use SpomkyLabs\JOSE\JWAManager;
 use SpomkyLabs\JOSE\Algorithm\Signature\ES256;
 use SpomkyLabs\JOSE\Algorithm\Signature\ES384;
 use SpomkyLabs\JOSE\Algorithm\Signature\ES512;

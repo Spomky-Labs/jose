@@ -16,6 +16,9 @@ abstract class JWKManager implements JWKManagerInterface
     {
         $keys = $this->createJWKSet();
         foreach ($this->getSupportedMethods() as $method) {
+            if (method_exists($this, $method)) {
+                throw new \RuntimeException("The method '$method' does not exist.");
+            }
             $result = $this->$method($header);
             if ($result instanceof JWKInterface) {
                 $keys->addKey($result);
