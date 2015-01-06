@@ -31,6 +31,9 @@ class JWAManager extends Base
         return $this;
     }
 
+    /**
+     * @param string $algorithm
+     */
     public function removeAlgorithm($algorithm)
     {
         if ($algorithm instanceof JWAInterface) {

@@ -61,6 +61,7 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
 
     /**
      * @param string $authentication_tag
+     * @param string $encoded_header
      */
     protected function checkAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header, $authentication_tag)
     {
