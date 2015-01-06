@@ -9,6 +9,9 @@ class JWAManager extends Base
 {
     protected $algorithms = array();
 
+    /**
+     * @return \Jose\JWAInterface[]
+     */
     public function getAlgorithms()
     {
         return $this->algorithms;

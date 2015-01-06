@@ -16,6 +16,9 @@ class JWTManager extends Base
     private $jwa_manager;
     private $compression_manager = null;
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getAlgorithmManager()
     {
         return $this->jwa_manager;
@@ -28,6 +31,9 @@ class JWTManager extends Base
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getKeyManager()
     {
         return $this->jwk_manager;
@@ -40,6 +46,9 @@ class JWTManager extends Base
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function getCompressionManager()
     {
         return $this->compression_manager;

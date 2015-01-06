@@ -15,17 +15,17 @@ use Jose\Operation\SignatureInterface;
 abstract class JWTManager implements JWTManagerInterface
 {
     /**
-     * @return Jose\JWKManagerInterface
+     * @return \Jose\JWKManagerInterface
      */
     abstract protected function getKeyManager();
 
     /**
-     * @return Jose\JWAManagerInterface
+     * @return \Jose\JWAManagerInterface
      */
     abstract protected function getAlgorithmManager();
 
     /**
-     * @return Jose\Compression\CompressionManagerInterface
+     * @return \Jose\Compression\CompressionManagerInterface
      */
     abstract protected function getCompressionManager();
 
