@@ -32,7 +32,7 @@ class JWTManager extends Base
      */
     public function createJWS()
     {
-        return new JWT();
+        return new JWS();
     }
 
     /**
@@ -40,7 +40,7 @@ class JWTManager extends Base
      */
     public function createJWE()
     {
-        return new JWT();
+        return new JWE();
     }
 
     /**

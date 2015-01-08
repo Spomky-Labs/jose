@@ -96,7 +96,7 @@ abstract class JWTManager implements JWTManagerInterface
 
         $verified = $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature);
         if ($verified === false) {
-            return null;
+            return;
         }
         $header = json_decode(Base64Url::decode($jwt_header), true);
 
@@ -157,7 +157,7 @@ abstract class JWTManager implements JWTManagerInterface
 
         $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
         if (empty($jwk_set)) {
-            return null;
+            return;
         }
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
 
@@ -172,6 +172,7 @@ abstract class JWTManager implements JWTManagerInterface
                 }
             }
         }
+
         return false;
     }
 
