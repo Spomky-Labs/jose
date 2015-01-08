@@ -17,12 +17,12 @@ abstract class JWTManager implements JWTManagerInterface
     /**
      * @return \Jose\JWKManagerInterface
      */
-    abstract protected function getKeyManager();
+    abstract protected function getJWKManager();
 
     /**
      * @return \Jose\JWAManagerInterface
      */
-    abstract protected function getAlgorithmManager();
+    abstract protected function getJWAManager();
 
     /**
      * @return \Jose\Compression\CompressionManagerInterface
@@ -46,12 +46,12 @@ abstract class JWTManager implements JWTManagerInterface
      */
     public function load($input)
     {
-        //We try to identity if the data is a JSON object. In this case, we consider that data is a JWE or JWS (Flattened) Seralization object
+        //We try to identify if the data is a JSON object. In this case, we consider that data is a JSON (Flattened) Seralization object
         if (is_array($data = json_decode($input, true))) {
             return $this->loadSerializedJson($data);
         }
 
-        //Else, we consider that data is a JWE or JWS Compact Seralized object
+        //Else, we consider that data is a JSON Compact Seralized object
         return $this->loadCompactSerializedJson($input);
     }
 
@@ -65,6 +65,7 @@ abstract class JWTManager implements JWTManagerInterface
         } elseif (isset($input['recipients']) && is_array($input['recipients'])) {
             return $this->loadSerializedJsonJWE($input);
         }
+        //Flattented?
         throw new \InvalidArgumentException('Unable to load the input');
     }
 
@@ -93,7 +94,10 @@ abstract class JWTManager implements JWTManagerInterface
         $jwt_payload   = $parts[1];
         $jwt_signature = Base64Url::decode($parts[2]);
 
-        $result = $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature);
+        $verified = $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature);
+        if ($verified === false) {
+            return null;
+        }
         $header = json_decode(Base64Url::decode($jwt_header), true);
 
         $jwt_payload = Base64Url::decode($jwt_payload);
@@ -137,45 +141,38 @@ abstract class JWTManager implements JWTManagerInterface
         if ($protected_header === null && $unprotected_header === null) {
             throw new \InvalidArgumentException('Invalid header');
         }
-        $header = array();
+        $input = $protected_header.".".$payload;
+
+        $complete_header = array();
         if ($protected_header !== null) {
             $tmp = json_decode(Base64Url::decode($protected_header), true);
             if (!is_array($tmp)) {
                 throw new \InvalidArgumentException('Invalid protected header');
             }
-            $header['protected'] = $tmp;
+            $complete_header = array_merge($complete_header, $tmp);
         }
         if ($unprotected_header !== null) {
-            $header['header'] = $unprotected_header;
+            $complete_header = array_merge($complete_header, $unprotected_header);
         }
 
-        $complete_header = array();
-        foreach ($header as $part) {
-            if ($part !== null) {
-                $complete_header = array_merge($complete_header, $part);
-            }
+        $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
+        if (empty($jwk_set)) {
+            return null;
         }
-        if (count($complete_header) === 0) {
-            throw new \InvalidArgumentException('Invalid header');
-        }
+        $algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
 
-        $jwk_set = $this->getKeyManager()->findByHeader($complete_header);
-
-        if (!empty($jwk_set)) {
-            foreach ($jwk_set->getKeys() as $jwk) {
-                if ($this->canVerify($jwk)) {
-                    if ($jwk->verify(
-                        $protected_header.".".$payload,
-                        $signature,
-                        $complete_header
-                    )) {
-                        return $header;
-                    } else {
-                        throw new \InvalidArgumentException('Invalid signature');
-                    }
+        foreach ($jwk_set->getKeys() as $jwk) {
+            if ($this->canVerify($jwk)) {
+                if ($algorithm->verify(
+                    $jwk,
+                    $input,
+                    $signature
+                )) {
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private function loadCompactSerializedJWE($parts)
@@ -186,7 +183,7 @@ abstract class JWTManager implements JWTManagerInterface
         $jwk_encrypted_data     = Base64Url::decode($parts[3]);
         $jwt_authentication_tag = Base64Url::decode($parts[4]);
 
-        $jwk_set = $this->getKeyManager()->findByHeader($jwt_header);
+        $jwk_set = $this->getJWKManager()->findByHeader($jwt_header);
 
         if (empty($jwk_set)) {
             throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
@@ -238,7 +235,7 @@ abstract class JWTManager implements JWTManagerInterface
             }
             $complete_header = array_merge($jwt_protected_header, $jwt_unprotected_header, $recipient_header);
 
-            $jwk_set = $this->getKeyManager()->findByHeader($complete_header);
+            $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
 
             if (!empty($jwk_set)) {
                 foreach ($jwk_set->getKeys() as $jwk) {
@@ -262,8 +259,8 @@ abstract class JWTManager implements JWTManagerInterface
      */
     private function decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, array $jwt_protected_header, array $jwt_unprotected_header, array $recipient_header, array $complete_header)
     {
-        $type = $this->getKeyManager()->getType($complete_header['enc']);
-        $key = $this->getKeyManager()->createJWK(array(
+        $type = $this->getJWKManager()->getType($complete_header['enc']);
+        $key = $this->getJWKManager()->createJWK(array(
             "kty" => $type,
         ));
 
@@ -308,7 +305,7 @@ abstract class JWTManager implements JWTManagerInterface
         if (isset($header['cty'])) {
             switch ($header['cty']) {
                 case 'jwk+json':
-                    $payload = $this->getKeyManager()->createJWK(json_decode($payload, true));
+                    $payload = $this->getJWKManager()->createJWK(json_decode($payload, true));
 
                     return;
                 case 'jwkset+json':
@@ -318,7 +315,7 @@ abstract class JWTManager implements JWTManagerInterface
                         throw new \Exception("Not a valid key set");
                     }
 
-                    $payload = $this->getKeyManager()->createJWKSet($values['keys']);
+                    $payload = $this->getJWKManager()->createJWKSet($values['keys']);
 
                     return;
                 default:
@@ -365,7 +362,7 @@ abstract class JWTManager implements JWTManagerInterface
                 throw new \RuntimeException("No 'alg' parameter set in the header or the key.");
             }
 
-            $algorithm = $this->getAlgorithmManager()->getAlgorithm($alg);
+            $algorithm = $this->getJWAManager()->getAlgorithm($alg);
             if (null === $algorithm) {
                 throw new \RuntimeException("The algorithm '$alg' is not supported.");
             }
@@ -451,8 +448,8 @@ abstract class JWTManager implements JWTManagerInterface
 
         //When using not compact format, we must determine the key management mode first
 
-        $type = $this->getKeyManager()->getType($jwt_header['enc']);
-        $key = $this->getKeyManager()->createJWK(array(
+        $type = $this->getJWKManager()->getType($jwt_header['enc']);
+        $key = $this->getJWKManager()->createJWK(array(
             "kty" => $type,
         ));
 
@@ -559,8 +556,8 @@ abstract class JWTManager implements JWTManagerInterface
         $data = array(
             'header'=>$header,
         );
-        $type = $this->getKeyManager()->getType($data['header']['enc']);
-        $key = $this->getKeyManager()->createJWK(array(
+        $type = $this->getJWKManager()->getType($data['header']['enc']);
+        $key = $this->getJWKManager()->createJWK(array(
             "kty" =>$type
         ));
         if (!$key instanceof JWKContentEncryptionInterface) {

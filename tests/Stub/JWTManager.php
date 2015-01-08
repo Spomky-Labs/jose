@@ -6,6 +6,8 @@ use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
 use SpomkyLabs\Jose\JWT;
+use SpomkyLabs\Jose\JWS;
+use SpomkyLabs\Jose\JWE;
 use SpomkyLabs\Jose\JWTManager as Base;
 
 /**
@@ -28,12 +30,28 @@ class JWTManager extends Base
     /**
      * {@inheritdoc}
      */
-    protected function getAlgorithmManager()
+    public function createJWS()
+    {
+        return new JWT();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWE()
+    {
+        return new JWT();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getJWAManager()
     {
         return $this->jwa_manager;
     }
 
-    public function setAlgorithmManager(JWAManagerInterface $jwa_manager)
+    public function setJWAManager(JWAManagerInterface $jwa_manager)
     {
         $this->jwa_manager = $jwa_manager;
 
@@ -43,12 +61,12 @@ class JWTManager extends Base
     /**
      * {@inheritdoc}
      */
-    protected function getKeyManager()
+    protected function getJWKManager()
     {
         return $this->jwk_manager;
     }
 
-    public function setKeyManager(JWKManagerInterface $jwk_manager)
+    public function setJWKManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;
 
