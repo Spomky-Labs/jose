@@ -99,7 +99,7 @@ abstract class JWTManager implements JWTManagerInterface
         $jwt_payload = Base64Url::decode($jwt_payload);
 
         $this->convertJWTContent($header, $jwt_payload);
-        
+
         $result = new JWS();
         $result->setPayload($jwt_payload)
                ->setProtectedHeader($header);

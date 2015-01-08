@@ -2,9 +2,6 @@
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
-use Jose\JWKInterface;
-use AESKW\A192KW as Wrapper;
-use SpomkyLabs\Jose\Util\Base64Url;
 
 /**
  */

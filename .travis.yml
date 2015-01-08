@@ -11,6 +11,8 @@ matrix:
         - php: hhvm
 
 before_script:
+    - pecl install crypto-0.1.1
+    - phpenv config-add ./tests/php.ini
     - curl -s http://getcomposer.org/installer | php
     - php composer.phar update --dev --no-interaction
 

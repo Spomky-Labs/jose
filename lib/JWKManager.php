@@ -44,6 +44,7 @@ abstract class JWKManager implements JWKManagerInterface
         }
 
         $jwk = $this->createJWK($header['jwk']);
+
         return $jwk;
     }
 }
