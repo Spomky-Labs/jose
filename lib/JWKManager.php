@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\Jose;
 
 use Jose\JWKInterface;
 use Jose\JWKSetInterface;
@@ -10,7 +10,12 @@ use Jose\JWKManagerInterface;
  */
 abstract class JWKManager implements JWKManagerInterface
 {
-    abstract protected function getSupportedMethods();
+    protected function getSupportedMethods()
+    {
+        return array(
+            'findByJWK',
+        );
+    }
 
     public function findByHeader(array $header)
     {
@@ -30,5 +35,15 @@ abstract class JWKManager implements JWKManagerInterface
         }
 
         return $keys;
+    }
+
+    protected function findByJWK($header)
+    {
+        if (!isset($header['jwk'])) {
+            return;
+        }
+
+        $jwk = $this->createJWK($header['jwk']);
+        return $jwk;
     }
 }

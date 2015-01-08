@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\Jose;
 
 use Jose\JWKSet as Base;
 use Jose\JWKInterface;

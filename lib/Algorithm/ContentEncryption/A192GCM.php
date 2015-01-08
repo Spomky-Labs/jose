@@ -5,20 +5,15 @@ namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 /**
  *
  */
-class A192CBC_HS384 extends AESCBC_HS
+class A192GCM extends AESGCM
 {
-    protected function getHashAlgorithm()
-    {
-        return 'sha384';
-    }
-
     protected function getKeySize()
     {
-        return 384;
+        return 192;
     }
 
     public function getAlgorithmName()
     {
-        return "A192CBC-HS384";
+        return "A192GCM";
     }
 }

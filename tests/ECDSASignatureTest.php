@@ -1,12 +1,12 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Algorithm\Signature\ES256;
-//use SpomkyLabs\JOSE\Algorithm\Signature\ES384; //Not tested yet
-use SpomkyLabs\JOSE\Algorithm\Signature\ES512;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\Util\Base64Url;
+use SpomkyLabs\Jose\Algorithm\Signature\ES256;
+//use SpomkyLabs\Jose\Algorithm\Signature\ES384; //Not tested yet
+use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {

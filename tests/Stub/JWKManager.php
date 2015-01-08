@@ -1,15 +1,41 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests\Stub;
+namespace SpomkyLabs\Jose\Tests\Stub;
 
-use SpomkyLabs\JOSE\JWKSet;
-use SpomkyLabs\JOSE\JWKManager as Base;
-use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\JWKSet;
+use SpomkyLabs\Jose\JWKManager as Base;
+use SpomkyLabs\Jose\Util\Base64Url;
 
 /**
  */
 class JWKManager extends Base
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWK(array $values = array())
+    {
+        $jwk = new JWK();
+        $jwk->setValues($values);
+
+        return $jwk;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWKSet(array $values = array())
+    {
+        $key_set = new JWKSet();
+        foreach ($values as $value) {
+            $key = $this->createJWK($value);
+            $key_set->addKey($key);
+        }
+
+        return $key_set;
+    }
+
     protected function findByAPV($header)
     {
         if (!isset($header['apv'])) {
@@ -94,46 +120,10 @@ class JWKManager extends Base
         }
     }
 
-    public function createJWKSet(array $values = array())
-    {
-        $key_set = new JWKSet();
-        foreach ($values as $value) {
-            $key = $this->createJWK($value);
-            $key_set->addKey($key);
-        }
-
-        return $key_set;
-    }
-
-    public function findByJku($header)
-    {
-        if (!isset($header["jku"])) {
-            return;
-        }
-
-        $content = json_decode(file_get_contents($header["jku"]), true);
-        if (!is_array($content)) {
-            return;
-        }
-        if (!isset($content['keys'])) {
-            return;
-        }
-
-        return $this->createJWKSet($content['keys']);
-    }
-
-    public function createJWK(array $values)
-    {
-        $jwk = new JWK();
-        $jwk->setValues($values);
-
-        return $jwk;
-    }
-
     protected function getSupportedMethods()
     {
         return array_merge(
-            //parent::getSupportedMethods(),
+            parent::getSupportedMethods(),
             array(
                 'findByKid',
                 'findByAPV',

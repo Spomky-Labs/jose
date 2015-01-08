@@ -1,11 +1,11 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWAManager;
-use SpomkyLabs\JOSE\Algorithm\Signature\ES256;
-use SpomkyLabs\JOSE\Algorithm\Signature\ES384;
-use SpomkyLabs\JOSE\Algorithm\Signature\ES512;
+use SpomkyLabs\Jose\JWAManager;
+use SpomkyLabs\Jose\Algorithm\Signature\ES256;
+use SpomkyLabs\Jose\Algorithm\Signature\ES384;
+use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 
 class JWAManagerTest extends \PHPUnit_Framework_TestCase
 {

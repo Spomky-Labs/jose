@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
 use Jose\Operation\DirectEncryptionInterface;

@@ -1,9 +1,9 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Algorithm\Signature\None;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\Algorithm\Signature\None;
 
 class NoneSignatureTest extends \PHPUnit_Framework_TestCase
 {
@@ -13,7 +13,7 @@ class NoneSignatureTest extends \PHPUnit_Framework_TestCase
         $key->setValue("kty", "none");
 
         $none = new None();
-        $data = 'aaa';
+        $data = "Je suis Charlie";
 
         $signature = $none->sign($key, $data);
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
-use SpomkyLabs\JOSE\Util\RSAConverter;
+use SpomkyLabs\Jose\Util\RSAConverter;
 use Jose\Operation\KeyEncryptionInterface;
 
 abstract class RSA implements KeyEncryptionInterface

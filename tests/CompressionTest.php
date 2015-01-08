@@ -1,11 +1,11 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\Compression\CompressionManager;
-use SpomkyLabs\JOSE\Compression\Deflate;
-use SpomkyLabs\JOSE\Compression\GZip;
-use SpomkyLabs\JOSE\Compression\ZLib;
+use SpomkyLabs\Jose\Compression\CompressionManager;
+use SpomkyLabs\Jose\Compression\Deflate;
+use SpomkyLabs\Jose\Compression\GZip;
+use SpomkyLabs\Jose\Compression\ZLib;
 
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,7 +36,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new Deflate();
         $compression->setCompressionLevel(9);
 
-        $data        = "Please compress this little string";
+        $data        = "Je suis Charlie";
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -48,7 +48,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new GZip();
         $compression->setCompressionLevel(9);
 
-        $data        = "Please compress this little string";
+        $data        = "Je suis Charlie";
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -60,7 +60,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new ZLib();
         $compression->setCompressionLevel(9);
 
-        $data        = "Please compress this little string";
+        $data        = "Je suis Charlie";
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);

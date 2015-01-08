@@ -1,11 +1,12 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests\Stub;
+namespace SpomkyLabs\Jose\Tests\Stub;
 
 use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
-use SpomkyLabs\JOSE\JWTManager as Base;
+use SpomkyLabs\Jose\JWT;
+use SpomkyLabs\Jose\JWTManager as Base;
 
 /**
  * Class representing a JSON Web Signature.
@@ -15,6 +16,14 @@ class JWTManager extends Base
     private $jwk_manager;
     private $jwa_manager;
     private $compression_manager = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWT()
+    {
+        return new JWT();
+    }
 
     /**
      * {@inheritdoc}

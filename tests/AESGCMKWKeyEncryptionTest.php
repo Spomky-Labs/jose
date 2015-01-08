@@ -4,13 +4,13 @@ namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
 
-class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
+class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
-    public function testA128KW()
+    public function testA128GCMKW()
     {
         $header = array();
         $key = new JWK();
@@ -21,15 +21,18 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A128KW();
+        $aeskw = new A128GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
-        $this->assertEquals($wrapped_cek, hex2bin('11826840774D993FF9C2FA02CCA3CEA0E93B1E1CF96361F93EA6DC2F345194E7B30F964C79F9E61D'));
+        $this->assertTrue(array_key_exists("iv", $header));
+        $this->assertTrue(array_key_exists("tag", $header));
+        $this->assertNotNull($header["iv"]);
+        $this->assertNotNull($header["tag"]);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
-    public function testA192KW()
+    public function testA192GCMKW()
     {
         $header = array();
         $key = new JWK();
@@ -40,15 +43,18 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A192KW();
+        $aeskw = new A192GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
-        $this->assertEquals($wrapped_cek, hex2bin('08861E000AABFA4479C7191F9DC51CCA37C50F16CC14441C6EA4980CFCE0F41D9285758C6F74AC6D'));
+        $this->assertTrue(array_key_exists("iv", $header));
+        $this->assertTrue(array_key_exists("tag", $header));
+        $this->assertNotNull($header["iv"]);
+        $this->assertNotNull($header["tag"]);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
-    public function testA256KW()
+    public function testA256GCMKW()
     {
         $header = array();
         $key = new JWK();
@@ -59,11 +65,14 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A256KW();
+        $aeskw = new A256GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
-        $this->assertEquals($wrapped_cek, hex2bin('28C9F404C4B810F4CBCCB35CFB87F8263F5786E2D80ED326CBC7F0E71A99F43BFB988B9B7A02DD21'));
+        $this->assertTrue(array_key_exists("iv", $header));
+        $this->assertTrue(array_key_exists("tag", $header));
+        $this->assertNotNull($header["iv"]);
+        $this->assertNotNull($header["tag"]);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 }

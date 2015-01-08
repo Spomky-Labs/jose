@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 class RSA1_5 extends RSA
 {

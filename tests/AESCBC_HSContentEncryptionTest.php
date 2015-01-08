@@ -1,10 +1,10 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256;
-use SpomkyLabs\JOSE\Algorithm\ContentEncryption\A192CBC_HS384;
-use SpomkyLabs\JOSE\Algorithm\ContentEncryption\A256CBC_HS512;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBC_HS384;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBC_HS512;
 
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -59,8 +59,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);
@@ -87,8 +87,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);
@@ -115,8 +115,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\JOSE\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);

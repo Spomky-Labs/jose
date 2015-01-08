@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\Signature;
+namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
@@ -9,7 +9,7 @@ use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
 use Mdanter\Ecc\Signature;
 use Mdanter\Ecc\EccFactory;
-use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\Jose\Util\Base64Url;
 
 /**
  */

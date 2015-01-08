@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Util;
+namespace SpomkyLabs\Jose\Util;
 
 /**
  * Encode and decode data into Base64 Url Safe

@@ -1,11 +1,11 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Algorithm\Signature\HS256;
-use SpomkyLabs\JOSE\Algorithm\Signature\HS384;
-use SpomkyLabs\JOSE\Algorithm\Signature\HS512;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\Algorithm\Signature\HS256;
+use SpomkyLabs\Jose\Algorithm\Signature\HS384;
+use SpomkyLabs\Jose\Algorithm\Signature\HS512;
 
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {
@@ -17,11 +17,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             "k"  => "foo",
         ));
         $hmac = new HS256();
-        $data = 'aaa';
+        $data = "Je suis Charlie";
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals($signature, '3f63dbf1ed896b83f86274d9dc4174d3644aa54a4e9df8c8cb4b8b353d11d49d');
+        $this->assertEquals('d5a439ca3bf35184c55ab79d9941269b222162e183276b848090ade22eb45fbc', $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -33,11 +33,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             "k"  => "foo",
         ));
         $hmac = new HS384();
-        $data = 'aaa';
+        $data = "Je suis Charlie";
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals($signature, '5ba09deea6649cd6085cec53ae9116145c1fb97d1eda3e7d8531f8915161e68fbdadc9df36da612e0e15f185df917185');
+        $this->assertEquals('ce386c732cff516dab38f42aae816ecbae340acda905eb5a924f3d53d73d4d31fdf685deae19496fc1e5f9e3a48756eb', $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -49,11 +49,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             "k"  => "foo",
         ));
         $hmac = new HS512();
-        $data = 'aaa';
+        $data = "Je suis Charlie";
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals($signature, '1b2b2a457f06a03e81093ac8e6c272d69b67f40eef6c396f14e9da0313bfb7e043f0a56b54051570733180cebc64dc6750d91bee4352ab7631902578a41bd38e');
+        $this->assertEquals('24138a039bd97ae80a8c034f58edee4905fb79426d2a06c561e029c482b2bbe16854692d130da5d01a42e28bbac27e36ee02d329d49f72f6083f3a7a7879a41f', $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 }

@@ -1,11 +1,11 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A128KW;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A192KW;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\ECDH_ES_A256KW;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A128KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A192KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A256KW;
 
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {

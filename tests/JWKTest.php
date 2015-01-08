@@ -1,7 +1,7 @@
 <?php
 
-use SpomkyLabs\JOSE\JWKSet;
-use SpomkyLabs\JOSE\JWK;
+use SpomkyLabs\Jose\JWKSet;
+use SpomkyLabs\Jose\JWK;
 
 class JWKTest extends \PHPUnit_Framework_TestCase
 {

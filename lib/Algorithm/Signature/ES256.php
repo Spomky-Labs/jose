@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\Signature;
+namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Mdanter\Ecc\EccFactory;
 

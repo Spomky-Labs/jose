@@ -1,8 +1,8 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\Jose;
 
-use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\Jose\Util\Base64Url;
 use Jose\JWKInterface;
 use Jose\JWTInterface;
 use Jose\JWKSetInterface;

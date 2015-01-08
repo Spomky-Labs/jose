@@ -1,12 +1,12 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests;
+namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\JOSE\JWK;
-use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\RSA1_5;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\RSA_OAEP;
-use SpomkyLabs\JOSE\Algorithm\KeyEncryption\RSA_OAEP_256;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\Util\Base64Url;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA1_5;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP_256;
 
 class RSAKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use PBKDF2\PBKDF2;
 use Jose\JWKInterface;
-use SpomkyLabs\JOSE\Util\Base64Url;
-use Jose\Operation\KeyWrappingInterface;
+use SpomkyLabs\Jose\Util\Base64Url;
+use Jose\Operation\KeyEncryptionInterface;
 
-abstract class PBES2_AESKW implements KeyWrappingInterface
+abstract class PBES2_AESKW implements KeyEncryptionInterface
 {
-    public function wrapKey(JWKInterface $key, $cek, array &$header)
+    public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
         $this->checkHeaderAlgorithm($header);
@@ -33,7 +33,7 @@ abstract class PBES2_AESKW implements KeyWrappingInterface
         return $wrapper->wrap($derived_key, $cek);
     }
 
-    public function unwrapKey(JWKInterface $key, $encryted_cek, array $header)
+    public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
     {
         $this->checkKey($key);
         $this->checkHeaderAlgorithm($header);

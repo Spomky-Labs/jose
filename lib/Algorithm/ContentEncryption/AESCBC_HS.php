@@ -1,9 +1,9 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\ContentEncryption;
+namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
-use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\Jose\Util\Base64Url;
 
 /**
  *

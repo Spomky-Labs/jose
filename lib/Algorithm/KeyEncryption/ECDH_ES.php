@@ -1,13 +1,13 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\EccFactory;
-use SpomkyLabs\JOSE\Util\Base64Url;
-use SpomkyLabs\JOSE\Util\ConcatKDF;
+use SpomkyLabs\Jose\Util\Base64Url;
+use SpomkyLabs\Jose\Util\ConcatKDF;
 
 class ECDH_ES implements KeyAgreementInterface
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\KeyEncryption;
+namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
 use AESKW\A256KW as Wrapper;
-use SpomkyLabs\JOSE\Util\Base64Url;
+use SpomkyLabs\Jose\Util\Base64Url;
 
 /**
  */

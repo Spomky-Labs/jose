@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Algorithm\ContentEncryption;
+namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 /**
  *

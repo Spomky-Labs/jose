@@ -1,6 +1,6 @@
 <?php
 
-use SpomkyLabs\JOSE\JWE;
+use SpomkyLabs\Jose\JWE;
 
 class JWETest extends \PHPUnit_Framework_TestCase
 {

@@ -4,7 +4,7 @@
     "type": "library",
     "license": "MIT",
     "keywords": ["JWS", "JWT", "JWE", "JWA", "JWK", "JWKSet", "Jose"],
-    "homepage": "https://github.com/Spomky-Labs/JOSE",
+    "homepage": "https://github.com/Spomky-Labs/Jose",
     "authors": [
         {
             "name": "Florent Morselli",
@@ -13,18 +13,19 @@
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\JOSE\\":  "lib/"
+            "SpomkyLabs\\Jose\\":  "lib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SpomkyLabs\\JOSE\\Tests\\":  "tests/"
+            "SpomkyLabs\\Jose\\Tests\\":  "tests/"
         }
     },
     "require": {
         "php": ">=5.3",
         "spomky-labs/jose-interface": "dev-master",
         "lib-openssl": "*",
+        "ext-crypto": "~0.1.1",
         "phpseclib/phpseclib": ">=0.3.5",
         "mdanter/ecc": "~0.2",
         "spomky-labs/pbkdf2": "~0.1",

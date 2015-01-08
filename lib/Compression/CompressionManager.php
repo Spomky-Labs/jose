@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Compression;
+namespace SpomkyLabs\Jose\Compression;
 
 use Jose\Compression\CompressionInterface;
 use Jose\Compression\CompressionManagerInterface;
