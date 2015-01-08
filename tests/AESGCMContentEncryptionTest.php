@@ -13,7 +13,16 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         $header = array("alg" => "ECDH-ES", "enc" => "A128GCM");
         $tag = null;
-        $algorithm = new A128GCM();
+
+        try {
+            $algorithm = new A128GCM();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $cek                 = openssl_random_pseudo_bytes(128/8);
         $iv                  = openssl_random_pseudo_bytes(96/8);
@@ -29,7 +38,16 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         $header = array("alg" => "ECDH-ES", "enc" => "A192GCM");
         $tag = null;
-        $algorithm = new A192GCM();
+
+        try {
+            $algorithm = new A192GCM();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $cek                 = openssl_random_pseudo_bytes(192/8);
         $iv                  = openssl_random_pseudo_bytes(96/8);
@@ -45,7 +63,16 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         $header = array("alg" => "ECDH-ES", "enc" => "A256GCM");
         $tag = null;
-        $algorithm = new A256GCM();
+
+        try {
+            $algorithm = new A256GCM();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $cek                 = openssl_random_pseudo_bytes(256/8);
         $iv                  = openssl_random_pseudo_bytes(96/8);
@@ -62,7 +89,15 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMDecryptTestVector()
     {
-        $algorithm = new A256GCM();
+        try {
+            $algorithm = new A256GCM();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $header              = array("alg" => "RSA-OAEP", "enc" => "A256GCM");
         $cek                 = $this->convertArrayToBinString([177, 161, 244, 128, 84, 143, 225, 115, 63, 180, 3, 255, 107, 154, 212, 246, 138, 7, 110, 91, 112, 46, 34, 105, 47, 130, 203, 46, 122, 234, 64, 252]);
@@ -82,5 +117,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         }
 
         return hex2bin(implode("", $data));
+    }
+
+    public function isHHVM()
+    {
+        return defined('HHVM_VERSION');
     }
 }

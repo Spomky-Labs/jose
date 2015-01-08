@@ -21,7 +21,15 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A128GCMKW();
+        try {
+            $aeskw = new A128GCMKW();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
@@ -43,7 +51,15 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A192GCMKW();
+        try {
+            $aeskw = new A192GCMKW();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
@@ -65,7 +81,15 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        $aeskw = new A256GCMKW();
+        try {
+            $aeskw = new A256GCMKW();
+            if ($this->isHHVM()) {
+                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
+            }  
+        } catch (Exception $e) {
+            $this->assertTrue(true);
+            return;
+        }
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
@@ -74,5 +98,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header["iv"]);
         $this->assertNotNull($header["tag"]);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
+    }
+
+    public function isHHVM()
+    {
+        return defined('HHVM_VERSION');
     }
 }
