@@ -80,22 +80,22 @@ This library aims to implement all algorithms, but focuses on required and recom
         * PBES2-HS256+A128KW (o)
         * PBES2-HS384+A192KW (o)
         * PBES2-HS512+A256KW (o)
-    * Content Encryption:
-        * A128CBC-HS256 (*)
-        * A192CBC-HS384 (o)
-        * A256CBC-HS512 (*)
-
-### Unsupported algorithms ###
-
-* Encryption:
-    * Key Encryption:
         * A128GCMKW (o)
         * A192GCMKW (o)
         * A256GCMKW (o)
     * Content Encryption:
+        * A128CBC-HS256 (*)
+        * A192CBC-HS384 (o)
+        * A256CBC-HS512 (*)
         * A128GCM (r)
         * A192GCM (o)
         * A256GCM (r)
+
+### Unsupported algorithms ###
+
+**None!** All algortihms described in the specification are supported.
+
+Please note that AES GCM algorithms require an additionnal PHP extension. See [PHP Crypto](https://github.com/bukka/php-crypto) to know how to install and enable it.
 
 ## JWK ##
 
