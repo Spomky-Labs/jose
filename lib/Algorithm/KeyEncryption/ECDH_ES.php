@@ -6,6 +6,7 @@ use Jose\JWKInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\EccFactory;
+use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
@@ -21,26 +22,30 @@ class ECDH_ES implements KeyAgreementInterface
         $this->adapter = EccFactory::getAdapter();
     }
 
-    public function getAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
+    public function getAgreementKey(JWKInterface $receiver_key, $encryption_key_length, array $header)
     {
-        $this->checkKey($sender_key, $receiver_key);
-
-        //We swap the keys to get sender_key the private key
-        if (null === $sender_key->getValue("d")) {
-            $tmp = $sender_key;
-            $sender_key = $receiver_key;
-            $receiver_key = $tmp;
+        $this->checkKey($receiver_key, true);
+        $sender_key = new JWK();
+        $sender_key->setValues($header["epk"]);
+        $this->checkKey($sender_key, false);
+        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
+            throw new \RuntimeException("Curves are different");
         }
 
-        $p     = $this->getGenerator($sender_key);
-        $curve = $this->getCurve($sender_key);
+        $agreed_key = $this->calculateAgreementKey($receiver_key, $sender_key);
 
-        $rec_x = $this->convertBase64ToDec($receiver_key->getValue('x'));
-        $rec_y = $this->convertBase64ToDec($receiver_key->getValue('y'));
-        $sen_d = $this->convertBase64ToDec($sender_key->getValue('d'));
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
+    }
 
-        $receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
-        $agreed_key = $receiver_point->mul($sen_d)->getX();
+    public function setAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
+    {
+        $this->checkKey($sender_key, true);
+        $this->checkKey($receiver_key, false);
+        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
+            throw new \RuntimeException("Curves are different");
+        }
+
+        $agreed_key = $this->calculateAgreementKey($sender_key, $receiver_key);
 
         $header = array_merge($header, array(
             "epk" => array(
@@ -54,21 +59,32 @@ class ECDH_ES implements KeyAgreementInterface
         return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
     }
 
+    public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
+    {
+        $p     = $this->getGenerator($private_key);
+        $curve = $this->getCurve($private_key);
+
+        $rec_x = $this->convertBase64ToDec($public_key->getValue('x'));
+        $rec_y = $this->convertBase64ToDec($public_key->getValue('y'));
+        $sen_d = $this->convertBase64ToDec($private_key->getValue('d'));
+
+        $receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
+        return $receiver_point->mul($sen_d)->getX();
+    }
+
     public function getAlgorithmName()
     {
         return "ECDH-ES";
     }
 
-    private function checkKey(JWKInterface $key1, JWKInterface $key2)
+    private function checkKey(JWKInterface $key, $is_private)
     {
-        if ("EC" !== $key1->getKeyType() || "EC" !== $key2->getKeyType()) {
-            throw new \RuntimeException("The keys type must be 'EC'");
+        if ("EC" !== $key->getKeyType()) {
+            //var_dump($key->getKeyType());
+            throw new \RuntimeException("The key type must be 'EC'");
         }
-        if (null === $key1->getValue('d') && null === $key2->getValue('d')) {
-            throw new \RuntimeException("One of the keys must be private");
-        }
-        if ($key1->getValue("crv") !== $key2->getValue("crv")) {
-            throw new \RuntimeException("Curves are different");
+        if (null === $key->getValue('d') && true === $is_private) {
+            throw new \RuntimeException("The key must be private");
         }
     }
 

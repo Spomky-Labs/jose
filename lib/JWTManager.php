@@ -3,11 +3,16 @@
 namespace SpomkyLabs\Jose;
 
 use SpomkyLabs\Jose\Util\Base64Url;
+use Jose\JWAInterface;
 use Jose\JWKInterface;
 use Jose\JWTInterface;
 use Jose\JWKSetInterface;
 use Jose\JWTManagerInterface;
 use Jose\Operation\SignatureInterface;
+use Jose\Operation\KeyAgreementInterface;
+use Jose\Operation\KeyAgreementWrappingInterface;
+use Jose\Operation\KeyEncryptionInterface;
+use Jose\Operation\DirectEncryptionInterface;
 
 /**
  * Class representing a JSON Web Token Manager.
@@ -94,8 +99,7 @@ abstract class JWTManager implements JWTManagerInterface
         $jwt_payload   = $parts[1];
         $jwt_signature = Base64Url::decode($parts[2]);
 
-        $verified = $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature);
-        if ($verified === false) {
+        if (false === $this->verifySignature($jwt_header, null, $jwt_payload, $jwt_signature)) {
             return;
         }
         $header = json_decode(Base64Url::decode($jwt_header), true);
@@ -104,11 +108,11 @@ abstract class JWTManager implements JWTManagerInterface
 
         $this->convertJWTContent($header, $jwt_payload);
 
-        $result = new JWS();
-        $result->setPayload($jwt_payload)
-               ->setProtectedHeader($header);
+        $jws = $this->createJWS();
+        $jws->setPayload($jwt_payload)
+            ->setProtectedHeader($header);
 
-        return $result;
+        return $jws;
     }
 
     /**
@@ -179,26 +183,44 @@ abstract class JWTManager implements JWTManagerInterface
     private function loadCompactSerializedJWE($parts)
     {
         $jwt_header             = json_decode(Base64Url::decode($parts[0]), true);
-        $jwk_encrypted_cek      = Base64Url::decode($parts[1]);
+        $jwt_encrypted_cek      = Base64Url::decode($parts[1]);
         $jwt_iv                 = Base64Url::decode($parts[2]);
         $jwk_encrypted_data     = Base64Url::decode($parts[3]);
         $jwt_authentication_tag = Base64Url::decode($parts[4]);
 
         $jwk_set = $this->getJWKManager()->findByHeader($jwt_header);
-
-        if (empty($jwk_set)) {
-            throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
+        if (!array_key_exists("alg", $jwt_header) || array_key_exists("enc", $jwt_header)) {
+            throw new \InvalidArgumentException("Parameters 'enc' or 'alg' are missing.");
         }
+        $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($jwt_header["alg"]);
+        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($jwt_header["enc"]);
 
-        foreach ($jwk_set->getKeys() as $jwk) {
-            if ($this->canDecryptCEK($jwk)) {
-                $jwt_decrypted_cek = $jwk->decryptKey($jwk_encrypted_cek, $jwt_header);
-                if ($jwt_decrypted_cek !== null) {
-                    return $this->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, $jwt_header, array(), array(), $jwt_header, $headers);
+        if (!empty($jwk_set)) {
+            foreach ($jwk_set->getKeys() as $jwk) {
+                if ($this->canDecryptCEK($jwk)) {
+                    $jwt_decrypted_cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwt_encrypted_cek, $jwt_header);
+                    if ($jwt_decrypted_cek !== null) {
+                        return $this->decryptContent($jwk_encrypted_data, $jwt_decrypted_cek, $jwt_iv, $jwt_authentication_tag, $jwt_header, array(), array(), $jwt_header, $headers);
+                    }
                 }
             }
         }
         throw new \InvalidArgumentException('Unable to find a key to decrypt this token');
+    }
+
+    public function decryptCEK(JWAInterface $key_encryption_algorithm, JWAInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    {
+        if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
+            return $key_encryption_algorithm->getCEK($key, $header);
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+            return $key_encryption_algorithm->getAgreementKey($key, $content_encryption_algorithm->getCEKSize(), $header);
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            return $key_encryption_algorithm->unwrapAgreementKey($key, $encrypted_cek, $content_encryption_algorithm->getCEKSize(), $header);
+        } elseif ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
+            return $key_encryption_algorithm->decryptKey($key, $encryted_cek, $header);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -307,20 +329,16 @@ abstract class JWTManager implements JWTManagerInterface
             switch ($header['cty']) {
                 case 'jwk+json':
                     $payload = $this->getJWKManager()->createJWK(json_decode($payload, true));
-
                     return;
                 case 'jwkset+json':
                     $values = json_decode($payload, true);
-
                     if (!isset($values['keys'])) {
                         throw new \Exception("Not a valid key set");
                     }
-
                     $payload = $this->getJWKManager()->createJWKSet($values['keys']);
-
                     return;
                 default:
-                    return;
+                    break;
             }
         }
 
@@ -328,7 +346,6 @@ abstract class JWTManager implements JWTManagerInterface
         $json = json_decode($payload, true);
         if (is_array($json)) {
             $payload = $json;
-
             return;
         }
     }
@@ -340,7 +357,7 @@ abstract class JWTManager implements JWTManagerInterface
     public function sign($jwt, JWKSetInterface $keys, $serialization = self::JSON_COMPACT_SERIALIZATION)
     {
         if ($jwt instanceof JWKInterface || $jwt instanceof JWKSetInterface) {
-            $input = new JWT();
+            $input = $this->createJWT();
             $input->setPayload($jwt);
             $jwt = $input;
         }
@@ -611,10 +628,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "encrypt", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && (strpos($key_ops, "wrapKey") === -1 || strpos($key_ops, "deriveKey") === -1)) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -628,10 +645,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && (strpos($key_ops, "unwrapKey") === -1 || strpos($key_ops, "deriveBits") === -1)) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -645,10 +662,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "encrypt") === -1) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -662,10 +679,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "decrypt", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "decrypt") === -1) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -679,10 +696,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "sign", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "sign") === -1) {
             return false;
-        }
+        }*/
 
         return true;
     }
@@ -696,10 +713,10 @@ abstract class JWTManager implements JWTManagerInterface
         }
 
         //If "key_ops" parameter is not null or does not contain "verify", we can not use it
-        $key_ops = $jwk->getKeyOperations();
+        /*$key_ops = $jwk->getKeyOperations();
         if ($key_ops !== null && strpos($key_ops, "verify") === -1) {
             return false;
-        }
+        }*/
 
         return true;
     }

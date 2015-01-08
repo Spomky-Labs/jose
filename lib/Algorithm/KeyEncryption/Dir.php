@@ -12,7 +12,7 @@ class Dir implements DirectEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function getCEK(JWKInterface $key, array &$header)
+    public function getCEK(JWKInterface $key, array $header)
     {
         if ("dir" !== $key->getType()) {
             throw new \InvalidArgumentException("The key is not a direct key");
