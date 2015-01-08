@@ -9,13 +9,20 @@ use Jose\Operation\KeyEncryptionInterface;
 
 abstract class AESGCMKW implements KeyEncryptionInterface
 {
+    public function __construct()
+    {
+        if (!class_exists("\Crypto\Cipher")) {
+            throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
+        }
+    }
+
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
 
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $cipher->setAAD(null);
-        $iv = mcrypt_create_iv(96, MCRYPT_DEV_URANDOM);
+        $iv = openssl_random_pseudo_bytes(96/8);
         $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->getValue('k')), $iv);
 
         $header['iv'] = Base64Url::encode($iv);

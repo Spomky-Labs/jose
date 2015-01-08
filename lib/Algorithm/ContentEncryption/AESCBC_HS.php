@@ -10,6 +10,13 @@ use SpomkyLabs\Jose\Util\Base64Url;
  */
 abstract class AESCBC_HS implements ContentEncryptionInterface
 {
+    public function __construct()
+    {
+        if (!class_exists("\Crypt_AES")) {
+            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use AES based (except AES-GCM based) algorithms");
+        }
+    }
+
     /**
      * @inheritdoc
      */

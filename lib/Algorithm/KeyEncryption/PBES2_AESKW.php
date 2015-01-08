@@ -16,7 +16,7 @@ abstract class PBES2_AESKW implements KeyEncryptionInterface
         $wrapper = $this->getWrapper();
         $hash_algorithm = $this->getHashAlgorithm();
         $key_size = $this->getKeySize();
-        $salt = mcrypt_create_iv($key_size, MCRYPT_DEV_URANDOM);
+        $salt = openssl_random_pseudo_bytes($key_size/8);
         $count = 4096;
         $password = Base64Url::decode($key->getValue("k"));
 

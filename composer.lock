@@ -4,8 +4,224 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "0c9279f9daa88a85bc190ca52d80f207",
+    "hash": "5e3a7eec5066854c15b00956a76ab471",
     "packages": [
+        {
+            "name": "spomky-labs/aes-key-wrap",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
+                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
+                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mcrypt": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "AESKW\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/aes-key-wrap/contributors"
+                }
+            ],
+            "description": "AES Kew Wrap for PHP.",
+            "homepage": "https://github.com/Spomky-Labs/aes-key-wrap",
+            "keywords": [
+                "A128KW",
+                "A192KW",
+                "A256KW",
+                "RFC3394",
+                "aes",
+                "key",
+                "wrap"
+            ],
+            "time": "2015-01-02 10:49:23"
+        },
+        {
+            "name": "spomky-labs/jose-interface",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/jose-interface.git",
+                "reference": "b1057f0ccdcced97e231ddc7670f711a181e358c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/b1057f0ccdcced97e231ddc7670f711a181e358c",
+                "reference": "b1057f0ccdcced97e231ddc7670f711a181e358c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Jose\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/jose-interface/contributors"
+                }
+            ],
+            "description": "JSON Object Signing and Encryption interfaces for PHP.",
+            "homepage": "https://github.com/Spomky-Labs/jose-interface",
+            "keywords": [
+                "JOSE",
+                "JWE",
+                "JWK",
+                "JWKSet",
+                "JWS",
+                "Jot",
+                "jwa",
+                "jwt"
+            ],
+            "time": "2015-01-08 15:15:39"
+        },
+        {
+            "name": "spomky-labs/pbkdf2",
+            "version": "v0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Spomky-Labs/pbkdf2.git",
+                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Spomky-Labs/pbkdf2/zipball/d672d1a4d585b41d3b7895fb6a333d03c83762ba",
+                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "PBKDF2\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Florent Morselli",
+                    "homepage": "https://github.com/Spomky-Labs/pbkdf2/contributors"
+                }
+            ],
+            "description": "Password Based Key Derivation Function 2",
+            "homepage": "https://github.com/Spomky-Labs/pbkdf2",
+            "keywords": [
+                "RFC2898",
+                "RFC6070",
+                "pbkdf2"
+            ],
+            "time": "2015-01-04 13:56:30"
+        }
+    ],
+    "packages-dev": [
+        {
+            "name": "doctrine/instantiator",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/doctrine/instantiator.git",
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f976e5de371104877ebc89bd8fecb0019ed9c119",
+                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3,<8.0-DEV"
+            },
+            "require-dev": {
+                "athletic/athletic": "~0.1.8",
+                "ext-pdo": "*",
+                "ext-phar": "*",
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "2.0.*@ALPHA"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Doctrine\\Instantiator\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Pivetta",
+                    "email": "ocramius@gmail.com",
+                    "homepage": "http://ocramius.github.com/"
+                }
+            ],
+            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
+            "homepage": "https://github.com/doctrine/instantiator",
+            "keywords": [
+                "constructor",
+                "instantiate"
+            ],
+            "time": "2014-10-13 12:58:55"
+        },
         {
             "name": "mdanter/ecc",
             "version": "0.2.0",
@@ -162,222 +378,6 @@
                 "x509"
             ],
             "time": "2014-11-10 03:08:59"
-        },
-        {
-            "name": "spomky-labs/aes-key-wrap",
-            "version": "v0.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
-                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
-                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-mcrypt": "*",
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "AESKW\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Florent Morselli",
-                    "homepage": "https://github.com/Spomky-Labs/aes-key-wrap/contributors"
-                }
-            ],
-            "description": "AES Kew Wrap for PHP.",
-            "homepage": "https://github.com/Spomky-Labs/aes-key-wrap",
-            "keywords": [
-                "A128KW",
-                "A192KW",
-                "A256KW",
-                "RFC3394",
-                "aes",
-                "key",
-                "wrap"
-            ],
-            "time": "2015-01-02 10:49:23"
-        },
-        {
-            "name": "spomky-labs/jose-interface",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "557d97b659d6b9983544d55b8623c45e06cf5845"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/557d97b659d6b9983544d55b8623c45e06cf5845",
-                "reference": "557d97b659d6b9983544d55b8623c45e06cf5845",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Jose\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Florent Morselli",
-                    "homepage": "https://github.com/Spomky-Labs/jose-interface/contributors"
-                }
-            ],
-            "description": "JSON Object Signing and Encryption interfaces for PHP.",
-            "homepage": "https://github.com/Spomky-Labs/jose-interface",
-            "keywords": [
-                "JOSE",
-                "JWE",
-                "JWK",
-                "JWKSet",
-                "JWS",
-                "Jot",
-                "jwa",
-                "jwt"
-            ],
-            "time": "2015-01-08 13:53:36"
-        },
-        {
-            "name": "spomky-labs/pbkdf2",
-            "version": "v0.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Spomky-Labs/pbkdf2.git",
-                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/pbkdf2/zipball/d672d1a4d585b41d3b7895fb6a333d03c83762ba",
-                "reference": "d672d1a4d585b41d3b7895fb6a333d03c83762ba",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.*"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "0.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "PBKDF2\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Florent Morselli",
-                    "homepage": "https://github.com/Spomky-Labs/pbkdf2/contributors"
-                }
-            ],
-            "description": "Password Based Key Derivation Function 2",
-            "homepage": "https://github.com/Spomky-Labs/pbkdf2",
-            "keywords": [
-                "RFC2898",
-                "RFC6070",
-                "pbkdf2"
-            ],
-            "time": "2015-01-04 13:56:30"
-        }
-    ],
-    "packages-dev": [
-        {
-            "name": "doctrine/instantiator",
-            "version": "1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/doctrine/instantiator.git",
-                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/instantiator/zipball/f976e5de371104877ebc89bd8fecb0019ed9c119",
-                "reference": "f976e5de371104877ebc89bd8fecb0019ed9c119",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3,<8.0-DEV"
-            },
-            "require-dev": {
-                "athletic/athletic": "~0.1.8",
-                "ext-pdo": "*",
-                "ext-phar": "*",
-                "phpunit/phpunit": "~4.0",
-                "squizlabs/php_codesniffer": "2.0.*@ALPHA"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "Doctrine\\Instantiator\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Marco Pivetta",
-                    "email": "ocramius@gmail.com",
-                    "homepage": "http://ocramius.github.com/"
-                }
-            ],
-            "description": "A small, lightweight utility to instantiate objects in PHP without invoking their constructors",
-            "homepage": "https://github.com/doctrine/instantiator",
-            "keywords": [
-                "constructor",
-                "instantiate"
-            ],
-            "time": "2014-10-13 12:58:55"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1126,8 +1126,9 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=5.3",
-        "lib-openssl": "*",
-        "ext-crypto": "~0.1.1"
+        "lib-openssl": "*"
     },
-    "platform-dev": []
+    "platform-dev": {
+        "ext-crypto": "~0.1.1"
+    }
 }

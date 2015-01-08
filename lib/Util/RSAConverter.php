@@ -7,8 +7,16 @@ namespace SpomkyLabs\Jose\Util;
  */
 class RSAConverter
 {
+    protected static function checkRequirements()
+    {
+        if (!class_exists("\Crypt_RSA")) {
+            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
+        }
+    }
+
     public static function fromArrayToRSA_Crypt(array $data)
     {
+        self::checkRequirements();
         $xml = self::fromArrayToXML($data);
         $rsa = new \Crypt_RSA();
         $rsa->loadKey($xml);

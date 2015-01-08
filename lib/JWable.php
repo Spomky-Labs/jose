@@ -38,8 +38,8 @@ trait JWable
     }
 
     /**
-     * @param string $key
-     * @param string $value
+     * @param string          $key
+     * @param string|string[] $value
      */
     public function setProtectedHeaderValue($key, $value)
     {
@@ -49,8 +49,8 @@ trait JWable
     }
 
 /**
- * @param string $key
- * @param string $value
+ * @param string          $key
+ * @param string|string[] $value
  */
 public function setUnprotectedHeaderValue($key, $value)
 {

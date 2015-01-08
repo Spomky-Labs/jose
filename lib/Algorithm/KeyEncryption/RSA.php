@@ -8,6 +8,13 @@ use Jose\Operation\KeyEncryptionInterface;
 
 abstract class RSA implements KeyEncryptionInterface
 {
+    public function __construct()
+    {
+        if (!class_exists("\Crypt_RSA")) {
+            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
+        }
+    }
+
     /**
      * @inheritdoc
      */

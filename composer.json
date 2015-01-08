@@ -25,18 +25,21 @@
         "php": ">=5.3",
         "spomky-labs/jose-interface": "dev-master",
         "lib-openssl": "*",
-        "ext-crypto": "~0.1.1",
-        "phpseclib/phpseclib": ">=0.3.5",
-        "mdanter/ecc": "~0.2",
         "spomky-labs/pbkdf2": "~0.1",
         "spomky-labs/aes-key-wrap": "~0.1"
     },
     "require-dev": {
+        "ext-crypto": "~0.1.1",
+        "phpseclib/phpseclib": ">=0.3.5",
+        "mdanter/ecc": "~0.2",
         "phpunit/phpunit": "4.*"
     },
    "suggest":{
       "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
-      "ext-bcmath":"Required if GMP is not installed"
+      "ext-bcmath":"Required if GMP is not installed",
+      "ext-crypto":"Required to use AES GCM algorithms",
+      "phpseclib/phpseclib":"Required to use RSA based algorithms",
+      "mdanter/ecc":"Required to use Elliptic Curves based algorithms"
    },
     "extra": {
         "branch-alias": {

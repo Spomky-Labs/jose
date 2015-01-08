@@ -15,8 +15,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $tag = null;
         $algorithm = new A128GCM();
 
-        $cek                 = mcrypt_create_iv(128/8, MCRYPT_DEV_URANDOM);
-        $iv                  = mcrypt_create_iv(96, MCRYPT_DEV_URANDOM);
+        $cek                 = openssl_random_pseudo_bytes(128/8);
+        $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
@@ -31,8 +31,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $tag = null;
         $algorithm = new A192GCM();
 
-        $cek                 = mcrypt_create_iv(192/8, MCRYPT_DEV_URANDOM);
-        $iv                  = mcrypt_create_iv(96, MCRYPT_DEV_URANDOM);
+        $cek                 = openssl_random_pseudo_bytes(192/8);
+        $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
@@ -47,8 +47,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $tag = null;
         $algorithm = new A256GCM();
 
-        $cek                 = mcrypt_create_iv(256/8, MCRYPT_DEV_URANDOM);
-        $iv                  = mcrypt_create_iv(96, MCRYPT_DEV_URANDOM);
+        $cek                 = openssl_random_pseudo_bytes(256/8);
+        $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
