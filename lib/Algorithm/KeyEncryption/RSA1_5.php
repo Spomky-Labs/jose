@@ -4,12 +4,12 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 class RSA1_5 extends RSA
 {
-    public function getEncryptionMode()
+    protected function getEncryptionMode()
     {
         return CRYPT_RSA_ENCRYPTION_PKCS1;
     }
 
-    public function getHashAlgorithm()
+    protected function getHashAlgorithm()
     {
     }
 

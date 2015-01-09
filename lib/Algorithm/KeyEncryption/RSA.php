@@ -55,10 +55,10 @@ abstract class RSA implements KeyEncryptionInterface
     protected function checkKey(JWKInterface $key)
     {
         if ("RSA" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not a RSA key");
+            throw new \InvalidArgumentException("The key is not valid");
         }
     }
 
-    abstract public function getEncryptionMode();
-    abstract public function getHashAlgorithm();
+    abstract protected function getEncryptionMode();
+    abstract protected function getHashAlgorithm();
 }

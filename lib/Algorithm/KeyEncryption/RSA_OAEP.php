@@ -4,12 +4,12 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 class RSA_OAEP extends RSA
 {
-    public function getEncryptionMode()
+    protected function getEncryptionMode()
     {
         return CRYPT_RSA_ENCRYPTION_OAEP;
     }
 
-    public function getHashAlgorithm()
+    protected function getHashAlgorithm()
     {
         return "sha1";
     }

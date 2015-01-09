@@ -11,6 +11,23 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP_256;
 class RSAKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not valid
+     */
+    public function testInvalidKey()
+    {
+        $key  = new JWK();
+        $key->setValue("kty", "EC");
+
+        $rsa1_5 = new RSA1_5();
+
+        $header = array();
+        $data = "Je suis Charlie";
+
+        $rsa1_5->encryptKey($key, $data, $header);
+    }
+
+    /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.2
      */
     public function testRSA1_5EncryptionAndDecryption()
