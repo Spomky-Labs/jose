@@ -22,7 +22,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $ecdsa = new ES256();
         $data = "Je suis Charlie";
 
-        $signature = $ecdsa->sign($key, $data);
+        $ecdsa->sign($key, $data);
     }
 
     //The values of these tests come from the JWS draft

@@ -35,7 +35,7 @@ class NoneSignatureTest extends TestCase
         $none = new None();
         $data = "Je suis Charlie";
 
-        $signature = $none->sign($key, $data);
+        $none->sign($key, $data);
     }
 
     public function testNoneSignAndVerifyComplete()

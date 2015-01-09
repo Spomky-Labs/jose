@@ -35,7 +35,7 @@ class RSASignatureTest extends TestCase
         $rsa = new RS256();
         $data = "Je suis Charlie";
 
-        $signature = $rsa->sign($key, $data);
+        $rsa->sign($key, $data);
     }
 
     /**
@@ -54,7 +54,7 @@ class RSASignatureTest extends TestCase
         $rsa = new RS256();
         $data = "Je suis Charlie";
 
-        $signature = $rsa->sign($key, $data);
+        $rsa->sign($key, $data);
     }
 
     public function testRS256Sign()

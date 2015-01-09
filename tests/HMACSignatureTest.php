@@ -21,7 +21,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $hmac = new HS256();
         $data = "Je suis Charlie";
 
-        $signature = $hmac->sign($key, $data);
+        $hmac->sign($key, $data);
     }
 
     public function testHS256SignAndVerify()
