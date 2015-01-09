@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-
 class JWAManagerTest extends TestCase
 {
     public function testAlgorithmIsSupported()

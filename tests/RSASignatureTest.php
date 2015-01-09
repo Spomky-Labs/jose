@@ -410,6 +410,25 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("PS512", $result->getAlgorithm());
     }
 
+    /**
+     * @see JWE Draft 31
+     */
+    public function testLoadJWEFromIETFDraft()
+    {
+        $jwt_manager = $this->loadJWTManager();
+
+        $result = $jwt_manager->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
+        //$this->assertEquals("Live long and prosper.", $result);
+        /*$this->assertEquals(array(
+        'protected' => array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256'),
+        ), $header);*/
+
+        $this->assertInstanceOf("Jose\JWEInterface", $result);
+        $this->assertEquals("Live long and prosper.", $result->getPayload());
+        $this->assertEquals("RSA1_5", $result->getAlgorithm());
+        $this->assertEquals("A128CBC-HS256", $result->getEncryptionAlgorithm());
+    }
+
     public function testCertificateConversion()
     {
         $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."private.key", "tests");

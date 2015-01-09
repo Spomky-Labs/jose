@@ -22,7 +22,7 @@ class JWAManager extends Base
      */
     public function listAlgorithms()
     {
-        return array_keys($this->algorithms);
+        return array_keys($this->getAlgorithms());
     }
 
     /**
