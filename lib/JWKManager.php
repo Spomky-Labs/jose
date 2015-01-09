@@ -20,6 +20,13 @@ abstract class JWKManager implements JWKManagerInterface
     public function findByHeader(array $header)
     {
         $keys = $this->createJWKSet();
+
+        // If the algorithm is none, we can return directly the key.
+        if (array_key_exists("alg", $header) && "none" === $header["alg"]) {
+            $jwk = $this->createJWK(array("kty"=>"none"));
+            $keys->addKey($jwk);
+            return $keys;
+        }
         foreach ($this->getSupportedMethods() as $method) {
             if (!method_exists($this, $method)) {
                 throw new \RuntimeException("The method '$method' does not exist.");

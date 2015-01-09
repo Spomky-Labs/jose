@@ -10,11 +10,19 @@ class JWAManager extends Base
     protected $algorithms = array();
 
     /**
-     * @return \Jose\JWAInterface[]
+     * {@inheritdoc}
      */
     public function getAlgorithms()
     {
         return $this->algorithms;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function listAlgorithms()
+    {
+        return array_keys($this->algorithms);
     }
 
     /**

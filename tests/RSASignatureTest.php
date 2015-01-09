@@ -21,8 +21,42 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS256;
 use SpomkyLabs\Jose\Algorithm\Signature\PS384;
 use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 
-class RSASignatureTest extends \PHPUnit_Framework_TestCase
+class RSASignatureTest extends TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not valid
+     */
+    public function testInvalidKey()
+    {
+        $key  = new JWK();
+        $key->setValue("kty", "EC");
+
+        $rsa = new RS256();
+        $data = "Je suis Charlie";
+
+        $signature = $rsa->sign($key, $data);
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not a private key
+     */
+    public function testKeyIsNotPrivate()
+    {
+        $key = new JWK();
+        $key->setValues(array(
+                'kty' => 'RSA',
+                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                'e'   => 'AQAB',
+        ));
+
+        $rsa = new RS256();
+        $data = "Je suis Charlie";
+
+        $signature = $rsa->sign($key, $data);
+    }
+
     public function testRS256Sign()
     {
         $rsa = new RS256();
@@ -404,45 +438,5 @@ class RSASignatureTest extends \PHPUnit_Framework_TestCase
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
         ));
-    }
-
-    private function loadJWTManager()
-    {
-        $jwt_manager = new JWTManager();
-        $jwt_manager->setCompressionManager($this->getCompressionManager())
-                    ->setJWKManager($this->getKeyManager())
-                    ->setJWAManager($this->getAlgorithmManager());
-
-        return $jwt_manager;
-    }
-
-    private function getCompressionManager()
-    {
-        $compression_manager = new CompressionManager();
-        $compression_manager->addCompressionAlgorithm(new Deflate())
-                            ->addCompressionAlgorithm(new GZip())
-                            ->addCompressionAlgorithm(new ZLib());
-
-        return $compression_manager;
-    }
-
-    private function getKeyManager()
-    {
-        $key_manager = new JWKManager();
-
-        return $key_manager;
-    }
-
-    private function getAlgorithmManager()
-    {
-        $key_manager = new JWAManager();
-        $key_manager->addAlgorithm(new RS256())
-                    ->addAlgorithm(new RS384())
-                    ->addAlgorithm(new RS512())
-                    ->addAlgorithm(new PS256())
-                    ->addAlgorithm(new PS384())
-                    ->addAlgorithm(new PS512());
-
-        return $key_manager;
     }
 }

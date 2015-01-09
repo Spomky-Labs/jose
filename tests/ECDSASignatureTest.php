@@ -10,6 +10,21 @@ use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not valid
+     */
+    public function testInvalidKey()
+    {
+        $key  = new JWK();
+        $key->setValue("kty", "RSA");
+
+        $ecdsa = new ES256();
+        $data = "Je suis Charlie";
+
+        $signature = $ecdsa->sign($key, $data);
+    }
+
     //The values of these tests come from the JWS draft
     public function testES256Verify()
     {

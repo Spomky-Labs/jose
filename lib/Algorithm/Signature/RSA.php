@@ -39,7 +39,7 @@ abstract class RSA implements SignatureInterface
         $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi')));
         $rsa = RSAConverter::fromArrayToRSA_Crypt($values);
 
-        if ($rsa->getPrivateKey() === null) {
+        if ($rsa->getPrivateKey() === false) {
             throw new \InvalidArgumentException("The key is not a private key");
         }
 

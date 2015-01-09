@@ -9,6 +9,21 @@ use SpomkyLabs\Jose\Algorithm\Signature\HS512;
 
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not valid
+     */
+    public function testInvalidKey()
+    {
+        $key  = new JWK();
+        $key->setValue("kty", "EC");
+
+        $hmac = new HS256();
+        $data = "Je suis Charlie";
+
+        $signature = $hmac->sign($key, $data);
+    }
+
     public function testHS256SignAndVerify()
     {
         $key = new JWK();

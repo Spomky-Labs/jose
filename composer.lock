@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "5e3a7eec5066854c15b00956a76ab471",
+    "hash": "e17fa19100061196d46e5bc7fc9eb6e3",
     "packages": [
         {
             "name": "spomky-labs/aes-key-wrap",
@@ -67,12 +67,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "ad678403ba946826cdec7a4ea032331c0a397798"
+                "reference": "98e4e38036494b737e3124df945acf2ade675c8f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/ad678403ba946826cdec7a4ea032331c0a397798",
-                "reference": "ad678403ba946826cdec7a4ea032331c0a397798",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/98e4e38036494b737e3124df945acf2ade675c8f",
+                "reference": "98e4e38036494b737e3124df945acf2ade675c8f",
                 "shasum": ""
             },
             "require": {
@@ -114,7 +114,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2015-01-08 20:47:05"
+            "time": "2015-01-09 17:54:57"
         },
         {
             "name": "spomky-labs/pbkdf2",
@@ -1128,7 +1128,5 @@
         "php": ">=5.3",
         "lib-openssl": "*"
     },
-    "platform-dev": {
-        "ext-crypto": "~0.1.1"
-    }
+    "platform-dev": []
 }
