@@ -69,6 +69,7 @@ class ECDH_ES implements KeyAgreementInterface
         $sen_d = $this->convertBase64ToDec($private_key->getValue('d'));
 
         $receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
+
         return $receiver_point->mul($sen_d)->getX();
     }
 

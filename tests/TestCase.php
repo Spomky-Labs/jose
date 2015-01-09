@@ -116,6 +116,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new RSA1_5())
                     ->addAlgorithm(new RSA_OAEP())
                     ->addAlgorithm(new RSA_OAEP_256());
+
         return $key_manager;
     }
 }

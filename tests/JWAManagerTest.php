@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\Jose\JWAManager;
 
 class JWAManagerTest extends TestCase
 {
@@ -52,7 +51,7 @@ class JWAManagerTest extends TestCase
             "PBES2-HS512+A256KW",
             "RSA1_5",
             "RSA-OAEP",
-            "RSA-OAEP-256"
+            "RSA-OAEP-256",
         );
         $this->assertEquals($expected_list, $this->getAlgorithmManager()->listAlgorithms());
     }

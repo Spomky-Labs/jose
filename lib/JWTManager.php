@@ -219,7 +219,7 @@ abstract class JWTManager implements JWTManagerInterface
         } elseif ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $key_encryption_algorithm->decryptKey($key, $encryted_cek, $header);
         } else {
-            return null;
+            return;
         }
     }
 
@@ -329,6 +329,7 @@ abstract class JWTManager implements JWTManagerInterface
             switch ($header['cty']) {
                 case 'jwk+json':
                     $payload = $this->getJWKManager()->createJWK(json_decode($payload, true));
+
                     return;
                 case 'jwkset+json':
                     $values = json_decode($payload, true);
@@ -336,6 +337,7 @@ abstract class JWTManager implements JWTManagerInterface
                         throw new \Exception("Not a valid key set");
                     }
                     $payload = $this->getJWKManager()->createJWKSet($values['keys']);
+
                     return;
                 default:
                     break;
@@ -346,6 +348,7 @@ abstract class JWTManager implements JWTManagerInterface
         $json = json_decode($payload, true);
         if (is_array($json)) {
             $payload = $json;
+
             return;
         }
     }

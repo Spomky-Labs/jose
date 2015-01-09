@@ -3,7 +3,6 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
-use SpomkyLabs\Jose\JWK;
 use Jose\Operation\KeyAgreementWrappingInterface;
 
 abstract class ECDH_ES_AESKW implements KeyAgreementWrappingInterface

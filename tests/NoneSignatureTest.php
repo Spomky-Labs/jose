@@ -22,7 +22,7 @@ class NoneSignatureTest extends TestCase
         $this->assertEquals($signature, '');
         $this->assertTrue($none->verify($key, $data, $signature));
     }
-    
+
     /**
      * @expectedException InvalidArgumentException
      * @expectedExceptionMessage The key is not valid

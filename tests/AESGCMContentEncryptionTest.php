@@ -18,9 +18,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
             $algorithm = new A128GCM();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 
@@ -43,9 +44,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
             $algorithm = new A192GCM();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 
@@ -68,9 +70,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
             $algorithm = new A256GCM();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 
@@ -93,9 +96,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
             $algorithm = new A256GCM();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 

@@ -15,6 +15,8 @@ use SpomkyLabs\Jose\Util\Base64Url;
  */
 abstract class ECDSA implements SignatureInterface
 {
+    private $adapter;
+
     public function __construct()
     {
         if (!class_exists("\Mdanter\Ecc\Point") || !class_exists("\Mdanter\Ecc\EccFactory")) {
@@ -29,7 +31,6 @@ abstract class ECDSA implements SignatureInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
-        $adapter = EccFactory::getAdapter();
 
         $p     = $this->getGenerator();
         $curve = $this->getCurve();
@@ -38,10 +39,10 @@ abstract class ECDSA implements SignatureInterface
         $d     = $this->convertBase64ToDec($key->getValue('d'));
         $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        $k = $adapter->rand($p->getOrder());
+        $k = $this->adapter->rand($p->getOrder());
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $adapter), $adapter);
-        $private_key = new PrivateKey($public_key, $d, $adapter);
+        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $this->adapter), $this->adapter);
+        $private_key = new PrivateKey($public_key, $d, $this->adapter);
         $sign = $private_key->sign($hash, $k);
 
         $part_length = $this->getSignaturePartLength();
@@ -64,8 +65,6 @@ abstract class ECDSA implements SignatureInterface
             return false;
         }
 
-        $adapter = EccFactory::getAdapter();
-
         $p     = $this->getGenerator();
         $curve = $this->getCurve();
         $x     = $this->convertBase64ToDec($key->getValue('x'));
@@ -74,7 +73,7 @@ abstract class ECDSA implements SignatureInterface
         $S     = $this->convertHexToDec(substr($signature, $part_length));
         $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $adapter), $adapter);
+        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $this->adapter), $this->adapter);
 
         return $public_key->verifies($hash, new Signature($R, $S));
     }
@@ -106,21 +105,17 @@ abstract class ECDSA implements SignatureInterface
         return $value[1];
     }
 
-/**
- * @return string
- */
-protected function convertDecToHex($value)
-{
-    $adapter = EccFactory::getAdapter();
-
-    return $adapter->decHex($value);
-}
+    /**
+     * @return string
+     */
+    protected function convertDecToHex($value)
+    {
+        return $this->adapter->decHex($value);
+    }
 
     protected function convertHexToDec($value)
     {
-        $adapter = EccFactory::getAdapter();
-
-        return $adapter->hexDec($value);
+        return $this->adapter->hexDec($value);
     }
 
     protected function convertBase64ToDec($value)

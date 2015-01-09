@@ -25,9 +25,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
             $aeskw = new A128GCMKW();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 
@@ -55,9 +56,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
             $aeskw = new A192GCMKW();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 
@@ -85,9 +87,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
             $aeskw = new A256GCMKW();
             if ($this->isHHVM()) {
                 $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }  
-        } catch (Exception $e) {
+            }
+        } catch (\Exception $e) {
             $this->assertTrue(true);
+
             return;
         }
 

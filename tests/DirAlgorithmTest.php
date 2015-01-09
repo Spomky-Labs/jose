@@ -2,9 +2,7 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
 
 class DirAlgorithmTest extends TestCase
@@ -21,8 +19,6 @@ class DirAlgorithmTest extends TestCase
 
         $dir = new Dir();
 
-        $header = array();
-
         $dir->getCEK($key, $header);
     }
 
@@ -38,8 +34,6 @@ class DirAlgorithmTest extends TestCase
 
         $dir = new Dir();
 
-        $header = array();
-
         $dir->getCEK($key, $header);
     }
 
@@ -51,8 +45,6 @@ class DirAlgorithmTest extends TestCase
             ->setValue("dir", "ABCD");
 
         $dir = new Dir();
-
-        $header = array();
 
         $this->assertEquals("ABCD", $dir->getCEK($key, $header));
     }
