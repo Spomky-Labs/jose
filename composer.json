@@ -29,7 +29,6 @@
         "spomky-labs/aes-key-wrap": "~0.1"
     },
     "require-dev": {
-        "ext-crypto": "~0.1.1",
         "phpseclib/phpseclib": ">=0.3.5",
         "mdanter/ecc": "~0.2",
         "phpunit/phpunit": "4.*"
