@@ -6,6 +6,9 @@ use SpomkyLabs\Jose\JWAManager;
 use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 use SpomkyLabs\Jose\Compression\Deflate;
+use SpomkyLabs\Jose\Tests\Stub\Loader;
+use SpomkyLabs\Jose\Tests\Stub\Signer;
+use SpomkyLabs\Jose\Tests\Stub\Encrypter;
 use SpomkyLabs\Jose\Tests\Stub\JWKManager;
 use SpomkyLabs\Jose\Tests\Stub\JWTManager;
 use SpomkyLabs\Jose\Compression\CompressionManager;
@@ -48,12 +51,41 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP_256;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    protected function loadJWTManager()
+    protected function getLoader()
+    {
+        $loader = new Loader();
+        $loader->setCompressionManager($this->getCompressionManager())
+               ->setJWTManager($this->getJWTManager())
+               ->setJWKManager($this->getJWKManager())
+               ->setJWAManager($this->getJWAManager());
+
+        return $loader;
+    }
+
+    protected function getSigner()
+    {
+        $signer = new Signer();
+        $signer->setJWTManager($this->getJWTManager())
+               ->setJWKManager($this->getJWKManager())
+               ->setJWAManager($this->getJWAManager());
+
+        return $signer;
+    }
+
+    protected function getEncrypter()
+    {
+        $encrypter = new Encrypter();
+        $encrypter->setCompressionManager($this->getCompressionManager())
+                  ->setJWTManager($this->getJWTManager())
+                  ->setJWKManager($this->getJWKManager())
+                  ->setJWAManager($this->getJWAManager());
+
+        return $encrypter;
+    }
+
+    protected function getJWTManager()
     {
         $jwt_manager = new JWTManager();
-        $jwt_manager->setCompressionManager($this->getCompressionManager())
-                    ->setJWKManager($this->getKeyManager())
-                    ->setJWAManager($this->getAlgorithmManager());
 
         return $jwt_manager;
     }
@@ -68,14 +100,14 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $compression_manager;
     }
 
-    protected function getKeyManager()
+    protected function getJWKManager()
     {
         $key_manager = new JWKManager();
 
         return $key_manager;
     }
 
-    protected function getAlgorithmManager()
+    protected function getJWAManager()
     {
         $key_manager = new JWAManager();
         $key_manager->addAlgorithm(new HS256())

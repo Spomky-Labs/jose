@@ -51,10 +51,11 @@ class NoneSignatureTest extends TestCase
         $jwk_set = new JWKSet();
         $jwk_set->addKey($jwk);
 
-        $jwt_manager = $this->loadJWTManager();
+        $signer = $this->getSigner();
+        $loader = $this->getLoader();
 
-        $signed = $jwt_manager->sign($jwt, $jwk_set);
-        $result = $jwt_manager->load($signed);
+        $signed = $signer->sign($jwt, $jwk_set);
+        $result = $loader->load($signed);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);
         $this->assertEquals("Je suis Charlie", $result->getPayload());

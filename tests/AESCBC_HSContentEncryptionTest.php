@@ -23,7 +23,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_cyphertext = $this->convertArrayToBinString([40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6, 75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143, 112, 56, 102]);
         $expected_T          = $this->convertArrayToBinString([83, 73, 191, 98, 104, 205, 211, 128, 201, 189, 199, 133, 32, 38, 194, 85]);
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
         $this->assertEquals($expected_T, $T);
@@ -54,7 +54,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("652c3fa36b0a7c5b3219fab3a30bc1c4");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
@@ -82,7 +82,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("8490ac0e58949bfe51875d733f93ac2075168039ccc733d7");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
@@ -110,7 +110,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("4dd3b4c088a7f45c216839645b2012bf2e6269a8c56a816dbc1b267761955bc5");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 

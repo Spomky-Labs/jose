@@ -21,21 +21,30 @@ abstract class AESGCM implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, array &$header, &$tag)
+    public function encryptContent($input, $cek, $iv, $aad, array &$header, &$tag)
     {
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-        $cipher->setAAD(Base64Url::encode(json_encode($header)));
+        $calculated_aad = Base64Url::encode(json_encode($header));
+        if (null !== $aad) {
+            $calculated_aad .= $aad;
+        }
+
+        $cipher->setAAD($calculated_aad);
         $cyphertext = $cipher->encrypt($input, $cek, $iv);
         $tag = $cipher->getTag(16);
 
         return $cyphertext;
     }
 
-    public function decryptContent($input, $cek, $iv, array $header, $tag)
+    public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
     {
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
+        $calculated_aad = Base64Url::encode(json_encode($header));
+        if (null !== $aad) {
+            $calculated_aad .= $aad;
+        }
         $cipher->setTag($tag);
-        $cipher->setAAD(Base64Url::encode(json_encode($header)));
+        $cipher->setAAD($calculated_aad);
 
         $plaintext = $cipher->decrypt($input, $cek, $iv);
 

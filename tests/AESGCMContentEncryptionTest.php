@@ -29,10 +29,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
+        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 
         $this->assertNotNull($tag);
-        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, $header, $tag));
+        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
     public function testA192GCMEncryptAndDecrypt()
@@ -55,10 +55,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
+        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 
         $this->assertNotNull($tag);
-        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, $header, $tag));
+        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
     public function testA256GCMEncryptAndDecrypt()
@@ -81,10 +81,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $iv                  = openssl_random_pseudo_bytes(96/8);
         $plaintext           = "Je suis Charlie";
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, $header, $tag);
+        $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 
         $this->assertNotNull($tag);
-        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, $header, $tag));
+        $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
     /**
@@ -111,7 +111,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_plaintext  = "The true sign of intelligence is not knowledge but imagination.";
 
         $this->assertEquals("eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ", Base64Url::encode(json_encode($header)));
-        $this->assertEquals($expected_plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, $header, $tag));
+        $this->assertEquals($expected_plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
     private function convertArrayToBinString(array $data)

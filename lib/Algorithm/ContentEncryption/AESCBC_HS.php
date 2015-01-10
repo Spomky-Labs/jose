@@ -20,10 +20,13 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, array &$header, &$aad)
+    public function encryptContent($input, $cek, $iv, $aad, array &$header, &$tag)
     {
         $k = substr($cek, strlen($cek)/2);
-        $encoded_header = Base64Url::encode(json_encode($header));
+        $calculated_aad = Base64Url::encode(json_encode($header));
+        if (null === $aad) {
+            $calculated_aad .= $aad;
+        }
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
@@ -31,15 +34,15 @@ abstract class AESCBC_HS implements ContentEncryptionInterface
         $aes->setIV($iv);
 
         $cyphertext = $aes->encrypt($input);
-        $aad = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $encoded_header);
+        $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $calculated_aad);
 
         return $cyphertext;
     }
 
-    public function decryptContent($input, $cek, $iv, array $header, $aad)
+    public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
     {
         $encoded_header = Base64Url::encode(json_encode($header));
-        $this->checkAuthenticationTag($input, $cek, $iv, $encoded_header, $aad);
+        $this->checkAuthenticationTag($input, $cek, $iv, $encoded_header, $tag);
         $k = substr($cek, strlen($cek)/2);
 
         $aes = new \Crypt_AES();

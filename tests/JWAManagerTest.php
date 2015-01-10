@@ -6,7 +6,7 @@ class JWAManagerTest extends TestCase
 {
     public function testAlgorithmIsSupported()
     {
-        $jwa_manager = $this->getAlgorithmManager();
+        $jwa_manager = $this->getJWAManager();
 
         $this->assertTrue($jwa_manager->isAlgorithmSupported("ES256"));
 
@@ -52,6 +52,6 @@ class JWAManagerTest extends TestCase
             "RSA-OAEP",
             "RSA-OAEP-256",
         );
-        $this->assertEquals($expected_list, $this->getAlgorithmManager()->listAlgorithms());
+        $this->assertEquals($expected_list, $this->getJWAManager()->listAlgorithms());
     }
 }
