@@ -12,6 +12,10 @@ use SpomkyLabs\Jose\Encrypter as Base;
  */
 class Encrypter extends Base
 {
+    protected $jwk_manager;
+    protected $jwa_manager;
+    protected $compression_manager;
+
     /**
      * {@inheritdoc}
      */

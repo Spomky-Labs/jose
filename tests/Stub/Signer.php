@@ -12,6 +12,10 @@ use SpomkyLabs\Jose\Signer as Base;
  */
 class Signer extends Base
 {
+    protected $jwt_manager;
+    protected $jwk_manager;
+    protected $jwa_manager;
+
     /**
      * {@inheritdoc}
      */

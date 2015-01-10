@@ -13,6 +13,11 @@ use SpomkyLabs\Jose\Loader as Base;
  */
 class Loader extends Base
 {
+    protected $jwt_manager;
+    protected $jwk_manager;
+    protected $jwa_manager;
+    protected $compression_manager;
+
     /**
      * {@inheritdoc}
      */
@@ -71,23 +76,5 @@ class Loader extends Base
         $this->compression_manager = $compression_manager;
 
         return $this;
-    }
-
-    protected function createCEK($size)
-    {
-        return $this->generateRandomString($size / 8);
-    }
-
-    protected function createIV($size)
-    {
-        return $this->generateRandomString($size / 8);
-    }
-
-    /**
-     * @param integer $length
-     */
-    private function generateRandomString($length)
-    {
-        return crypt_random_string($length);
     }
 }
