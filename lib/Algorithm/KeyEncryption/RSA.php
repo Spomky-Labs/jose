@@ -24,10 +24,7 @@ abstract class RSA implements KeyEncryptionInterface
         $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e')));
         $rsa = $this->getRsaObject($values);
 
-        try {
-            return $rsa->encrypt($cek);
-        } catch (\Exception $e) {
-        }
+        return $rsa->encrypt($cek);
     }
 
     /**
@@ -38,10 +35,8 @@ abstract class RSA implements KeyEncryptionInterface
         $this->checkKey($key);
         $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi')));
         $rsa = $this->getRsaObject($values);
-        try {
-            return $rsa->decrypt($encrypted_key);
-        } catch (\Exception $e) {
-        }
+        
+        return $rsa->decrypt($encrypted_key);
     }
 
     private function getRsaObject(array $values)
