@@ -13,7 +13,7 @@ use Jose\JWTManagerInterface;
 class JWTManager implements JWTManagerInterface
 {
     /**
-     * {@inheritdoc}
+     * @return \Jose\JWTInterface
      */
     public function createJWT()
     {
@@ -21,7 +21,7 @@ class JWTManager implements JWTManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return \Jose\JWSInterface
      */
     public function createJWS()
     {
@@ -29,7 +29,7 @@ class JWTManager implements JWTManagerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return \Jose\JWEInterface
      */
     public function createJWE()
     {

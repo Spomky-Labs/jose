@@ -28,6 +28,7 @@ abstract class RSA implements KeyEncryptionInterface
             return $rsa->encrypt($cek);
         } catch (\Exception $e) {
             //We catch the exception to return null.
+            return;
         }
     }
 
@@ -44,6 +45,7 @@ abstract class RSA implements KeyEncryptionInterface
             return $rsa->decrypt($encrypted_key);
         } catch (\Exception $e) {
             //We catch the exception to return null.
+            return;
         }
     }
 
