@@ -44,7 +44,7 @@ abstract class Encrypter implements EncrypterInterface
     {
         throw new \RuntimeException("Not yet implemented.");
 
-        if (is_array($input)) {
+        /*if (is_array($input)) {
             $input = json_encode($input);
         } elseif ($input instanceof JWKInterface || $input instanceof JWKSetInterface) {
             $protected_header['cty'] = $input instanceof JWKInterface ? 'jwk+json' : 'jwkset+json';
@@ -105,10 +105,10 @@ abstract class Encrypter implements EncrypterInterface
 
         foreach ($operation_keys as $operation_key) {
             $jwk = $operation_key['key'];
-            /*$complete_header = $jwt_header;
+            $complete_header = $jwt_header;
             if (isset($operation_key['header'])) {
                 $complete_header = array_merge($complete_header, $operation_key['header']);
-            }*/
+            }
 
             $tmp = array(
                 "encrypted_key" => $jwk->encryptKey($jwt_cek, $protected_header, $sender_key),
@@ -156,6 +156,6 @@ abstract class Encrypter implements EncrypterInterface
             "ciphertext" => Base64Url::encode($encrypted_data),
             "tag" => Base64Url::encode($jwt_tag),
             "recipients" => $recipients,
-        ));
+        ));*/
     }
 }
