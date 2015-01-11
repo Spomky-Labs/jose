@@ -66,30 +66,35 @@ abstract class Loader implements LoaderInterface
     {
         if (array_key_exists("signatures", $input)) {
             return $this->loadSerializedJsonJWS($input, $verify_signature, $jwk_set);
-        } elseif (rray_key_exists("recipients", $input)) {
-            return $this->loadSerializedJsonJWE($input, $verify_signature, $jwk_set);
-        } elseif (rray_key_exists("signature", $input)) {
+        } elseif (array_key_exists("recipients", $input)) {
+            return $this->loadSerializedJsonJWE($input, $jwk_set);
+        } elseif (array_key_exists("signature", $input)) {
             $jws = array(
                 "payload" => $input["payload"],
-                "signature" => $input["signature"],
             );
-            foreach (array("protected", "header") as $key) {
+            $signature = array();
+            foreach (array("signature", "protected", "header") as $key) {
                 if (array_key_exists($key, $input)) {
-                    $jws[$key] = $input[$key];
+                    $signature[$key] = $input[$key];
                 }
             }
+            $jws["signatures"] = array($signature);
 
             return $this->loadSerializedJsonJWS($jws, $verify_signature, $jwk_set);
-        } elseif (rray_key_exists("recipient", $input)) {
+        } elseif (array_key_exists("encrypted_key", $input)) {
             $jwe = array(
                 "encrypted_key" => $input["encrypted_key"],
-                "ciphertext" => $input["ciphertext"],
             );
-            foreach (array("protected", "unprotected", "header", "aad", "iv", "tag") as $key) {
+            foreach (array("ciphertext", "protected", "unprotected", "aad", "iv", "tag") as $key) {
                 if (array_key_exists($key, $input)) {
                     $jwe[$key] = $input[$key];
                 }
             }
+            $recipient = array("encrypted_key" => $input["encrypted_key"]);
+            if (array_key_exists("header", $input)) {
+                $recipient["header"] = $input["header"];
+            }
+            $jwe["recipients"] = array($recipient);
 
             return $this->loadSerializedJsonJWE($jwe, $jwk_set);
         }
@@ -156,7 +161,7 @@ abstract class Loader implements LoaderInterface
             $unprotected_header = isset($signature['header']) ? $signature['header'] : array();
 
             $jwt_signature = Base64Url::decode($signature['signature']);
-            if (false === $verify_signature || true === $this->verifySignature($encoded_protected_header, $unprotected_header, $encoded_payload, $jwt_signature)) {
+            if (false === $verify_signature || true === $this->verifySignature($encoded_protected_header, $unprotected_header, $encoded_payload, $jwt_signature, $jwk_set)) {
                 return $this->createJWS($protected_header, $unprotected_header, $payload);
             }
         }
@@ -181,7 +186,7 @@ abstract class Loader implements LoaderInterface
     /**
      * @param string $signature
      */
-    protected function verifySignature($protected_header, $unprotected_header, $payload, $signature)
+    protected function verifySignature($protected_header, $unprotected_header, $payload, $signature, JWKSetInterface $jwk_set = null)
     {
         if ($protected_header === null && $unprotected_header === null) {
             throw new \InvalidArgumentException('Invalid header');
@@ -200,7 +205,9 @@ abstract class Loader implements LoaderInterface
             $complete_header = array_merge($complete_header, $unprotected_header);
         }
 
-        $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
+        if (null === $jwk_set) {
+            $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
+        }
         if (empty($jwk_set)) {
             return false;
         }

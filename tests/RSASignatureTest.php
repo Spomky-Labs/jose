@@ -425,10 +425,6 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
 
         $result = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
-        //$this->assertEquals("Live long and prosper.", $result);
-        /*$this->assertEquals(array(
-        'protected' => array('alg' => 'RSA1_5', 'enc' => 'A128CBC-HS256'),
-        ), $header);*/
 
         $this->assertInstanceOf("Jose\JWEInterface", $result);
         $this->assertEquals("Live long and prosper.", $result->getPayload());
@@ -436,6 +432,23 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("A128CBC-HS256", $result->getEncryptionAlgorithm());
     }
 
+    /**
+     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.4
+     */
+    public function testLoadJSONSerialization()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"recipients":[{"header":{"alg":"RSA1_5","kid":"2011-04-29"},"encrypted_key":"UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A"},{"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"}],"iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
+
+        $this->assertInstanceOf("Jose\JWEInterface", $result);
+        $this->assertEquals("Live long and prosper.", $result->getPayload());
+        $this->assertEquals("RSA1_5", $result->getAlgorithm());
+        $this->assertEquals("A128CBC-HS256", $result->getEncryptionAlgorithm());
+    }
+
+    /**
+     */
     public function testCertificateConversion()
     {
         $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."private.key", "tests");

@@ -128,8 +128,22 @@ class JWKManager extends Base
                 'findByKid',
                 'findByAPV',
                 'findByAlgorithm',
+                'findByJku',
             )
         );
+    }
+
+    protected function findByJku($header)
+    {
+        if (!isset($header['jku'])) {
+            return;
+        }
+        if ("https://server.example.com/keys.jwks" === $header['jku']) {
+            return $this->createJWK(array(
+                "kty" => "oct",
+                "k"   => "GawgguFyGrWKav7AX4VKUg",
+            ));
+        }
     }
 
     protected function findByAlgorithm($header)
@@ -153,5 +167,14 @@ class JWKManager extends Base
                 "dir" => 'f5aN5V6iihwQVqP-tPNNtkIJNCwUb9-JukCIKkF0rNfxqxA771RJynYAT2xtzAP0MYaR7U5fMP_wvbRQq5l38Q',
             ));
         }
+    }
+
+    private function convertArrayToBinString(array $data)
+    {
+        foreach ($data as $key => $value) {
+            $data[$key] = str_pad(dechex($value), 2, "0", STR_PAD_LEFT);
+        }
+
+        return hex2bin(implode("", $data));
     }
 }
