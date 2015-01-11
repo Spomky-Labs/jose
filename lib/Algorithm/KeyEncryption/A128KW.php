@@ -19,8 +19,6 @@ class A128KW extends AESKW
     {
         parent::checkKey($key);
         if (16 !== strlen(Base64Url::decode($key->getValue("k")))) {
-            var_dump(strlen(Base64Url::decode($key->getValue("k"))));
-            var_dump(Base64Url::decode($key->getValue("k")));
             throw new \InvalidArgumentException("The key size is not valid");
         }
     }
