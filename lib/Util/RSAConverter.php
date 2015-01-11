@@ -14,7 +14,7 @@ class RSAConverter
         }
     }
 
-    public static function fromArrayToRSA_Crypt(array $data)
+    public static function fromArrayToRSACrypt(array $data)
     {
         self::checkRequirements();
         $xml = self::fromArrayToXML($data);

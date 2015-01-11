@@ -18,7 +18,7 @@ abstract class RSA implements SignatureInterface
     {
         $this->checkKey($key);
         $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e')));
-        $rsa = RSAConverter::fromArrayToRSA_Crypt($values);
+        $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         $rsa->setHash($this->getAlgorithm());
         if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
@@ -37,7 +37,7 @@ abstract class RSA implements SignatureInterface
     {
         $this->checkKey($key);
         $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi')));
-        $rsa = RSAConverter::fromArrayToRSA_Crypt($values);
+        $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         if ($rsa->getPrivateKey() === false) {
             throw new \InvalidArgumentException("The key is not a private key");

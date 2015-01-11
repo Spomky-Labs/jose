@@ -49,7 +49,7 @@ abstract class RSA implements KeyEncryptionInterface
 
     private function getRsaObject(array $values)
     {
-        $rsa = RSAConverter::fromArrayToRSA_Crypt($values);
+        $rsa = RSAConverter::fromArrayToRSACrypt($values);
         $encryption_mode = $this->getEncryptionMode();
         $rsa->setEncryptionMode($encryption_mode);
         if (CRYPT_RSA_ENCRYPTION_OAEP === $encryption_mode) {
