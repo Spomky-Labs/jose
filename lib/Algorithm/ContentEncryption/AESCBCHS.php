@@ -8,7 +8,7 @@ use SpomkyLabs\Jose\Util\Base64Url;
 /**
  *
  */
-abstract class AESCBC_HS implements ContentEncryptionInterface
+abstract class AESCBCHS implements ContentEncryptionInterface
 {
     public function __construct()
     {

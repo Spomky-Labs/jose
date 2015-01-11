@@ -5,7 +5,7 @@ namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 /**
  *
  */
-class A192CBCHS384 extends AESCBC_HS
+class A192CBCHS384 extends AESCBCHS
 {
     protected function getHashAlgorithm()
     {
