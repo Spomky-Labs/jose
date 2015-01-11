@@ -8,10 +8,12 @@ use Jose\JWKInterface;
 use Jose\JWKSetInterface;
 use Jose\JWTManagerInterface;
 use Jose\LoaderInterface;
+use Jose\Operation\SignatureInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
+use Jose\Operation\ContentEncryptionInterface;
 
 /**
  * Class able to load JWS or JWT.
@@ -212,6 +214,9 @@ abstract class Loader implements LoaderInterface
             return false;
         }
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
+        if (!$algorithm instanceof SignatureInterface) {
+            throw new \RuntimeException("The algorithm '".$complete_header["alg"]."' does not implement SignatureInterface.");
+        }
 
         foreach ($jwk_set->getKeys() as $jwk) {
             if ($algorithm->verify(
@@ -269,6 +274,9 @@ abstract class Loader implements LoaderInterface
             }
             $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
             $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
+            if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
+                throw new \RuntimeException("The algorithm '".$complete_header["enc"]."' does not implement ContentEncryptionInterface.");
+            }
 
             foreach ($jwk_set as $key) {
                 $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
