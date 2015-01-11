@@ -168,6 +168,9 @@ abstract class Loader implements LoaderInterface
         }
     }
 
+    /**
+     * @param string $payload
+     */
     protected function createJWS($protected_header, $unprotected_header, $payload)
     {
         $complete_header = array_merge($protected_header, $unprotected_header);
@@ -226,6 +229,9 @@ abstract class Loader implements LoaderInterface
         return false;
     }
 
+    /**
+     * @param string $encrypted_cek
+     */
     public function decryptCEK(JWAInterface $key_encryption_algorithm, JWAInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
