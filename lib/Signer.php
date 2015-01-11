@@ -26,7 +26,7 @@ abstract class Signer implements SignerInterface
     abstract protected function getJWAManager();
 
     /**
-     * @return \Jose\JWAManagerInterface
+     * @return \Jose\JWTManagerInterface
      */
     abstract protected function getJWTManager();
 
