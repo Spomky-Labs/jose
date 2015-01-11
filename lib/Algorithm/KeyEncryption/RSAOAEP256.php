@@ -2,20 +2,20 @@
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
-class RSA_OAEP extends RSA
+class RSAOAEP256 extends RSA
 {
-    protected function getEncryptionMode()
+    public function getEncryptionMode()
     {
         return CRYPT_RSA_ENCRYPTION_OAEP;
     }
 
-    protected function getHashAlgorithm()
+    public function getHashAlgorithm()
     {
-        return "sha1";
+        return "sha256";
     }
 
     public function getAlgorithmName()
     {
-        return "RSA-OAEP";
+        return "RSA-OAEP-256";
     }
 }

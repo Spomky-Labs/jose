@@ -2,9 +2,9 @@
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
-use AESKW\A192KW as Wrapper;
+use AESKW\A128KW as Wrapper;
 
-class ECDH_ES_A192KW extends ECDH_ES_AESKW
+class ECDHESA128KW extends ECDHESAESKW
 {
     protected function getWrapper()
     {
@@ -13,6 +13,6 @@ class ECDH_ES_A192KW extends ECDH_ES_AESKW
 
     public function getAlgorithmName()
     {
-        return "ECDH-ES+A192KW";
+        return "ECDH-ES+A128KW";
     }
 }

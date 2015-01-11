@@ -4,16 +4,16 @@ namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS256_A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS384_A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS512_A256KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
 
 class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-key-39#appendix-C
      */
-    public function testPBES2_HS256_A128KW()
+    public function testPBES2HS256A128KW()
     {
         $header = array(
           "alg" => "PBES2-HS256+A128KW",
@@ -30,14 +30,14 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $expected_cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
-        $pbes2 = new PBES2_HS256_A128KW();
+        $pbes2 = new PBES2HS256A128KW();
 
         $wrapped_cek = Base64Url::decode("TrqXOwuNUfDV9VPTNbyGvEJ9JMjefAVn-TR1uIxR9p6hsRQh9Tk7BA");
 
         $this->assertEquals($expected_cek, $pbes2->decryptKey($key, $wrapped_cek, $header));
     }
 
-    public function testPBES2_HS256_A128KW_Bis()
+    public function testPBES2HS256A128KW_Bis()
     {
         $header = array(
           "alg" => "PBES2-HS256+A128KW",
@@ -52,14 +52,14 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
-        $pbes2 = new PBES2_HS256_A128KW();
+        $pbes2 = new PBES2HS256A128KW();
         $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
         $this->assertTrue(isset($header["p2s"]));
         $this->assertEquals(4096, $header["p2c"]);
         $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, $header));
     }
 
-    public function testPBES2_HS384_A192KW()
+    public function testPBES2HS384A192KW()
     {
         $header = array(
           "alg" => "PBES2-HS384+A192KW",
@@ -74,14 +74,14 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
-        $pbes2 = new PBES2_HS384_A192KW();
+        $pbes2 = new PBES2HS384A192KW();
         $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
         $this->assertTrue(isset($header["p2s"]));
         $this->assertEquals(4096, $header["p2c"]);
         $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, $header));
     }
 
-    public function testPBES2_HS512_A256KW()
+    public function testPBES2HS512A256KW()
     {
         $header = array(
           "alg" => "PBES2-HS512+A256KW",
@@ -96,7 +96,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
-        $pbes2 = new PBES2_HS512_A256KW();
+        $pbes2 = new PBES2HS512A256KW();
         $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
         $this->assertTrue(isset($header["p2s"]));
         $this->assertEquals(4096, $header["p2c"]);

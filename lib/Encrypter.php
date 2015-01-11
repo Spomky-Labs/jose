@@ -29,23 +29,20 @@ abstract class Encrypter implements EncrypterInterface
     abstract protected function getCompressionManager();
 
     /**
-     * @param  integer $size The size of the CEK in bytes
+     * @param  integer $size The size of the CEK in bits
      * @return string
      */
     abstract protected function createCEK($size);
 
     /**
-     * @param  integer $size The size of the IV in bytes
+     * @param  integer $size The size of the IV in bits
      * @return string
      */
     abstract protected function createIV($size);
 
-    //public function encryptAndConvert($compact, $input, array $operation_keys, array $protected_header = array(), array $unprotected_header = array(), JWKInterface $sender_key = null)
     public function encrypt($input, JWKSetInterface $keys, JWKInterface $sender_key = null, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
-        if ($compact === false) {
-            throw new \Exception("JSON Serialized representation is not supported");
-        }
+        throw new \RuntimeException("Not yet implemented.");
 
         if (is_array($input)) {
             $input = json_encode($input);

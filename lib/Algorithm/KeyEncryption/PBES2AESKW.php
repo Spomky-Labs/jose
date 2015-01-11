@@ -7,7 +7,7 @@ use Jose\JWKInterface;
 use SpomkyLabs\Jose\Util\Base64Url;
 use Jose\Operation\KeyEncryptionInterface;
 
-abstract class PBES2_AESKW implements KeyEncryptionInterface
+abstract class PBES2AESKW implements KeyEncryptionInterface
 {
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {

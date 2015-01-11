@@ -2,9 +2,9 @@
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
-use AESKW\A128KW as Wrapper;
+use AESKW\A256KW as Wrapper;
 
-class PBES2_HS256_A128KW extends PBES2_AESKW
+class PBES2HS512A256KW extends PBES2AESKW
 {
     protected function getWrapper()
     {
@@ -13,16 +13,16 @@ class PBES2_HS256_A128KW extends PBES2_AESKW
 
     protected function getHashAlgorithm()
     {
-        return "sha256";
+        return "sha512";
     }
 
     protected function getKeySize()
     {
-        return 128/8;
+        return 256/8;
     }
 
     public function getAlgorithmName()
     {
-        return "PBES2-HS256+A128KW";
+        return "PBES2-HS512+A256KW";
     }
 }

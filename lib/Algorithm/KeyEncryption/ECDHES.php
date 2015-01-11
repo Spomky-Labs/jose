@@ -10,7 +10,7 @@ use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
-class ECDH_ES implements KeyAgreementInterface
+class ECDHES implements KeyAgreementInterface
 {
     private $adapter;
 
@@ -81,7 +81,6 @@ class ECDH_ES implements KeyAgreementInterface
     private function checkKey(JWKInterface $key, $is_private)
     {
         if ("EC" !== $key->getKeyType()) {
-            //var_dump($key->getKeyType());
             throw new \RuntimeException("The key type must be 'EC'");
         }
         if (null === $key->getValue('d') && true === $is_private) {

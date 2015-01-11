@@ -2,20 +2,20 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBC_HS384;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBC_HS512;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-B
      */
-    public function testA128CBC_HS256EncryptAndDecrypt()
+    public function testA128CBCHS256EncryptAndDecrypt()
     {
         $header = array("alg" => "A128KW","enc" => "A128CBC-HS256");
         $T      = null;
-        $algorithm = new A128CBC_HS256();
+        $algorithm = new A128CBCHS256();
 
         $K                   = $this->convertArrayToBinString([4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207]);
         $iv                  = $this->convertArrayToBinString([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101]);
@@ -41,11 +41,11 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39#appendix-B.1
      */
-    public function testA128CBC_HS256EncryptAndDecrypt_Bis()
+    public function testA128CBCHS256EncryptAndDecrypt_Bis()
     {
         $header = array("alg" => "A128KW","enc" => "A128CBC-HS256");
         $T      = null;
-        $algorithm = new A128CBC_HS256();
+        $algorithm = new A128CBCHS256();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f");
         $iv                  = hex2bin("1af38c2dc2b96ffdd86694092341bc04");
@@ -59,8 +59,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);
@@ -73,7 +73,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA192CBC_HS384EncryptAndDecrypt()
     {
         $header = array();
-        $algorithm = new A192CBC_HS384();
+        $algorithm = new A192CBCHS384();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f");
         $iv                  = hex2bin("1af38c2dc2b96ffdd86694092341bc04");
@@ -87,8 +87,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);
@@ -101,7 +101,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA256CBC_HS512EncryptAndDecrypt()
     {
         $header = array();
-        $algorithm = new A256CBC_HS512();
+        $algorithm = new A256CBCHS512();
 
         $K                   = hex2bin("000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f");
         $iv                  = hex2bin("1af38c2dc2b96ffdd86694092341bc04");
@@ -115,8 +115,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
-        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "calculateAuthenticationTag");
-        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256", "checkAuthenticationTag");
+        $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
+        $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
         $this->assertEquals($expected_T, $T);

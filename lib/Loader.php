@@ -6,7 +6,6 @@ use SpomkyLabs\Jose\Util\Base64Url;
 use Jose\JWAInterface;
 use Jose\JWKInterface;
 use Jose\JWKSetInterface;
-use Jose\JWTManagerInterface;
 use Jose\LoaderInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\Operation\KeyAgreementInterface;

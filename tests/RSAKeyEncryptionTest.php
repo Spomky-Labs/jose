@@ -4,9 +4,9 @@ namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA1_5;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP_256;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
 class RSAKeyEncryptionTest extends TestCase
 {
@@ -19,7 +19,7 @@ class RSAKeyEncryptionTest extends TestCase
         $key  = new JWK();
         $key->setValue("kty", "EC");
 
-        $rsa1_5 = new RSA1_5();
+        $rsa1_5 = new RSA15();
 
         $header = array();
         $data = "Je suis Charlie";
@@ -54,7 +54,7 @@ class RSAKeyEncryptionTest extends TestCase
 
         $from_specification = Base64Url::decode("UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A");
 
-        $rsa1_5 = new RSA1_5();
+        $rsa1_5 = new RSA15();
         $encrypted = $rsa1_5->encryptKey($jwk, $cek, $header);
 
         $this->assertEquals($cek, $rsa1_5->decryptKey($jwk, $encrypted, $header));
@@ -88,7 +88,7 @@ class RSAKeyEncryptionTest extends TestCase
 
         $from_specification = Base64Url::decode("OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg");
 
-        $rsa_oaep = new RSA_OAEP();
+        $rsa_oaep = new RSAOAEP();
         $encrypted = $rsa_oaep->encryptKey($jwk, $cek, $header);
 
         $this->assertEquals($cek, $rsa_oaep->decryptKey($jwk, $encrypted, $header));
@@ -120,7 +120,7 @@ class RSAKeyEncryptionTest extends TestCase
         }
         $cek = hex2bin(implode("", $cek));
 
-        $rsa_oaep_256 = new RSA_OAEP_256();
+        $rsa_oaep_256 = new RSAOAEP256();
         $encrypted = $rsa_oaep_256->encryptKey($jwk, $cek, $header);
 
         $this->assertEquals($cek, $rsa_oaep_256->decryptKey($jwk, $encrypted, $header));

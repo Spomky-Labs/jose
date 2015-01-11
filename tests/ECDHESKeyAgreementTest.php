@@ -3,9 +3,9 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A256KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {
@@ -59,7 +59,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         }
         $cek = hex2bin(implode("", $cek));
 
-        $ecdh_es = new ECDH_ES_A128KW();
+        $ecdh_es = new ECDHESA128KW();
         $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 128, $header);
 
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
@@ -88,7 +88,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         }
         $cek = hex2bin(implode("", $cek));
 
-        $ecdh_es = new ECDH_ES_A192KW();
+        $ecdh_es = new ECDHESA192KW();
         $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 192, $header);
 
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
@@ -117,7 +117,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         }
         $cek = hex2bin(implode("", $cek));
 
-        $ecdh_es = new ECDH_ES_A256KW();
+        $ecdh_es = new ECDHESA256KW();
         $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 256, $header);
 
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 256, $header));

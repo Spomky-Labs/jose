@@ -4,7 +4,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use AESKW\A192KW as Wrapper;
 
-class PBES2_HS384_A192KW extends PBES2_AESKW
+class PBES2HS384A192KW extends PBES2AESKW
 {
     protected function getWrapper()
     {

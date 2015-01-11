@@ -28,9 +28,9 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBC_HS256;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBC_HS384;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBC_HS512;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
@@ -38,16 +38,16 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDH_ES_A256KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS256_A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS384_A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2_HS512_A256KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA1_5;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA_OAEP_256;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHES;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
@@ -126,9 +126,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new A128GCM())
                     ->addAlgorithm(new A192GCM())
                     ->addAlgorithm(new A256GCM())
-                    ->addAlgorithm(new A128CBC_HS256())
-                    ->addAlgorithm(new A192CBC_HS384())
-                    ->addAlgorithm(new A256CBC_HS512())
+                    ->addAlgorithm(new A128CBCHS256())
+                    ->addAlgorithm(new A192CBCHS384())
+                    ->addAlgorithm(new A256CBCHS512())
 
                     ->addAlgorithm(new A128KW())
                     ->addAlgorithm(new A192KW())
@@ -137,16 +137,16 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new A192GCMKW())
                     ->addAlgorithm(new A256GCMKW())
                     ->addAlgorithm(new Dir())
-                    ->addAlgorithm(new ECDH_ES())
-                    ->addAlgorithm(new ECDH_ES_A128KW())
-                    ->addAlgorithm(new ECDH_ES_A192KW())
-                    ->addAlgorithm(new ECDH_ES_A256KW())
-                    ->addAlgorithm(new PBES2_HS256_A128KW())
-                    ->addAlgorithm(new PBES2_HS384_A192KW())
-                    ->addAlgorithm(new PBES2_HS512_A256KW())
-                    ->addAlgorithm(new RSA1_5())
-                    ->addAlgorithm(new RSA_OAEP())
-                    ->addAlgorithm(new RSA_OAEP_256());
+                    ->addAlgorithm(new ECDHES())
+                    ->addAlgorithm(new ECDHESA128KW())
+                    ->addAlgorithm(new ECDHESA192KW())
+                    ->addAlgorithm(new ECDHESA256KW())
+                    ->addAlgorithm(new PBES2HS256A128KW())
+                    ->addAlgorithm(new PBES2HS384A192KW())
+                    ->addAlgorithm(new PBES2HS512A256KW())
+                    ->addAlgorithm(new RSA15())
+                    ->addAlgorithm(new RSAOAEP())
+                    ->addAlgorithm(new RSAOAEP256());
 
         return $key_manager;
     }

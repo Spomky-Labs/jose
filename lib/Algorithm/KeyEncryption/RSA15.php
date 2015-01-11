@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
-class RSA1_5 extends RSA
+class RSA15 extends RSA
 {
     protected function getEncryptionMode()
     {
