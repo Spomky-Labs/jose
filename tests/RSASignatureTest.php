@@ -462,6 +462,84 @@ class RSASignatureTest extends TestCase
     }
 
     /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Unable to load the input
+     */
+    public function testLoadInvalidInput()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Unable to load the input
+     */
+    public function testLoadInvalidInput2()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('DtEhU3ljb.Eg8L.38VWAf.UAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.1
+     */
+    public function testLoadIETFExample1()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk');
+
+        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertEquals(array("iss" => "joe", "exp" => 1300819380, "http://example.com/is_root" => true), $result->getPayload());
+        $this->assertEquals("HS256", $result->getAlgorithm());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.2
+     */
+    public function testLoadIETFExample2()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw');
+
+        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertEquals(array("iss" => "joe", "exp" => 1300819380, "http://example.com/is_root" => true), $result->getPayload());
+        $this->assertEquals("RS256", $result->getAlgorithm());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.3
+     */
+    public function testLoadIETFExample3()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
+
+        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertEquals(array("iss" => "joe", "exp" => 1300819380, "http://example.com/is_root" => true), $result->getPayload());
+        $this->assertEquals("ES256", $result->getAlgorithm());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.4
+     */
+    public function testLoadIETFExample4()
+    {
+        $loader = $this->getLoader();
+
+        $result = $loader->load('eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA.AdwMgeerwtHoh-l192l60hp9wAHZFVJbLfD_UxMi70cwnZOYaRI1bKPWROc-mZZqwqT2SI-KGDKB34XO0aw_7XdtAG8GaSwFKdCAPZgoXD2YBJZCPEX3xKpRwcdOO8KpEHwJjyqOgzDO7iKvU8vcnwNrmxYbSW9ERBXukOXolLzeO_Jn');
+
+        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertEquals("Payload", $result->getPayload());
+        $this->assertEquals("ES512", $result->getAlgorithm());
+    }
+
+    /**
      */
     public function testCertificateConversion()
     {

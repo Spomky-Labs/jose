@@ -2,7 +2,6 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-
 class FlattenedTest extends TestCase
 {
     /**

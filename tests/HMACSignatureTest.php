@@ -36,7 +36,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals('d5a439ca3bf35184c55ab79d9941269b222162e183276b848090ade22eb45fbc', $signature);
+        $this->assertEquals(hex2bin('326eb338c465d3587f3349df0b96ba813670376cab1dfe0fd4ce126ab50ae354'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -52,7 +52,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals('ce386c732cff516dab38f42aae816ecbae340acda905eb5a924f3d53d73d4d31fdf685deae19496fc1e5f9e3a48756eb', $signature);
+        $this->assertEquals(hex2bin('7074ed8ec356ce7d61d99b86caabccc741def9f3d0881c822b775dfe91520fdcb037b1b7f8bcf425796ec209decb760e'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -68,7 +68,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals('24138a039bd97ae80a8c034f58edee4905fb79426d2a06c561e029c482b2bbe16854692d130da5d01a42e28bbac27e36ee02d329d49f72f6083f3a7a7879a41f', $signature);
+        $this->assertEquals(hex2bin('13d07b012d7a31369a0c12eccaeb40e79e5e2d11183a00f977fce075722206f45cdd77096d7ed719626868701076654cf03565c25a3f6b9e698e466717c3b0ca'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 }

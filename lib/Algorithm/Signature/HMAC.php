@@ -3,6 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
+use SpomkyLabs\Jose\Util\Base64Url;
 use Jose\Operation\SignatureInterface;
 
 /**
@@ -18,7 +19,7 @@ abstract class HMAC implements SignatureInterface
     {
         $this->checkKey($key);
 
-        return hash_hmac($this->getHashAlgorithm(), $input, $key->getValue('k'));
+        return hex2bin(hash_hmac($this->getHashAlgorithm(), $input, Base64Url::decode($key->getValue('k'))));
     }
 
     /**

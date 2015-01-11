@@ -219,11 +219,7 @@ abstract class Loader implements LoaderInterface
         }
 
         foreach ($jwk_set->getKeys() as $jwk) {
-            if ($algorithm->verify(
-                $jwk,
-                $input,
-                $signature
-            )) {
+            if ($algorithm->verify($jwk, $input, $signature)) {
                 return true;
             }
         }
