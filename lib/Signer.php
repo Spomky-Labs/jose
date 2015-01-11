@@ -25,19 +25,34 @@ abstract class Signer implements SignerInterface
      */
     abstract protected function getJWAManager();
 
+    /**
+     * @return \Jose\JWAManagerInterface
+     */
+    abstract protected function getJWTManager();
+
     public function sign($jwt, JWKSetInterface $keys, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
-        if ($jwt instanceof JWKInterface || $jwt instanceof JWKSetInterface) {
-            $input = $this->createJWT();
-            $input->setPayload($jwt);
+        if ($jwt instanceof JWKInterface) {
+            $input = $this->getJWTManager()->createJWT();
+            $input->setPayload(json_encode($jwt))
+                  ->setProtectedHeaderValue("cty", "jwk+json");
             $jwt = $input;
+        } elseif ($jwt instanceof JWKSetInterface) {
+            $input = $this->getJWTManager()->createJWT();
+            $input->setPayload(json_encode($jwt))
+                  ->setProtectedHeaderValue("cty", "jwkset+json");
+            $jwt = $input;
+        } elseif (is_array($jwt)) {
+            $jwt->setPayload(json_encode($jwt->getPayload()));
+        } elseif (is_array($jwt->getPayload())) {
+            $jwt->setPayload(json_encode($jwt->getPayload()));
         }
         if (!$jwt instanceof JWTInterface) {
             throw new \InvalidArgumentException("Unsupported input type");
         }
+        $jwt_payload = Base64Url::encode($jwt->getPayload());
 
         $signatures = array();
-        $jwt_payload = Base64Url::encode($jwt->getPayload());
         foreach ($keys as $key) {
             $jwt_protected = $jwt->getProtectedHeader();
             $jwt_header = $jwt->getUnprotectedHeader();
@@ -50,18 +65,12 @@ abstract class Signer implements SignerInterface
             if (null === $alg) {
                 throw new \RuntimeException("No 'alg' parameter set in the header or the key.");
             }
+            $jwt_protected += array("alg" => $alg);
 
             $algorithm = $this->getJWAManager()->getAlgorithm($alg);
-            if (null === $algorithm) {
+            if (null === $algorithm || !$algorithm instanceof SignatureInterface) {
                 throw new \RuntimeException("The algorithm '$alg' is not supported.");
             }
-            if (!$algorithm instanceof SignatureInterface) {
-                throw new \RuntimeException("The algorithm '$alg' is not supported.");
-            }
-
-            /*if (!$this->canSign($key)) {
-                throw new \RuntimeException("Invalid key. Signature is not handled by the key");
-            }*/
 
             $protected = Base64Url::encode(json_encode($jwt_protected));
             $signature = Base64Url::encode($algorithm->sign($key, $protected.".".$jwt_payload, $jwt_protected));
