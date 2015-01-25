@@ -66,8 +66,8 @@ abstract class Signer implements SignerInterface
                         "protected" => $jwt_protected_header,
                         "signature" => $jwt_signature,
                     );
-                    if (!empty($input->getUnprotectedHeader())) {
-                        $result["header"] = $input->getUnprotectedHeader();
+                    if (!empty($unprotected_header)) {
+                        $result["header"] = $unprotected_header;
                     }
                     $signatures[] = json_encode($result);
                     break;
@@ -76,8 +76,8 @@ abstract class Signer implements SignerInterface
                         "protected" => $jwt_protected_header,
                         "signature" => $jwt_signature,
                     );
-                    if (!empty($input->getUnprotectedHeader())) {
-                        $result["header"] = $input->getUnprotectedHeader();
+                    if (!empty($unprotected_header)) {
+                        $result["header"] = $unprotected_header;
                     }
                     $signatures['signatures'][] = $result;
                     break;
