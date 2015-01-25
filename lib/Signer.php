@@ -54,7 +54,7 @@ abstract class Signer implements SignerInterface
                 throw new \RuntimeException("The algorithm '$alg' is not supported.");
             }
 
-            $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.".".$jwt_payload, $complete_header);
+            $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.".".$jwt_payload);
             $jwt_signature = Base64Url::encode($signature);
             switch ($serialization) {
                 case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
