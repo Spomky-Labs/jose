@@ -9,6 +9,7 @@ use Jose\JWKSetInterface;
 use Jose\SignerInterface;
 use Jose\JSONSerializationModes;
 use Jose\Operation\SignatureInterface;
+use Jose\SignatureInstructionInterface;
 
 /**
  * Class representing a JSON Web Token Manager.
@@ -33,11 +34,17 @@ abstract class Signer implements SignerInterface
     public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
         $this->checkInput($input);
+        if (empty($instructions)) {
+                throw new \RuntimeException("No instruction.");
+        }
 
         $jwt_payload = Base64Url::encode($input->getPayload());
 
         $signatures = array();
         foreach ($instructions as $instruction) {
+            if (!$instruction instanceof SignatureInstructionInterface) {
+                    throw new \RuntimeException("Bad instruction. Must implement SignatureInstructionInterface.");
+            }
             $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
             $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
             $complete_header = array_merge($protected_header, $protected_header);

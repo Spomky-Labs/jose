@@ -77,6 +77,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $encrypter = new Encrypter();
         $encrypter->setCompressionManager($this->getCompressionManager())
                   ->setJWKManager($this->getJWKManager())
+                  ->setJWTManager($this->getJWTManager())
                   ->setJWAManager($this->getJWAManager());
 
         return $encrypter;

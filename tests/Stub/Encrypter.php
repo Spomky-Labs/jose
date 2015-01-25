@@ -4,6 +4,7 @@ namespace SpomkyLabs\Jose\Tests\Stub;
 
 use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
+use Jose\JWTManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
 use SpomkyLabs\Jose\Encrypter as Base;
 
@@ -14,7 +15,23 @@ class Encrypter extends Base
 {
     protected $jwk_manager;
     protected $jwa_manager;
+    protected $jwt_manager;
     protected $compression_manager;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getJWTManager()
+    {
+        return $this->jwt_manager;
+    }
+
+    public function setJWTManager(JWTManagerInterface $jwt_manager)
+    {
+        $this->jwt_manager = $jwt_manager;
+
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
