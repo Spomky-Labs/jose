@@ -11,6 +11,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testA128GCMEncryptAndDecrypt()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array("alg" => "ECDH-ES", "enc" => "A128GCM");
         $tag = null;
 
@@ -28,6 +32,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
     public function testA192GCMEncryptAndDecrypt()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array("alg" => "ECDH-ES", "enc" => "A192GCM");
         $tag = null;
 
@@ -45,6 +53,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
     public function testA256GCMEncryptAndDecrypt()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array("alg" => "ECDH-ES", "enc" => "A256GCM");
         $tag = null;
 
@@ -65,6 +77,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMDecryptTestVector()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $algorithm = new A256GCM();
 
         $header              = array("alg" => "RSA-OAEP", "enc" => "A256GCM");
