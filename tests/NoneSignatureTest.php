@@ -4,7 +4,7 @@ namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
+use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Jose\Algorithm\Signature\None;
 
 class NoneSignatureTest extends TestCase
@@ -48,13 +48,16 @@ class NoneSignatureTest extends TestCase
 
         $jwk  = new JWK();
         $jwk->setValue("kty", "none");
-        $jwk_set = new JWKSet();
-        $jwk_set->addKey($jwk);
+
+        $instruction1 = new SignatureInstruction();
+        $instruction1->setKey($jwk)
+                     ->setProtectedHeader(array("alg" => "none"));
 
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $signed = $signer->sign($jwt, $jwk_set);
+        $signed = $signer->sign($jwt, array($instruction1));
+        $this->assertTrue(is_string($signed));
         $result = $loader->load($signed);
 
         $this->assertInstanceOf("Jose\JWSInterface", $result);

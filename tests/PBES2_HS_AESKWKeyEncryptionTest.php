@@ -3,7 +3,7 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;

@@ -3,7 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 
 /**
  *

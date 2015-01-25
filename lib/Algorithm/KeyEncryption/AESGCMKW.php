@@ -4,7 +4,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Crypto\Cipher;
 use Jose\JWKInterface;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use Jose\Operation\KeyEncryptionInterface;
 
 abstract class AESGCMKW implements KeyEncryptionInterface

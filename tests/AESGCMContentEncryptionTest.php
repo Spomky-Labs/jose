@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;

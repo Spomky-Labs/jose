@@ -7,7 +7,7 @@ use Jose\Operation\KeyAgreementInterface;
 use Mdanter\Ecc\Point;
 use Mdanter\Ecc\EccFactory;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
 class ECDHES implements KeyAgreementInterface

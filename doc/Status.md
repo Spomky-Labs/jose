@@ -51,51 +51,44 @@
 
 ## JWA ##
 
-All **required** algorithms are supported (marked with a *).
-Some **Optionnal** (o), **Recommended** (r) and **Recommended+** (+) algorithms are also supported.
-
-This library aims to implement all algorithms, but focuses on required and recommended+ ones.
-
 ### Supported algorithms ###
 
 * Signature:
-    * HS256 (*), HS384 (o), HS512 (o)
-    * ES256 (+), ES384 (o), ES512 (o)
-    * RS256 (r), RS384 (o), RS512 (o)
-    * PS256 (o), PS384 (o), PS512 (o)
-    * none (o)
+    * HS256, HS384, HS512
+    * ES256, ES384, ES512
+    * RS256, RS384, RS512
+    * PS256, PS384, PS512
+    * none
 * Encryption:
     * Key Encryption:
-        * dir (r)
-        * RSA1_5 (*)
-        * RSA-OAEP (o)
-        * RSA-OAEP-256 (o)
-        * ECDH-ES (+)
-        * ECDH-ES+A128KW (r)
-        * ECDH-ES+A192KW (0)
-        * ECDH-ES+A256KW (r)
-        * A128KW (r)
-        * A192KW (o)
-        * A256KW (r)
-        * PBES2-HS256+A128KW (o)
-        * PBES2-HS384+A192KW (o)
-        * PBES2-HS512+A256KW (o)
-        * A128GCMKW (o)
-        * A192GCMKW (o)
-        * A256GCMKW (o)
+        * dir
+        * RSA1_5
+        * RSA-OAEP
+        * RSA-OAEP-256
+        * ECDH-ES
+        * ECDH-ES+A128KW
+        * ECDH-ES+A192KW
+        * ECDH-ES+A256KW
+        * A128KW
+        * A192KW
+        * A256KW
+        * PBES2-HS256+A128KW
+        * PBES2-HS384+A192KW
+        * PBES2-HS512+A256KW
+        * A128GCMKW
+        * A192GCMKW
+        * A256GCMKW
     * Content Encryption:
-        * A128CBC-HS256 (*)
-        * A192CBC-HS384 (o)
-        * A256CBC-HS512 (*)
-        * A128GCM (r)
-        * A192GCM (o)
-        * A256GCM (r)
+        * A128CBC-HS256
+        * A192CBC-HS384
+        * A256CBC-HS512
+        * A128GCM
+        * A192GCM
+        * A256GCM
 
 ### Unsupported algorithms ###
 
 **None!** All algortihms described in the specification are supported.
-
-Please note that AES GCM algorithms require an additionnal PHP extension. See [PHP Crypto](https://github.com/bukka/php-crypto) to know how to install and enable it.
 
 ## JWK ##
 

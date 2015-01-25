@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\Jose;
 
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\JWTInterface;
 use Jose\JWKSetInterface;
@@ -30,72 +30,54 @@ abstract class Signer implements SignerInterface
      */
     abstract protected function getJWTManager();
 
-    public function sign($jwt, JWKSetInterface $keys, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
+    public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
-        if ($jwt instanceof JWKInterface) {
-            $input = $this->getJWTManager()->createJWT();
-            $input->setPayload(json_encode($jwt))
-                  ->setProtectedHeaderValue("cty", "jwk+json");
-            $jwt = $input;
-        } elseif ($jwt instanceof JWKSetInterface) {
-            $input = $this->getJWTManager()->createJWT();
-            $input->setPayload(json_encode($jwt))
-                  ->setProtectedHeaderValue("cty", "jwkset+json");
-            $jwt = $input;
-        } elseif (is_array($jwt)) {
-            $jwt->setPayload(json_encode($jwt->getPayload()));
-        } elseif (is_array($jwt->getPayload())) {
-            $jwt->setPayload(json_encode($jwt->getPayload()));
-        }
-        if (!$jwt instanceof JWTInterface) {
-            throw new \InvalidArgumentException("Unsupported input type");
-        }
-        $jwt_payload = Base64Url::encode($jwt->getPayload());
+        $this->checkInput($input);
+
+        $jwt_payload = Base64Url::encode($input->getPayload());
 
         $signatures = array();
-        foreach ($keys as $key) {
-            $jwt_protected = $jwt->getProtectedHeader();
-            $jwt_header = $jwt->getUnprotectedHeader();
-            $alg = $jwt->getAlgorithm();
+        foreach ($instructions as $instruction) {
+            $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
+            $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
+            $complete_header = array_merge($protected_header, $protected_header);
 
-            if ($alg === null) {
-                $alg = $key->getAlgorithm();
-            }
+            $jwt_protected_header   = Base64Url::encode(json_encode($protected_header));
+            $alg = array_key_exists("alg", $complete_header) ? $complete_header["alg"] : null;
 
             if (null === $alg) {
                 throw new \RuntimeException("No 'alg' parameter set in the header or the key.");
             }
-            $jwt_protected += array("alg" => $alg);
 
             $algorithm = $this->getJWAManager()->getAlgorithm($alg);
             if (null === $algorithm || !$algorithm instanceof SignatureInterface) {
                 throw new \RuntimeException("The algorithm '$alg' is not supported.");
             }
 
-            $protected = Base64Url::encode(json_encode($jwt_protected));
-            $signature = Base64Url::encode($algorithm->sign($key, $protected.".".$jwt_payload, $jwt_protected));
+            $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.".".$jwt_payload, $complete_header);
+            $jwt_signature = Base64Url::encode($signature);
             switch ($serialization) {
                 case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
-                    $signatures[] = $protected.".".$jwt_payload.".".$signature;
+                    $signatures[] = $jwt_protected_header.".".$jwt_payload.".".$jwt_signature;
                     break;
                 case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
                     $result = array(
                         "payload" => $jwt_payload,
-                        "protected" => $protected,
-                        "signature" => $signature,
+                        "protected" => $jwt_protected_header,
+                        "signature" => $jwt_signature,
                     );
-                    if (!empty($jwt_header)) {
-                        $result["header"] = $jwt_header;
+                    if (!empty($input->getUnprotectedHeader())) {
+                        $result["header"] = $input->getUnprotectedHeader();
                     }
                     $signatures[] = json_encode($result);
                     break;
                 case JSONSerializationModes::JSON_SERIALIZATION:
                     $result = array(
-                        "protected" => $protected,
-                        "signature" => $signature,
+                        "protected" => $jwt_protected_header,
+                        "signature" => $jwt_signature,
                     );
-                    if (!empty($jwt_header)) {
-                        $result["header"] = $jwt_header;
+                    if (!empty($input->getUnprotectedHeader())) {
+                        $result["header"] = $input->getUnprotectedHeader();
                     }
                     $signatures['signatures'][] = $result;
                     break;
@@ -106,16 +88,49 @@ abstract class Signer implements SignerInterface
 
         if (count($signatures) === 0) {
             throw new \RuntimeException("No signature created");
-        } elseif (count($signatures) === 1) {
-            if (array_key_exists("signatures", $signatures)) {
-                $signatures["payload"] = $jwt_payload;
+        }
 
-                return json_encode($signatures);
-            }
+        if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
+            $signatures['payload'] = $jwt_payload;
 
-            return current($signatures);
-        } else {
-            return $signatures;
+            return json_encode($signatures);
+        }
+
+        return count($signatures) === 1 ? current($signatures) : $signatures;
+    }
+
+    public function checkInput(&$input)
+    {
+        if ($input instanceof JWKInterface) {
+            $jwt = $this->getJWTManager()->createJWT();
+            $jwt->setPayload(json_encode($input))
+                  ->setProtectedHeaderValue("cty", "jwk+json");
+            $input = $jwt;
+
+            return;
+        }
+        if ($input instanceof JWKSetInterface) {
+            $jwt = $this->getJWTManager()->createJWT();
+            $jwt->setPayload(json_encode($input))
+                  ->setProtectedHeaderValue("cty", "jwkset+json");
+            $input = $jwt;
+
+            return;
+        }
+        if (is_array($input)) {
+            $jwt = $this->getJWTManager()->createJWT();
+            $jwt->setPayload(json_encode($input->getPayload()));
+
+            return;
+        }
+        if (is_string($input)) {
+            $jwt = $this->getJWTManager()->createJWT();
+            $jwt->setPayload($input);
+
+            return;
+        }
+        if (!$input instanceof JWTInterface) {
+            throw new \InvalidArgumentException("Unsupported input type");
         }
     }
 }

@@ -9,7 +9,7 @@ use Mdanter\Ecc\PublicKey;
 use Mdanter\Ecc\PrivateKey;
 use Mdanter\Ecc\Signature;
 use Mdanter\Ecc\EccFactory;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 
 /**
  */

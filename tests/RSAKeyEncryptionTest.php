@@ -3,7 +3,7 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;

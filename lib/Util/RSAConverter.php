@@ -2,6 +2,8 @@
 
 namespace SpomkyLabs\Jose\Util;
 
+use Base64Url\Base64Url;
+
 /**
  * Encode and decode data into Base64 Url Safe
  */

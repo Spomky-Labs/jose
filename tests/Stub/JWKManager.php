@@ -5,7 +5,7 @@ namespace SpomkyLabs\Jose\Tests\Stub;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\JWKManager as Base;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 
 /**
  */

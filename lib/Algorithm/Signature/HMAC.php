@@ -3,7 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use Jose\Operation\SignatureInterface;
 
 /**

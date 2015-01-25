@@ -48,8 +48,9 @@ This library needs at least
 * `PHP 5.4`
 * PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
 * `OpenSSL` library for PHP
-* `phpseclib/phpseclib` library for RSA (encryption and signature) algorithms.
+* `phpseclib/phpseclib` library for RSA and AES algorithms.
 * `mdanter/ecc` library for Elliptic Curves algorithms.
+* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms.
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6`.
 Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
@@ -85,4 +86,4 @@ Requests for new features, bug fixed and all other ideas to make this library us
 
 ## Licence
 
-This software is release under MIT licence.
+This software is release under [MIT licence](LICENSE).

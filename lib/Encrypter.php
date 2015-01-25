@@ -2,7 +2,7 @@
 
 namespace SpomkyLabs\Jose;
 
-use SpomkyLabs\Jose\Util\Base64Url;
+use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\JWKSetInterface;
 use Jose\EncrypterInterface;
