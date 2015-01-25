@@ -12,6 +12,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     public function testA128GCMKW()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -21,16 +25,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        try {
-            $aeskw = new A128GCMKW();
-            if ($this->isHHVM()) {
-                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }
-        } catch (\Exception $e) {
-            $this->assertTrue(true);
-
-            return;
-        }
+        $aeskw = new A128GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
@@ -43,6 +38,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     public function testA192GCMKW()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -52,16 +51,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        try {
-            $aeskw = new A192GCMKW();
-            if ($this->isHHVM()) {
-                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }
-        } catch (\Exception $e) {
-            $this->assertTrue(true);
-
-            return;
-        }
+        $aeskw = new A192GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
@@ -74,6 +64,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     public function testA256GCMKW()
     {
+        if (true === $this->isHHVM()) {
+            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+            return;
+        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -83,16 +77,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
 
-        try {
-            $aeskw = new A256GCMKW();
-            if ($this->isHHVM()) {
-                $this->fail("HHVM should not be able to support this Algorithm (PECL extension not available).");
-            }
-        } catch (\Exception $e) {
-            $this->assertTrue(true);
-
-            return;
-        }
+        $aeskw = new A256GCMKW();
 
         $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
 
