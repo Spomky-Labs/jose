@@ -14,6 +14,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     public function setRecipientPublicKey(JWKInterface $recipient_public_key)
     {
         $this->recipient_public_key = $recipient_public_key;
+
         return $this;
     }
 
@@ -25,6 +26,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     public function setSenderPrivateKey(JWKInterface $sender_private_key)
     {
         $this->sender_private_key = $sender_private_key;
+
         return $this;
     }
 
@@ -36,6 +38,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     public function setRecipientUnprotectedHeader(array $recipient_unprotected_header)
     {
         $this->recipient_unprotected_header = $recipient_unprotected_header;
+
         return $this;
     }
 

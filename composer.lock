@@ -4,20 +4,20 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e17fa19100061196d46e5bc7fc9eb6e3",
+    "hash": "2f7fe85d4f07117da43024db8398e4c4",
     "packages": [
         {
             "name": "spomky-labs/aes-key-wrap",
-            "version": "v0.1.1",
+            "version": "v1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/aes-key-wrap.git",
-                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6"
+                "reference": "e998ee229ac7febc1ea2a33f65d1efa68e5630b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
-                "reference": "fd62f65b1d70c44fc1e1deac897f2352f92d69e6",
+                "url": "https://api.github.com/repos/Spomky-Labs/aes-key-wrap/zipball/e998ee229ac7febc1ea2a33f65d1efa68e5630b6",
+                "reference": "e998ee229ac7febc1ea2a33f65d1efa68e5630b6",
                 "shasum": ""
             },
             "require": {
@@ -30,7 +30,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "0.0.x-dev"
+                    "dev-master": "1.0.x-dev"
                 }
             },
             "autoload": {
@@ -55,11 +55,13 @@
                 "A192KW",
                 "A256KW",
                 "RFC3394",
+                "RFC5649",
                 "aes",
                 "key",
+                "padding",
                 "wrap"
             ],
-            "time": "2015-01-02 10:49:23"
+            "time": "2015-01-20 07:24:42"
         },
         {
             "name": "spomky-labs/base64url",

@@ -13,6 +13,6 @@ class A256GCMKW extends AESGCMKW
 
     public function getAlgorithmName()
     {
-        return "A256KW";
+        return "A256GCMKW";
     }
 }

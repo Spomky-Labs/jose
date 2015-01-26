@@ -8,6 +8,10 @@ use Jose\JWKSetInterface;
 use Jose\EncrypterInterface;
 use Jose\JSONSerializationModes;
 use Jose\EncryptionInstructionInterface;
+use Jose\Operation\KeyEncryptionInterface;
+use Jose\Operation\DirectEncryptionInterface;
+use Jose\Operation\KeyAgreementInterface;
+use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\ContentEncryptionInterface;
 
 /**
@@ -49,123 +53,128 @@ abstract class Encrypter implements EncrypterInterface
 
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
+        if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
+            throw new \RuntimeException("JSON serialization not yet supported.");
+        }
         $this->checkInput($input);
         if (empty($instructions)) {
-                throw new \RuntimeException("No instruction.");
-        }
-
-        $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
-        $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
-        $complete_header    = array_merge($protected_header, $unprotected_header);
-
-        // Shared protected header
-        $jwt_shared_protected_header = Base64Url::encode(json_encode($protected_header));
-
-        $payload = $input->getPayload();
-        if (array_key_exists("zip", $complete_header)) {
-            $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
-            if ($method === null) {
-                throw new \RuntimeException("Compression method '".$complete_header['zip']."' not supported.");
-            }
-            $payload = $method->compress($payload);
-            if (!is_string($payload)) {
-                throw new \RuntimeException("Compression failed.");
-            }
+            throw new \RuntimeException("No instruction.");
         }
 
         // AAD
-        $jwt_aad = null !== $aad?Base64Url::encode($aad):null;
-
-        if (!array_key_exists("enc", $complete_header)) {
-            throw new \RuntimeException("The parameter 'enc' is not defined in shared headers.");
-        }
-        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
-        if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-            throw new \RuntimeException("The content encryption '".$complete_header["enc"]."' is not supported or not a ContentEncryptionInterface instance.");
-        }
-
-        // IV
-        $iv = null;
-        if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
-            $iv = $this->createIV($iv_size);
-        }
-
-        // CEK
-        $cek = null;
-        if (null !== $cek_size = $content_encryption_algorithm->getCEKSize()) {
-            $cek = $this->createCEK($cek_size);
-        }
-
-        /*if ($jwt_header["alg"] === "dir") {
-            $tmp = $instructions[0]['key'];
-            $cek = $tmp->getValue("dir");
-        } else {
-            if ($key->getCEKSize($jwt_header) !== null) {
-                $cek = $this->createCEK($key->getCEKSize($jwt_header));
-            }
-        }*/
-
-        $tag = null;
-
-        // Cyphertext
-        $cyphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $protected_header, $tag);
-        $jwt_cyphertext = Base64Url::encode($cyphertext);
-
-        // Tag
-        $jwt_tag = null !== $tag?Base64Url::encode($tag):null;
+        $jwt_aad = null !== $aad ? Base64Url::encode($aad) : null;
 
         $recipients = array();
-
-        /*foreach ($instructions as $instruction) {
-            if (!$instruction instanceof SignatureInstructionInterface) {
-                    throw new \RuntimeException("Bad instruction. Must implement SignatureInstructionInterface.");
-            }
-            $jwk = $instruction['key'];
-            $complete_header = $jwt_header;
-            if (isset($instruction['header'])) {
-                $complete_header = array_merge($complete_header, $instruction['header']);
+        foreach ($instructions as $instruction) {
+            if (!$instruction instanceof EncryptionInstructionInterface) {
+                throw new \RuntimeException("Bad instruction. Must implement EncryptionInstructionInterface.");
             }
 
-            $tmp = array(
-                "encrypted_key" => $jwk->encryptKey($jwt_cek, $protected_header, $sender_key),
-            );
-            if (isset($instruction['header'])) {
-                $tmp["header"] = $instruction['header'];
-            }
-            if ($sender_key instanceof JWKAgreementKeyExtension) {
-                if ($compact === false) {
-                    if (!isset($tmp['header'])) {
-                        $tmp['header'] = array();
-                    }
-                    $tmp["header"] += $sender_key->getAgreementKey();
-                } else {
-                    $protected_header += $sender_key->getAgreementKey();
+            $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
+            $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header, $instruction->getRecipientUnprotectedHeader());
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+            $payload = $input->getPayload();
+            if (array_key_exists("zip", $complete_header)) {
+                $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
+                if ($method === null) {
+                    throw new \RuntimeException("Compression method '".$complete_header['zip']."' not supported.");
+                }
+                $payload = $method->compress($payload);
+                if (!is_string($payload)) {
+                    throw new \RuntimeException("Compression failed.");
                 }
             }
-            $recipients[] = $tmp;
+
+            if (!array_key_exists("enc", $complete_header)) {
+                throw new \RuntimeException("The parameter 'enc' is not defined in shared headers.");
+            }
+            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
+            if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
+                throw new \RuntimeException("The content encryption algorithm '".$complete_header["enc"]."' is not supported or not a ContentEncryptionInterface instance.");
+            }
+
+            if (!array_key_exists("alg", $complete_header)) {
+                throw new \RuntimeException("The parameter 'alg' is not defined in shared headers.");
+            }
+            $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
+            if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
+                !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
+                !$key_encryption_algorithm instanceof KeyAgreementInterface &&
+                !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a ContentEncryptionInterface instance.");
+            }
+
+            // IV
+            $iv = null;
+            if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
+                $iv = $this->createIV($iv_size);
+            }
+            $jwt_iv = Base64Url::encode($iv);
+
+            $calculated_header = array();
+
+            // CEK
+            $cek     = null;
+            $jwt_cek = null;
+            if ($key_encryption_algorithm instanceof KeyEncryptionInterface || $key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+                $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
+                $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientPublicKey(), $cek, $calculated_header));
+            } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $content_encryption_algorithm->getCEKSize(), $calculated_header);
+                $jwt_cek = "";
+            } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
+                $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientPublicKey(), array());
+                $jwt_cek = "";
+            }
+
+            $protected_header = array_merge($protected_header, $calculated_header);
+
+            // Shared protected header
+            $jwt_shared_protected_header = Base64Url::encode(json_encode($protected_header));
+
+            // Cyphertext
+            $tag = null;
+            $cyphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $protected_header, $tag);
+            $jwt_cyphertext = Base64Url::encode($cyphertext);
+
+            // Tag
+            $jwt_tag = null !== $tag ? Base64Url::encode($tag) : null;
+
+            switch ($serialization) {
+                case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
+                    $recipients[] = "{$jwt_shared_protected_header}.{$jwt_cek}.{$jwt_iv}.{$jwt_cyphertext}.{$jwt_tag}";
+                    break;
+                case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
+                    $result = array(
+                        "ciphertext" => $jwt_cyphertext,
+                    );
+                    $values = array(
+                        "protected"     => $jwt_shared_protected_header,
+                        "unprotected"   => $unprotected_header,
+                        "header"        => $recipient_header,
+                        "iv"            => $jwt_iv,
+                        "tag"           => $jwt_tag,
+                        "aad"           => $jwt_aad,
+                        "encrypted_key" => $jwt_cek,
+                    );
+                    foreach ($values as $key => $value) {
+                        if (!empty($value)) {
+                            $result[$key] = $value;
+                        }
+                    }
+                    $recipients[] = json_encode($result);
+                    break;
+
+                default:
+                    throw new \RuntimeException("Unsupported serialization mode.");
+            }
         }
 
-        if (count($recipients) === 0) {
-            throw new \RuntimeException("No recipient");
-        }
+        return count($recipients) === 1 ? current($recipients) : $recipients;
 
-        if (count($recipients) > 1 && $compact === true) {
-            throw new \RuntimeException("Can not compact when using multiple recipients");
-        }
-
-        $jwt_tag = $key->calculateAuthenticationTag($jwt_cek, $jwt_iv, $encrypted_data, $protected_header);
-
-        if (count($recipients) === 1 && $compact === true) {
-            return implode(".", array(
-                Base64Url::encode(json_encode($protected_header)),
-                Base64Url::encode($recipients[0]['encrypted_key']),
-                Base64Url::encode($jwt_iv),
-                Base64Url::encode($encrypted_data),
-                Base64Url::encode($jwt_tag),
-            ));
-        }
-
-        return json_encode(array(
+        /*return json_encode(array(
             "protected" => Base64Url::encode(json_encode($protected_header)),
             "unprotected" => $unprotected_header,
             "iv" => Base64Url::encode($jwt_iv),
@@ -173,25 +182,6 @@ abstract class Encrypter implements EncrypterInterface
             "tag" => Base64Url::encode($jwt_tag),
             "recipients" => $recipients,
         ));*/
-    }
-
-    /**
-     * @param string $encrypted_cek
-     */
-    public function getCEK(array $instructions, array $header)
-    {
-        $random_cek = true;
-        foreach ($instructions as $instruction) {
-            if (!$instruction instanceof EncryptionInstructionInterface) {
-                throw new \RuntimeException("Bad instruction. Must implement EncryptionInstructionInterface.");
-            }
-            $complete_header = array_merge($header, );
-            $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header);
-            if ($key_encryption_algorithm instanceof DirectEncryptionInterface || $key_encryption_algorithm instanceof KeyAgreementInterface) {
-                $random_cek = false;
-                break;
-            }
-        }
     }
 
     public function checkInput(&$input)

@@ -13,6 +13,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array("alg" => "ECDH-ES", "enc" => "A128GCM");
@@ -34,6 +35,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array("alg" => "ECDH-ES", "enc" => "A192GCM");
@@ -55,6 +57,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array("alg" => "ECDH-ES", "enc" => "A256GCM");
@@ -79,6 +82,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $algorithm = new A256GCM();

@@ -35,7 +35,7 @@ abstract class Signer implements SignerInterface
     {
         $this->checkInput($input);
         if (empty($instructions)) {
-                throw new \RuntimeException("No instruction.");
+            throw new \RuntimeException("No instruction.");
         }
 
         $jwt_payload = Base64Url::encode($input->getPayload());
@@ -43,7 +43,7 @@ abstract class Signer implements SignerInterface
         $signatures = array();
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
-                    throw new \RuntimeException("Bad instruction. Must implement SignatureInstructionInterface.");
+                throw new \RuntimeException("Bad instruction. Must implement SignatureInstructionInterface.");
             }
             $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
             $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());

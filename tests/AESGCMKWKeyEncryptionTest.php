@@ -14,6 +14,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array();
@@ -40,6 +41,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array();
@@ -66,6 +68,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (true === $this->isHHVM()) {
             $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+
             return;
         }
         $header = array();

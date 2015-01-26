@@ -3,7 +3,6 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\EncryptionInstruction;
 use Jose\JSONSerializationModes;
 
@@ -17,7 +16,15 @@ class EncrypterTest extends TestCase
         $instruction = new EncryptionInstruction();
         $instruction->setRecipientPublicKey($this->getRecipientKey());
 
-        $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), array($instruction), array("enc"=>"A128GCM"), array("zip"=>"DEF"));
+        $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), array($instruction), array("kid" => "123456789", "enc" => "A128GCM", "alg" => "RSA-OAEP-256", "zip" => "DEF"), array(), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+
+        $loaded = $loader->load($encrypted);
+
+        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
+        $this->assertEquals("RSA-OAEP-256", $loaded->getAlgorithm());
+        $this->assertEquals("A128GCM", $loaded->getEncryptionAlgorithm());
+        $this->assertEquals("DEF", $loaded->getZip());
     }
 
     protected function getKeyToEncrypt()
@@ -39,8 +46,8 @@ class EncrypterTest extends TestCase
         $key = new JWK();
         $key->setValues(array(
             "kty" => "RSA",
-            "n" => "ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ",
-            "e" => "AQAB",
+            'n' => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+            'e' => 'AQAB',
         ));
 
         return $key;
