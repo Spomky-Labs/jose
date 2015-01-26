@@ -104,7 +104,7 @@ abstract class Encrypter implements EncrypterInterface
                 !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a ContentEncryptionInterface instance.");
+                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a key encryption algorithm instance.");
             }
 
             // IV

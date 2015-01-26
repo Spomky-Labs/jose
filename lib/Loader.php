@@ -278,6 +278,12 @@ abstract class Loader implements LoaderInterface
             if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
                 throw new \RuntimeException("The algorithm '".$complete_header["enc"]."' does not implement ContentEncryptionInterface.");
             }
+            if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
+                !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
+                !$key_encryption_algorithm instanceof KeyAgreementInterface &&
+                !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a key encryption algorithm instance.");
+            }
 
             foreach ($jwk_set as $key) {
                 $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
