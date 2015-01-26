@@ -25,6 +25,7 @@ class EncrypterTest extends TestCase
         $this->assertEquals("RSA-OAEP-256", $loaded->getAlgorithm());
         $this->assertEquals("A128GCM", $loaded->getEncryptionAlgorithm());
         $this->assertEquals("DEF", $loaded->getZip());
+        $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
     }
 
     protected function getKeyToEncrypt()

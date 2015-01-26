@@ -4,6 +4,7 @@ namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;
+use Jose\JWTInterface;
 use Jose\JWKSetInterface;
 use Jose\EncrypterInterface;
 use Jose\JSONSerializationModes;
@@ -113,23 +114,24 @@ abstract class Encrypter implements EncrypterInterface
             }
             $jwt_iv = Base64Url::encode($iv);
 
-            $calculated_header = array();
-
             // CEK
             $cek     = null;
             $jwt_cek = null;
-            if ($key_encryption_algorithm instanceof KeyEncryptionInterface || $key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientPublicKey(), $cek, $calculated_header));
+                $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientPublicKey(), $cek, $protected_header));
+            } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+                $this->checkSenderPrivateKey($instruction);
+                $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
+                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $content_encryption_algorithm->getCEKSize(), $calculated_header);
+                $this->checkSenderPrivateKey($instruction);
+                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
                 $jwt_cek = "";
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
                 $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientPublicKey(), array());
                 $jwt_cek = "";
             }
-
-            $protected_header = array_merge($protected_header, $calculated_header);
 
             // Shared protected header
             $jwt_shared_protected_header = Base64Url::encode(json_encode($protected_header));
@@ -173,18 +175,16 @@ abstract class Encrypter implements EncrypterInterface
         }
 
         return count($recipients) === 1 ? current($recipients) : $recipients;
-
-        /*return json_encode(array(
-            "protected" => Base64Url::encode(json_encode($protected_header)),
-            "unprotected" => $unprotected_header,
-            "iv" => Base64Url::encode($jwt_iv),
-            "ciphertext" => Base64Url::encode($encrypted_data),
-            "tag" => Base64Url::encode($jwt_tag),
-            "recipients" => $recipients,
-        ));*/
     }
 
-    public function checkInput(&$input)
+    private function checkSenderPrivateKey(EncryptionInstructionInterface $instruction)
+    {
+        if (null === $instruction->getSenderPrivateKey()) {
+            throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
+        }
+    }
+
+    private function checkInput(&$input)
     {
         if ($input instanceof JWKInterface) {
             $jwt = $this->getJWTManager()->createJWT();
