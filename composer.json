@@ -26,7 +26,7 @@
         "spomky-labs/jose-interface": "dev-master",
         "lib-openssl": "*",
         "spomky-labs/pbkdf2": "~0.1",
-        "spomky-labs/aes-key-wrap": "~0.1"
+        "spomky-labs/aes-key-wrap": "~1.0"
     },
     "require-dev": {
         "phpseclib/phpseclib": ">=0.3.5",

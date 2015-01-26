@@ -24,7 +24,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     {
         $k = substr($cek, strlen($cek)/2);
         $calculated_aad = Base64Url::encode(json_encode($header));
-        if (null === $aad) {
+        if (null !== $aad) {
             $calculated_aad .= $aad;
         }
 
