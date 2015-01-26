@@ -204,7 +204,7 @@ abstract class Encrypter implements EncrypterInterface
         }
         if (is_array($input)) {
             $jwt = $this->getJWTManager()->createJWT();
-            $jwt->setPayload(json_encode($input->getPayload()));
+            $jwt->setPayload(json_encode($input));
 
             return;
         }
