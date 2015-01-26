@@ -120,12 +120,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "23dd947eb83cb55035d5b6f69024536453765676"
+                "reference": "da8254072769f1e931f3974611c61c0c23d4090c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/23dd947eb83cb55035d5b6f69024536453765676",
-                "reference": "23dd947eb83cb55035d5b6f69024536453765676",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/da8254072769f1e931f3974611c61c0c23d4090c",
+                "reference": "da8254072769f1e931f3974611c61c0c23d4090c",
                 "shasum": ""
             },
             "require": {
@@ -169,7 +169,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2015-01-26 21:15:01"
+            "time": "2015-01-26 21:41:10"
         },
         {
             "name": "spomky-labs/pbkdf2",
