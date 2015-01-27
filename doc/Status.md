@@ -4,39 +4,22 @@
 
 ### Supported ###
 
-* JSON Compact Serialization Overview
-    * JWS (creation and loading):
-        * Plain text
-        * JWT
-    * JWE (creation and loading):
-        * Plain text
-        * JWT
-        * jwk+json content type
-        * jwkset+json content type
-* JSON Flattened Serialization Overview
-    * JWS (creation and loading):
-        * Plain text
-        * JWT
-    * JWE (creation and loading):
-        * Plain text
-        * JWT
-        * jwk+json content type
-        * jwkset+json content type
-* JSON Serialization Overview
-    * JWS (creation and loading):
-        * Plain text
-        * JWT
-        * Raw data
-    * JWE (loading only):
-        * Plain text
-        * JWT
-        * jwk+json content type
-        * jwkset+json content type
+Input supported:
+* Plain text
+* Array
+* JWTInterface object
+* jwk+json content type (JWKInterface object)
+* jwkset+json content type (JWKSetInterface object)
 
-* Compression support for JWE objects:
-    * Deflate —DEF—
-    * GZip —GZ— *(this compression method is not described in the specification)*
-    * ZLib —ZLIB— *(this compression method is not described in the specification)*
+Serialization modes supported:
+* JSON Compact Serialization Overview (JWS/JWS creation and loading)
+* JSON Flattened Serialization Overview (JWS/JWS creation and loading)
+* JSON Serialization Overview (JWE creation in this mode is not supported)
+
+Compression support for JWE objects:
+* Deflate —DEF—
+* GZip —GZ— *(this compression method is not described in the specification)*
+* ZLib —ZLIB— *(this compression method is not described in the specification)*
 
 ### Unsupported ###
 
@@ -44,10 +27,6 @@
     * `crit` parameter
 * JSON Serialization Overview
     * JWE (creation only)
-        * Plain text
-        * JWT
-        * jwk+json content type
-        * jwkset+json content type
 
 ## JWA ##
 
