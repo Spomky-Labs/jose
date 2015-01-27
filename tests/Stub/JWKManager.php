@@ -117,6 +117,13 @@ class JWKManager extends Base
                     "n"   => "rI67uHIDWDgCy_Ut-FhhjTCkEcqzoO80IRgdpk_fJHlDmXhMTJKPizxbIEMs0wRHRZpwH-4D20thpnQB5Mgx6-XM9kOvcYpHSdcYME77BwX6uQG-hw2w77NOhYiCSZCLzx-5ld5Wjy0dympL-ExqQw-wrWipMX7NQhIbJqVbZ18=",
                     "e"   => "AQAB",
                 ));
+
+            case 'DIR_1':
+                return $this->createJWK(array(
+                    "kid" => "DIR_1",
+                    "kty" => "dir",
+                    'dir' => Base64Url::encode(hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F")),
+                ));
         }
     }
 

@@ -3,6 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
+use Base64Url\Base64Url;
 use Jose\Operation\DirectEncryptionInterface;
 
 /**
@@ -17,12 +18,8 @@ class Dir implements DirectEncryptionInterface
         if ("dir" !== $key->getKeyType()) {
             throw new \InvalidArgumentException("The key is not valid");
         }
-        $cek = $key->getValue('dir');
-        if (empty($cek) || !is_string($cek)) {
-            throw new \InvalidArgumentException("The key does not have 'dir' parameter or parameter returned an invalid value");
-        }
 
-        return $cek;
+        return Base64Url::decode($key->getValue('dir'));
     }
 
     public function getAlgorithmName()

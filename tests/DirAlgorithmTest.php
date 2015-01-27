@@ -3,6 +3,7 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
 
 class DirAlgorithmTest extends TestCase
@@ -22,27 +23,12 @@ class DirAlgorithmTest extends TestCase
         $dir->getCEK($key, $header);
     }
 
-    /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage The key does not have 'dir' parameter or parameter returned an invalid value
-     */
-    public function testKeyParameterIsMissing()
-    {
-        $header = array();
-        $key  = new JWK();
-        $key->setValue("kty", "dir");
-
-        $dir = new Dir();
-
-        $dir->getCEK($key, $header);
-    }
-
     public function testValidCEK()
     {
         $header = array();
         $key  = new JWK();
         $key->setValue("kty", "dir")
-            ->setValue("dir", "ABCD");
+            ->setValue("dir", Base64Url::encode("ABCD"));
 
         $dir = new Dir();
 
