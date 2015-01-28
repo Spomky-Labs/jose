@@ -232,7 +232,7 @@ abstract class Loader implements LoaderInterface
     /**
      * @param string $encrypted_cek
      */
-    public function decryptCEK(JWAInterface $key_encryption_algorithm, JWAInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    public function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($key, $header);
