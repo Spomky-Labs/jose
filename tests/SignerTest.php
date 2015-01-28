@@ -7,6 +7,10 @@ use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\SignatureInstruction;
 use Jose\JSONSerializationModes;
 
+/**
+ * Class SignerTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class SignerTest extends TestCase
 {
     /**
@@ -99,6 +103,9 @@ class SignerTest extends TestCase
         $signatures = $signer->sign($input, array($instruction), "foo_serialization");
     }
 
+    /**
+     *
+     */
     public function testSignAndLoadCompact()
     {
         $signer = $this->getSigner();
@@ -134,6 +141,9 @@ class SignerTest extends TestCase
         $this->assertEquals("RS512", $loaded2->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testSignAndLoadFlattened()
     {
         $signer = $this->getSigner();
@@ -168,6 +178,9 @@ class SignerTest extends TestCase
         $this->assertEquals("RS512", $loaded2->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testSignAndLoad()
     {
         $signer = $this->getSigner();
@@ -192,6 +205,9 @@ class SignerTest extends TestCase
         $this->assertEquals("HS512", $loaded->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testSignAndLoadJWKSet()
     {
         $signer = $this->getSigner();
@@ -216,6 +232,9 @@ class SignerTest extends TestCase
         $this->assertEquals("HS512", $loaded->getAlgorithm());
     }
 
+    /**
+     * @return JWK
+     */
     protected function getKey1()
     {
         $key = new JWK();
@@ -227,6 +246,9 @@ class SignerTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getKey2()
     {
         $key = new JWK();
@@ -245,6 +267,9 @@ class SignerTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getKey3()
     {
         $key = new JWK();
@@ -259,6 +284,9 @@ class SignerTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWKSet
+     */
     protected function getKeyset()
     {
         $keyset = new JWKSet();

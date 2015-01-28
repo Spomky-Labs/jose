@@ -2,8 +2,15 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
+/**
+ * Class JWAManagerTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class JWAManagerTest extends TestCase
 {
+    /**
+     *
+     */
     public function testAlgorithmIsSupported()
     {
         $jwa_manager = $this->getJWAManager();
@@ -15,6 +22,9 @@ class JWAManagerTest extends TestCase
         $this->assertFalse($jwa_manager->isAlgorithmSupported("ES256"));
     }
 
+    /**
+     *
+     */
     public function testListAlgorithms()
     {
         $expected_list = array(

@@ -10,6 +10,9 @@ use Jose\Compression\CompressionInterface;
  */
 class GZip implements CompressionInterface
 {
+    /**
+     * @var int
+     */
     protected $compression_level = -1;
 
     /**
@@ -24,21 +27,36 @@ class GZip implements CompressionInterface
         return $this;
     }
 
+    /**
+     * @return int
+     */
     public function getCompressionLevel()
     {
         return $this->compression_level;
     }
 
+    /**
+     * @param  string $method
+     * @return bool
+     */
     public function isMethodSupported($method)
     {
         return 'GZ' === $method;
     }
 
+    /**
+     * @param  string $data
+     * @return string
+     */
     public function compress($data)
     {
         return gzencode($data, $this->getCompressionLevel());
     }
 
+    /**
+     * @param  string $data
+     * @return string
+     */
     public function uncompress($data)
     {
         return gzdecode($data);

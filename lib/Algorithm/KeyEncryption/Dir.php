@@ -6,8 +6,6 @@ use Jose\JWKInterface;
 use Base64Url\Base64Url;
 use Jose\Operation\DirectEncryptionInterface;
 
-/**
- */
 class Dir implements DirectEncryptionInterface
 {
     /**
@@ -22,6 +20,9 @@ class Dir implements DirectEncryptionInterface
         return Base64Url::decode($key->getValue('dir'));
     }
 
+    /**
+     * @return string
+     */
     public function getAlgorithmName()
     {
         return "dir";

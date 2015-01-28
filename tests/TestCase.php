@@ -49,8 +49,15 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
+/**
+ * Class TestCase
+ * @package SpomkyLabs\Jose\Tests
+ */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return Loader
+     */
     protected function getLoader()
     {
         $loader = new Loader();
@@ -62,6 +69,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $loader;
     }
 
+    /**
+     * @return Signer
+     */
     protected function getSigner()
     {
         $signer = new Signer();
@@ -72,6 +82,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $signer;
     }
 
+    /**
+     * @return Encrypter
+     */
     protected function getEncrypter()
     {
         $encrypter = new Encrypter();
@@ -83,6 +96,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $encrypter;
     }
 
+    /**
+     * @return JWTManager
+     */
     protected function getJWTManager()
     {
         $jwt_manager = new JWTManager();
@@ -90,6 +106,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $jwt_manager;
     }
 
+    /**
+     * @return CompressionManager
+     */
     protected function getCompressionManager()
     {
         $compression_manager = new CompressionManager();
@@ -100,6 +119,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $compression_manager;
     }
 
+    /**
+     * @return JWKManager
+     */
     protected function getJWKManager()
     {
         $key_manager = new JWKManager();
@@ -107,6 +129,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return $key_manager;
     }
 
+    /**
+     * @return JWAManager
+     */
     protected function getJWAManager()
     {
         $key_manager = new JWAManager();

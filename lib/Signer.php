@@ -31,6 +31,12 @@ abstract class Signer implements SignerInterface
      */
     abstract protected function getJWTManager();
 
+    /**
+     * @param  array|JWKInterface|JWKSetInterface|JWTInterface|string $input
+     * @param  array                                                  $instructions
+     * @param  string                                                 $serialization
+     * @return array|mixed|string
+     */
     public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
         $this->checkInput($input);
@@ -102,6 +108,9 @@ abstract class Signer implements SignerInterface
         return count($signatures) === 1 ? current($signatures) : $signatures;
     }
 
+    /**
+     * @param $input
+     */
     public function checkInput(&$input)
     {
         if ($input instanceof JWKInterface) {

@@ -12,11 +12,19 @@ use Mdanter\Ecc\EccFactory;
 use Base64Url\Base64Url;
 
 /**
+ * Class ECDSA
+ * @package SpomkyLabs\Jose\Algorithm\Signature
  */
 abstract class ECDSA implements SignatureInterface
 {
+    /**
+     * @var \Mdanter\Ecc\MathAdapter
+     */
     private $adapter;
 
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Mdanter\Ecc\Point") || !class_exists("\Mdanter\Ecc\EccFactory")) {
@@ -78,13 +86,24 @@ abstract class ECDSA implements SignatureInterface
         return $public_key->verifies($hash, new Signature($R, $S));
     }
 
+    /**
+     * @return mixed
+     */
     abstract protected function getCurve();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getGenerator();
 
     /**
      * @return string
      */
     abstract protected function getHashAlgorithm();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getSignaturePartLength();
 
     /**
@@ -113,11 +132,19 @@ abstract class ECDSA implements SignatureInterface
         return $this->adapter->decHex($value);
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     protected function convertHexToDec($value)
     {
         return $this->adapter->hexDec($value);
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     protected function convertBase64ToDec($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
@@ -125,6 +152,9 @@ abstract class ECDSA implements SignatureInterface
         return $this->convertHexToDec($value[1]);
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("EC" !== $key->getKeyType()) {

@@ -7,8 +7,15 @@ use Jose\JWKInterface;
 use Base64Url\Base64Url;
 use Jose\Operation\KeyEncryptionInterface;
 
+/**
+ * Class AESGCMKW
+ * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ */
 abstract class AESGCMKW implements KeyEncryptionInterface
 {
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Crypto\Cipher")) {
@@ -16,6 +23,12 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @param  JWKInterface $key
+     * @param  string       $cek
+     * @param  array        $header
+     * @return mixed
+     */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
@@ -31,6 +44,12 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         return $encryted_cek;
     }
 
+    /**
+     * @param  JWKInterface $key
+     * @param  string       $encryted_cek
+     * @param  array        $header
+     * @return mixed
+     */
     public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
     {
         $this->checkKey($key);
@@ -45,6 +64,9 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         return $cek;
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
@@ -52,6 +74,9 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @param array $header
+     */
     protected function checkAdditionalParameters(array $header)
     {
         if (null === $header["iv"] || null === $header["tag"]) {
@@ -59,5 +84,8 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     abstract protected function getKeySize();
 }

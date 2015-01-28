@@ -11,6 +11,9 @@ use Jose\Operation\ContentEncryptionInterface;
  */
 abstract class AESGCM implements ContentEncryptionInterface
 {
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Crypto\Cipher")) {
@@ -36,6 +39,15 @@ abstract class AESGCM implements ContentEncryptionInterface
         return $cyphertext;
     }
 
+    /**
+     * @param $input
+     * @param $cek
+     * @param $iv
+     * @param $aad
+     * @param  array $header
+     * @param $tag
+     * @return mixed
+     */
     public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
     {
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
@@ -51,11 +63,17 @@ abstract class AESGCM implements ContentEncryptionInterface
         return $plaintext;
     }
 
+    /**
+     * @return int
+     */
     public function getIVSize()
     {
         return 96;
     }
 
+    /**
+     * @return mixed
+     */
     public function getCEKSize()
     {
         return $this->getKeySize();

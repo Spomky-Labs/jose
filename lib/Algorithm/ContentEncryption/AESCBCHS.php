@@ -10,6 +10,9 @@ use Base64Url\Base64Url;
  */
 abstract class AESCBCHS implements ContentEncryptionInterface
 {
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Crypt_AES")) {
@@ -39,6 +42,15 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         return $cyphertext;
     }
 
+    /**
+     * @param $input
+     * @param $cek
+     * @param $iv
+     * @param $aad
+     * @param  array  $header
+     * @param $tag
+     * @return String
+     */
     public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
     {
         $encoded_header = Base64Url::encode(json_encode($header));
@@ -53,6 +65,13 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         return $aes->decrypt($input);
     }
 
+    /**
+     * @param $encrypted_data
+     * @param $cek
+     * @param $iv
+     * @param $encoded_header
+     * @return string
+     */
     protected function calculateAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header)
     {
         $mac_key          = substr($cek, 0, strlen($cek)/2);
@@ -82,13 +101,23 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      * @return string
      */
     abstract protected function getHashAlgorithm();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getKeySize();
 
+    /**
+     * @return mixed
+     */
     public function getIVSize()
     {
         return $this->getKeySize();
     }
 
+    /**
+     * @return mixed
+     */
     public function getCEKSize()
     {
         return $this->getKeySize();

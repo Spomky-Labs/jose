@@ -7,8 +7,15 @@ use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Jose\Algorithm\Signature\None;
 
+/**
+ * Class NoneSignatureTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class NoneSignatureTest extends TestCase
 {
+    /**
+     *
+     */
     public function testNoneSignAndVerifyAlgorithm()
     {
         $key  = new JWK();
@@ -38,6 +45,9 @@ class NoneSignatureTest extends TestCase
         $none->sign($key, $data);
     }
 
+    /**
+     *
+     */
     public function testNoneSignAndVerifyComplete()
     {
         $jwt = new JWT();

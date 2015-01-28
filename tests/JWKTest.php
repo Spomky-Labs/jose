@@ -3,8 +3,14 @@
 use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\JWK;
 
+/**
+ * Class JWKTest
+ */
 class JWKTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testKey()
     {
         $jwk = new JWK();
@@ -34,6 +40,9 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk));
     }
 
+    /**
+     *
+     */
     public function testKeySet()
     {
         $jwk1 = new JWK();

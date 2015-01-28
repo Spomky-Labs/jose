@@ -7,8 +7,18 @@ use Jose\JWKInterface;
 use Base64Url\Base64Url;
 use Jose\Operation\KeyEncryptionInterface;
 
+/**
+ * Class PBES2AESKW
+ * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ */
 abstract class PBES2AESKW implements KeyEncryptionInterface
 {
+    /**
+     * @param  JWKInterface $key
+     * @param  string       $cek
+     * @param  array        $header
+     * @return mixed
+     */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
@@ -33,6 +43,12 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         return $wrapper->wrap($derived_key, $cek);
     }
 
+    /**
+     * @param  JWKInterface $key
+     * @param  string       $encryted_cek
+     * @param  array        $header
+     * @return mixed
+     */
     public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
     {
         $this->checkKey($key);
@@ -54,6 +70,9 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         return $wrapper->unwrap($derived_key, $encryted_cek);
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
@@ -61,6 +80,9 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @param array $header
+     */
     protected function checkHeaderAlgorithm(array $header)
     {
         if (!isset($header["alg"]) || empty($header["alg"])) {
@@ -68,6 +90,9 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @param array $header
+     */
     protected function checkHeaderAdditionalParameters(array $header)
     {
         if (!isset($header["p2s"]) || !isset($header["p2c"]) || empty($header["p2s"]) || empty($header["p2c"])) {
@@ -75,7 +100,18 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     abstract protected function getWrapper();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getHashAlgorithm();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getKeySize();
 }

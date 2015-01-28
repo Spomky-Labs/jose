@@ -10,6 +10,9 @@ use Jose\JWKManagerInterface;
  */
 abstract class JWKManager implements JWKManagerInterface
 {
+    /**
+     * @return array
+     */
     protected function getSupportedMethods()
     {
         return array(
@@ -17,6 +20,10 @@ abstract class JWKManager implements JWKManagerInterface
         );
     }
 
+    /**
+     * @param  array           $header
+     * @return JWKSetInterface
+     */
     public function findByHeader(array $header)
     {
         $keys = $this->createJWKSet();
@@ -37,6 +44,10 @@ abstract class JWKManager implements JWKManagerInterface
         return $keys;
     }
 
+    /**
+     * @param $keys
+     * @param $result
+     */
     protected function analyzeResult(&$keys, $result)
     {
         if ($result instanceof JWKInterface) {
@@ -48,6 +59,9 @@ abstract class JWKManager implements JWKManagerInterface
         }
     }
 
+    /**
+     * @return JWKSetInterface
+     */
     protected function getNoneKeySet()
     {
         $keys = $this->createJWKSet();
@@ -57,11 +71,19 @@ abstract class JWKManager implements JWKManagerInterface
         return $keys;
     }
 
+    /**
+     * @param  array $header
+     * @return bool
+     */
     protected function isUnsecuredSiganture(array $header)
     {
         return array_key_exists("alg", $header) && "none" === $header["alg"];
     }
 
+    /**
+     * @param $header
+     * @return JWKInterface|void
+     */
     protected function findByJWK($header)
     {
         if (!isset($header['jwk'])) {

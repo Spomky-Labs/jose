@@ -7,14 +7,22 @@ use AESKW\A256KW as Wrapper;
 use Base64Url\Base64Url;
 
 /**
+ * Class A256KW
+ * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
  */
 class A256KW extends AESKW
 {
+    /**
+     * @return Wrapper
+     */
     protected function getWrapper()
     {
         return new Wrapper();
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         parent::checkKey($key);
@@ -23,6 +31,9 @@ class A256KW extends AESKW
         }
     }
 
+    /**
+     * @return string
+     */
     public function getAlgorithmName()
     {
         return "A256KW";

@@ -7,8 +7,15 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;
 
+/**
+ * Class AESGCMContentEncryptionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testA128GCMEncryptAndDecrypt()
     {
         if (true === $this->isHHVM()) {
@@ -31,6 +38,9 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
+    /**
+     *
+     */
     public function testA192GCMEncryptAndDecrypt()
     {
         if (true === $this->isHHVM()) {
@@ -53,6 +63,9 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
+    /**
+     *
+     */
     public function testA256GCMEncryptAndDecrypt()
     {
         if (true === $this->isHHVM()) {
@@ -98,6 +111,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
+    /**
+     * @param  array  $data
+     * @return string
+     */
     private function convertArrayToBinString(array $data)
     {
         foreach ($data as $key => $value) {
@@ -107,6 +124,9 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         return hex2bin(implode("", $data));
     }
 
+    /**
+     * @return bool
+     */
     public function isHHVM()
     {
         return defined('HHVM_VERSION');

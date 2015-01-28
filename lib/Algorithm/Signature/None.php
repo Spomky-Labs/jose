@@ -28,6 +28,9 @@ class None implements SignatureInterface
         return $signature === $this->sign($key, $data);
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("none" !== $key->getKeyType()) {
@@ -35,6 +38,9 @@ class None implements SignatureInterface
         }
     }
 
+    /**
+     * @return string
+     */
     public function getAlgorithmName()
     {
         return "none";

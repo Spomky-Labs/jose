@@ -2,8 +2,14 @@
 
 use SpomkyLabs\Jose\JWS;
 
+/**
+ * Class JWSTest
+ */
 class JWSTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testJWS()
     {
         $jws = new JWS();

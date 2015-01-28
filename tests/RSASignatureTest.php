@@ -14,6 +14,10 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS256;
 use SpomkyLabs\Jose\Algorithm\Signature\PS384;
 use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 
+/**
+ * Class RSASignatureTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class RSASignatureTest extends TestCase
 {
     /**
@@ -50,6 +54,9 @@ class RSASignatureTest extends TestCase
         $rsa->sign($key, $data);
     }
 
+    /**
+     *
+     */
     public function testRS256Sign()
     {
         $rsa = new RS256();
@@ -73,6 +80,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testRS384Sign()
     {
         $rsa = new RS384();
@@ -96,6 +106,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testRS512Sign()
     {
         $rsa = new RS512();
@@ -119,6 +132,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testPS256Sign()
     {
         $rsa = new PS256();
@@ -141,6 +157,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testPS384Sign()
     {
         $rsa = new PS384();
@@ -163,6 +182,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testPS512Sign()
     {
         $rsa = new PS512();
@@ -185,6 +207,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testCompleteRS256Sign()
     {
         $input = new JWT();
@@ -224,6 +249,9 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("RS256", $result->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testCompleteRS384Sign()
     {
         $input = new JWT();
@@ -263,6 +291,9 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("RS384", $result->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testCompleteRS512Sign()
     {
         $input = new JWT();
@@ -303,6 +334,9 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("RS512", $result->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testCompletePS256Sign()
     {
         $input = new JWT();
@@ -341,6 +375,9 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("PS256", $result->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testCompletePS384Sign()
     {
         $input = new JWT();
@@ -379,6 +416,9 @@ class RSASignatureTest extends TestCase
         $this->assertEquals("PS384", $result->getAlgorithm());
     }
 
+    /**
+     *
+     */
     public function testCompletePS512Sign()
     {
         $input = new JWT();
@@ -543,7 +583,7 @@ class RSASignatureTest extends TestCase
      */
     public function testCertificateConversion()
     {
-        $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."private.key", "tests");
+        $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."RSA".DIRECTORY_SEPARATOR."private.key", "tests");
         $this->assertEquals($details, array(
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -556,7 +596,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ));
 
-        $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."public.key", "tests");
+        $details = RSAConverter::fromCertificateToArray("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."RSA".DIRECTORY_SEPARATOR."public.key", "tests");
         $this->assertEquals($details, array(
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',

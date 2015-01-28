@@ -30,6 +30,9 @@ abstract class HMAC implements SignatureInterface
         return $signature === $this->sign($key, $input);
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {

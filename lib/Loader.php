@@ -217,6 +217,7 @@ abstract class Loader implements LoaderInterface
         if (null === $algorithm || !$algorithm instanceof SignatureInterface) {
             throw new \RuntimeException("The algorithm '".$header["alg"]."' is not supported or does not implement SignatureInterface.");
         }
+
         return $algorithm;
     }
 
@@ -330,6 +331,11 @@ abstract class Loader implements LoaderInterface
         }
     }
 
+    /**
+     * @param  array      $header
+     * @param $payload
+     * @throws \Exception
+     */
     protected function convertJWTContent(array $header, &$payload)
     {
         //The payload is a JWKSet or JWK object

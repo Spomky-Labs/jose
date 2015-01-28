@@ -10,10 +10,20 @@ use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
+/**
+ * Class ECDHES
+ * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ */
 class ECDHES implements KeyAgreementInterface
 {
+    /**
+     * @var \Mdanter\Ecc\MathAdapter
+     */
     private $adapter;
 
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Mdanter\Ecc\Point") || !class_exists("\Mdanter\Ecc\EccFactory")) {
@@ -22,6 +32,12 @@ class ECDHES implements KeyAgreementInterface
         $this->adapter = EccFactory::getAdapter();
     }
 
+    /**
+     * @param  JWKInterface $receiver_key
+     * @param  int          $encryption_key_length
+     * @param  array        $header
+     * @return string
+     */
     public function getAgreementKey(JWKInterface $receiver_key, $encryption_key_length, array $header)
     {
         $this->checkKey($receiver_key, true);
@@ -37,6 +53,13 @@ class ECDHES implements KeyAgreementInterface
         return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
     }
 
+    /**
+     * @param  JWKInterface $sender_key
+     * @param  JWKInterface $receiver_key
+     * @param  int          $encryption_key_length
+     * @param  array        $header
+     * @return string
+     */
     public function setAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
     {
         $this->checkKey($sender_key, true);
@@ -59,6 +82,12 @@ class ECDHES implements KeyAgreementInterface
         return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
     }
 
+    /**
+     * @param  JWKInterface    $private_key
+     * @param  JWKInterface    $public_key
+     * @return int|string|void
+     * @throws \Exception
+     */
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
     {
         $p     = $this->getGenerator($private_key);
@@ -73,11 +102,18 @@ class ECDHES implements KeyAgreementInterface
         return $receiver_point->mul($sen_d)->getX();
     }
 
+    /**
+     * @return string
+     */
     public function getAlgorithmName()
     {
         return "ECDH-ES";
     }
 
+    /**
+     * @param JWKInterface $key
+     * @param $is_private
+     */
     private function checkKey(JWKInterface $key, $is_private)
     {
         if ("EC" !== $key->getKeyType()) {
@@ -88,6 +124,11 @@ class ECDHES implements KeyAgreementInterface
         }
     }
 
+    /**
+     * @param  JWKInterface         $key
+     * @return \Mdanter\Ecc\CurveFp
+     * @throws \Exception
+     */
     private function getCurve(JWKInterface $key)
     {
         $crv = $key->getValue('crv');
@@ -103,6 +144,11 @@ class ECDHES implements KeyAgreementInterface
         }
     }
 
+    /**
+     * @param  JWKInterface                $key
+     * @return \Mdanter\Ecc\GeneratorPoint
+     * @throws \Exception
+     */
     private function getGenerator(JWKInterface $key)
     {
         $crv = $key->getValue('crv');
@@ -119,11 +165,19 @@ class ECDHES implements KeyAgreementInterface
         }
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     private function convertHexToDec($value)
     {
         return $this->adapter->hexDec($value);
     }
 
+    /**
+     * @param $value
+     * @return int|string
+     */
     private function convertBase64ToDec($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
@@ -131,6 +185,10 @@ class ECDHES implements KeyAgreementInterface
         return $this->convertHexToDec($value[1]);
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     private function convertDecToBin($value)
     {
         $adapter = EccFactory::getAdapter();

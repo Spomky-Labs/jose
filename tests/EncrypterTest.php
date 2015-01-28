@@ -8,8 +8,15 @@ use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\EncryptionInstruction;
 use Jose\JSONSerializationModes;
 
+/**
+ * Class EncrypterTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class EncrypterTest extends TestCase
 {
+    /**
+     *
+     */
     public function testEncryptAndLoadFlattenedWithDeflateCompression()
     {
         $encrypter = $this->getEncrypter();
@@ -30,6 +37,9 @@ class EncrypterTest extends TestCase
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
     }
 
+    /**
+     *
+     */
     public function testEncryptAndLoadCompactWithDirectKeyEncryption()
     {
         $encrypter = $this->getEncrypter();
@@ -50,6 +60,9 @@ class EncrypterTest extends TestCase
         $this->assertEquals($this->getKeySetToEncrypt(), $loaded->getPayload());
     }
 
+    /**
+     *
+     */
     public function testEncryptAndLoadCompactKeyAgreement()
     {
         $encrypter = $this->getEncrypter();
@@ -71,6 +84,9 @@ class EncrypterTest extends TestCase
         $this->assertEquals(array("user_id" => "1234", "exp" => 3600), $loaded->getPayload());
     }
 
+    /**
+     *
+     */
     public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
     {
         $encrypter = $this->getEncrypter();
@@ -92,6 +108,9 @@ class EncrypterTest extends TestCase
         $this->assertEquals("Je suis Charlie", $loaded->getPayload());
     }
 
+    /**
+     * @return JWK
+     */
     protected function getKeyToEncrypt()
     {
         $key = new JWK();
@@ -106,6 +125,9 @@ class EncrypterTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWKSet
+     */
     protected function getKeySetToEncrypt()
     {
         $key = new JWK();
@@ -123,6 +145,9 @@ class EncrypterTest extends TestCase
         return $key_set;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getRSARecipientKey()
     {
         $key = new JWK();
@@ -135,6 +160,9 @@ class EncrypterTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getECDHRecipientPublicKey()
     {
         $key = new JWK();
@@ -148,6 +176,9 @@ class EncrypterTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getECDHSenderPrivateKey()
     {
         $key = new JWK();
@@ -162,6 +193,9 @@ class EncrypterTest extends TestCase
         return $key;
     }
 
+    /**
+     * @return JWK
+     */
     protected function getDirectKey()
     {
         $key = new JWK();

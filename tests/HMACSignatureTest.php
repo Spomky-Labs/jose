@@ -7,6 +7,10 @@ use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\Signature\HS384;
 use SpomkyLabs\Jose\Algorithm\Signature\HS512;
 
+/**
+ * Class HMACSignatureTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -24,6 +28,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $hmac->sign($key, $data);
     }
 
+    /**
+     *
+     */
     public function testHS256SignAndVerify()
     {
         $key = new JWK();
@@ -40,6 +47,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testHS384SignAndVerify()
     {
         $key = new JWK();
@@ -56,6 +66,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
+    /**
+     *
+     */
     public function testHS512SignAndVerify()
     {
         $key = new JWK();

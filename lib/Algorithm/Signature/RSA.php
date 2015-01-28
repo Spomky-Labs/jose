@@ -6,9 +6,20 @@ use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 use SpomkyLabs\Jose\Util\RSAConverter;
 
+/**
+ * Class RSA
+ * @package SpomkyLabs\Jose\Algorithm\Signature
+ */
 abstract class RSA implements SignatureInterface
 {
+    /**
+     * @return mixed
+     */
     abstract protected function getAlgorithm();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getSignatureMethod();
 
     /**
@@ -58,6 +69,9 @@ abstract class RSA implements SignatureInterface
         return $result;
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("RSA" !== $key->getKeyType()) {

@@ -6,6 +6,10 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 
+/**
+ * Class AESCBC_HSContentEncryptionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -29,6 +33,10 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_T, $T);
     }
 
+    /**
+     * @param  array  $data
+     * @return string
+     */
     private function convertArrayToBinString(array $data)
     {
         foreach ($data as $key => $value) {

@@ -6,6 +6,10 @@ use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
 
+/**
+ * Class DirAlgorithmTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class DirAlgorithmTest extends TestCase
 {
     /**
@@ -23,6 +27,9 @@ class DirAlgorithmTest extends TestCase
         $dir->getCEK($key, $header);
     }
 
+    /**
+     *
+     */
     public function testValidCEK()
     {
         $header = array();

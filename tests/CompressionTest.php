@@ -7,8 +7,15 @@ use SpomkyLabs\Jose\Compression\Deflate;
 use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 
+/**
+ * Class CompressionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testGetValidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
@@ -20,6 +27,9 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("Jose\Compression\CompressionInterface", $compression);
     }
 
+    /**
+     *
+     */
     public function testGetInvalidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
@@ -31,6 +41,9 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($compression);
     }
 
+    /**
+     *
+     */
     public function testDeflate()
     {
         $compression = new Deflate();
@@ -43,6 +56,9 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($data, $uncompressed);
     }
 
+    /**
+     *
+     */
     public function testGZip()
     {
         $compression = new GZip();
@@ -55,6 +71,9 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($data, $uncompressed);
     }
 
+    /**
+     *
+     */
     public function testZLib()
     {
         $compression = new ZLib();

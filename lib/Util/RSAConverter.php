@@ -5,10 +5,17 @@ namespace SpomkyLabs\Jose\Util;
 use Base64Url\Base64Url;
 
 /**
- * Encode and decode data into Base64 Url Safe
+ * Class RSAConverter
+ *
+ * This utility class will help to get details of a RSA key or certificate to generate a JWK
+ *
+ * @package SpomkyLabs\Jose
  */
 class RSAConverter
 {
+    /**
+     *
+     */
     protected static function checkRequirements()
     {
         if (!class_exists("\Crypt_RSA")) {
@@ -16,6 +23,11 @@ class RSAConverter
         }
     }
 
+    /**
+     * @param  array      $data
+     * @return \Crypt_RSA
+     * @throws \Exception
+     */
     public static function fromArrayToRSACrypt(array $data)
     {
         self::checkRequirements();
@@ -30,7 +42,7 @@ class RSAConverter
      * @param string $certificate
      * @param string $passphrase
      */
-    public static function laodCertificateValues($certificate, $passphrase = null)
+    protected static function loadCertificateValues($certificate, $passphrase = null)
     {
         $res = openssl_pkey_get_private($certificate, $passphrase);
         if ($res === false) {
@@ -56,7 +68,7 @@ class RSAConverter
      */
     public static function fromCertificateToArray($certificate, $passphrase = null)
     {
-        $values = self::laodCertificateValues($certificate, $passphrase);
+        $values = self::loadCertificateValues($certificate, $passphrase);
         $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
@@ -74,6 +86,11 @@ class RSAConverter
         return $result;
     }
 
+    /**
+     * @param  array      $data
+     * @return string
+     * @throws \Exception
+     */
     public static function fromArrayToXML(array $data)
     {
         $result = "<RSAKeyPair>\n";
@@ -101,6 +118,10 @@ class RSAConverter
         return $result;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     protected static function getElement($key)
     {
         $values = array(

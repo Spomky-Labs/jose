@@ -52,6 +52,15 @@ abstract class Encrypter implements EncrypterInterface
      */
     abstract protected function createIV($size);
 
+    /**
+     * @param  array|JWKInterface|JWKSetInterface|JWTInterface|string $input
+     * @param  array                                                  $instructions
+     * @param  array                                                  $shared_protected_header
+     * @param  array                                                  $shared_unprotected_header
+     * @param  string                                                 $serialization
+     * @param  null                                                   $aad
+     * @return array|mixed
+     */
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
         if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
@@ -181,6 +190,9 @@ abstract class Encrypter implements EncrypterInterface
         return count($recipients) === 1 ? current($recipients) : $recipients;
     }
 
+    /**
+     * @param $input
+     */
     private function checkInput(&$input)
     {
         if ($input instanceof JWKInterface) {

@@ -8,6 +8,10 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
+/**
+ * Class RSAKeyEncryptionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class RSAKeyEncryptionTest extends TestCase
 {
     /**

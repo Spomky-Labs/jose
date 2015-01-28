@@ -5,10 +5,20 @@ namespace SpomkyLabs\Jose;
 use Jose\JWKSet as Base;
 use Jose\JWKInterface;
 
+/**
+ * Class JWKSet
+ * @package SpomkyLabs\Jose
+ */
 class JWKSet extends Base
 {
+    /**
+     * @var array
+     */
     protected $keys = array();
 
+    /**
+     * @return array
+     */
     public function getKeys()
     {
         return $this->keys;
@@ -25,6 +35,10 @@ class JWKSet extends Base
         return $this;
     }
 
+    /**
+     * @param $key
+     * @return $this
+     */
     public function removeKey($key)
     {
         if (isset($this->keys[$key])) {

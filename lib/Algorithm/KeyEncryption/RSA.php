@@ -6,8 +6,15 @@ use Jose\JWKInterface;
 use SpomkyLabs\Jose\Util\RSAConverter;
 use Jose\Operation\KeyEncryptionInterface;
 
+/**
+ * Class RSA
+ * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ */
 abstract class RSA implements KeyEncryptionInterface
 {
+    /**
+     *
+     */
     public function __construct()
     {
         if (!class_exists("\Crypt_RSA")) {
@@ -49,6 +56,10 @@ abstract class RSA implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @param  array      $values
+     * @return \Crypt_RSA
+     */
     private function getRsaObject(array $values)
     {
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
@@ -62,6 +73,9 @@ abstract class RSA implements KeyEncryptionInterface
         return $rsa;
     }
 
+    /**
+     * @param JWKInterface $key
+     */
     protected function checkKey(JWKInterface $key)
     {
         if ("RSA" !== $key->getKeyType()) {
@@ -69,6 +83,13 @@ abstract class RSA implements KeyEncryptionInterface
         }
     }
 
+    /**
+     * @return mixed
+     */
     abstract protected function getEncryptionMode();
+
+    /**
+     * @return mixed
+     */
     abstract protected function getHashAlgorithm();
 }

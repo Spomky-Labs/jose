@@ -5,8 +5,15 @@ namespace SpomkyLabs\Jose;
 use Jose\JWAManager as Base;
 use Jose\JWAInterface;
 
+/**
+ * Class JWAManager
+ * @package SpomkyLabs\Jose
+ */
 class JWAManager extends Base
 {
+    /**
+     * @var array
+     */
     protected $algorithms = array();
 
     /**
@@ -33,6 +40,10 @@ class JWAManager extends Base
         return array_key_exists($algorithm, $this->algorithms) ? $this->algorithms[$algorithm] : null;
     }
 
+    /**
+     * @param  JWAInterface $algorithm
+     * @return $this
+     */
     public function addAlgorithm(JWAInterface $algorithm)
     {
         if (!$this->isAlgorithmSupported($algorithm->getAlgorithmName())) {

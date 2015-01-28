@@ -8,8 +8,15 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
 
+/**
+ * Class AESKWKeyEncryptionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testA128KW()
     {
         $header = array();
@@ -29,6 +36,9 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
+    /**
+     *
+     */
     public function testA192KW()
     {
         $header = array();
@@ -48,6 +58,9 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
+    /**
+     *
+     */
     public function testA256KW()
     {
         $header = array();

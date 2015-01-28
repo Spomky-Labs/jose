@@ -7,6 +7,10 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 
+/**
+ * Class ECDHESKeyAgreementTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -36,6 +40,9 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         //$this->assertEquals($expected, $ecdh_es->getAgreementKey($receiver, 128, $header));
     }
 
+    /**
+     *
+     */
     public function testGetAgreementKeyWithA128KeyWrap()
     {
         $header = array("enc" => "A128GCM");
@@ -65,6 +72,9 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
     }
 
+    /**
+     *
+     */
     public function testGetAgreementKeyWithA192KeyWrap()
     {
         $header = array("enc" => "A192GCM");
@@ -94,6 +104,9 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
     }
 
+    /**
+     *
+     */
     public function testGetAgreementKeyWithA256KeyWrap()
     {
         $header = array("enc" => "A256GCM");

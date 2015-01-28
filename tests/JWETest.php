@@ -2,8 +2,14 @@
 
 use SpomkyLabs\Jose\JWE;
 
+/**
+ * Class JWETest
+ */
 class JWETest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testJWE()
     {
         $jwe = new JWE();

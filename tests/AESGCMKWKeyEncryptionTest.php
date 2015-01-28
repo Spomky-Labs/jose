@@ -8,8 +8,15 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
 
+/**
+ * Class AESGCMKWKeyEncryptionTest
+ * @package SpomkyLabs\Jose\Tests
+ */
 class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     *
+     */
     public function testA128GCMKW()
     {
         if (true === $this->isHHVM()) {
@@ -37,6 +44,9 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
+    /**
+     *
+     */
     public function testA192GCMKW()
     {
         if (true === $this->isHHVM()) {
@@ -64,6 +74,9 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
+    /**
+     *
+     */
     public function testA256GCMKW()
     {
         if (true === $this->isHHVM()) {
@@ -91,6 +104,9 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
 
+    /**
+     * @return bool
+     */
     public function isHHVM()
     {
         return defined('HHVM_VERSION');
