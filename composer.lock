@@ -120,12 +120,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
-                "reference": "c312873cfec8e36d0f18544f98381a39242cccef"
+                "reference": "40d03a0f4c3552e4f0e7d9c5ee19d6d1ed3e5988"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/c312873cfec8e36d0f18544f98381a39242cccef",
-                "reference": "c312873cfec8e36d0f18544f98381a39242cccef",
+                "url": "https://api.github.com/repos/Spomky-Labs/jose-interface/zipball/40d03a0f4c3552e4f0e7d9c5ee19d6d1ed3e5988",
+                "reference": "40d03a0f4c3552e4f0e7d9c5ee19d6d1ed3e5988",
                 "shasum": ""
             },
             "require": {
@@ -169,7 +169,7 @@
                 "jwa",
                 "jwt"
             ],
-            "time": "2015-01-26 21:53:51"
+            "time": "2015-01-27 10:52:21"
         },
         {
             "name": "spomky-labs/pbkdf2",
@@ -680,16 +680,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.4.4",
+            "version": "4.4.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "2047ae17f6e8cfd10fbde0b4535c97eb22d99cbe"
+                "reference": "2e8580deebb7d1ac92ac878595e6bffe01069c2a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2047ae17f6e8cfd10fbde0b4535c97eb22d99cbe",
-                "reference": "2047ae17f6e8cfd10fbde0b4535c97eb22d99cbe",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2e8580deebb7d1ac92ac878595e6bffe01069c2a",
+                "reference": "2e8580deebb7d1ac92ac878595e6bffe01069c2a",
                 "shasum": ""
             },
             "require": {
@@ -707,8 +707,9 @@
                 "sebastian/comparator": "~1.0",
                 "sebastian/diff": "~1.1",
                 "sebastian/environment": "~1.1",
-                "sebastian/exporter": "~1.0",
+                "sebastian/exporter": "~1.1",
                 "sebastian/global-state": "~1.0",
+                "sebastian/recursion-context": "~1.0",
                 "sebastian/version": "~1.0",
                 "symfony/yaml": "~2.0"
             },
@@ -747,7 +748,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-01-24 14:23:56"
+            "time": "2015-01-27 16:06:15"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

@@ -9,6 +9,96 @@ use Jose\JSONSerializationModes;
 
 class SignerTest extends TestCase
 {
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage No instruction.
+     */
+    public function testNoInstruction()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $signatures = $signer->sign($input, array());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Unsupported input type.
+     */
+    public function testUnsupportedInputType()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $signatures = $signer->sign(new \StdClass(), array());
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage Bad instruction. Must implement SignatureInstructionInterface.
+     */
+    public function testBadInstruction()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $signatures = $signer->sign($input, array("Bad instruction"));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage No 'alg' parameter set in the header or the key.
+     */
+    public function testAlgParameterIsMissing()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $instruction = new SignatureInstruction();
+        $instruction->setKey($this->getKey1())
+                    ->setProtectedHeader(array());
+
+        $signatures = $signer->sign($input, array($instruction));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The algorithm 'foo' is not supported.
+     */
+    public function testAlgParameterIsNotSupported()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $instruction = new SignatureInstruction();
+        $instruction->setKey($this->getKey1())
+                    ->setProtectedHeader(array("alg" => "foo"));
+
+        $signatures = $signer->sign($input, array($instruction));
+    }
+
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The serialization method 'foo_serialization' is not supported.
+     */
+    public function testSerializationIsNotSupported()
+    {
+        $signer = $this->getSigner();
+
+        $input = $this->getKey3();
+
+        $instruction = new SignatureInstruction();
+        $instruction->setKey($this->getKey1())
+                    ->setProtectedHeader(array("alg" => "HS512"));
+
+        $signatures = $signer->sign($input, array($instruction), "foo_serialization");
+    }
+
     public function testSignAndLoadCompact()
     {
         $signer = $this->getSigner();
@@ -49,17 +139,16 @@ class SignerTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $keyset = $this->getKeyset();
-
         $instruction1 = new SignatureInstruction();
         $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(array("alg" => "HS512"));
+                     ->setProtectedHeader(array("alg" => "HS512"))
+                     ->setUnprotectedHeader(array("foo" => "bar"));
 
         $instruction2 = new SignatureInstruction();
         $instruction2->setKey($this->getKey2())
                      ->setProtectedHeader(array("alg" => "RS512"));
 
-        $signatures = $signer->sign($this->getKeyset(), array($instruction1, $instruction2), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $signatures = $signer->sign(array("baz", "ban"), array($instruction1, $instruction2), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
         $this->assertTrue(is_array($signatures));
         $this->assertEquals(2, count($signatures));
@@ -71,11 +160,11 @@ class SignerTest extends TestCase
         $loaded2 = $loader->load($signatures[1]);
 
         $this->assertInstanceOf("Jose\JWSInterface", $loaded1);
-        $this->assertInstanceOf("Jose\JWKSetInterface", $loaded1->getPayload());
+        $this->assertTrue(is_array($loaded1->getPayload()));
         $this->assertEquals("HS512", $loaded1->getAlgorithm());
 
         $this->assertInstanceOf("Jose\JWSInterface", $loaded2);
-        $this->assertInstanceOf("Jose\JWKSetInterface", $loaded2->getPayload());
+        $this->assertTrue(is_array($loaded2->getPayload()));
         $this->assertEquals("RS512", $loaded2->getAlgorithm());
     }
 
@@ -84,17 +173,40 @@ class SignerTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $keyset = $this->getKeyset();
-
         $instruction1 = new SignatureInstruction();
         $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(array("alg" => "HS512"));
+                     ->setProtectedHeader(array("alg" => "HS512"))
+                     ->setUnprotectedHeader(array("foo" => "bar"));
 
         $instruction2 = new SignatureInstruction();
         $instruction2->setKey($this->getKey2())
                      ->setProtectedHeader(array("alg" => "RS512"));
 
-        $signatures = $signer->sign($keyset, array($instruction1, $instruction2), JSONSerializationModes::JSON_SERIALIZATION);
+        $signatures = $signer->sign("Je suis Charlie", array($instruction1, $instruction2), JSONSerializationModes::JSON_SERIALIZATION);
+        $this->assertTrue(is_string($signatures));
+
+        $loaded = $loader->load($signatures);
+
+        $this->assertInstanceOf("Jose\JWSInterface", $loaded);
+        $this->assertTrue(is_string($loaded->getPayload()));
+        $this->assertEquals("HS512", $loaded->getAlgorithm());
+    }
+
+    public function testSignAndLoadJWKSet()
+    {
+        $signer = $this->getSigner();
+        $loader = $this->getLoader();
+
+        $instruction1 = new SignatureInstruction();
+        $instruction1->setKey($this->getKey1())
+                     ->setProtectedHeader(array("alg" => "HS512"))
+                     ->setUnprotectedHeader(array("foo" => "bar"));
+
+        $instruction2 = new SignatureInstruction();
+        $instruction2->setKey($this->getKey2())
+                     ->setProtectedHeader(array("alg" => "RS512"));
+
+        $signatures = $signer->sign($this->getKeyset(), array($instruction1, $instruction2), JSONSerializationModes::JSON_SERIALIZATION);
         $this->assertTrue(is_string($signatures));
 
         $loaded = $loader->load($signatures);

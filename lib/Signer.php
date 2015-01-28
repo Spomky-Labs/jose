@@ -35,7 +35,7 @@ abstract class Signer implements SignerInterface
     {
         $this->checkInput($input);
         if (empty($instructions)) {
-            throw new \RuntimeException("No instruction.");
+            throw new \InvalidArgumentException("No instruction.");
         }
 
         $jwt_payload = Base64Url::encode($input->getPayload());
@@ -43,7 +43,7 @@ abstract class Signer implements SignerInterface
         $signatures = array();
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
-                throw new \RuntimeException("Bad instruction. Must implement SignatureInstructionInterface.");
+                throw new \InvalidArgumentException("Bad instruction. Must implement SignatureInstructionInterface.");
             }
             $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
             $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
@@ -53,12 +53,12 @@ abstract class Signer implements SignerInterface
             $alg = array_key_exists("alg", $complete_header) ? $complete_header["alg"] : null;
 
             if (null === $alg) {
-                throw new \RuntimeException("No 'alg' parameter set in the header or the key.");
+                throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
             }
 
             $algorithm = $this->getJWAManager()->getAlgorithm($alg);
             if (null === $algorithm || !$algorithm instanceof SignatureInterface) {
-                throw new \RuntimeException("The algorithm '$alg' is not supported.");
+                throw new \InvalidArgumentException("The algorithm '$alg' is not supported.");
             }
 
             $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.".".$jwt_payload);
@@ -89,12 +89,8 @@ abstract class Signer implements SignerInterface
                     $signatures['signatures'][] = $result;
                     break;
                 default:
-                    throw new \RuntimeException("The serialization methode '$serialization' is not supported");
+                    throw new \InvalidArgumentException("The serialization method '$serialization' is not supported.");
             }
-        }
-
-        if (count($signatures) === 0) {
-            throw new \RuntimeException("No signature created");
         }
 
         if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
@@ -139,7 +135,7 @@ abstract class Signer implements SignerInterface
             return;
         }
         if (!$input instanceof JWTInterface) {
-            throw new \InvalidArgumentException("Unsupported input type");
+            throw new \InvalidArgumentException("Unsupported input type.");
         }
     }
 }
