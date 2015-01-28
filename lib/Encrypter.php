@@ -121,11 +121,15 @@ abstract class Encrypter implements EncrypterInterface
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
                 $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientPublicKey(), $cek, $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                $this->checkSenderPrivateKey($instruction);
+                if (null === $instruction->getSenderPrivateKey()) {
+                    throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
+                }
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
                 $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-                $this->checkSenderPrivateKey($instruction);
+                if (null === $instruction->getSenderPrivateKey()) {
+                    throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
+                }
                 $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
                 $jwt_cek = "";
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
@@ -175,13 +179,6 @@ abstract class Encrypter implements EncrypterInterface
         }
 
         return count($recipients) === 1 ? current($recipients) : $recipients;
-    }
-
-    private function checkSenderPrivateKey(EncryptionInstructionInterface $instruction)
-    {
-        if (null === $instruction->getSenderPrivateKey()) {
-            throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
-        }
     }
 
     private function checkInput(&$input)
