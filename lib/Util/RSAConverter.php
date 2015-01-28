@@ -30,7 +30,7 @@ class RSAConverter
      * @param string $certificate
      * @param string $passphrase
      */
-    public static function fromCertificateToArray($certificate, $passphrase = null)
+    public static function laodCertificateValues($certificate, $passphrase = null)
     {
         $res = openssl_pkey_get_private($certificate, $passphrase);
         if ($res === false) {
@@ -46,7 +46,16 @@ class RSAConverter
         if (!is_array($details) || !isset($details['rsa'])) {
             throw new \Exception("Certificate is not a valid RSA certificate");
         }
-        $values = $details['rsa'];
+        return $details['rsa'];
+    }
+
+    /**
+     * @param string $certificate
+     * @param string $passphrase
+     */
+    public static function fromCertificateToArray($certificate, $passphrase = null)
+    {
+        $values = self::laodCertificateValues($certificate, $passphrase);
         $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
