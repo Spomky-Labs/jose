@@ -46,6 +46,7 @@ class RSAConverter
         if (!is_array($details) || !isset($details['rsa'])) {
             throw new \Exception("Certificate is not a valid RSA certificate");
         }
+
         return $details['rsa'];
     }
 

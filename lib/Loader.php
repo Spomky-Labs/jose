@@ -188,15 +188,9 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param string $signature
      */
-    protected function verifySignature($protected_header, $unprotected_header, $payload, $signature, JWKSetInterface $jwk_set = null)
+    protected function getCompleteHeader($protected_header, $unprotected_header)
     {
-        if ($protected_header === null && $unprotected_header === null) {
-            throw new \InvalidArgumentException('Invalid header');
-        }
-        $input = $protected_header.".".$payload;
-
         $complete_header = array();
         if ($protected_header !== null) {
             $tmp = json_decode(Base64Url::decode($protected_header), true);
@@ -205,15 +199,29 @@ abstract class Loader implements LoaderInterface
             }
             $complete_header = array_merge($complete_header, $tmp);
         }
-        if ($unprotected_header !== null) {
+        if (is_array($unprotected_header)) {
             $complete_header = array_merge($complete_header, $unprotected_header);
         }
+
+        return $complete_header;
+    }
+
+    /**
+     * @param string $signature
+     */
+    protected function verifySignature($protected_header, $unprotected_header, $payload, $signature, JWKSetInterface $jwk_set = null)
+    {
+        $complete_header = $this->getCompleteHeader($protected_header, $unprotected_header);
+        $input = $protected_header.".".$payload;
 
         if (null === $jwk_set) {
             $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
         }
         if (empty($jwk_set)) {
             return false;
+        }
+        if (!array_key_exists("alg", $complete_header)) {
+            throw new \RuntimeException("The header parameter 'alg' is missing.");
         }
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
         if (!$algorithm instanceof SignatureInterface) {
