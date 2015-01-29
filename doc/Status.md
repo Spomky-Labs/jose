@@ -1,100 +1,82 @@
-# Status of the implementation
+# Status of the implementation #
 
-## Loading and Creation of JWT
+## JWT ##
 
-### Supported
+### Supported ###
 
-* JSON Compact Serialization Overview
-    * JWS (creation and loading):
-        * Plain text
-        * Array
-    * JWE (creation and loading):
-        * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
-* JSON Serialization Overview
-    * JWS (creation and loading):
-        * Plain text
-        * Array
-        * Raw data
-    * JWE (loading only):
-        * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
+Input supported:
+* Plain text
+* Array
+* JWTInterface object
+* jwk+json content type (JWKInterface object)
+* jwkset+json content type (JWKSetInterface object)
 
-* Compression support for JWE objects:
-    * Deflate (DEF)
-    * GZip (GZ)
-    * ZLib (ZLIB)
+Serialization modes supported:
+* JSON Compact Serialization Overview (JWS/JWS creation and loading)
+* JSON Flattened Serialization Overview (JWS/JWS creation and loading)
+* JSON Serialization Overview (JWE creation in this mode is not supported)
 
-### Unsupported
+Compression support for JWE objects:
+* Deflate —DEF—
+* GZip —GZ— *(this compression method is not described in the specification)*
+* ZLib —ZLIB— *(this compression method is not described in the specification)*
 
-* JWS and JWE header:
-    * `crit` parameter
+### Unsupported ###
+
 * JSON Serialization Overview
     * JWE (creation only)
-        * Plain text
-        * Array
-        * jwk+json and jwkset+json content type
 
-## JWA
+## JWA ##
 
-All required algorithms are supported (marked with a *).
-Some Optionnal (o), Recommended (r) and Recommended+ (+) algorithms are also supported.
-
-This library aims to implement all algorithms, but focuses on required and recommended+ ones.
-
-### Supported algorithms:
+### Supported algorithms ###
 
 * Signature:
-    * HS256 (*), HS384 (o), HS512 (o)
-    * ES256 (+), ES384 (o), ES512 (o)
-    * RS256 (r), RS384 (o), RS512 (o)
-    * PS256 (o), PS384 (o), PS512 (o)
-    * none (o)
+    * HS256, HS384, HS512
+    * ES256, ES384, ES512
+    * RS256, RS384, RS512
+    * PS256, PS384, PS512
+    * none
 * Encryption:
     * Key Encryption:
-        * dir (r)
-        * RSA1_5 (*)
-        * RSA-OAEP (o)
-        * RSA-OAEP-256 (o)
-        * ECDH-ES (+)
+        * dir
+        * RSA1_5
+        * RSA-OAEP
+        * RSA-OAEP-256
+        * ECDH-ES
+        * ECDH-ES+A128KW
+        * ECDH-ES+A192KW
+        * ECDH-ES+A256KW
+        * A128KW
+        * A192KW
+        * A256KW
+        * PBES2-HS256+A128KW
+        * PBES2-HS384+A192KW
+        * PBES2-HS512+A256KW
+        * A128GCMKW
+        * A192GCMKW
+        * A256GCMKW
     * Content Encryption:
-        * A128CBC-HS256 (*)
-        * A192CBC-HS384 (o)
-        * A256CBC-HS512 (*)
+        * A128CBC-HS256
+        * A192CBC-HS384
+        * A256CBC-HS512
+        * A128GCM
+        * A192GCM
+        * A256GCM
 
-### Unsupported algorithms:
+### Unsupported algorithms ###
 
-* Encryption:
-    * Key Encryption:
-        * A128KW (r)
-        * A192KW (o)
-        * A256KW (r)
-        * ECDH-ES+A128KW (r)
-        * ECDH-ES+A192KW (0)
-        * ECDH-ES+A256KW (r)
-        * A128GCMKW (o)
-        * A192GCMKW (o)
-        * A256GCMKW (o)
-        * PBES2-HS256+A128KW (o)
-        * PBES2-HS384+A192KW (o)
-        * PBES2-HS512+A256KW (o)
-    * Content Encryption:
-        * A128GCM (r)
-        * A192GCM (o)
-        * A256GCM (r)
+**None!** All algortihms described in the specification are supported.
 
-## JWK:
+## JWK ##
 
-JWK are partially supported (implementation is not finished, some interfaces are missing).
+JWK are fully supported
 
-## JWKSet:
+## JWKSet ##
 
 JWKSet are fully supported
 
-## JWKManager:
+## JWKManager ##
 
-### Unsupported
+This project provides a key manager. This manager is able to find keys according to the header of data loaded.
 
-* Key load from x5* parameters
+You can extend it to add your own methods to find specific keys using header values. For example, if you manage your keys using X509 thumprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.

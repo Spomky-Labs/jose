@@ -8,6 +8,7 @@ Bugs or feature requests can be posted online on the GitHub issues section of th
 Few rules to ease code reviews and merges:
 
 - You MUST follow the PSR-1 and PSR-2.
+- You MUST follow the PSR-4 for autoloading.
 - You MUST run the test suite.
 - You MUST write (or update) unit tests.
 - You SHOULD write documentation.

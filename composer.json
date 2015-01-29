@@ -4,7 +4,7 @@
     "type": "library",
     "license": "MIT",
     "keywords": ["JWS", "JWT", "JWE", "JWA", "JWK", "JWKSet", "Jose"],
-    "homepage": "https://github.com/Spomky-Labs/JOSE",
+    "homepage": "https://github.com/Spomky-Labs/Jose",
     "authors": [
         {
             "name": "Florent Morselli",
@@ -13,27 +13,32 @@
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\JOSE\\":  "lib/"
+            "SpomkyLabs\\Jose\\":  "lib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SpomkyLabs\\JOSE\\Tests\\":  "tests/"
+            "SpomkyLabs\\Jose\\Tests\\":  "tests/"
         }
     },
     "require": {
         "php": ">=5.3",
-        "spomky-labs/jose-interface": "@dev",
+        "spomky-labs/jose-interface": "~0.0.0",
         "lib-openssl": "*",
-        "phpseclib/phpseclib": ">=0.3.5",
-        "mdanter/ecc": "~0.2"
+        "spomky-labs/pbkdf2": "~0.1",
+        "spomky-labs/aes-key-wrap": "~1.0"
     },
     "require-dev": {
+        "phpseclib/phpseclib": ">=0.3.5",
+        "mdanter/ecc": "~0.2",
         "phpunit/phpunit": "4.*"
     },
    "suggest":{
       "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
-      "ext-bcmath":"Required if GMP is not installed"
+      "ext-bcmath":"Required if GMP is not installed",
+      "ext-crypto":"Required to use AES GCM algorithms",
+      "phpseclib/phpseclib":"Required to use RSA based algorithms",
+      "mdanter/ecc":"Required to use Elliptic Curves based algorithms"
    },
     "extra": {
         "branch-alias": {

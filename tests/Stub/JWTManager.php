@@ -1,61 +1,38 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Tests\Stub;
+namespace SpomkyLabs\Jose\Tests\Stub;
 
-use SpomkyLabs\JOSE\JWKManagerInterface;
-use SpomkyLabs\JOSE\JWTManager as Base;
-use SpomkyLabs\JOSE\Compression\CompressionManager;
-use SpomkyLabs\JOSE\Compression\Deflate;
-use SpomkyLabs\JOSE\Compression\GZip;
-use SpomkyLabs\JOSE\Compression\ZLib;
+use SpomkyLabs\Jose\JWT;
+use SpomkyLabs\Jose\JWS;
+use SpomkyLabs\Jose\JWE;
+use Jose\JWTManagerInterface;
 
 /**
  * Class representing a JSON Web Signature.
  */
-class JWTManager extends Base
+class JWTManager implements JWTManagerInterface
 {
-    private $jwk_manager;
-    private $compression_manager = null;
-
-    public function getKeyManager()
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWT()
     {
-        return $this->jwk_manager;
-    }
-
-    public function getCompressionManager()
-    {
-        if (null === $this->compression_manager) {
-            $this->compression_manager = new CompressionManager();
-            $this->compression_manager->addCompressionAlgorithm(new Deflate())
-                                      ->addCompressionAlgorithm(new GZip())
-                                      ->addCompressionAlgorithm(new ZLib());
-        }
-
-        return $this->compression_manager;
-    }
-
-    public function setKeyManager(JWKManagerInterface $jwk_manager)
-    {
-        $this->jwk_manager = $jwk_manager;
-
-        return $this;
-    }
-
-    protected function createCEK($size)
-    {
-        return $this->generateRandomString($size / 8);
-    }
-
-    protected function createIV($size)
-    {
-        return $this->generateRandomString($size / 8);
+        return new JWT();
     }
 
     /**
-     * @param integer $length
+     * {@inheritdoc}
      */
-    private function generateRandomString($length)
+    public function createJWS()
     {
-        return crypt_random_string($length);
+        return new JWS();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function createJWE()
+    {
+        return new JWE();
     }
 }

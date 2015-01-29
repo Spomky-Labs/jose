@@ -13,4 +13,4 @@ tools:
     php_pdepend:
         excluded_dirs: [vendor/*, doc/*, tests/*]
 filter:
-    excluded_paths: [vendor/*, doc/*]
+    excluded_paths: [vendor/*, doc/*, tests/*]

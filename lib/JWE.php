@@ -1,11 +1,14 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\Jose;
 
 use Jose\JWE as Base;
-use Jose\JWEInterface;
 
-class JWE extends JWS implements JWEInterface
+/**
+ * Class JWE
+ * @package SpomkyLabs\Jose
+ */
+class JWE extends Base
 {
-    use Base;
+    use JWable;
 }

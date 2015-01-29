@@ -1,14 +1,36 @@
 <?php
 
-namespace SpomkyLabs\JOSE\Util;
+namespace SpomkyLabs\Jose\Util;
+
+use Base64Url\Base64Url;
 
 /**
- * Encode and decode data into Base64 Url Safe
+ * Class RSAConverter
+ *
+ * This utility class will help to get details of a RSA key or certificate to generate a JWK
+ *
+ * @package SpomkyLabs\Jose
  */
 class RSAConverter
 {
-    public static function fromArrayToRSA_Crypt(array $data)
+    /**
+     *
+     */
+    protected static function checkRequirements()
     {
+        if (!class_exists("\Crypt_RSA")) {
+            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
+        }
+    }
+
+    /**
+     * @param  array      $data
+     * @return \Crypt_RSA
+     * @throws \Exception
+     */
+    public static function fromArrayToRSACrypt(array $data)
+    {
+        self::checkRequirements();
         $xml = self::fromArrayToXML($data);
         $rsa = new \Crypt_RSA();
         $rsa->loadKey($xml);
@@ -20,7 +42,7 @@ class RSAConverter
      * @param string $certificate
      * @param string $passphrase
      */
-    public static function fromCertificateToArray($certificate, $passphrase = null)
+    protected static function loadCertificateValues($certificate, $passphrase = null)
     {
         $res = openssl_pkey_get_private($certificate, $passphrase);
         if ($res === false) {
@@ -36,7 +58,17 @@ class RSAConverter
         if (!is_array($details) || !isset($details['rsa'])) {
             throw new \Exception("Certificate is not a valid RSA certificate");
         }
-        $values = $details['rsa'];
+
+        return $details['rsa'];
+    }
+
+    /**
+     * @param string $certificate
+     * @param string $passphrase
+     */
+    public static function loadKeyFromFile($certificate, $passphrase = null)
+    {
+        $values = self::loadCertificateValues($certificate, $passphrase);
         $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
@@ -54,6 +86,11 @@ class RSAConverter
         return $result;
     }
 
+    /**
+     * @param  array      $data
+     * @return string
+     * @throws \Exception
+     */
     public static function fromArrayToXML(array $data)
     {
         $result = "<RSAKeyPair>\n";
@@ -81,27 +118,24 @@ class RSAConverter
         return $result;
     }
 
+    /**
+     * @param $key
+     * @return mixed
+     */
     protected static function getElement($key)
     {
-        switch ($key) {
-            case 'n':
-                return "Modulus";
-            case 'e':
-                return "Exponent";
-            case 'p':
-                return "P";
-            case 'd':
-                return "D";
-            case 'q':
-                return "Q";
-            case 'dp':
-                return "DP";
-            case 'dq':
-                return "DQ";
-            case 'qi':
-                return "InverseQ";
-            default:
-                throw new \Exception("Key '$key' is not supported");
+        $values = array(
+            'n' => "Modulus",
+            'e' => "Exponent",
+            'p' => "P",
+            'd' => "D",
+            'q' => "Q",
+            'dp' => "DP",
+            'dq' => "DQ",
+            'qi' => "InverseQ",
+        );
+        if (array_key_exists($key, $values)) {
+            return $values[$key];
         }
     }
 }

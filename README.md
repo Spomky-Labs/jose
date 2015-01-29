@@ -2,18 +2,20 @@
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
-[![Build Status](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/build.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/build-status/master)
+[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=master)](https://travis-ci.org/Spomky-Labs/jose)
 [![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/JOSE.png)](http://hhvm.h4cc.de/package/Spomky-Labs/JOSE)
+
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee/big.png)](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee)
 
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/stable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Total Downloads](https://poser.pugx.org/Spomky-Labs/JOSE/downloads.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Latest Unstable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/unstable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![License](https://poser.pugx.org/Spomky-Labs/JOSE/license.png)](https://packagist.org/packages/Spomky-Labs/JOSE)
 
 This library aims to provide an implementation of:
 
-* JW**S** [JSON Web Signature (draft 31)](http://tools.ietf.org/html/draft-jones-json-web-signature-31),
-* JW**T** [JSON Web Token (draft 24)](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-24),
-* JW**E** [JSON Web Encryption (draft 31)](http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-31),
-* JW**A** [JSON Web Algorithms (draft 31)](http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-31).
-* JW**K** [JSON Web Key (draft 31)](http://tools.ietf.org/html/draft-ietf-jose-json-web-key-31).
+* JW**S** [JSON Web Signature (draft 41)](https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41),
+* JW**T** [JSON Web Token (draft 32)](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32),
+* JW**E** [JSON Web Encryption (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-40),
+* JW**A** [JSON Web Algorithms (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40).
+* JW**K** [JSON Web Key (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-key-40).
 
 **This library is not yet complete! Do not use it in production.**
 
@@ -46,8 +48,9 @@ This library needs at least
 * `PHP 5.4`
 * PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
 * `OpenSSL` library for PHP
-* `phpseclib/phpseclib` library for RSA (encryption and signature) algorithms.
+* `phpseclib/phpseclib` library for RSA and AES algorithms.
 * `mdanter/ecc` library for Elliptic Curves algorithms.
+* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms.
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6`.
 Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
@@ -59,7 +62,7 @@ The preferred way to install this library is to rely on Composer:
     {
         "require": {
             // ...
-            "spomky-labs/jose": "dev-master"
+            "spomky-labs/jose": "~0.0.0"
         }
     }
 
@@ -83,4 +86,4 @@ Requests for new features, bug fixed and all other ideas to make this library us
 
 ## Licence
 
-This software is release under MIT licence.
+This software is release under [MIT licence](LICENSE).

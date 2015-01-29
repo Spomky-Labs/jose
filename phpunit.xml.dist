@@ -9,10 +9,10 @@
     processIsolation="false"
     stopOnFailure="false"
     syntaxCheck="true"
-    bootstrap="tests/bootstrap.php"
+    bootstrap="vendor/autoload.php"
     colors="true">
     <testsuites>
-        <testsuite name="SpomkyLabs/Jose Test Suite">
+        <testsuite name="Test Suite">
             <directory suffix="Test.php">./tests</directory>
         </testsuite>
     </testsuites>

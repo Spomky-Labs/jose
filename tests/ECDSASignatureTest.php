@@ -1,0 +1,164 @@
+<?php
+
+namespace SpomkyLabs\Jose\Tests;
+
+use SpomkyLabs\Jose\JWK;
+use Base64Url\Base64Url;
+use SpomkyLabs\Jose\Algorithm\Signature\ES256;
+use SpomkyLabs\Jose\Algorithm\Signature\ES384;
+use SpomkyLabs\Jose\Algorithm\Signature\ES512;
+use SpomkyLabs\Jose\Util\ECConverter;
+
+/**
+ * Class ECDSASignatureTest
+ *
+ * The values of these tests come from the JWS draft
+ *
+ * @package SpomkyLabs\Jose\Tests
+ */
+class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @expectedException InvalidArgumentException
+     * @expectedExceptionMessage The key is not valid
+     */
+    public function testInvalidKey()
+    {
+        $key  = new JWK();
+        $key->setValue("kty", "RSA");
+
+        $ecdsa = new ES256();
+        $data = "Je suis Charlie";
+
+        $ecdsa->sign($key, $data);
+    }
+
+    /**
+     *
+     */
+    public function testES256Verify()
+    {
+        $key = new JWK();
+        $key->setValue('kty', 'EC')
+            ->setValue('crv', 'P-256')
+            ->setValue('x', 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU')
+            ->setValue('y', 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0');
+
+        $ecdsa = new ES256();
+
+        $data = 'eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ';
+        $signature = 'DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q';
+
+        $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
+    }
+
+    /**
+     *
+     */
+    public function testES256SignVerify()
+    {
+        $key = new JWK();
+        $key->setValue('kty', 'EC')
+            ->setValue('crv', 'P-256')
+            ->setValue('x', 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU')
+            ->setValue('y', 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0')
+            ->setValue('d', 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI');
+
+        $ecdsa = new ES256();
+
+        $data = 'eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ';
+        $signature = $ecdsa->sign($key, $data);
+
+        $this->assertTrue($ecdsa->verify($key, $data, $signature));
+    }
+
+    /**
+     *
+     */
+    public function testES256SignAndVerify()
+    {
+        $public_key = new JWK();
+        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es256.key"));
+        $private_key = new JWK();
+        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es256.key"));
+
+        $ecdsa = new ES256();
+        $data = "Je suis Charlie";
+        $signature = $ecdsa->sign($private_key, $data);
+
+        $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
+    }
+
+    /**
+     *
+     */
+    public function testES384SignAndVerify()
+    {
+        $public_key = new JWK();
+        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es384.key"));
+        $private_key = new JWK();
+        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es384.key"));
+
+        $ecdsa = new ES384();
+        $data = "Je suis Charlie";
+        $signature = $ecdsa->sign($private_key, $data);
+
+        $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
+    }
+
+    /**
+     *
+     */
+    public function testES512SignAndVerify()
+    {
+        $public_key = new JWK();
+        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es512.key"));
+        $private_key = new JWK();
+        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es512.key"));
+
+        $ecdsa = new ES512();
+        $data = "Je suis Charlie";
+        $signature = $ecdsa->sign($private_key, $data);
+
+        $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
+    }
+
+    /**
+     *
+     */
+    public function testHS512Verify()
+    {
+        $key = new JWK();
+        $key->setValue('kty', 'EC')
+            ->setValue('crv', 'P-521')
+            ->setValue('x', 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk')
+            ->setValue('y', 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2');
+
+        $ecdsa = new ES512();
+
+        $data = 'eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA';
+        $signature = 'AdwMgeerwtHoh-l192l60hp9wAHZFVJbLfD_UxMi70cwnZOYaRI1bKPWROc-mZZqwqT2SI-KGDKB34XO0aw_7XdtAG8GaSwFKdCAPZgoXD2YBJZCPEX3xKpRwcdOO8KpEHwJjyqOgzDO7iKvU8vcnwNrmxYbSW9ERBXukOXolLzeO_Jn';
+
+        $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
+    }
+
+    /**
+     *
+     */
+    public function testHS512SignVerify()
+    {
+        $key = new JWK();
+        $key->setValue('kty', 'EC')
+            ->setValue('crv', 'P-521')
+            ->setValue('x', "AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
+            ->setValue('y', "ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
+            ->setValue('d', "AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
+
+        $ecdsa = new ES512();
+
+        $data = 'eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA';
+        $signature = $ecdsa->sign($key, $data);
+
+        $this->assertTrue($ecdsa->verify($key, $data, $signature));
+    }
+}

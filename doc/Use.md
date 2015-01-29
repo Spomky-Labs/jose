@@ -57,7 +57,7 @@ Nota: to create such array from a X509 certificate, you can use the following me
     <?php
     use SpomkyLabs\JOSE\Util\RSAConverter;
 
-    $certificate = RSAConverter::fromCertificateToArray("/path/to/your/certificate", "passphrase"); //This method also accepts a string of the certificate in PEM format. "passphrase" is the passphrase used to secure the private key. This argument is optional.
+    $certificate = RSAConverter::loadKeyFromFile("/path/to/your/certificate", "passphrase"); //This method also accepts a string of the certificate in PEM format. "passphrase" is the passphrase used to secure the private key. This argument is optional.
 
 Alice will encrypt the message (=create a JWE object) using the key encryption algorithm ```RSA-OAEP-256``` and the content encryption algorithm ```A256CBC-HS512```.
 

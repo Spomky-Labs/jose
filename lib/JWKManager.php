@@ -1,65 +1,97 @@
 <?php
 
-namespace SpomkyLabs\JOSE;
+namespace SpomkyLabs\Jose;
 
 use Jose\JWKInterface;
 use Jose\JWKSetInterface;
+use Jose\JWKManagerInterface;
 
 /**
  */
 abstract class JWKManager implements JWKManagerInterface
 {
-    abstract protected function getSupportedMethods();
+    /**
+     * @return array
+     */
+    protected function getSupportedMethods()
+    {
+        return array(
+            'findByJWK',
+        );
+    }
 
+    /**
+     * @param  array           $header
+     * @return JWKSetInterface
+     */
     public function findByHeader(array $header)
     {
         $keys = $this->createJWKSet();
+
+        // If the algorithm is none, we can return directly the key.
+        if ($this->isUnsecuredSiganture($header)) {
+            return $this->getNoneKeySet();
+        }
+
         foreach ($this->getSupportedMethods() as $method) {
-            $result = $this->$method($header);
-            if ($result instanceof JWKInterface) {
-                $keys->addKey($result);
-            } elseif ($result instanceof JWKSetInterface) {
-                foreach ($result->getKeys() as $key) {
-                    $keys->addKey($key);
-                }
+            if (!method_exists($this, $method)) {
+                throw new \RuntimeException("The method '$method' does not exist.");
             }
+            $result = $this->$method($header);
+            $this->analyzeResult($keys, $result);
         }
 
         return $keys;
     }
 
-    public function getType($value)
+    /**
+     * @param $keys
+     * @param $result
+     */
+    protected function analyzeResult(&$keys, $result)
     {
-        switch ($value) {
-            case 'ES256':
-            case 'ES384':
-            case 'ES512':
-            case 'ECDH-ES':
-                return 'EC';
-            case 'RS256':
-            case 'RS384':
-            case 'RS512':
-            case 'PS256':
-            case 'PS384':
-            case 'PS512':
-            case 'RSA1_5':
-            case 'RSA-OAEP':
-            case 'RSA-OAEP-256':
-                return 'RSA';
-            case 'none':
-                return 'none';
-            case 'HS256':
-            case 'HS384':
-            case 'HS512':
-                return 'oct';
-            case 'A128CBC-HS256':
-            case 'A192CBC-HS384':
-            case 'A256CBC-HS512':
-                return 'AES';
-            case 'dir':
-                return 'dir';
-            default:
-                throw new \Exception("Unsupported algorithm '$value'");
+        if ($result instanceof JWKInterface) {
+            $keys->addKey($result);
+        } elseif ($result instanceof JWKSetInterface) {
+            foreach ($result->getKeys() as $key) {
+                $keys->addKey($key);
+            }
         }
+    }
+
+    /**
+     * @return JWKSetInterface
+     */
+    protected function getNoneKeySet()
+    {
+        $keys = $this->createJWKSet();
+        $jwk = $this->createJWK(array("kty" => "none"));
+        $keys->addKey($jwk);
+
+        return $keys;
+    }
+
+    /**
+     * @param  array $header
+     * @return bool
+     */
+    protected function isUnsecuredSiganture(array $header)
+    {
+        return array_key_exists("alg", $header) && "none" === $header["alg"];
+    }
+
+    /**
+     * @param $header
+     * @return JWKInterface|void
+     */
+    protected function findByJWK($header)
+    {
+        if (!isset($header['jwk'])) {
+            return;
+        }
+
+        $jwk = $this->createJWK($header['jwk']);
+
+        return $jwk;
     }
 }
