@@ -1,8 +1,8 @@
 # PHP JOSE Library
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=develop)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=develop)
-[![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/coverage.png?b=develop)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=develop)
-[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=develop)](https://travis-ci.org/Spomky-Labs/jose)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=master)](https://travis-ci.org/Spomky-Labs/jose)
 [![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/JOSE.png)](http://hhvm.h4cc.de/package/Spomky-Labs/JOSE)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee/big.png)](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee)
@@ -62,7 +62,7 @@ The preferred way to install this library is to rely on Composer:
     {
         "require": {
             // ...
-            "spomky-labs/jose": "dev-develop"
+            "spomky-labs/jose": "~0.0.0"
         }
     }
 
