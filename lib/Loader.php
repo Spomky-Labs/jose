@@ -46,11 +46,13 @@ abstract class Loader implements LoaderInterface
     public function load($input, JWKSetInterface $jwk_set = null)
     {
         $json = $this->convertInputToSerializedJson($input);
-        if (array_key_exists("signatures", $json)) {
-            return $this->loadSerializedJsonJWS($json);
-        }
-        if (array_key_exists("recipients", $json)) {
-            return $this->loadSerializedJsonJWE($json, $jwk_set);
+        if (null !== $json) {
+            if (array_key_exists("signatures", $json)) {
+                return $this->loadSerializedJsonJWS($json);
+            }
+            if (array_key_exists("recipients", $json)) {
+                return $this->loadSerializedJsonJWE($json, $jwk_set);
+            }
         }
         throw new \InvalidArgumentException('Unable to load the input');
     }
