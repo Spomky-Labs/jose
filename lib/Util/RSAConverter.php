@@ -66,7 +66,7 @@ class RSAConverter
      * @param string $certificate
      * @param string $passphrase
      */
-    public static function fromCertificateToArray($certificate, $passphrase = null)
+    public static function loadKeyFromFile($certificate, $passphrase = null)
     {
         $values = self::loadCertificateValues($certificate, $passphrase);
         $result = array('kty' => 'RSA');
