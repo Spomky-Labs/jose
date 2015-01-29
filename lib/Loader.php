@@ -107,7 +107,7 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param $input
+     * @param string $input
      * @return array|string
      */
     protected function convertInputToSerializedJson($input)
@@ -231,6 +231,8 @@ abstract class Loader implements LoaderInterface
 
     /**
      * @param string $payload
+     * @param string $input
+     * @param string $signature
      */
     protected function createJWS($input, $protected_header, $unprotected_header, $payload, $signature)
     {
