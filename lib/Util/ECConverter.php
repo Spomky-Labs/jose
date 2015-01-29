@@ -31,7 +31,7 @@ class ECConverter
 
     /**
      * @param $certificate
-     * @param null $passphrase
+     * @param  null       $passphrase
      * @return mixed
      * @throws \Exception
      */
@@ -73,7 +73,8 @@ class ECConverter
         if (0 !== preg_match('/-----BEGIN PUBLIC KEY-----([^-]+)-----END PUBLIC KEY-----/', $details, $matches)) {
             $values += self::loadPublicKey($matches[1]);
         }
-        return empty($values)?false:array('kty' => 'EC')+$values;
+
+        return empty($values) ? false : array('kty' => 'EC')+$values;
     }
 
     /**
@@ -106,6 +107,7 @@ class ECConverter
         if (null === $mappedDetails) {
             return array();
         }
+
         return array(
             "d" => Base64Url::encode(base64_decode($mappedDetails["secret"])),
         );

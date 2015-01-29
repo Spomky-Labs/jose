@@ -20,6 +20,8 @@ use Jose\Operation\ContentEncryptionInterface;
  */
 abstract class Encrypter implements EncrypterInterface
 {
+    use PayloadConverter;
+
     /**
      * @return \Jose\JWTManagerInterface
      */
@@ -188,45 +190,5 @@ abstract class Encrypter implements EncrypterInterface
         }
 
         return count($recipients) === 1 ? current($recipients) : $recipients;
-    }
-
-    /**
-     * @param $input
-     */
-    private function checkInput(&$input)
-    {
-        if ($input instanceof JWKInterface) {
-            $jwt = $this->getJWTManager()->createJWT();
-            $jwt->setPayload(json_encode($input))
-                  ->setProtectedHeaderValue("cty", "jwk+json");
-            $input = $jwt;
-
-            return;
-        }
-        if ($input instanceof JWKSetInterface) {
-            $jwt = $this->getJWTManager()->createJWT();
-            $jwt->setPayload(json_encode($input))
-                  ->setProtectedHeaderValue("cty", "jwkset+json");
-            $input = $jwt;
-
-            return;
-        }
-        if (is_array($input)) {
-            $jwt = $this->getJWTManager()->createJWT();
-            $jwt->setPayload(json_encode($input));
-            $input = $jwt;
-
-            return;
-        }
-        if (is_string($input)) {
-            $jwt = $this->getJWTManager()->createJWT();
-            $jwt->setPayload($input);
-            $input = $jwt;
-
-            return;
-        }
-        if (!$input instanceof JWTInterface) {
-            throw new \InvalidArgumentException("Unsupported input type");
-        }
     }
 }

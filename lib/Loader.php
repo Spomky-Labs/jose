@@ -19,6 +19,8 @@ use Jose\Operation\ContentEncryptionInterface;
  */
 abstract class Loader implements LoaderInterface
 {
+    use PayloadConverter;
+
     /**
      * @return \Jose\JWKManagerInterface
      */
@@ -328,42 +330,6 @@ abstract class Loader implements LoaderInterface
                     return $jwe;
                 }
             }
-        }
-    }
-
-    /**
-     * @param  array      $header
-     * @param $payload
-     * @throws \Exception
-     */
-    protected function convertJWTContent(array $header, &$payload)
-    {
-        //The payload is a JWKSet or JWK object
-        if (array_key_exists("cty", $header)) {
-            switch ($header['cty']) {
-                case 'jwk+json':
-                    $payload = $this->getJWKManager()->createJWK(json_decode($payload, true));
-
-                    return;
-                case 'jwkset+json':
-                    $values = json_decode($payload, true);
-                    if (!array_key_exists("keys", $values)) {
-                        throw new \Exception("Not a valid key set");
-                    }
-                    $payload = $this->getJWKManager()->createJWKSet($values['keys']);
-
-                    return;
-                default:
-                    break;
-            }
-        }
-
-        //The payload is a JSON array
-        $json = json_decode($payload, true);
-        if (is_array($json)) {
-            $payload = $json;
-
-            return;
         }
     }
 }
