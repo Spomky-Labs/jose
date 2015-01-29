@@ -23,8 +23,6 @@ Compression support for JWE objects:
 
 ### Unsupported ###
 
-* JWS and JWE header:
-    * `crit` parameter
 * JSON Serialization Overview
     * JWE (creation only)
 

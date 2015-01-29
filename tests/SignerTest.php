@@ -2,6 +2,7 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
+use SpomkyLabs\Jose\JWS;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\SignatureInstruction;
@@ -200,9 +201,112 @@ class SignerTest extends TestCase
 
         $loaded = $loader->load($signatures);
 
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded);
-        $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals("HS512", $loaded->getAlgorithm());
+        $this->assertTrue(is_array($loaded));
+        $this->assertEquals(2, count($loaded));
+        foreach ($loaded as $jws) {
+            $this->assertInstanceOf("Jose\JWSInterface", $jws);
+            $this->assertEquals("Je suis Charlie", $jws->getPayload());
+            $this->assertTrue($loader->verifySignature($jws));
+        }
+        $this->assertEquals("HS512", $loaded[0]->getAlgorithm());
+        $this->assertEquals("RS512", $loaded[1]->getAlgorithm());
+    }
+
+    /**
+     *
+     */
+    public function testExpiredJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setPayload(array("exp" => time()-1));
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidNotBeforeJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setPayload(array("nbf" => time()+1000));
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidIssuedAtJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setPayload(array("iat" => time()+1000));
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidAudienceInPayloadJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setPayload(array("aud" => "www.foo.bar"));
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidAudienceInProtectedHeaderJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setProtectedHeaderValue("aud", "www.foo.bar");
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidAudienceInUnprotectedHeaderJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setUnprotectedHeaderValue("aud", "www.foo.bar");
+
+        $this->assertFalse($loader->verify($jws));
+    }
+
+    /**
+     *
+     */
+    public function testInvalidCriticalJWS()
+    {
+        $loader = $this->getLoader();
+
+        $jws = new JWS();
+        $jws->setProtectedHeaderValue("crit", array(
+            "exp",
+            "nbf",
+            "aud",
+        ));
+        $jws->setUnprotectedHeaderValue("exp", time()+100);
+        $jws->setProtectedHeaderValue("nbf", time()-100);
+
+        $this->assertFalse($loader->verify($jws));
     }
 
     /**
@@ -227,9 +331,15 @@ class SignerTest extends TestCase
 
         $loaded = $loader->load($signatures);
 
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded);
-        $this->assertInstanceOf("Jose\JWKSetInterface", $loaded->getPayload());
-        $this->assertEquals("HS512", $loaded->getAlgorithm());
+        $this->assertTrue(is_array($loaded));
+        $this->assertEquals(2, count($loaded));
+        foreach ($loaded as $jws) {
+            $this->assertInstanceOf("Jose\JWSInterface", $jws);
+            $this->assertEquals($this->getKeyset(), $jws->getPayload());
+            $this->assertTrue($loader->verifySignature($jws));
+        }
+        $this->assertEquals("HS512", $loaded[0]->getAlgorithm());
+        $this->assertEquals("RS512", $loaded[1]->getAlgorithm());
     }
 
     /**

@@ -18,6 +18,11 @@ class Loader extends Base
     protected $jwa_manager;
     protected $compression_manager;
 
+    protected function getAudience()
+    {
+        return "www.example.com";
+    }
+
     /**
      * {@inheritdoc}
      */
