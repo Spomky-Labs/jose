@@ -12,7 +12,7 @@ use Jose\SignatureInstructionInterface;
 class SignatureInstruction implements SignatureInstructionInterface
 {
     /**
-     * @var null
+     * @var null|\Jose\JWKInterface
      */
     protected $key = null;
     /**

@@ -16,11 +16,11 @@ class EncryptionInstruction implements EncryptionInstructionInterface
      */
     protected $recipient_unprotected_header = array();
     /**
-     * @var null
+     * @var null|\Jose\JWKInterface
      */
     protected $recipient_public_key = null;
     /**
-     * @var null
+     * @var null|\Jose\JWKInterface
      */
     protected $sender_private_key = null;
 
