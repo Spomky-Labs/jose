@@ -22,16 +22,6 @@ abstract class Loader implements LoaderInterface
     use PayloadConverter;
 
     /**
-     * @return \Jose\JWKManagerInterface
-     */
-    abstract protected function getJWKManager();
-
-    /**
-     * @return \Jose\JWTManagerInterface
-     */
-    abstract protected function getJWTManager();
-
-    /**
      * @return \Jose\JWAManagerInterface
      */
     abstract protected function getJWAManager();
@@ -51,7 +41,7 @@ abstract class Loader implements LoaderInterface
             return $this->loadSerializedJson($data, $verify_signature, $jwk_set);
         }
 
-        //Else, we consider that data is a JSON Compact Seralized object
+        //Else, we consider that data is a JSON Compact Serialized object
         return $this->loadCompactSerializedJson($input, $verify_signature, $jwk_set);
     }
 

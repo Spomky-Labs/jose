@@ -19,19 +19,9 @@ abstract class Signer implements SignerInterface
     use PayloadConverter;
 
     /**
-     * @return \Jose\JWKManagerInterface
-     */
-    abstract protected function getJWKManager();
-
-    /**
      * @return \Jose\JWAManagerInterface
      */
     abstract protected function getJWAManager();
-
-    /**
-     * @return \Jose\JWTManagerInterface
-     */
-    abstract protected function getJWTManager();
 
     /**
      * @param  array|JWKInterface|JWKSetInterface|JWTInterface|string $input

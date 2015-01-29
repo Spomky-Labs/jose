@@ -23,16 +23,6 @@ abstract class Encrypter implements EncrypterInterface
     use PayloadConverter;
 
     /**
-     * @return \Jose\JWTManagerInterface
-     */
-    abstract protected function getJWTManager();
-
-    /**
-     * @return \Jose\JWKManagerInterface
-     */
-    abstract protected function getJWKManager();
-
-    /**
      * @return \Jose\JWAManagerInterface
      */
     abstract protected function getJWAManager();

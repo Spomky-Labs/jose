@@ -12,6 +12,16 @@ use Jose\JWKSetInterface;
 trait PayloadConverter
 {
     /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWTManagerInterface
+     */
+    abstract protected function getJWTManager();
+
+    /**
      * @param  array      $header
      * @param $payload
      * @throws \Exception
