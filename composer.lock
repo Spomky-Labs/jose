@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2f7fe85d4f07117da43024db8398e4c4",
+    "hash": "30d3f3902d901acd8ac151e4556d4454",
     "packages": [
         {
             "name": "spomky-labs/aes-key-wrap",
@@ -116,7 +116,7 @@
         },
         {
             "name": "spomky-labs/jose-interface",
-            "version": "dev-master",
+            "version": "v0.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Spomky-Labs/jose-interface.git",
@@ -1226,9 +1226,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "spomky-labs/jose-interface": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
