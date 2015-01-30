@@ -36,12 +36,11 @@ class Deflate implements CompressionInterface
     }
 
     /**
-     * @param  string $method
-     * @return bool
+     * @return string
      */
-    public function isMethodSupported($method)
+    public function getMethodName()
     {
-        return 'DEF' === $method;
+        return 'DEF';
     }
 
     /**

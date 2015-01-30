@@ -36,12 +36,11 @@ class ZLib implements CompressionInterface
     }
 
     /**
-     * @param  string $method
-     * @return bool
+     * @return string
      */
-    public function isMethodSupported($method)
+    public function getMethodName()
     {
-        return 'ZLIB' === $method;
+        return 'ZLIB';
     }
 
     /**

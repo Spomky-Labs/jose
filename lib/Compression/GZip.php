@@ -36,12 +36,11 @@ class GZip implements CompressionInterface
     }
 
     /**
-     * @param  string $method
-     * @return bool
+     * @return string
      */
-    public function isMethodSupported($method)
+    public function getMethodName()
     {
-        return 'GZ' === $method;
+        return 'GZ';
     }
 
     /**
