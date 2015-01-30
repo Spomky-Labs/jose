@@ -21,21 +21,17 @@ class CompressionManager implements CompressionManagerInterface
      */
     public function addCompressionAlgorithm(CompressionInterface $compression_algorithm)
     {
-        $this->compression_algorithms[] = $compression_algorithm;
+        $this->compression_algorithms[$compression_algorithm->getMethodName()] = $compression_algorithm;
 
         return $this;
     }
 
     /**
      * @param  string $name
-     * @return mixed
+     * @return CompressionInterface|null
      */
     public function getCompressionAlgorithm($name)
     {
-        foreach ($this->compression_algorithms as $algorithm) {
-            if ($algorithm->isMethodSupported($name)) {
-                return $algorithm;
-            }
-        }
+        return array_key_exists($name, $this->compression_algorithms)?$this->compression_algorithms[$name]:null;
     }
 }
