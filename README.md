@@ -59,12 +59,7 @@ Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
 
 The preferred way to install this library is to rely on Composer:
 
-    {
-        "require": {
-            // ...
-            "spomky-labs/jose": "~0.0.0"
-        }
-    }
+    composer require spomky-labs/jose
 
 ## Extend the library ##
 
