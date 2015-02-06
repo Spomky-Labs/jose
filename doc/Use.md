@@ -18,13 +18,14 @@ The keys used to sign and encrypt are JWK objects.
 
 A public key is used to verify a digital signature and to encrypt data using. A private key can sign and decrypt data.
 
-There are three types of keys:
+There are four types of keys:
 
 * `RSA` keys,
 * `EC` (Elliptic Curves) keys,
-* `oct` keys.
+* `oct` keys,
+* `dir` keys.
 
-A key can be used with different algorithms. But an algorithm only supports one type. For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys.
+A key can be used with different algorithms. But an algorithm only supports one type. For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys. See [the algorithms page](Keys.md) to know which type of key you need for your algorithm.
 
 ### JWKSet
 
