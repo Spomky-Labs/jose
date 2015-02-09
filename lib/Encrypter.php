@@ -120,21 +120,21 @@ abstract class Encrypter implements EncrypterInterface
             $jwt_cek = null;
             if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientPublicKey(), $cek, $protected_header));
+                $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                if (null === $instruction->getSenderPrivateKey()) {
+                if (null === $instruction->getSenderKey()) {
                     throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
                 }
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
+                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-                if (null === $instruction->getSenderPrivateKey()) {
+                if (null === $instruction->getSenderKey()) {
                     throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
                 }
-                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderPrivateKey(), $instruction->getRecipientPublicKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
+                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
                 $jwt_cek = "";
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
-                $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientPublicKey(), array());
+                $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), array());
                 $jwt_cek = "";
             }
 

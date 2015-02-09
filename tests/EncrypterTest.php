@@ -23,7 +23,7 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
 
         $instruction = new EncryptionInstruction();
-        $instruction->setRecipientPublicKey($this->getRSARecipientKey());
+        $instruction->setRecipientKey($this->getRSARecipientKey());
 
         $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), array($instruction), array("kid" => "123456789", "enc" => "A128GCM", "alg" => "RSA-OAEP-256", "zip" => "DEF"), array(), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
@@ -46,7 +46,7 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
 
         $instruction = new EncryptionInstruction();
-        $instruction->setRecipientPublicKey($this->getDirectKey());
+        $instruction->setRecipientKey($this->getDirectKey());
 
         $encrypted = $encrypter->encrypt($this->getKeySetToEncrypt(), array($instruction), array("kid" => "DIR_1", "enc" => "A256GCM", "alg" => "dir"), array());
 
@@ -69,8 +69,8 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
 
         $instruction = new EncryptionInstruction();
-        $instruction->setRecipientPublicKey($this->getECDHRecipientPublicKey())
-                    ->setSenderPrivateKey($this->getECDHSenderPrivateKey());
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
+                    ->setSenderKey($this->getECDHSenderPrivateKey());
 
         $encrypted = $encrypter->encrypt(array("user_id" => "1234", "exp" => 3600), array($instruction), array("kid" => "e9bc097a-ce51-4036-9562-d2ade882db0d", "enc" => "A256GCM", "alg" => "ECDH-ES"), array());
 
@@ -93,8 +93,8 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
 
         $instruction = new EncryptionInstruction();
-        $instruction->setRecipientPublicKey($this->getECDHRecipientPublicKey())
-                    ->setSenderPrivateKey($this->getECDHSenderPrivateKey());
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
+                    ->setSenderKey($this->getECDHSenderPrivateKey());
 
         $encrypted = $encrypter->encrypt("Je suis Charlie", array($instruction), array("kid" => "e9bc097a-ce51-4036-9562-d2ade882db0d", "enc" => "A256GCM", "alg" => "ECDH-ES+A256KW"), array());
 

@@ -9,8 +9,9 @@ use SpomkyLabs\Jose\Compression\Deflate;
 use SpomkyLabs\Jose\Tests\Stub\Loader;
 use SpomkyLabs\Jose\Tests\Stub\Signer;
 use SpomkyLabs\Jose\Tests\Stub\Encrypter;
-use SpomkyLabs\Jose\Tests\Stub\JWKManager;
 use SpomkyLabs\Jose\Tests\Stub\JWTManager;
+use SpomkyLabs\Jose\Tests\Stub\JWKManager;
+use SpomkyLabs\Jose\Tests\Stub\JWKSetManager;
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\Signature\HS384;
@@ -64,6 +65,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $loader->setCompressionManager($this->getCompressionManager())
                ->setJWTManager($this->getJWTManager())
                ->setJWKManager($this->getJWKManager())
+               ->setJWKSetManager($this->getJWKSetManager())
                ->setJWAManager($this->getJWAManager());
 
         return $loader;
@@ -127,6 +129,17 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $key_manager = new JWKManager();
 
         return $key_manager;
+    }
+
+    /**
+     * @return JWKManager
+     */
+    protected function getJWKSetManager()
+    {
+        $keyset_manager = new JWKSetManager();
+        $keyset_manager->setJWKManager($this->getJWKManager());
+
+        return $keyset_manager;
     }
 
     /**

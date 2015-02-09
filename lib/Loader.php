@@ -36,6 +36,16 @@ abstract class Loader implements LoaderInterface
     abstract protected function getJWAManager();
 
     /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
+
+    /**
      * @return \Jose\Compression\CompressionManagerInterface
      */
     abstract protected function getCompressionManager();
@@ -63,11 +73,9 @@ abstract class Loader implements LoaderInterface
     public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null)
     {
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
-        if (null === $jwk_set) {
-            $jwk_set = $this->getJWKManager()->findByHeader($complete_header);
-        }
+        $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
 
-        if (empty($jwk_set)) {
+        if (0 === count($jwk_set)) {
             return false;
         }
         $algorithm = $this->getAlgorithm($complete_header);
@@ -109,7 +117,7 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param string $input
+     * @param  string       $input
      * @return array|string
      */
     protected function convertInputToSerializedJson($input)
@@ -331,7 +339,7 @@ abstract class Loader implements LoaderInterface
             }
             $keys = $jwk_set;
             if (null === $keys) {
-                $keys = $this->getJWKManager()->findByHeader($complete_header);
+                $keys = $this->getKeysFromCompleteHeader($complete_header);
             }
             $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
             $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
@@ -372,5 +380,20 @@ abstract class Loader implements LoaderInterface
                 }
             }
         }
+    }
+
+    protected function getKeysFromCompleteHeader(array $header)
+    {
+        $keys = $this->getJWKSetManager()->createJWKSet();
+        if (null !== $jwk = $this->getJWKManager()->findByHeader($header)) {
+            $keys->addKey($jwk);
+        }
+        if (null !== $jwkset = $this->getJWKSetManager()->findByHeader($header)) {
+            foreach ($jwkset as $key) {
+                $keys->addKey($key);
+            }
+        }
+
+        return $keys;
     }
 }

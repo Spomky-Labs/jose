@@ -13,8 +13,9 @@ use SpomkyLabs\Jose\Signer as Base;
 class Signer extends Base
 {
     protected $jwt_manager;
-    protected $jwk_manager;
     protected $jwa_manager;
+    protected $jwk_manager;
+    protected $jwkset_manager;
 
     /**
      * {@inheritdoc}
@@ -57,6 +58,21 @@ class Signer extends Base
     public function setJWKManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getJWKSetManager()
+    {
+        return $this->jwkset_manager;
+    }
+
+    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
+    {
+        $this->jwkset_manager = $jwkset_manager;
 
         return $this;
     }

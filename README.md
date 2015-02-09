@@ -9,6 +9,8 @@
 
 [![Latest Stable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/stable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Total Downloads](https://poser.pugx.org/Spomky-Labs/JOSE/downloads.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![Latest Unstable Version](https://poser.pugx.org/Spomky-Labs/JOSE/v/unstable.png)](https://packagist.org/packages/Spomky-Labs/JOSE) [![License](https://poser.pugx.org/Spomky-Labs/JOSE/license.png)](https://packagist.org/packages/Spomky-Labs/JOSE)
 
+[![Documentation Status](https://readthedocs.org/projects/spomky-labsjose/badge/?version=latest)](https://readthedocs.org/projects/spomky-labsjose/?badge=latest)
+
 This library aims to provide an implementation of:
 
 * JW**S** [JSON Web Signature (draft 41)](https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41),
@@ -16,8 +18,6 @@ This library aims to provide an implementation of:
 * JW**E** [JSON Web Encryption (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-40),
 * JW**A** [JSON Web Algorithms (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40).
 * JW**K** [JSON Web Key (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-key-40).
-
-**This library is not yet complete! Do not use it in production.**
 
 ## Status of implementations: ##
 

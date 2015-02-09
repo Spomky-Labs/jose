@@ -2,9 +2,10 @@
 
 namespace SpomkyLabs\Jose\Tests\Stub;
 
-use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
 use Jose\JWTManagerInterface;
+use Jose\JWKManagerInterface;
+use Jose\JWKSetManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
 use SpomkyLabs\Jose\Loader as Base;
 
@@ -14,8 +15,9 @@ use SpomkyLabs\Jose\Loader as Base;
 class Loader extends Base
 {
     protected $jwt_manager;
-    protected $jwk_manager;
     protected $jwa_manager;
+    protected $jwk_manager;
+    protected $jwkset_manager;
     protected $compression_manager;
 
     protected function getAudience()
@@ -64,6 +66,21 @@ class Loader extends Base
     public function setJWKManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getJWKSetManager()
+    {
+        return $this->jwkset_manager;
+    }
+
+    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
+    {
+        $this->jwkset_manager = $jwkset_manager;
 
         return $this;
     }
