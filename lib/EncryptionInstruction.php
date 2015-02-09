@@ -28,7 +28,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
      * @param  JWKInterface $recipient_public_key
      * @return $this
      */
-    public function setRecipientPublicKey(JWKInterface $recipient_public_key)
+    public function setRecipientKey(JWKInterface $recipient_public_key)
     {
         $this->recipient_public_key = $recipient_public_key;
 
@@ -38,7 +38,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     /**
      * @return null
      */
-    public function getRecipientPublicKey()
+    public function getRecipientKey()
     {
         return $this->recipient_public_key;
     }
@@ -47,7 +47,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
      * @param  JWKInterface $sender_private_key
      * @return $this
      */
-    public function setSenderPrivateKey(JWKInterface $sender_private_key)
+    public function setSenderKey(JWKInterface $sender_private_key)
     {
         $this->sender_private_key = $sender_private_key;
 
@@ -57,7 +57,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     /**
      * @return null
      */
-    public function getSenderPrivateKey()
+    public function getSenderKey()
     {
         return $this->sender_private_key;
     }

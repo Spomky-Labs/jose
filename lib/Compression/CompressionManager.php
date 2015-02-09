@@ -27,11 +27,11 @@ class CompressionManager implements CompressionManagerInterface
     }
 
     /**
-     * @param  string $name
+     * @param  string                    $name
      * @return CompressionInterface|null
      */
     public function getCompressionAlgorithm($name)
     {
-        return array_key_exists($name, $this->compression_algorithms)?$this->compression_algorithms[$name]:null;
+        return array_key_exists($name, $this->compression_algorithms) ? $this->compression_algorithms[$name] : null;
     }
 }
