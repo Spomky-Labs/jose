@@ -17,6 +17,11 @@ trait PayloadConverter
     abstract protected function getJWKManager();
 
     /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
+
+    /**
      * @return \Jose\JWTManagerInterface
      */
     abstract protected function getJWTManager();
@@ -40,7 +45,7 @@ trait PayloadConverter
                     if (!array_key_exists("keys", $values)) {
                         throw new \Exception("Not a valid key set");
                     }
-                    $payload = $this->getJWKManager()->createJWKSet($values['keys']);
+                    $payload = $this->getJWKSetManager()->createJWKSet($values['keys']);
 
                     return;
                 default:

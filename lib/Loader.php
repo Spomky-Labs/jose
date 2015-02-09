@@ -43,7 +43,7 @@ abstract class Loader implements LoaderInterface
     /**
      * @return \Jose\JWKSetManagerInterface
      */
-    //abstract protected function getJWKSetManager();
+    abstract protected function getJWKSetManager();
 
     /**
      * @return \Jose\Compression\CompressionManagerInterface
