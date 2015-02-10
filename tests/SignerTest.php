@@ -213,7 +213,8 @@ class SignerTest extends TestCase
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage The JWT has expired.
      */
     public function testExpiredJWS()
     {
@@ -222,11 +223,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setPayload(array("exp" => time()-1));
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage The JWT has expired.
      */
     public function testInvalidNotBeforeJWS()
     {
@@ -235,11 +237,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setPayload(array("nbf" => time()+1000));
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage The JWT is issued in the futur.
      */
     public function testInvalidIssuedAtJWS()
     {
@@ -248,11 +251,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setPayload(array("iat" => time()+1000));
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Wrong audience.
      */
     public function testInvalidAudienceInPayloadJWS()
     {
@@ -261,11 +265,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setPayload(array("aud" => "www.foo.bar"));
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessageWrong audience.
      */
     public function testInvalidAudienceInProtectedHeaderJWS()
     {
@@ -274,11 +279,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setProtectedHeaderValue("aud", "www.foo.bar");
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage Wrong audience.
      */
     public function testInvalidAudienceInUnprotectedHeaderJWS()
     {
@@ -287,11 +293,12 @@ class SignerTest extends TestCase
         $jws = new JWS();
         $jws->setUnprotectedHeaderValue("aud", "www.foo.bar");
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**
-     *
+     * @expectedException \Exception
+     * @expectedExceptionMessage The claim/header 'aud' is marked as critical but value is not set.
      */
     public function testInvalidCriticalJWS()
     {
@@ -306,7 +313,7 @@ class SignerTest extends TestCase
         $jws->setUnprotectedHeaderValue("exp", time()+100);
         $jws->setProtectedHeaderValue("nbf", time()-100);
 
-        $this->assertFalse($loader->verify($jws));
+        $loader->verify($jws);
     }
 
     /**

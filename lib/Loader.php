@@ -85,7 +85,8 @@ abstract class Loader implements LoaderInterface
             }
         }
 
-        return false;
+        throw new \Exception("Signature not verified.");
+        ;
     }
 
     /**
@@ -94,21 +95,21 @@ abstract class Loader implements LoaderInterface
     public function verify(JWTInterface $jwt)
     {
         if (null !== $jwt->getExpirationTime() && time() > $jwt->getExpirationTime()) {
-            return false;
+            throw new \Exception("The JWT has expired.");
         }
         if (null !== $jwt->getNotBefore() && time() < $jwt->getNotBefore()) {
-            return false;
+            throw new \Exception("The JWT has expired.");
         }
         if (null !== $jwt->getIssuedAt() && time() < $jwt->getIssuedAt()) {
-            return false;
+            throw new \Exception("The JWT is issued in the futur.");
         }
         if (null !== $jwt->getAudience() && $this->getAudience() !== $jwt->getAudience()) {
-            return false;
+            throw new \Exception("Wrong audience.");
         }
         if (null !== $jwt->getCritical()) {
             foreach ($jwt->getCritical() as $crit) {
                 if (null === $jwt->getHeaderValue($crit) && null === $jwt->getPayloadValue($crit)) {
-                    return false;
+                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $crit));
                 }
             }
         }
