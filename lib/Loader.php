@@ -86,7 +86,6 @@ abstract class Loader implements LoaderInterface
         }
 
         throw new \Exception("Signature not verified.");
-        ;
     }
 
     /**

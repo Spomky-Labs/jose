@@ -27,7 +27,36 @@ abstract class HMAC implements SignatureInterface
      */
     public function verify(JWKInterface $key, $input, $signature)
     {
-        return $signature === $this->sign($key, $input);
+        if (function_exists("hash_equals")) {
+            return hash_equals($signature, $this->sign($key, $input));
+        }
+
+        return $this->timingSafeEquals($signature, $this->sign($key, $input));
+    }
+
+    /**
+     * A timing safe equals comparison
+     *
+     * @param string $signature   The internal signature to be checked
+     * @param string $signedInput The signed input submitted value
+     *
+     * @return boolean true if the two strings are identical.
+     */
+    public function timingSafeEquals($signature, $signedInput)
+    {
+        $signatureLength   = strlen($signature);
+        $signedInputLength = strlen($signedInput);
+        $result            = 0;
+
+        if ($signedInputLength != $signatureLength) {
+            return false;
+        }
+
+        for ($i = 0; $i < $signedInputLength; $i++) {
+            $result |= (ord($signature[$i]) ^ ord($signedInput[$i]));
+        }
+
+        return $result === 0;
     }
 
     /**
