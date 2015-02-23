@@ -50,4 +50,5 @@ trait KeyUsageChecker
                     break;
             }
         }
+    }
 }
