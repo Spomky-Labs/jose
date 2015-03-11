@@ -7,8 +7,7 @@ use Jose\Operation\SignatureInterface;
 use SpomkyLabs\Jose\Util\RSAConverter;
 
 /**
- * Class RSA
- * @package SpomkyLabs\Jose\Algorithm\Signature
+ * Class RSA.
  */
 abstract class RSA implements SignatureInterface
 {

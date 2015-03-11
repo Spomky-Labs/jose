@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\JWK;
@@ -9,8 +9,7 @@ use SpomkyLabs\Jose\EncryptionInstruction;
 use Jose\JSONSerializationModes;
 
 /**
- * Class EncrypterTest
- * @package SpomkyLabs\Jose\Tests
+ * Class EncrypterTest.
  */
 class EncrypterTest extends TestCase
 {

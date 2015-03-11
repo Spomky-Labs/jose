@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\JWK;
@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Jose\Algorithm\Signature\None;
 
 /**
- * Class NoneSignatureTest
- * @package SpomkyLabs\Jose\Tests
+ * Class NoneSignatureTest.
  */
 class NoneSignatureTest extends TestCase
 {

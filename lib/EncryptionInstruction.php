@@ -6,8 +6,7 @@ use Jose\JWKInterface;
 use Jose\EncryptionInstructionInterface;
 
 /**
- * Class EncryptionInstruction
- * @package SpomkyLabs\Jose
+ * Class EncryptionInstruction.
  */
 class EncryptionInstruction implements EncryptionInstructionInterface
 {
@@ -25,7 +24,8 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     protected $sender_private_key = null;
 
     /**
-     * @param  JWKInterface $recipient_public_key
+     * @param JWKInterface $recipient_public_key
+     *
      * @return $this
      */
     public function setRecipientKey(JWKInterface $recipient_public_key)
@@ -36,7 +36,6 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     }
 
     /**
-     * @return null
      */
     public function getRecipientKey()
     {
@@ -44,7 +43,8 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     }
 
     /**
-     * @param  JWKInterface $sender_private_key
+     * @param JWKInterface $sender_private_key
+     *
      * @return $this
      */
     public function setSenderKey(JWKInterface $sender_private_key)
@@ -55,7 +55,6 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     }
 
     /**
-     * @return null
      */
     public function getSenderKey()
     {
@@ -63,7 +62,8 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     }
 
     /**
-     * @param  array $recipient_unprotected_header
+     * @param array $recipient_unprotected_header
+     *
      * @return $this
      */
     public function setRecipientUnprotectedHeader(array $recipient_unprotected_header)

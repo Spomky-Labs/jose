@@ -1,14 +1,13 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 
 /**
- * Class AESCBC_HSContentEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class AESCBC_HSContentEncryptionTest.
  */
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +33,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return string
      */
     private function convertArrayToBinString(array $data)

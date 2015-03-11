@@ -7,8 +7,7 @@ use SpomkyLabs\Jose\Util\RSAConverter;
 use Jose\Operation\KeyEncryptionInterface;
 
 /**
- * Class RSA
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class RSA.
  */
 abstract class RSA implements KeyEncryptionInterface
 {
@@ -57,7 +56,8 @@ abstract class RSA implements KeyEncryptionInterface
     }
 
     /**
-     * @param  array      $values
+     * @param array $values
+     *
      * @return \Crypt_RSA
      */
     private function getRsaObject(array $values)

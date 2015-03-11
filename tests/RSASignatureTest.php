@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Util\RSAConverter;
@@ -15,8 +15,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS384;
 use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 
 /**
- * Class RSASignatureTest
- * @package SpomkyLabs\Jose\Tests
+ * Class RSASignatureTest.
  */
 class RSASignatureTest extends TestCase
 {

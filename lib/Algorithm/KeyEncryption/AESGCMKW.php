@@ -8,8 +8,7 @@ use Base64Url\Base64Url;
 use Jose\Operation\KeyEncryptionInterface;
 
 /**
- * Class AESGCMKW
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class AESGCMKW.
  */
 abstract class AESGCMKW implements KeyEncryptionInterface
 {
@@ -24,9 +23,10 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     }
 
     /**
-     * @param  JWKInterface $key
-     * @param  string       $cek
-     * @param  array        $header
+     * @param JWKInterface $key
+     * @param string       $cek
+     * @param array        $header
+     *
      * @return mixed
      */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
@@ -45,9 +45,10 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     }
 
     /**
-     * @param  JWKInterface $key
-     * @param  string       $encryted_cek
-     * @param  array        $header
+     * @param JWKInterface $key
+     * @param string       $encryted_cek
+     * @param array        $header
+     *
      * @return mixed
      */
     public function decryptKey(JWKInterface $key, $encryted_cek, array $header)

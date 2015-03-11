@@ -33,24 +33,27 @@ abstract class Encrypter implements EncrypterInterface
     abstract protected function getCompressionManager();
 
     /**
-     * @param  integer $size The size of the CEK in bits
+     * @param integer $size The size of the CEK in bits
+     *
      * @return string
      */
     abstract protected function createCEK($size);
 
     /**
-     * @param  integer $size The size of the IV in bits
+     * @param integer $size The size of the IV in bits
+     *
      * @return string
      */
     abstract protected function createIV($size);
 
     /**
-     * @param  array|JWKInterface|JWKSetInterface|JWTInterface|string $input
-     * @param  array                                                  $instructions
-     * @param  array                                                  $shared_protected_header
-     * @param  array                                                  $shared_unprotected_header
-     * @param  string                                                 $serialization
-     * @param  null                                                   $aad
+     * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input
+     * @param array                                                  $instructions
+     * @param array                                                  $shared_protected_header
+     * @param array                                                  $shared_unprotected_header
+     * @param string                                                 $serialization
+     * @param null                                                   $aad
+     *
      * @return array|mixed
      */
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)

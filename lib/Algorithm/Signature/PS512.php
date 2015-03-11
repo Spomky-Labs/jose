@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 /**
- * Class PS512
- * @package SpomkyLabs\Jose\Algorithm\Signature
+ * Class PS512.
  */
 class PS512 extends RSA
 {

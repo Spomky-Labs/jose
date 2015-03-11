@@ -5,8 +5,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 use AESKW\A256KW as Wrapper;
 
 /**
- * Class ECDHESA256KW
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class ECDHESA256KW.
  */
 class ECDHESA256KW extends ECDHESAESKW
 {

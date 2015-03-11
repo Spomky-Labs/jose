@@ -6,8 +6,7 @@ use Jose\JWKInterface;
 use Jose\SignatureInstructionInterface;
 
 /**
- * Class SignatureInstruction
- * @package SpomkyLabs\Jose
+ * Class SignatureInstruction.
  */
 class SignatureInstruction implements SignatureInstructionInterface
 {
@@ -25,7 +24,8 @@ class SignatureInstruction implements SignatureInstructionInterface
     protected $unprotected_header = array();
 
     /**
-     * @param  JWKInterface $key
+     * @param JWKInterface $key
+     *
      * @return $this
      */
     public function setKey(JWKInterface $key)
@@ -36,7 +36,6 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @return null
      */
     public function getKey()
     {
@@ -44,7 +43,8 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @param  array $protected_header
+     * @param array $protected_header
+     *
      * @return $this
      */
     public function setProtectedHeader(array $protected_header)
@@ -63,7 +63,8 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @param  array $unprotected_header
+     * @param array $unprotected_header
+     *
      * @return $this
      */
     public function setUnprotectedHeader(array $unprotected_header)

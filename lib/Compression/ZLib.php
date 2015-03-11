@@ -44,7 +44,8 @@ class ZLib implements CompressionInterface
     }
 
     /**
-     * @param  string $data
+     * @param string $data
+     *
      * @return string
      */
     public function compress($data)
@@ -53,7 +54,8 @@ class ZLib implements CompressionInterface
     }
 
     /**
-     * @param  string $data
+     * @param string $data
+     *
      * @return string
      */
     public function uncompress($data)

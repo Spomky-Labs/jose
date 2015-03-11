@@ -8,7 +8,7 @@ use Jose\Operation\SignatureInterface;
 
 /**
  * This class handles signatures using HMAC.
- * It supports algorithms HS256, HS384 and HS512;
+ * It supports algorithms HS256, HS384 and HS512;.
  */
 abstract class HMAC implements SignatureInterface
 {
@@ -35,7 +35,7 @@ abstract class HMAC implements SignatureInterface
     }
 
     /**
-     * A timing safe equals comparison
+     * A timing safe equals comparison.
      *
      * @param string $signature   The internal signature to be checked
      * @param string $signedInput The signed input submitted value

@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Compression\Deflate;
@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 
 /**
- * Class CompressionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class CompressionTest.
  */
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {

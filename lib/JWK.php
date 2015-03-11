@@ -5,8 +5,7 @@ namespace SpomkyLabs\Jose;
 use Jose\JWK as Base;
 
 /**
- * Class JWK
- * @package SpomkyLabs\Jose
+ * Class JWK.
  */
 class JWK extends Base
 {
@@ -24,8 +23,7 @@ class JWK extends Base
     }
 
     /**
-     * @param  string $key
-     * @return null
+     * @param string $key
      */
     public function getValue($key)
     {
@@ -41,8 +39,9 @@ class JWK extends Base
     }
 
     /**
-     * @param  string $key
-     * @param  mixed  $value
+     * @param string $key
+     * @param mixed  $value
+     *
      * @return $this
      */
     public function setValue($key, $value)
@@ -53,7 +52,8 @@ class JWK extends Base
     }
 
     /**
-     * @param  array $values
+     * @param array $values
+     *
      * @return $this
      */
     public function setValues(array $values)

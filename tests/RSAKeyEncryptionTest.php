@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
@@ -9,8 +9,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
 /**
- * Class RSAKeyEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class RSAKeyEncryptionTest.
  */
 class RSAKeyEncryptionTest extends TestCase
 {

@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose;
 
 /**
- * Class JWable
- * @package SpomkyLabs\Jose
+ * Class JWable.
  */
 trait JWable
 {
@@ -38,7 +37,6 @@ trait JWable
     }
 
     /**
-     * @return null
      */
     public function getPayload()
     {
@@ -46,7 +44,8 @@ trait JWable
     }
 
     /**
-     * @param  array $values
+     * @param array $values
+     *
      * @return $this
      */
     public function setProtectedHeader(array $values)
@@ -57,7 +56,8 @@ trait JWable
     }
 
     /**
-     * @param  array $values
+     * @param array $values
+     *
      * @return $this
      */
     public function setUnprotectedHeader(array $values)
@@ -91,6 +91,7 @@ public function setUnprotectedHeaderValue($key, $value)
 
     /**
      * @param $payload
+     *
      * @return $this
      */
     public function setPayload($payload)

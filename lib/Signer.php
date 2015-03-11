@@ -24,9 +24,10 @@ abstract class Signer implements SignerInterface
     abstract protected function getJWAManager();
 
     /**
-     * @param  array|JWKInterface|JWKSetInterface|JWTInterface|string $input
-     * @param  array                                                  $instructions
-     * @param  string                                                 $serialization
+     * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input
+     * @param array                                                  $instructions
+     * @param string                                                 $serialization
+     *
      * @return array|mixed|string
      */
     public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)

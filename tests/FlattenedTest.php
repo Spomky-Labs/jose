@@ -1,10 +1,9 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 /**
- * Class FlattenedTest
- * @package SpomkyLabs\Jose\Tests
+ * Class FlattenedTest.
  */
 class FlattenedTest extends TestCase
 {

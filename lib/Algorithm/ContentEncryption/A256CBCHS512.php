@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 /**
- * Class A256CBCHS512
- * @package SpomkyLabs\Jose\Algorithm\ContentEncryption
+ * Class A256CBCHS512.
  */
 class A256CBCHS512 extends AESCBCHS
 {

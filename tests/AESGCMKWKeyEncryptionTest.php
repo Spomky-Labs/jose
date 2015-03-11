@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
@@ -9,8 +9,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
 
 /**
- * Class AESGCMKWKeyEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class AESGCMKWKeyEncryptionTest.
  */
 class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {

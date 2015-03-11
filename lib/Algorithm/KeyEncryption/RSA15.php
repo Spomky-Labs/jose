@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 /**
- * Class RSA15
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class RSA15.
  */
 class RSA15 extends RSA
 {

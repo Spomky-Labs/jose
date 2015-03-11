@@ -7,13 +7,13 @@ use Jose\JWKInterface;
 /**
  * Trait used to check key purpose.
  */
-trait KeyUsageChecker
+trait KeyChecker
 {
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {
         $use = $key->getPublicKeyUse();
         $ops = $key->getKeyOperations();
-        if (null === $use && null ===$ops) {
+        if (null === $use && null === $ops) {
             return;
         }
         if (null !== $use) {

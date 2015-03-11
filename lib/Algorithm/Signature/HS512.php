@@ -4,10 +4,9 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 /**
  * This class handles signatures using HMAC.
- * It supports HS512;
+ * It supports HS512;.
  *
  * Class HS512
- * @package SpomkyLabs\Jose\Algorithm\Signature
  */
 class HS512 extends HMAC
 {

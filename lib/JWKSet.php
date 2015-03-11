@@ -6,8 +6,7 @@ use Jose\JWKSet as Base;
 use Jose\JWKInterface;
 
 /**
- * Class JWKSet
- * @package SpomkyLabs\Jose
+ * Class JWKSet.
  */
 class JWKSet extends Base
 {
@@ -25,7 +24,8 @@ class JWKSet extends Base
     }
 
     /**
-     * Set keys in the Key
+     * Set keys in the Key.
+     *
      * @param JWKInterface $key A JWKInterface objects
      */
     public function addKey(JWKInterface $key)
@@ -37,6 +37,7 @@ class JWKSet extends Base
 
     /**
      * @param $key
+     *
      * @return $this
      */
     public function removeKey($key)

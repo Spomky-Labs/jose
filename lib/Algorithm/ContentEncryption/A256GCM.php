@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 /**
- * Class A256GCM
- * @package SpomkyLabs\Jose\Algorithm\ContentEncryption
+ * Class A256GCM.
  */
 class A256GCM extends AESGCM
 {

@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 /**
- * Class RSAOAEP
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class RSAOAEP.
  */
 class RSAOAEP extends RSA
 {

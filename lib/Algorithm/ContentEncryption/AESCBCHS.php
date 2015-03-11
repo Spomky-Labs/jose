@@ -47,8 +47,9 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      * @param $cek
      * @param $iv
      * @param $aad
-     * @param  array  $header
+     * @param array $header
      * @param $tag
+     *
      * @return String
      */
     public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
@@ -70,6 +71,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      * @param $cek
      * @param $iv
      * @param $encoded_header
+     *
      * @return string
      */
     protected function calculateAuthenticationTag($encrypted_data, $cek, $iv, $encoded_header)

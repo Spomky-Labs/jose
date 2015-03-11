@@ -1,10 +1,9 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 /**
- * Class JWAManagerTest
- * @package SpomkyLabs\Jose\Tests
+ * Class JWAManagerTest.
  */
 class JWAManagerTest extends TestCase
 {

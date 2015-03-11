@@ -24,7 +24,7 @@ abstract class Loader implements LoaderInterface
     use PayloadConverter;
 
     /**
-     * The audience
+     * The audience.
      *
      * @return string
      */
@@ -73,7 +73,9 @@ abstract class Loader implements LoaderInterface
     public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null)
     {
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
-        $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+        if (null === $jwk_set) {
+            $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+        }
 
         if (0 === count($jwk_set)) {
             return false;
@@ -85,7 +87,7 @@ abstract class Loader implements LoaderInterface
             }
         }
 
-        throw new \Exception("Signature not verified.");
+        return false;
     }
 
     /**
@@ -117,7 +119,8 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param  string       $input
+     * @param string $input
+     *
      * @return array|string
      */
     protected function convertInputToSerializedJson($input)

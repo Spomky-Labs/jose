@@ -11,8 +11,7 @@ use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
 /**
- * Class ECDHES
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class ECDHES.
  */
 class ECDHES implements KeyAgreementInterface
 {
@@ -33,9 +32,10 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param  JWKInterface $receiver_key
-     * @param  int          $encryption_key_length
-     * @param  array        $header
+     * @param JWKInterface $receiver_key
+     * @param int          $encryption_key_length
+     * @param array        $header
+     *
      * @return string
      */
     public function getAgreementKey(JWKInterface $receiver_key, $encryption_key_length, array $header)
@@ -54,10 +54,11 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param  JWKInterface $sender_key
-     * @param  JWKInterface $receiver_key
-     * @param  int          $encryption_key_length
-     * @param  array        $header
+     * @param JWKInterface $sender_key
+     * @param JWKInterface $receiver_key
+     * @param int          $encryption_key_length
+     * @param array        $header
+     *
      * @return string
      */
     public function setAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
@@ -83,9 +84,11 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param  JWKInterface    $private_key
-     * @param  JWKInterface    $public_key
+     * @param JWKInterface $private_key
+     * @param JWKInterface $public_key
+     *
      * @return int|string|void
+     *
      * @throws \Exception
      */
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
@@ -125,8 +128,10 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param  JWKInterface         $key
+     * @param JWKInterface $key
+     *
      * @return \Mdanter\Ecc\CurveFp
+     *
      * @throws \Exception
      */
     private function getCurve(JWKInterface $key)
@@ -145,8 +150,10 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param  JWKInterface                $key
+     * @param JWKInterface $key
+     *
      * @return \Mdanter\Ecc\GeneratorPoint
+     *
      * @throws \Exception
      */
     private function getGenerator(JWKInterface $key)
@@ -167,6 +174,7 @@ class ECDHES implements KeyAgreementInterface
 
     /**
      * @param $value
+     *
      * @return int|string
      */
     private function convertHexToDec($value)
@@ -176,6 +184,7 @@ class ECDHES implements KeyAgreementInterface
 
     /**
      * @param $value
+     *
      * @return int|string
      */
     private function convertBase64ToDec($value)
@@ -187,6 +196,7 @@ class ECDHES implements KeyAgreementInterface
 
     /**
      * @param $value
+     *
      * @return string
      */
     private function convertDecToBin($value)
