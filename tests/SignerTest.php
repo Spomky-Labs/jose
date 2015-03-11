@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWS;
 use SpomkyLabs\Jose\JWK;
@@ -249,48 +249,6 @@ class SignerTest extends TestCase
 
         $jws = new JWS();
         $jws->setPayload(array("iat" => time()+1000));
-
-        $loader->verify($jws);
-    }
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Wrong audience.
-     */
-    public function testInvalidAudienceInPayloadJWS()
-    {
-        $loader = $this->getLoader();
-
-        $jws = new JWS();
-        $jws->setPayload(array("aud" => "www.foo.bar"));
-
-        $loader->verify($jws);
-    }
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessageWrong audience.
-     */
-    public function testInvalidAudienceInProtectedHeaderJWS()
-    {
-        $loader = $this->getLoader();
-
-        $jws = new JWS();
-        $jws->setProtectedHeaderValue("aud", "www.foo.bar");
-
-        $loader->verify($jws);
-    }
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Wrong audience.
-     */
-    public function testInvalidAudienceInUnprotectedHeaderJWS()
-    {
-        $loader = $this->getLoader();
-
-        $jws = new JWS();
-        $jws->setUnprotectedHeaderValue("aud", "www.foo.bar");
 
         $loader->verify($jws);
     }

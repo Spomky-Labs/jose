@@ -17,18 +17,12 @@ use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\ContentEncryptionInterface;
 
 /**
- * Class able to load JWS or JWT.
+ * Class able to load JWS or JWE.
+ * JWS object can also be verified
  */
 abstract class Loader implements LoaderInterface
 {
     use PayloadConverter;
-
-    /**
-     * The audience.
-     *
-     * @return string
-     */
-    abstract protected function getAudience();
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -103,9 +97,6 @@ abstract class Loader implements LoaderInterface
         }
         if (null !== $jwt->getIssuedAt() && time() < $jwt->getIssuedAt()) {
             throw new \Exception("The JWT is issued in the futur.");
-        }
-        if (null !== $jwt->getAudience() && $this->getAudience() !== $jwt->getAudience()) {
-            throw new \Exception("Wrong audience.");
         }
         if (null !== $jwt->getCritical()) {
             foreach ($jwt->getCritical() as $crit) {
