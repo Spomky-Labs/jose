@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;

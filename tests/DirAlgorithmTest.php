@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\jose\tests;
 
 use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;

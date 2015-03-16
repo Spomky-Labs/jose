@@ -18,7 +18,7 @@ use Jose\Operation\ContentEncryptionInterface;
 
 /**
  * Class able to load JWS or JWE.
- * JWS object can also be verified
+ * JWS object can also be verified.
  */
 abstract class Loader implements LoaderInterface
 {
