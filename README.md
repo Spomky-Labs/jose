@@ -71,6 +71,13 @@ Look at [Extend classes](doc/Extend.md) for more informations and examples.
 
 Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
+## Unsecure JWS ##
+
+This library supports unsecured `JWS` (`none` algorithm).
+
+**Unsecured `JWS` is something you probably do not want to use.**
+After you loaded data you received, you should verify that the algorithm used is not `none`.
+
 ## Todo
 
 [Next modifications](doc/Todo.md).
