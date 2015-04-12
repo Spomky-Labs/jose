@@ -19,8 +19,7 @@ before_script:
     - php composer.phar update --no-interaction
 
 script:
-    - mkdir -p build/logs
-    - php vendor/bin/phpunit --testdox --coverage-text --coverage-clover ./build/logs/clover.xml
+    - vendor/bin/phpunit --coverage-clover=coverage.clover
 
 after_script:
     - wget https://scrutinizer-ci.com/ocular.phar
