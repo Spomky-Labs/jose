@@ -195,7 +195,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    public function isCryptoExtensionAvailable()
+    private function isCryptoExtensionAvailable()
     {
         return class_exists("\Crypto\Cipher");
     }
