@@ -40,6 +40,8 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
             $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size);
         }
 
+        var_dump(strlen($derived_key));
+        var_dump(mb_strlen($derived_key));
         return $wrapper->wrap($derived_key, $cek);
     }
 
