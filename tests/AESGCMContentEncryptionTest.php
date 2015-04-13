@@ -18,8 +18,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMEncryptAndDecrypt()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (!$this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -43,8 +43,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMEncryptAndDecrypt()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (!$this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -68,8 +68,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMEncryptAndDecrypt()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (!$this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -93,8 +93,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMDecryptTestVector()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (!$this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -127,8 +127,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    public function isHHVM()
+    private function isCryptoExtensionAvailable()
     {
-        return defined('HHVM_VERSION');
+        return class_exists("\Crypto\Cipher");
     }
 }

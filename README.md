@@ -25,21 +25,7 @@ This library aims to provide an implementation of:
 
 ## The Release Process ##
 
-We manage the releases of the library through features and time-based models.
-
-- A new patch version comes out every month when you made backwards-compatible bug fixes.
-- A new minor version comes every six months when we added functionality in a backwards-compatible manner.
-- A new major version comes every year when we make incompatible API changes.
-
-The meaning of "patch" "minor" and "major" comes from the Semantic [Versioning strategy](http://semver.org/).
-
-This release process applies for all versions.
-
-### Backwards Compatibility
-
-We allow developers to upgrade with confidence from one minor version to the next one.
-
-Whenever keeping backward compatibility is not possible, the feature, the enhancement or the bug fix will be scheduled for the next major version.
+The release process [is described here](doc/Release.md).
 
 ## Prerequisites ##
 
@@ -50,16 +36,19 @@ This library needs at least
 * `OpenSSL` library for PHP
 * `phpseclib/phpseclib` library for RSA and AES algorithms.
 * `mdanter/ecc` library for Elliptic Curves algorithms.
-* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms.
+* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on PHP 7 and HHVM).
 
-It has been successfully tested using `PHP 5.4` to `PHP 5.6`.
-Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
+It has been successfully tested using `PHP 5.4` to `PHP 5.6` using all algorithms.
+
+Tests with `PHP 7` and `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
 
 ## Installation ##
 
 The preferred way to install this library is to rely on Composer:
 
-    composer require spomky-labs/jose
+```sh
+composer require spomky-labs/jose "1.0.0@dev"
+```
 
 ## Extend the library ##
 
