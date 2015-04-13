@@ -129,6 +129,6 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function isCryptoExtensionAvailable()
     {
-        return !class_exists("\Crypto\Cipher");
+        return class_exists("\Crypto\Cipher");
     }
 }
