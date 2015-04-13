@@ -19,8 +19,8 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (true === $this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -49,8 +49,8 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (true === $this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -79,8 +79,8 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
-        if (true === $this->isHHVM()) {
-            $this->markTestIncomplete("PHP Crypto extension not available on HHVM.");
+        if (true === $this->isCryptoExtensionAvailable()) {
+            $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
         }
@@ -107,8 +107,8 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @return bool
      */
-    public function isHHVM()
+    public function isCryptoExtensionAvailable()
     {
-        return defined('HHVM_VERSION');
+        return !class_exists("\Crypto\Cipher");
     }
 }

@@ -1,8 +1,9 @@
-# How to use #
+How to use
+==========
 
-## Before to use ##
+# Before to use
 
-### JWS or JWE
+## JWS or JWE
 
 This library is able to create and load signed (JWS) and enrypted (JWE).
 
@@ -12,7 +13,7 @@ JWE are encrypted using public keys of one (or more) recipient(s). A recipient w
 
 You can create signed and encrypted data. You have to create à JWS and then create a JWE.
 
-### JWK
+## JWK
 
 The keys used to sign and encrypt are JWK objects.
 
@@ -27,7 +28,7 @@ There are four types of keys:
 
 A key can be used with different algorithms. But an algorithm only supports one type. For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys. See [the algorithms page](Keys.md) to know which type of key you need for your algorithm.
 
-### JWKSet
+## JWKSet
 
 You can group your keys in a JWKSet object. This object accepts any kind of JWK objects. It is recommended to group your public and private keys in different JWKSet.
 
@@ -35,7 +36,7 @@ All JWK and JWKSet are managed using a JWKManager object.
 
 **Note: in a near futur, the JWKManager will be splitted into two managers: JWKManager and JWKSetManager**
 
-### Data
+## Data
 
 A JWS or JWE object includes a signed data or an encrypted data. This library supports any type of data that are serializable (all types supported by `json_encode`).
 
@@ -49,7 +50,7 @@ So you can sign or encrypt
 * a JWT object.
 * an object that implements `JsonSerializable`
 
-## Creation of my first JOSE ##
+# Creation of my first JOSE
 
 In this example, we suppose that you already have (extended the required components)[Extend the library](Extend.md).
 
@@ -59,7 +60,6 @@ In this example, you are Alice and you want to send a very important message to 
 The public key of Bob is a RSA Certificate. Using JWK representation, it will be:
 
 ```php
-
     array(
         "kty" => "RSA",
         "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
@@ -70,7 +70,6 @@ The public key of Bob is a RSA Certificate. Using JWK representation, it will be
 **Note: to create such array from a X509 certificate, you can use the following method:**
 
 ```php
-
     <?php
     use SpomkyLabs\Jose\Util\RSAConverter;
 
@@ -82,7 +81,6 @@ Alice will encrypt the message (=create a JWE object) using the key encryption a
 As there is only one receiver, we can use the compact serialization.
 
 ```php
-
     <?php
     //We create and configure instances of JWKManager and JWTManager
     $aliceJWK = ...; //The key of Alice (JWK object). See above.
@@ -105,7 +103,6 @@ As there is only one receiver, we can use the compact serialization.
 The variable ```$jwe``` now contains your ecnrypted message. You can send it to Bob. The encrypted message will look like:
 
 ```php
-
     eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r
 ```
 
@@ -116,7 +113,6 @@ Bob received the message from Alice and want to decrypt the message. Bob has the
 The private key of Bob is:
 
 ```php
-
     array(
         "kty" => "RSA",
         "n"   =>"sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw",
@@ -128,7 +124,6 @@ The private key of Bob is:
 To decrypt the message, Bob will load the data he received:
 
 ```php
-
     <?php
 
     $result = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r");
@@ -137,7 +132,6 @@ To decrypt the message, Bob will load the data he received:
 If you want to use a specific key set, you can pass it as second argument.
 
 ```php
-
     <?php
 
 	$my_keyset = ...; //A JWKSet object that contains keys.
@@ -148,6 +142,5 @@ If you want to use a specific key set, you can pass it as second argument.
 The variable ```$result``` now contains an object that implements JWEInterface. You can get the headers (protected or unprotected) and the message of Alice: 
 
 ```php
-
     echo $result->getPayload(); // "Meet me in the front of train station at 8:00AM"
 ```

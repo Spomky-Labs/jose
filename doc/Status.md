@@ -1,34 +1,35 @@
-# Status of the implementation #
+Status of the implementation
+============================
 
-## JWT ##
+# JWT #
 
-### Supported ###
+## Supported ##
 
-Input supported:
-* Plain text
-* Array
-* JWTInterface object
-* jwk+json content type (JWKInterface object)
-* jwkset+json content type (JWKSetInterface object)
+* Input supported:
+    * Plain text
+    * Array
+    * JWTInterface object
+    * jwk+json content type (JWKInterface object)
+    * jwkset+json content type (JWKSetInterface object)
 
-Serialization modes supported:
-* JSON Compact Serialization Overview (JWS/JWS creation and loading)
-* JSON Flattened Serialization Overview (JWS/JWS creation and loading)
-* JSON Serialization Overview (JWE creation in this mode is not supported)
+* Serialization modes supported:
+    * JSON Compact Serialization Overview (JWS/JWS creation and loading)
+    * JSON Flattened Serialization Overview (JWS/JWS creation and loading)
+    * JSON Serialization Overview (JWE creation in this mode is not supported)
 
-Compression support for JWE objects:
-* Deflate —DEF—
-* GZip —GZ— *(this compression method is not described in the specification)*
-* ZLib —ZLIB— *(this compression method is not described in the specification)*
+* Compression support for JWE objects:
+    * Deflate —DEF—
+    * GZip —GZ— *(this compression method is not described in the specification)*
+    * ZLib —ZLIB— *(this compression method is not described in the specification)*
 
-### Unsupported ###
+## Unsupported ##
 
 * JSON Serialization Overview
     * JWE (creation only)
 
-## JWA ##
+# JWA #
 
-### Supported algorithms ###
+## Supported algorithms ##
 
 * Signature:
     * HS256, HS384, HS512
@@ -63,19 +64,19 @@ Compression support for JWE objects:
         * A192GCM
         * A256GCM
 
-### Unsupported algorithms ###
+## Unsupported algorithms ##
 
 **None!** All algortihms described in the specification are supported.
 
-## JWK ##
+# JWK #
 
-JWK are fully supported
+JWK is fully supported
 
-## JWKSet ##
+# JWKSet #
 
-JWKSet are fully supported
+JWKSet is fully supported
 
-## JWKManager ##
+# JWKManager #
 
 This project provides a key manager. This manager is able to find keys according to the header of data loaded.
 
