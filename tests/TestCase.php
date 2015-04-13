@@ -187,6 +187,22 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new RSAOAEP())
                     ->addAlgorithm(new RSAOAEP256());
 
+        if ($this->isCryptoExtensionAvailable()) {
+            $key_manager->addAlgorithm(new A128GCM())
+                        ->addAlgorithm(new A192GCM())
+                        ->addAlgorithm(new A256GCM())
+                        ->addAlgorithm(new A128GCMKW())
+                        ->addAlgorithm(new A192GCMKW())
+                        ->addAlgorithm(new A256GCMKW());
+        }
         return $key_manager;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCryptoExtensionAvailable()
+    {
+        return class_exists("\Crypto\Cipher");
     }
 }
