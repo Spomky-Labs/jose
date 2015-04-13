@@ -34,14 +34,8 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $header["p2s"] = Base64Url::encode($salt);
         $header["p2c"] = $count;
 
-        if (function_exists('hash_pbkdf2')) {
-            $derived_key = hash_pbkdf2($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size, true);
-        } else {
-            $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size);
-        }
+        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header["alg"]."\x00".$salt, $count, $key_size, true);
 
-        var_dump(strlen($derived_key));
-        var_dump(mb_strlen($derived_key));
         return $wrapper->wrap($derived_key, $cek);
     }
 
@@ -63,11 +57,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $count = $header["p2c"];
         $password = Base64Url::decode($key->getValue("k"));
 
-        if (function_exists('hash_pbkdf2')) {
-            $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size, true);
-        } else {
-            $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $salt, $count, $key_size);
-        }
+        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $salt, $count, $key_size, true);
 
         return $wrapper->unwrap($derived_key, $encryted_cek);
     }
