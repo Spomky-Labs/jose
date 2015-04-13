@@ -13,6 +13,16 @@ use Jose\Operation\KeyEncryptionInterface;
 abstract class AESKW implements KeyEncryptionInterface
 {
     /**
+     *
+     */
+    public function __construct()
+    {
+        if (!trait_exists("\AESKW\AESKW")) {
+            throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
+        }
+    }
+
+    /**
      * @param  JWKInterface $key
      * @param  string       $cek
      * @param  array        $header

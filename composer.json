@@ -23,22 +23,25 @@
     },
     "require": {
         "php": ">=5.3",
-        "spomky-labs/jose-interface": "~1.0.0",
+        "spomky-labs/jose-interface": "~1.0.0"
+    },
+    "require-dev": {
         "lib-openssl": "*",
+        "phpseclib/phpseclib": ">=0.3.5",
+        "mdanter/ecc": "~0.2",
+        "phpunit/phpunit": "~4.5",
         "spomky-labs/pbkdf2": "~1.0",
         "spomky-labs/aes-key-wrap": "~2.0"
     },
-    "require-dev": {
-        "phpseclib/phpseclib": ">=0.3.5",
-        "mdanter/ecc": "~0.2",
-        "phpunit/phpunit": "4.*"
-    },
    "suggest":{
-      "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
-      "ext-bcmath":"Required if GMP is not installed",
-      "ext-crypto":"Required to use AES GCM algorithms",
-      "phpseclib/phpseclib":"Required to use RSA based algorithms",
-      "mdanter/ecc":"Required to use Elliptic Curves based algorithms"
+        "lib-openssl": "Required to use AES algorithms (except AES GCM)",
+        "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
+        "ext-bcmath":"Required if GMP is not installed",
+        "ext-crypto":"Required to use AES GCM algorithms",
+        "phpseclib/phpseclib":"Required to use RSA based algorithms",
+        "mdanter/ecc":"Required to use Elliptic Curves based algorithms",
+        "spomky-labs/pbkdf2": "Required to use PBES2-* algorithms",
+        "spomky-labs/aes-key-wrap": "Required to use Key Wrap (A128KW, PBES2-HS256+A128KW...) algorithms"
    },
     "extra": {
         "branch-alias": {
