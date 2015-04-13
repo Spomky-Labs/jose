@@ -38,9 +38,9 @@ This library needs at least
 * `mdanter/ecc` library for Elliptic Curves algorithms.
 * [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on PHP 7 and HHVM).
 
-It has been successfully tested using `PHP 5.4` to `PHP 5.6`, `PHP 7` (except AES GCM algorithms).
+It has been successfully tested using `PHP 5.4` to `PHP 5.6` using all algorithms.
 
-Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
+Tests with `PHP 7` and `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
 
 ## Installation ##
 
