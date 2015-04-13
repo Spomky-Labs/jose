@@ -18,7 +18,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMEncryptAndDecrypt()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
@@ -43,7 +43,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMEncryptAndDecrypt()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
@@ -68,7 +68,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMEncryptAndDecrypt()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
@@ -93,7 +93,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMDecryptTestVector()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;

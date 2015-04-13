@@ -19,7 +19,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
@@ -49,7 +49,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;
@@ -79,7 +79,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
-        if (true === $this->isCryptoExtensionAvailable()) {
+        if (!$this->isCryptoExtensionAvailable()) {
             $this->markTestSkipped("PHP Crypto extension not available.");
 
             return;

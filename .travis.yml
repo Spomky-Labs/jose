@@ -12,9 +12,9 @@ matrix:
         - php: hhvm
 
 before_script:
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ ^5 ]; then pecl install crypto-0.1.1; fi;'
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ ^5 ]; then phpenv config-add ./tests/php.ini; fi;'
-    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ ^5 ]; then composer require "ext-crypto:~0.1.1" --no-update; fi;'
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ "^5" ]; then pecl install crypto-0.1.1; fi;'
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ "^5" ]; then phpenv config-add ./tests/php.ini; fi;'
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" =~ "^5" ]; then composer require "ext-crypto:~0.1.1" --no-update; fi;'
     - curl -s http://getcomposer.org/installer | php
     - php composer.phar install --no-interaction
 
