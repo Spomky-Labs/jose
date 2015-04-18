@@ -18,12 +18,7 @@ class Converter
     public static function convert($input, $mode)
     {
         $prepared = array();
-        $current_mode = self::getMode($input, $prepared);
-        /*if ($current_mode === $mode) {
-            $json = json_decode($input, true);
-
-            return is_null($json) ? array($input) : $json;
-        }*/
+        self::getMode($input, $prepared);
         switch ($mode) {
             case JSONSerializationModes::JSON_SERIALIZATION:
                 return json_encode($prepared);
@@ -409,7 +404,6 @@ class Converter
         } else {
             throw new \InvalidArgumentException('Unsupported input');
         }
-        var_dump($input);
         throw new \InvalidArgumentException('Unsupported input');
     }
 }
