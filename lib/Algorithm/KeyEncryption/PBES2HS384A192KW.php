@@ -30,7 +30,7 @@ class PBES2HS384A192KW extends PBES2AESKW
      */
     protected function getKeySize()
     {
-        return 192/8;
+        return 192 / 8;
     }
 
     /**

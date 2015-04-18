@@ -83,7 +83,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertEquals(2, $jwkset->key());
 
-        for ($i = 0; $i<count($jwkset);$i++) {
+        for ($i = 0; $i < count($jwkset);$i++) {
             $this->assertEquals('EC', $jwkset[$i]->getKeyType());
         }
 

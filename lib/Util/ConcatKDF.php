@@ -33,7 +33,7 @@ class ConcatKDF
             '',                                                                     // SuppPrivInfo
         );
 
-        return substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size/8);
+        return substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size / 8);
     }
 
     /**

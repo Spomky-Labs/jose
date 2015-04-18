@@ -68,7 +68,7 @@ abstract class ECDSA implements SignatureInterface
         $this->checkKey($key);
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2*$part_length) {
+        if (strlen($signature) !== 2 * $part_length) {
             return false;
         }
 

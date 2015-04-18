@@ -77,7 +77,7 @@ class ECConverter
             $values += self::loadPublicKey($matches[1]);
         }
 
-        return empty($values) ? false : array('kty' => 'EC')+$values;
+        return empty($values) ? false : array('kty' => 'EC') + $values;
     }
 
     /**
@@ -165,8 +165,8 @@ class ECConverter
             return false;
         }
 
-        $X = substr($details, 2, (strlen($details)-2)/2);
-        $Y = substr($details, (strlen($details)-2)/2+2, (strlen($details)-2)/2);
+        $X = substr($details, 2, (strlen($details) - 2) / 2);
+        $Y = substr($details, (strlen($details) - 2) / 2 + 2, (strlen($details) - 2) / 2);
 
         return array(
             'x' => Base64Url::encode($X),

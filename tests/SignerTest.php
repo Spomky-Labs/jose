@@ -220,7 +220,7 @@ class SignerTest extends TestCase
         $loader = $this->getLoader();
 
         $jws = new JWS();
-        $jws->setPayload(array('exp' => time()-1));
+        $jws->setPayload(array('exp' => time() - 1));
 
         $loader->verify($jws);
     }
@@ -234,7 +234,7 @@ class SignerTest extends TestCase
         $loader = $this->getLoader();
 
         $jws = new JWS();
-        $jws->setPayload(array('nbf' => time()+1000));
+        $jws->setPayload(array('nbf' => time() + 1000));
 
         $loader->verify($jws);
     }
@@ -248,7 +248,7 @@ class SignerTest extends TestCase
         $loader = $this->getLoader();
 
         $jws = new JWS();
-        $jws->setPayload(array('iat' => time()+1000));
+        $jws->setPayload(array('iat' => time() + 1000));
 
         $loader->verify($jws);
     }
@@ -267,8 +267,8 @@ class SignerTest extends TestCase
             'nbf',
             'aud',
         ));
-        $jws->setUnprotectedHeaderValue('exp', time()+100);
-        $jws->setProtectedHeaderValue('nbf', time()-100);
+        $jws->setUnprotectedHeaderValue('exp', time() + 100);
+        $jws->setProtectedHeaderValue('nbf', time() - 100);
 
         $loader->verify($jws);
     }

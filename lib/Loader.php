@@ -230,7 +230,7 @@ abstract class Loader implements LoaderInterface
             $jws[] = $this->createJWS($encoded_protected_header.'.'.$encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
         }
 
-        return count($jws)>1 ? $jws : current($jws);
+        return count($jws) > 1 ? $jws : current($jws);
     }
 
     /**

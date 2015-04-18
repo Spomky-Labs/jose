@@ -100,7 +100,7 @@ class RSAConverter
             $element = self::getElement($key);
             $value = strtr($value, '-_', '+/');
 
-            switch (strlen($value)%4) {
+            switch (strlen($value) % 4) {
                 case 0:
                     break; // No pad chars in this case
                 case 2:

@@ -40,14 +40,7 @@ abstract class AESGCM implements ContentEncryptionInterface
     }
 
     /**
-     * @param $input
-     * @param $cek
-     * @param $iv
-     * @param $aad
-     * @param array $header
-     * @param $tag
-     *
-     * @return mixed
+     *  @inheritdoc
      */
     public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
     {

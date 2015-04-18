@@ -26,7 +26,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     public function encryptContent($input, $cek, $iv, $aad, array &$header, &$tag)
     {
         $encoded_header = Base64Url::encode(json_encode($header));
-        $k = substr($cek, strlen($cek)/2);
+        $k = substr($cek, strlen($cek) / 2);
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
@@ -53,7 +53,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     {
         $encoded_header = Base64Url::encode(json_encode($header));
         $this->checkAuthenticationTag($input, $cek, $iv, $aad, $encoded_header, $tag);
-        $k = substr($cek, strlen($cek)/2);
+        $k = substr($cek, strlen($cek) / 2);
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
@@ -77,7 +77,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key          = substr($cek, 0, strlen($cek)/2);
+        $mac_key          = substr($cek, 0, strlen($cek) / 2);
         $auth_data_length = strlen($encoded_header);
 
         $secured_input = implode('', array(
@@ -88,7 +88,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         ));
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
-        return substr($hash, 0, strlen($hash)/2);
+        return substr($hash, 0, strlen($hash) / 2);
     }
 
     /**

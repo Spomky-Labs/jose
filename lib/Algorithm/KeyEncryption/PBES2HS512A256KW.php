@@ -30,7 +30,7 @@ class PBES2HS512A256KW extends PBES2AESKW
      */
     protected function getKeySize()
     {
-        return 256/8;
+        return 256 / 8;
     }
 
     /**
