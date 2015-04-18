@@ -29,7 +29,7 @@ abstract class AESGCM implements ContentEncryptionInterface
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = Base64Url::encode(json_encode($header));
         if (null !== $aad) {
-            $calculated_aad .= $aad;
+            $calculated_aad .= '.'.$aad;
         }
 
         $cipher->setAAD($calculated_aad);
@@ -54,7 +54,7 @@ abstract class AESGCM implements ContentEncryptionInterface
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = Base64Url::encode(json_encode($header));
         if (null !== $aad) {
-            $calculated_aad .= $aad;
+            $calculated_aad .= '.'.$aad;
         }
         $cipher->setTag($tag);
         $cipher->setAAD($calculated_aad);
