@@ -5,8 +5,7 @@ namespace SpomkyLabs\Jose;
 use Jose\JWS as Base;
 
 /**
- * Class JWS
- * @package SpomkyLabs\Jose
+ * Class JWS.
  */
 class JWS extends Base
 {

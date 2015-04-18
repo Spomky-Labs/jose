@@ -27,8 +27,9 @@ trait PayloadConverter
     abstract protected function getJWTManager();
 
     /**
-     * @param  array      $header
+     * @param array $header
      * @param $payload
+     *
      * @throws \Exception
      */
     protected function convertJWTContent(array $header, &$payload)

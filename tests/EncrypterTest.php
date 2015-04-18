@@ -9,11 +9,40 @@ use SpomkyLabs\Jose\EncryptionInstruction;
 use Jose\JSONSerializationModes;
 
 /**
- * Class EncrypterTest
- * @package SpomkyLabs\Jose\Tests
+ * Class EncrypterTest.
  */
 class EncrypterTest extends TestCase
 {
+    /**
+     *
+     */
+    public function testEncryptAndLoadFlattenedWithAAD()
+    {
+        $encrypter = $this->getEncrypter();
+        $loader = $this->getLoader();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypted = $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            array($instruction),
+            array("kid" => "123456789", "enc" => "A256CBC-HS512", "alg" => "RSA-OAEP-256", "zip" => "DEF"),
+            array(),
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz'
+        );
+
+        $loaded = $loader->load($encrypted);
+
+        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
+        $this->assertEquals("RSA-OAEP-256", $loaded->getAlgorithm());
+        $this->assertEquals("A256CBC-HS512", $loaded->getEncryptionAlgorithm());
+        $this->assertEquals("DEF", $loaded->getZip());
+        $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
+    }
+
     /**
      *
      */

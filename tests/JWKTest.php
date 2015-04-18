@@ -4,7 +4,7 @@ use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\JWK;
 
 /**
- * Class JWKTest
+ * Class JWKTest.
  */
 class JWKTest extends \PHPUnit_Framework_TestCase
 {

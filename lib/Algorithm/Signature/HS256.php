@@ -4,11 +4,10 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 /**
  * This class handles signatures using HMAC.
- * It supports HS256;
+ * It supports HS256;.
  */
 /**
- * Class HS256
- * @package SpomkyLabs\Jose\Algorithm\Signature
+ * Class HS256.
  */
 class HS256 extends HMAC
 {

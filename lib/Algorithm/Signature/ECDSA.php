@@ -12,8 +12,7 @@ use Mdanter\Ecc\EccFactory;
 use Base64Url\Base64Url;
 
 /**
- * Class ECDSA
- * @package SpomkyLabs\Jose\Algorithm\Signature
+ * Class ECDSA.
  */
 abstract class ECDSA implements SignatureInterface
 {
@@ -134,6 +133,7 @@ abstract class ECDSA implements SignatureInterface
 
     /**
      * @param $value
+     *
      * @return int|string
      */
     protected function convertHexToDec($value)
@@ -143,6 +143,7 @@ abstract class ECDSA implements SignatureInterface
 
     /**
      * @param $value
+     *
      * @return int|string
      */
     protected function convertBase64ToDec($value)

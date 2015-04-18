@@ -7,8 +7,7 @@ use AESKW\A128KW as Wrapper;
 use Base64Url\Base64Url;
 
 /**
- * Class A128KW
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class A128KW.
  */
 class A128KW extends AESKW
 {

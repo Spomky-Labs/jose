@@ -17,18 +17,12 @@ use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\ContentEncryptionInterface;
 
 /**
- * Class able to load JWS or JWT.
+ * Class able to load JWS or JWE.
+ * JWS object can also be verified.
  */
 abstract class Loader implements LoaderInterface
 {
     use PayloadConverter;
-
-    /**
-     * The audience
-     *
-     * @return string
-     */
-    abstract protected function getAudience();
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -73,7 +67,9 @@ abstract class Loader implements LoaderInterface
     public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null)
     {
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
-        $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+        if (null === $jwk_set) {
+            $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+        }
 
         if (0 === count($jwk_set)) {
             return false;
@@ -94,21 +90,18 @@ abstract class Loader implements LoaderInterface
     public function verify(JWTInterface $jwt)
     {
         if (null !== $jwt->getExpirationTime() && time() > $jwt->getExpirationTime()) {
-            return false;
+            throw new \Exception("The JWT has expired.");
         }
         if (null !== $jwt->getNotBefore() && time() < $jwt->getNotBefore()) {
-            return false;
+            throw new \Exception("The JWT has expired.");
         }
         if (null !== $jwt->getIssuedAt() && time() < $jwt->getIssuedAt()) {
-            return false;
-        }
-        if (null !== $jwt->getAudience() && $this->getAudience() !== $jwt->getAudience()) {
-            return false;
+            throw new \Exception("The JWT is issued in the futur.");
         }
         if (null !== $jwt->getCritical()) {
             foreach ($jwt->getCritical() as $crit) {
                 if (null === $jwt->getHeaderValue($crit) && null === $jwt->getPayloadValue($crit)) {
-                    return false;
+                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $crit));
                 }
             }
         }
@@ -117,7 +110,8 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param  string       $input
+     * @param string $input
+     *
      * @return array|string
      */
     protected function convertInputToSerializedJson($input)

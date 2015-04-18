@@ -6,8 +6,7 @@ use Jose\JWAManager as Base;
 use Jose\JWAInterface;
 
 /**
- * Class JWAManager
- * @package SpomkyLabs\Jose
+ * Class JWAManager.
  */
 class JWAManager extends Base
 {
@@ -41,7 +40,8 @@ class JWAManager extends Base
     }
 
     /**
-     * @param  JWAInterface $algorithm
+     * @param JWAInterface $algorithm
+     *
      * @return $this
      */
     public function addAlgorithm(JWAInterface $algorithm)

@@ -5,11 +5,9 @@ namespace SpomkyLabs\Jose\Util;
 use Base64Url\Base64Url;
 
 /**
- * Class RSAConverter
+ * Class RSAConverter.
  *
  * This utility class will help to get details of a RSA key or certificate to generate a JWK
- *
- * @package SpomkyLabs\Jose
  */
 class RSAConverter
 {
@@ -24,8 +22,10 @@ class RSAConverter
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
+     *
      * @return \Crypt_RSA
+     *
      * @throws \Exception
      */
     public static function fromArrayToRSACrypt(array $data)
@@ -87,8 +87,10 @@ class RSAConverter
     }
 
     /**
-     * @param  array      $data
+     * @param array $data
+     *
      * @return string
+     *
      * @throws \Exception
      */
     public static function fromArrayToXML(array $data)
@@ -120,6 +122,7 @@ class RSAConverter
 
     /**
      * @param $key
+     *
      * @return mixed
      */
     protected static function getElement($key)

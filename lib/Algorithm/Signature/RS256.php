@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 /**
- * Class RS256
- * @package SpomkyLabs\Jose\Algorithm\Signature
+ * Class RS256.
  */
 class RS256 extends RSA
 {

@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 
 /**
- * Class ECDHESKeyAgreementTest
- * @package SpomkyLabs\Jose\Tests
+ * Class ECDHESKeyAgreementTest.
  */
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {

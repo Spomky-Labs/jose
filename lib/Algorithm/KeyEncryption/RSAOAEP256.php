@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 /**
- * Class RSAOAEP256
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class RSAOAEP256.
  */
 class RSAOAEP256 extends RSA
 {

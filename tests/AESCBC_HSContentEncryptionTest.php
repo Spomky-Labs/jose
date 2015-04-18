@@ -7,8 +7,7 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 
 /**
- * Class AESCBC_HSContentEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class AESCBC_HSContentEncryptionTest.
  */
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -34,7 +33,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return string
      */
     private function convertArrayToBinString(array $data)
@@ -62,7 +62,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("652c3fa36b0a7c5b3219fab3a30bc1c4");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $aad, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
@@ -70,9 +70,9 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
         $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
-        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
+        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad));
         $this->assertEquals($expected_T, $T);
-        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad, $T)));
+        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad, $T)));
     }
 
     /**
@@ -90,7 +90,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("8490ac0e58949bfe51875d733f93ac2075168039ccc733d7");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $aad, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
@@ -98,9 +98,9 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
         $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
-        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
+        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad));
         $this->assertEquals($expected_T, $T);
-        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad, $T)));
+        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad, $T)));
     }
 
     /**
@@ -118,7 +118,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_T          = hex2bin("4dd3b4c088a7f45c216839645b2012bf2e6269a8c56a816dbc1b267761955bc5");
         $aad                 = hex2bin("546865207365636f6e64207072696e6369706c65206f662041756775737465204b6572636b686f666673");
 
-        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, null, $header, $T);
+        $cyphertext = $algorithm->encryptContent($plaintext, $K, $iv, $aad, $header, $T);
 
         $this->assertEquals($expected_cyphertext, $cyphertext);
 
@@ -126,9 +126,9 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $calc_method  = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "calculateAuthenticationTag");
         $check_method = self::getMethod("\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256", "checkAuthenticationTag");
 
-        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad));
+        $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad));
         $this->assertEquals($expected_T, $T);
-        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, $aad, $T)));
+        $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad, $T)));
     }
 
     /**

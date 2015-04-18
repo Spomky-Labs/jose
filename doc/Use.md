@@ -5,19 +5,24 @@ How to use
 
 ## JWS or JWE
 
-This library is able to create and load signed (JWS) and enrypted (JWE).
+This library is able to create and load signed JWT (JWS) and encrypted JWT (JWE).
 
-JWS are digital signed using one (or more) private key(s). The receiver of this JOT will be able to verify this signature is valid using your public key. If the signature is valid, the receiver can consider that the data received have not been modified and that your are the sender.
+JWS are digitally signed using one (or more) private key(s). The receiver of
+this JOT will be able to verify this signature is valid using your public key.
+If the signature is valid, the receiver can consider that the data received have
+not been modified and that your are the sender.
 
-JWE are encrypted using public keys of one (or more) recipient(s). A recipient will be able decrypt the data using its private key.
+JWE are encrypted using public keys of one (or more) recipient(s).
+A recipient will be able decrypt the data using its private key.
 
-You can create signed and encrypted data. You have to create à JWS and then create a JWE.
+You can create signed and encrypted data. You have to create a JWS and then create a JWE.
 
 ## JWK
 
 The keys used to sign and encrypt are JWK objects.
 
-A public key is used to verify a digital signature and to encrypt data using. A private key can sign and decrypt data.
+A public key is used to verify a digital signature and to encrypt data using.
+A private key can sign and decrypt data.
 
 There are four types of keys:
 
@@ -26,11 +31,14 @@ There are four types of keys:
 * `oct` keys,
 * `dir` keys.
 
-A key can be used with different algorithms. But an algorithm only supports one type. For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys. See [the algorithms page](Keys.md) to know which type of key you need for your algorithm.
+A key can be used with different algorithms. But an algorithm only supports one type.
+For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys.
+See [the algorithms page](Keys.md) to know which type of key you need for your algorithm.
 
 ## JWKSet
 
-You can group your keys in a JWKSet object. This object accepts any kind of JWK objects. It is recommended to group your public and private keys in different JWKSet.
+You can group your keys in a JWKSet object. This object accepts any kind of JWK objects.
+It is recommended to group your public and private keys in different JWKSet.
 
 All JWK and JWKSet are managed using a JWKManager object.
 
@@ -43,8 +51,8 @@ A JWS or JWE object includes a signed data or an encrypted data. This library su
 So you can sign or encrypt
 
 * a number: 3.14159265359
-* a string: "Long live and prosper"
-* an array: {"iss":"my.example.com","sub":"me@example.com","is_admin":true}
+* a string: "Live long and prosper"
+* an array:  `["iss"=>"my.example.com","sub"=>"me@example.com","is_admin"=>true]`
 * a key (JWK object)
 * a set of private keys (JWKSet object)
 * a JWT object.
@@ -73,7 +81,9 @@ The public key of Bob is a RSA Certificate. Using JWK representation, it will be
     <?php
     use SpomkyLabs\Jose\Util\RSAConverter;
 
-    $certificate = RSAConverter::loadKeyFromFile("/path/to/your/certificate", "passphrase"); //This method also accepts a string of the certificate in PEM format. "passphrase" is the passphrase used to secure the private key. This argument is optional.
+    // This method also accepts a string of the certificate in PEM format.
+    // "passphrase" is the passphrase used to secure the private key. This argument is optional.
+    $certificate = RSAConverter::loadKeyFromFile("/path/to/your/certificate", "passphrase");
 ```
 
 Alice will encrypt the message (=create a JWE object) using the key encryption algorithm ```RSA-OAEP-256``` and the content encryption algorithm ```A256CBC-HS512```.
@@ -97,10 +107,17 @@ As there is only one receiver, we can use the compact serialization.
     //The third argument is the shared protected headers. We set the algorithms and we want to compress the data before encryption using the DEFLATE method.
     //The fourth argument is the unprotected shared headers. We set nothing because the compact serialization method does not support it
     //The fifth argument define the expected serialization method.
-	$jwe = $encrypter->encrypt($message, array($instruction), array("enc" => "A256CBC-HS512", "alg" => "RSA-OAEP-256", "zip" => "DEF"), array(), JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+    $jwe = $encrypter->encrypt(
+        $message,
+        array($instruction),
+        array("enc" => "A256CBC-HS512", "alg" => "RSA-OAEP-256", "zip" => "DEF"),
+        array(),
+        JSONSerializationModes::JSON_COMPACT_SERIALIZATION
+    );
 ```
 
-The variable ```$jwe``` now contains your ecnrypted message. You can send it to Bob. The encrypted message will look like:
+The variable ```$jwe``` now contains your encrypted message. You can send it to Bob.
+The encrypted message will look like:
 
 ```php
     eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r
@@ -108,7 +125,8 @@ The variable ```$jwe``` now contains your ecnrypted message. You can send it to 
 
 ## Load a JOSE ##
 
-Bob received the message from Alice and want to decrypt the message. Bob has the private key used to encrypt this message in its JWKSet (managed by its JWKManager object).
+Bob received the message from Alice and wants to decrypt the message. Bob has the
+private key used to encrypt this message in its JWKSet (managed by its JWKManager object).
 
 The private key of Bob is:
 

@@ -7,8 +7,7 @@ use Base64Url\Base64Url;
 
 /**
  * This class will help you to load an EC key (private or public) and get values to create a JWK object
- * Class ECConverter
- * @package SpomkyLabs\Jose\Util
+ * Class ECConverter.
  */
 class ECConverter
 {
@@ -31,8 +30,10 @@ class ECConverter
 
     /**
      * @param $certificate
-     * @param  null       $passphrase
+     * @param null $passphrase
+     *
      * @return mixed
+     *
      * @throws \Exception
      */
     protected static function loadKey($certificate, $passphrase = null)
@@ -57,7 +58,9 @@ class ECConverter
 
     /**
      * @param $file
+     *
      * @return array|bool|void
+     *
      * @throws \Exception
      */
     public static function loadKeyFromFile($file)
@@ -79,6 +82,7 @@ class ECConverter
 
     /**
      * @param $privateKey
+     *
      * @return array
      */
     protected static function loadPrivateKey($privateKey)
@@ -115,6 +119,7 @@ class ECConverter
 
     /**
      * @param $publicKey
+     *
      * @return array|bool
      */
     protected static function loadPublicKey($publicKey)
@@ -171,6 +176,7 @@ class ECConverter
 
     /**
      * @param $algorithm
+     *
      * @return bool
      */
     protected static function isAlgorithmSupported($algorithm)

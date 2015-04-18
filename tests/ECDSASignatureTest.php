@@ -10,11 +10,9 @@ use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 use SpomkyLabs\Jose\Util\ECConverter;
 
 /**
- * Class ECDSASignatureTest
+ * Class ECDSASignatureTest.
  *
  * The values of these tests come from the JWS draft
- *
- * @package SpomkyLabs\Jose\Tests
  */
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {

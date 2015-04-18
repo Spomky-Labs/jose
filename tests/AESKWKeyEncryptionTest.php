@@ -9,8 +9,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
 
 /**
- * Class AESKWKeyEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class AESKWKeyEncryptionTest.
  */
 class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {

@@ -51,8 +51,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 
 /**
- * Class TestCase
- * @package SpomkyLabs\Jose\Tests
+ * Class TestCase.
  */
 class TestCase extends \PHPUnit_Framework_TestCase
 {

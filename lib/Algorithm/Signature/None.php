@@ -6,7 +6,7 @@ use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 
 /**
- * This class is an abstract class that implements the none algorithm (plaintext)
+ * This class is an abstract class that implements the none algorithm (plaintext).
  */
 class None implements SignatureInterface
 {

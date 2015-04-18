@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\HS384;
 use SpomkyLabs\Jose\Algorithm\Signature\HS512;
 
 /**
- * Class HMACSignatureTest
- * @package SpomkyLabs\Jose\Tests
+ * Class HMACSignatureTest.
  */
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {

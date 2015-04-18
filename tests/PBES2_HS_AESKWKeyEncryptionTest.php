@@ -9,8 +9,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
 
 /**
- * Class PBES2_HS_AESKWKeyEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class PBES2_HS_AESKWKeyEncryptionTest.
  */
 class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -117,7 +116,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return string
      */
     private function convertArrayToBinString(array $data)

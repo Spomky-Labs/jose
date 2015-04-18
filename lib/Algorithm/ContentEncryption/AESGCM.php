@@ -29,7 +29,7 @@ abstract class AESGCM implements ContentEncryptionInterface
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = Base64Url::encode(json_encode($header));
         if (null !== $aad) {
-            $calculated_aad .= $aad;
+            $calculated_aad .= '.'.$aad;
         }
 
         $cipher->setAAD($calculated_aad);
@@ -44,8 +44,9 @@ abstract class AESGCM implements ContentEncryptionInterface
      * @param $cek
      * @param $iv
      * @param $aad
-     * @param  array $header
+     * @param array $header
      * @param $tag
+     *
      * @return mixed
      */
     public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
@@ -53,7 +54,7 @@ abstract class AESGCM implements ContentEncryptionInterface
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = Base64Url::encode(json_encode($header));
         if (null !== $aad) {
-            $calculated_aad .= $aad;
+            $calculated_aad .= '.'.$aad;
         }
         $cipher->setTag($tag);
         $cipher->setAAD($calculated_aad);

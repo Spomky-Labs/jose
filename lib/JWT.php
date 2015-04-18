@@ -5,8 +5,7 @@ namespace SpomkyLabs\Jose;
 use Jose\JWT as Base;
 
 /**
- * Class JWT
- * @package SpomkyLabs\Jose
+ * Class JWT.
  */
 class JWT extends Base
 {

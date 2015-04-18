@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Jose\Algorithm\Signature\None;
 
 /**
- * Class NoneSignatureTest
- * @package SpomkyLabs\Jose\Tests
+ * Class NoneSignatureTest.
  */
 class NoneSignatureTest extends TestCase
 {

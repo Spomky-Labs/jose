@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 /**
- * Class A256GCMKW
- * @package SpomkyLabs\Jose\Algorithm\KeyEncryption
+ * Class A256GCMKW.
  */
 class A256GCMKW extends AESGCMKW
 {

@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;
 
 /**
- * Class AESGCMContentEncryptionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class AESGCMContentEncryptionTest.
  */
 class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -112,7 +111,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param  array  $data
+     * @param array $data
+     *
      * @return string
      */
     private function convertArrayToBinString(array $data)

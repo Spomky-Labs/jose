@@ -7,8 +7,7 @@ use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
 
 /**
- * Class DirAlgorithmTest
- * @package SpomkyLabs\Jose\Tests
+ * Class DirAlgorithmTest.
  */
 class DirAlgorithmTest extends TestCase
 {

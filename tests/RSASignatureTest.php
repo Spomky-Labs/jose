@@ -15,8 +15,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS384;
 use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 
 /**
- * Class RSASignatureTest
- * @package SpomkyLabs\Jose\Tests
+ * Class RSASignatureTest.
  */
 class RSASignatureTest extends TestCase
 {

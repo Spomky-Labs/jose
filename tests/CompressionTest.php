@@ -8,8 +8,7 @@ use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 
 /**
- * Class CompressionTest
- * @package SpomkyLabs\Jose\Tests
+ * Class CompressionTest.
  */
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {

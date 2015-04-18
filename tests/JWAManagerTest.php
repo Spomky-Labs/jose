@@ -3,8 +3,7 @@
 namespace SpomkyLabs\Jose\Tests;
 
 /**
- * Class JWAManagerTest
- * @package SpomkyLabs\Jose\Tests
+ * Class JWAManagerTest.
  */
 class JWAManagerTest extends TestCase
 {

@@ -3,7 +3,7 @@
 use SpomkyLabs\Jose\JWE;
 
 /**
- * Class JWETest
+ * Class JWETest.
  */
 class JWETest extends \PHPUnit_Framework_TestCase
 {
