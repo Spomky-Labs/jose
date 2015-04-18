@@ -3,7 +3,6 @@
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
-use Base64Url\Base64Url;
 use Jose\Operation\ContentEncryptionInterface;
 
 /**
@@ -24,16 +23,16 @@ abstract class AESGCM implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, $aad, array &$header, &$tag)
+    public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-        $calculated_aad = Base64Url::encode(json_encode($header));
+        $calculated_aad = $encoded_protected_header;
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
 
         $cipher->setAAD($calculated_aad);
-        $cyphertext = $cipher->encrypt($input, $cek, $iv);
+        $cyphertext = $cipher->encrypt($data, $cek, $iv);
         $tag = $cipher->getTag(16);
 
         return $cyphertext;
@@ -42,17 +41,17 @@ abstract class AESGCM implements ContentEncryptionInterface
     /**
      *  @inheritdoc
      */
-    public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
+    public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-        $calculated_aad = Base64Url::encode(json_encode($header));
+        $calculated_aad = $encoded_protected_header;
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
         $cipher->setTag($tag);
         $cipher->setAAD($calculated_aad);
 
-        $plaintext = $cipher->decrypt($input, $cek, $iv);
+        $plaintext = $cipher->decrypt($data, $cek, $iv);
 
         return $plaintext;
     }

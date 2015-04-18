@@ -23,7 +23,7 @@
     },
     "require": {
         "php": ">=5.3",
-        "spomky-labs/jose-interface": "~1.0.0"
+        "spomky-labs/jose-interface": "dev-develop"
     },
     "require-dev": {
         "lib-openssl": "*",

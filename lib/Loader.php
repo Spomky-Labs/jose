@@ -30,16 +30,6 @@ abstract class Loader implements LoaderInterface
     abstract protected function getJWAManager();
 
     /**
-     * @return \Jose\JWKManagerInterface
-     */
-    abstract protected function getJWKManager();
-
-    /**
-     * @return \Jose\JWKSetManagerInterface
-     */
-    abstract protected function getJWKSetManager();
-
-    /**
      * @return \Jose\Compression\CompressionManagerInterface
      */
     abstract protected function getCompressionManager();
@@ -298,7 +288,7 @@ abstract class Loader implements LoaderInterface
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($key, $header);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            return $key_encryption_algorithm->getAgreementKey($key, $content_encryption_algorithm->getCEKSize(), $header);
+            return $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $key, null, $header);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $key_encryption_algorithm->unwrapAgreementKey($key, $encrypted_cek, $content_encryption_algorithm->getCEKSize(), $header);
         } elseif ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
@@ -350,7 +340,7 @@ abstract class Loader implements LoaderInterface
             foreach ($keys as $key) {
                 $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
                 if ($cek !== null) {
-                    $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $complete_header, $tag);
+                    $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data['protected'], $tag);
 
                     if (array_key_exists('zip', $complete_header)) {
                         $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);

@@ -66,8 +66,14 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA128KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 128, $header);
-
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 128, $header, $header);
+        $this->assertTrue(array_key_exists('epk', $header));
+        $this->assertTrue(array_key_exists('crv', $header['epk']));
+        $this->assertTrue(array_key_exists('kty', $header['epk']));
+        $this->assertTrue(array_key_exists('x', $header['epk']));
+        $this->assertTrue(array_key_exists('y', $header['epk']));
+        $this->assertEquals('P-256', $header['epk']['crv']);
+        $this->assertEquals('EC', $header['epk']['kty']);
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
     }
 
@@ -98,8 +104,14 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA192KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 192, $header);
-
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 192, $header, $header);
+        $this->assertTrue(array_key_exists('epk', $header));
+        $this->assertTrue(array_key_exists('crv', $header['epk']));
+        $this->assertTrue(array_key_exists('kty', $header['epk']));
+        $this->assertTrue(array_key_exists('x', $header['epk']));
+        $this->assertTrue(array_key_exists('y', $header['epk']));
+        $this->assertEquals('P-256', $header['epk']['crv']);
+        $this->assertEquals('EC', $header['epk']['kty']);
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
     }
 
@@ -130,8 +142,14 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA256KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 256, $header);
-
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 256, $header, $header);
+        $this->assertTrue(array_key_exists('epk', $header));
+        $this->assertTrue(array_key_exists('crv', $header['epk']));
+        $this->assertTrue(array_key_exists('kty', $header['epk']));
+        $this->assertTrue(array_key_exists('x', $header['epk']));
+        $this->assertTrue(array_key_exists('y', $header['epk']));
+        $this->assertEquals('P-256', $header['epk']['crv']);
+        $this->assertEquals('EC', $header['epk']['kty']);
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 256, $header));
     }
 }

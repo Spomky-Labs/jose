@@ -2,6 +2,7 @@
 
 namespace SpomkyLabs\Jose\Tests;
 
+use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
@@ -16,7 +17,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128CBCHS256EncryptAndDecrypt()
     {
-        $header = array('alg' => 'A128KW','enc' => 'A128CBC-HS256');
+        $header = Base64Url::encode(json_encode(array('alg' => 'A128KW', 'enc' => 'A128CBC-HS256')));
         $T      = null;
         $algorithm = new A128CBCHS256();
 
@@ -51,7 +52,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128CBCHS256EncryptAndDecrypt_Bis()
     {
-        $header = array('alg' => 'A128KW','enc' => 'A128CBC-HS256');
+        $header = Base64Url::encode(json_encode(array('alg' => 'A128KW', 'enc' => 'A128CBC-HS256')));
         $T      = null;
         $algorithm = new A128CBCHS256();
 
@@ -80,7 +81,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192CBC_HS384EncryptAndDecrypt()
     {
-        $header = array();
+        $header = Base64Url::encode(json_encode(array()));
         $algorithm = new A192CBCHS384();
 
         $K                   = hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f');
@@ -108,7 +109,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256CBC_HS512EncryptAndDecrypt()
     {
-        $header = array();
+        $header = Base64Url::encode(json_encode(array()));
         $algorithm = new A256CBCHS512();
 
         $K                   = hex2bin('000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f');

@@ -76,7 +76,7 @@ abstract class Encrypter implements EncrypterInterface
             }
 
             $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
-            $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header, $instruction->getRecipientUnprotectedHeader());
+            $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
             $recipient_header   = $instruction->getRecipientUnprotectedHeader();
             $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
 
@@ -129,12 +129,21 @@ abstract class Encrypter implements EncrypterInterface
                     throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
                 }
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
+                if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+                    $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $complete_header, $protected_header));
+                } else {
+                    $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $complete_header, $recipient_header));
+                }
             } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
                 if (null === $instruction->getSenderKey()) {
                     throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
                 }
-                $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
+                if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+                    $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $protected_header);
+                } else {
+                    $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $recipient_header);
+                }
+                //$cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
                 $jwt_cek = '';
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
                 $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), array());
@@ -146,7 +155,7 @@ abstract class Encrypter implements EncrypterInterface
 
             // Cyphertext
             $tag = null;
-            $cyphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $protected_header, $tag);
+            $cyphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $jwt_shared_protected_header, $tag);
             $jwt_cyphertext = Base64Url::encode($cyphertext);
 
             // Tag
