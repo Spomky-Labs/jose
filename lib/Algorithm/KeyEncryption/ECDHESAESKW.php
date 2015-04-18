@@ -25,7 +25,6 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
      * @param JWKInterface $receiver_key
      * @param string       $cek
      * @param int          $encryption_key_length
-     * @param array        $header
      *
      * @return mixed
      */
@@ -43,7 +42,6 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
      * @param JWKInterface $receiver_key
      * @param string       $encrypted_cek
      * @param int          $encryption_key_length
-     * @param array        $header
      *
      * @return mixed
      */
