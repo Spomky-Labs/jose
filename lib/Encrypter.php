@@ -143,7 +143,6 @@ abstract class Encrypter implements EncrypterInterface
                 } else {
                     $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $recipient_header);
                 }
-                //$cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
                 $jwt_cek = '';
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
                 $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), array());
