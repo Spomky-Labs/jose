@@ -124,7 +124,6 @@ class Converter
     private static function mergeJWE($inputs)
     {
         //We determine if all common information are identical
-        $tag = null;
         foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
             $$key = null;
         }
