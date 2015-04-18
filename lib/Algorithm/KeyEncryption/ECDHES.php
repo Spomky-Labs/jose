@@ -90,7 +90,7 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param array $checkCompleteHeader
+     * @param array $complete_header
      *
      * @return \Jose\JWKInterface
      */
@@ -111,7 +111,7 @@ class ECDHES implements KeyAgreementInterface
 
     /**
      * @param JWKInterface $key
-     * @param $is_private
+     * @param boolean $is_private
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
