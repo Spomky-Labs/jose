@@ -12,7 +12,7 @@ class RS384 extends RSA
      */
     protected function getAlgorithm()
     {
-        return "sha384";
+        return 'sha384';
     }
 
     /**
@@ -28,6 +28,6 @@ class RS384 extends RSA
      */
     public function getAlgorithmName()
     {
-        return "RS384";
+        return 'RS384';
     }
 }

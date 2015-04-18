@@ -19,10 +19,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     public function testInvalidKey()
     {
         $key  = new JWK();
-        $key->setValue("kty", "EC");
+        $key->setValue('kty', 'EC');
 
         $hmac = new HS256();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
 
         $hmac->sign($key, $data);
     }
@@ -34,11 +34,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => "foo",
+            'kty' => 'oct',
+            'k'  => 'foo',
         ));
         $hmac = new HS256();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
 
         $signature = $hmac->sign($key, $data);
 
@@ -53,11 +53,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => "foo",
+            'kty' => 'oct',
+            'k'  => 'foo',
         ));
         $hmac = new HS384();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
 
         $signature = $hmac->sign($key, $data);
 
@@ -72,11 +72,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => "foo",
+            'kty' => 'oct',
+            'k'  => 'foo',
         ));
         $hmac = new HS512();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
 
         $signature = $hmac->sign($key, $data);
 

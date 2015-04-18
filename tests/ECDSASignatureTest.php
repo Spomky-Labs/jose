@@ -23,10 +23,10 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testInvalidKey()
     {
         $key  = new JWK();
-        $key->setValue("kty", "RSA");
+        $key->setValue('kty', 'RSA');
 
         $ecdsa = new ES256();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
 
         $ecdsa->sign($key, $data);
     }
@@ -76,12 +76,12 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES256SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es256.key"));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
         $private_key = new JWK();
-        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es256.key"));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key'));
 
         $ecdsa = new ES256();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
@@ -93,12 +93,12 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES384SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es384.key"));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
         $private_key = new JWK();
-        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es384.key"));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key'));
 
         $ecdsa = new ES384();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
@@ -110,12 +110,12 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES512SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."public.es512.key"));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
         $private_key = new JWK();
-        $private_key->setValues(ECConverter::loadKeyFromFile("file://".__DIR__.DIRECTORY_SEPARATOR."Keys".DIRECTORY_SEPARATOR."EC".DIRECTORY_SEPARATOR."private.es512.key"));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key'));
 
         $ecdsa = new ES512();
-        $data = "Je suis Charlie";
+        $data = 'Je suis Charlie';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
@@ -148,9 +148,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $key = new JWK();
         $key->setValue('kty', 'EC')
             ->setValue('crv', 'P-521')
-            ->setValue('x', "AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk")
-            ->setValue('y', "ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2")
-            ->setValue('d', "AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C");
+            ->setValue('x', 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk')
+            ->setValue('y', 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2')
+            ->setValue('d', 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C');
 
         $ecdsa = new ES512();
 

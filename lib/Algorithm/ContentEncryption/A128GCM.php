@@ -20,6 +20,6 @@ class A128GCM extends AESGCM
      */
     public function getAlgorithmName()
     {
-        return "A128GCM";
+        return 'A128GCM';
     }
 }

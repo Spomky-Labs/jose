@@ -106,7 +106,7 @@ class Encrypter extends Base
     }
 
     /**
-     * @param integer $length
+     * @param int $length
      */
     private function generateRandomString($length)
     {

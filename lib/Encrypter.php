@@ -33,14 +33,14 @@ abstract class Encrypter implements EncrypterInterface
     abstract protected function getCompressionManager();
 
     /**
-     * @param integer $size The size of the CEK in bits
+     * @param int $size The size of the CEK in bits
      *
      * @return string
      */
     abstract protected function createCEK($size);
 
     /**
-     * @param integer $size The size of the IV in bits
+     * @param int $size The size of the IV in bits
      *
      * @return string
      */
@@ -59,11 +59,11 @@ abstract class Encrypter implements EncrypterInterface
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
         if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
-            throw new \RuntimeException("JSON serialization not yet supported.");
+            throw new \RuntimeException('JSON serialization not yet supported.');
         }
         $this->checkInput($input);
         if (empty($instructions)) {
-            throw new \RuntimeException("No instruction.");
+            throw new \RuntimeException('No instruction.');
         }
 
         // AAD
@@ -72,7 +72,7 @@ abstract class Encrypter implements EncrypterInterface
         $recipients = array();
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof EncryptionInstructionInterface) {
-                throw new \RuntimeException("Bad instruction. Must implement EncryptionInstructionInterface.");
+                throw new \RuntimeException('Bad instruction. Must implement EncryptionInstructionInterface.');
             }
 
             $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
@@ -81,34 +81,34 @@ abstract class Encrypter implements EncrypterInterface
             $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $payload = $input->getPayload();
-            if (array_key_exists("zip", $complete_header)) {
+            if (array_key_exists('zip', $complete_header)) {
                 $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
                 if ($method === null) {
                     throw new \RuntimeException("Compression method '".$complete_header['zip']."' not supported.");
                 }
                 $payload = $method->compress($payload);
                 if (!is_string($payload)) {
-                    throw new \RuntimeException("Compression failed.");
+                    throw new \RuntimeException('Compression failed.');
                 }
             }
 
-            if (!array_key_exists("enc", $complete_header)) {
+            if (!array_key_exists('enc', $complete_header)) {
                 throw new \RuntimeException("The parameter 'enc' is not defined in shared headers.");
             }
-            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
+            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['enc']);
             if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-                throw new \RuntimeException("The content encryption algorithm '".$complete_header["enc"]."' is not supported or not a ContentEncryptionInterface instance.");
+                throw new \RuntimeException("The content encryption algorithm '".$complete_header['enc']."' is not supported or not a ContentEncryptionInterface instance.");
             }
 
-            if (!array_key_exists("alg", $complete_header)) {
+            if (!array_key_exists('alg', $complete_header)) {
                 throw new \RuntimeException("The parameter 'alg' is not defined in shared headers.");
             }
-            $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
+            $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
             if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
                 !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a key encryption algorithm instance.");
+                throw new \RuntimeException("The key encryption algorithm '".$complete_header['alg']."' is not supported or not a key encryption algorithm instance.");
             }
 
             // IV
@@ -126,19 +126,19 @@ abstract class Encrypter implements EncrypterInterface
                 $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
                 if (null === $instruction->getSenderKey()) {
-                    throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
+                    throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
                 }
                 $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
                 $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $protected_header));
             } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
                 if (null === $instruction->getSenderKey()) {
-                    throw new \RuntimeException("The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.");
+                    throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
                 }
                 $cek = $key_encryption_algorithm->setAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $content_encryption_algorithm->getCEKSize(), $protected_header);
-                $jwt_cek = "";
+                $jwt_cek = '';
             } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
                 $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), array());
-                $jwt_cek = "";
+                $jwt_cek = '';
             }
 
             // Shared protected header
@@ -158,16 +158,16 @@ abstract class Encrypter implements EncrypterInterface
                     break;
                 case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
                     $result = array(
-                        "ciphertext" => $jwt_cyphertext,
+                        'ciphertext' => $jwt_cyphertext,
                     );
                     $values = array(
-                        "protected"     => $jwt_shared_protected_header,
-                        "unprotected"   => $unprotected_header,
-                        "header"        => $recipient_header,
-                        "iv"            => $jwt_iv,
-                        "tag"           => $jwt_tag,
-                        "aad"           => $jwt_aad,
-                        "encrypted_key" => $jwt_cek,
+                        'protected'     => $jwt_shared_protected_header,
+                        'unprotected'   => $unprotected_header,
+                        'header'        => $recipient_header,
+                        'iv'            => $jwt_iv,
+                        'tag'           => $jwt_tag,
+                        'aad'           => $jwt_aad,
+                        'encrypted_key' => $jwt_cek,
                     );
                     foreach ($values as $key => $value) {
                         if (!empty($value)) {
@@ -178,7 +178,7 @@ abstract class Encrypter implements EncrypterInterface
                     break;
 
                 default:
-                    throw new \RuntimeException("Unsupported serialization mode.");
+                    throw new \RuntimeException('Unsupported serialization mode.');
             }
         }
 

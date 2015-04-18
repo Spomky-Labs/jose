@@ -33,7 +33,7 @@ abstract class AESKW implements KeyEncryptionInterface
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
 
-        return $wrapper->wrap(Base64Url::decode($key->getValue("k")), $cek);
+        return $wrapper->wrap(Base64Url::decode($key->getValue('k')), $cek);
     }
 
     /**
@@ -48,7 +48,7 @@ abstract class AESKW implements KeyEncryptionInterface
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
 
-        return $wrapper->unwrap(Base64Url::decode($key->getValue("k")), $encryted_cek);
+        return $wrapper->unwrap(Base64Url::decode($key->getValue('k')), $encryted_cek);
     }
 
     /**
@@ -56,8 +56,8 @@ abstract class AESKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 

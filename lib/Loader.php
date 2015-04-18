@@ -51,10 +51,10 @@ abstract class Loader implements LoaderInterface
     {
         $json = $this->convertInputToSerializedJson($input);
         if (null !== $json) {
-            if (array_key_exists("signatures", $json)) {
+            if (array_key_exists('signatures', $json)) {
                 return $this->loadSerializedJsonJWS($json);
             }
-            if (array_key_exists("recipients", $json)) {
+            if (array_key_exists('recipients', $json)) {
                 return $this->loadSerializedJsonJWE($json, $jwk_set);
             }
         }
@@ -90,13 +90,13 @@ abstract class Loader implements LoaderInterface
     public function verify(JWTInterface $jwt)
     {
         if (null !== $jwt->getExpirationTime() && time() > $jwt->getExpirationTime()) {
-            throw new \Exception("The JWT has expired.");
+            throw new \Exception('The JWT has expired.');
         }
         if (null !== $jwt->getNotBefore() && time() < $jwt->getNotBefore()) {
-            throw new \Exception("The JWT has expired.");
+            throw new \Exception('The JWT has expired.');
         }
         if (null !== $jwt->getIssuedAt() && time() < $jwt->getIssuedAt()) {
-            throw new \Exception("The JWT is issued in the futur.");
+            throw new \Exception('The JWT is issued in the futur.');
         }
         if (null !== $jwt->getCritical()) {
             foreach ($jwt->getCritical() as $crit) {
@@ -130,38 +130,38 @@ abstract class Loader implements LoaderInterface
      */
     protected function loadSerializedJson($input)
     {
-        if (array_key_exists("signatures", $input) || array_key_exists("recipients", $input)) {
+        if (array_key_exists('signatures', $input) || array_key_exists('recipients', $input)) {
             //The input is a Serialized Json Object
             return $input;
-        } elseif (array_key_exists("signature", $input)) {
+        } elseif (array_key_exists('signature', $input)) {
             //The input is a JWS Serialized Flattened Json Object
             $jws = array(
-                "payload" => $input["payload"],
+                'payload' => $input['payload'],
             );
             $signature = array();
-            foreach (array("signature", "protected", "header") as $key) {
+            foreach (array('signature', 'protected', 'header') as $key) {
                 if (array_key_exists($key, $input)) {
                     $signature[$key] = $input[$key];
                 }
             }
-            $jws["signatures"] = array($signature);
+            $jws['signatures'] = array($signature);
 
             return $jws;
-        } elseif (array_key_exists("encrypted_key", $input)) {
+        } elseif (array_key_exists('encrypted_key', $input)) {
             //The input is a JWE Serialized Flattened Json Object
             $jwe = array(
-                "encrypted_key" => $input["encrypted_key"],
+                'encrypted_key' => $input['encrypted_key'],
             );
-            foreach (array("ciphertext", "protected", "unprotected", "aad", "iv", "tag") as $key) {
+            foreach (array('ciphertext', 'protected', 'unprotected', 'aad', 'iv', 'tag') as $key) {
                 if (array_key_exists($key, $input)) {
                     $jwe[$key] = $input[$key];
                 }
             }
-            $recipient = array("encrypted_key" => $input["encrypted_key"]);
-            if (array_key_exists("header", $input)) {
-                $recipient["header"] = $input["header"];
+            $recipient = array('encrypted_key' => $input['encrypted_key']);
+            if (array_key_exists('header', $input)) {
+                $recipient['header'] = $input['header'];
             }
-            $jwe["recipients"] = array($recipient);
+            $jwe['recipients'] = array($recipient);
 
             return $jwe;
         }
@@ -178,11 +178,11 @@ abstract class Loader implements LoaderInterface
             case 3:
                 // We suppose it is a JWS Serialized Compact Json Object
                 $input = array(
-                    "payload" => $parts[1],
-                    "signatures" => array(
+                    'payload' => $parts[1],
+                    'signatures' => array(
                         array(
-                            "protected" => $parts[0],
-                            "signature" => $parts[2],
+                            'protected' => $parts[0],
+                            'signature' => $parts[2],
                         ),
                     ),
                 );
@@ -191,15 +191,15 @@ abstract class Loader implements LoaderInterface
             case 5:
                 // We suppose it is a JWE Serialized Compact Json Object
                 $input = array(
-                    "protected" => $parts[0],
-                    "recipients" => array(
+                    'protected' => $parts[0],
+                    'recipients' => array(
                         array(
-                            "encrypted_key" => $parts[1],
+                            'encrypted_key' => $parts[1],
                         ),
                     ),
-                    "iv" => $parts[2],
-                    "ciphertext" => $parts[3],
-                    "tag" => $parts[4],
+                    'iv' => $parts[2],
+                    'ciphertext' => $parts[3],
+                    'tag' => $parts[4],
                 );
 
                 return $input;
@@ -218,7 +218,7 @@ abstract class Loader implements LoaderInterface
 
         $jws = array();
         foreach ($data['signatures'] as $signature) {
-            if (array_key_exists("protected", $signature)) {
+            if (array_key_exists('protected', $signature)) {
                 $encoded_protected_header = $signature['protected'];
                 $protected_header = json_decode(Base64Url::decode($encoded_protected_header), true);
             } else {
@@ -227,7 +227,7 @@ abstract class Loader implements LoaderInterface
             }
             $unprotected_header = isset($signature['header']) ? $signature['header'] : array();
 
-            $jws[] = $this->createJWS($encoded_protected_header.".".$encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature["signature"]));
+            $jws[] = $this->createJWS($encoded_protected_header.'.'.$encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
         }
 
         return count($jws)>1 ? $jws : current($jws);
@@ -279,12 +279,12 @@ abstract class Loader implements LoaderInterface
      */
     protected function getAlgorithm($header)
     {
-        if (!array_key_exists("alg", $header)) {
+        if (!array_key_exists('alg', $header)) {
             throw new \RuntimeException("The header parameter 'alg' is missing.");
         }
-        $algorithm = $this->getJWAManager()->getAlgorithm($header["alg"]);
+        $algorithm = $this->getJWAManager()->getAlgorithm($header['alg']);
         if (null === $algorithm || !$algorithm instanceof SignatureInterface) {
-            throw new \RuntimeException("The algorithm '".$header["alg"]."' is not supported or does not implement SignatureInterface.");
+            throw new \RuntimeException("The algorithm '".$header['alg']."' is not supported or does not implement SignatureInterface.");
         }
 
         return $algorithm;
@@ -312,39 +312,39 @@ abstract class Loader implements LoaderInterface
     protected function loadSerializedJsonJWE($data, JWKSetInterface $jwk_set = null)
     {
         $ciphertext = Base64Url::decode($data['ciphertext']);
-        if (array_key_exists("unprotected", $data)) {
+        if (array_key_exists('unprotected', $data)) {
             $unprotected_header = $data['unprotected'];
         } else {
             $unprotected_header = array();
         }
-        $protected = array_key_exists("protected", $data) ? json_decode(Base64Url::decode($data['protected']), true) : array();
-        $unprotected = array_key_exists("unprotected", $data) ? $data['unprotected'] : array();
-        $aad = array_key_exists("aad", $data) ? Base64Url::decode($data['aad']) : null;
-        $tag = array_key_exists("tag", $data) ? Base64Url::decode($data['tag']) : null;
-        $iv  = array_key_exists("iv", $data) ? Base64Url::decode($data['iv']) : null;
+        $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : array();
+        $unprotected = array_key_exists('unprotected', $data) ? $data['unprotected'] : array();
+        $aad = array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null;
+        $tag = array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null;
+        $iv  = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
 
         foreach ($data['recipients'] as $recipient) {
             $encrypted_key = Base64Url::decode($recipient['encrypted_key']);
-            $header = array_key_exists("header", $recipient) ? $recipient['header'] : array();
+            $header = array_key_exists('header', $recipient) ? $recipient['header'] : array();
             $complete_header = array_merge($protected, $unprotected, $header);
 
-            if (!array_key_exists("alg", $complete_header) || !array_key_exists("enc", $complete_header)) {
+            if (!array_key_exists('alg', $complete_header) || !array_key_exists('enc', $complete_header)) {
                 throw new \InvalidArgumentException("Parameters 'enc' or 'alg' are missing.");
             }
             $keys = $jwk_set;
             if (null === $keys) {
                 $keys = $this->getKeysFromCompleteHeader($complete_header);
             }
-            $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($complete_header["alg"]);
-            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header["enc"]);
+            $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
+            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['enc']);
             if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-                throw new \RuntimeException("The algorithm '".$complete_header["enc"]."' does not implement ContentEncryptionInterface.");
+                throw new \RuntimeException("The algorithm '".$complete_header['enc']."' does not implement ContentEncryptionInterface.");
             }
             if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
                 !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementInterface &&
                 !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                throw new \RuntimeException("The key encryption algorithm '".$complete_header["alg"]."' is not supported or not a key encryption algorithm instance.");
+                throw new \RuntimeException("The key encryption algorithm '".$complete_header['alg']."' is not supported or not a key encryption algorithm instance.");
             }
 
             foreach ($keys as $key) {
@@ -352,14 +352,14 @@ abstract class Loader implements LoaderInterface
                 if ($cek !== null) {
                     $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $complete_header, $tag);
 
-                    if (array_key_exists("zip", $complete_header)) {
+                    if (array_key_exists('zip', $complete_header)) {
                         $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
                         if ($method === null) {
                             throw new \RuntimeException("Compression method '".$complete_header['zip']."' not supported");
                         }
                         $payload = $method->uncompress($payload);
                         if (!is_string($payload)) {
-                            throw new \RuntimeException("Decompression failed");
+                            throw new \RuntimeException('Decompression failed');
                         }
                     }
 

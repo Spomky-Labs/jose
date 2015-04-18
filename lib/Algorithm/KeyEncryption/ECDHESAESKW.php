@@ -19,7 +19,7 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
             throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
         }
     }
-    
+
     /**
      * @param JWKInterface $sender_key
      * @param JWKInterface $receiver_key

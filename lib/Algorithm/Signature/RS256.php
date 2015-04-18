@@ -12,7 +12,7 @@ class RS256 extends RSA
      */
     protected function getAlgorithm()
     {
-        return "sha256";
+        return 'sha256';
     }
 
     /**
@@ -28,6 +28,6 @@ class RS256 extends RSA
      */
     public function getAlgorithmName()
     {
-        return "RS256";
+        return 'RS256';
     }
 }

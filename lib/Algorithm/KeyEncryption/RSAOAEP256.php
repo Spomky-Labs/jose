@@ -20,7 +20,7 @@ class RSAOAEP256 extends RSA
      */
     public function getHashAlgorithm()
     {
-        return "sha256";
+        return 'sha256';
     }
 
     /**
@@ -28,6 +28,6 @@ class RSAOAEP256 extends RSA
      */
     public function getAlgorithmName()
     {
-        return "RSA-OAEP-256";
+        return 'RSA-OAEP-256';
     }
 }

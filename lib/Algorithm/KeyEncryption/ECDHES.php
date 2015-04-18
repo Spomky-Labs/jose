@@ -42,15 +42,15 @@ class ECDHES implements KeyAgreementInterface
     {
         $this->checkKey($receiver_key, true);
         $sender_key = new JWK();
-        $sender_key->setValues($header["epk"]);
+        $sender_key->setValues($header['epk']);
         $this->checkKey($sender_key, false);
-        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
-            throw new \RuntimeException("Curves are different");
+        if ($sender_key->getValue('crv') !== $receiver_key->getValue('crv')) {
+            throw new \RuntimeException('Curves are different');
         }
 
         $agreed_key = $this->calculateAgreementKey($receiver_key, $sender_key);
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header['enc'], $encryption_key_length);
     }
 
     /**
@@ -65,22 +65,22 @@ class ECDHES implements KeyAgreementInterface
     {
         $this->checkKey($sender_key, true);
         $this->checkKey($receiver_key, false);
-        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
-            throw new \RuntimeException("Curves are different");
+        if ($sender_key->getValue('crv') !== $receiver_key->getValue('crv')) {
+            throw new \RuntimeException('Curves are different');
         }
 
         $agreed_key = $this->calculateAgreementKey($sender_key, $receiver_key);
 
         $header = array_merge($header, array(
-            "epk" => array(
-                "kty" => $sender_key->getKeyType(),
-                "crv" => $sender_key->getValue("crv"),
-                "x"   => $sender_key->getValue("x"),
-                "y"   => $sender_key->getValue("y"),
+            'epk' => array(
+                'kty' => $sender_key->getKeyType(),
+                'crv' => $sender_key->getValue('crv'),
+                'x'   => $sender_key->getValue('x'),
+                'y'   => $sender_key->getValue('y'),
             ),
         ));
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header['enc'], $encryption_key_length);
     }
 
     /**
@@ -110,7 +110,7 @@ class ECDHES implements KeyAgreementInterface
      */
     public function getAlgorithmName()
     {
-        return "ECDH-ES";
+        return 'ECDH-ES';
     }
 
     /**
@@ -119,11 +119,11 @@ class ECDHES implements KeyAgreementInterface
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        if ("EC" !== $key->getKeyType()) {
+        if ('EC' !== $key->getKeyType()) {
             throw new \RuntimeException("The key type must be 'EC'");
         }
         if (null === $key->getValue('d') && true === $is_private) {
-            throw new \RuntimeException("The key must be private");
+            throw new \RuntimeException('The key must be private');
         }
     }
 

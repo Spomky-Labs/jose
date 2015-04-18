@@ -22,7 +22,7 @@ class Loader extends Base
 
     protected function getAudience()
     {
-        return "www.example.com";
+        return 'www.example.com';
     }
 
     /**

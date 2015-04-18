@@ -73,8 +73,8 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 
@@ -83,7 +83,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     protected function checkAdditionalParameters(array $header)
     {
-        if (null === $header["iv"] || null === $header["tag"]) {
+        if (null === $header['iv'] || null === $header['tag']) {
             throw new \InvalidArgumentException("Parameters 'iv' or 'tag' are missing.");
         }
     }

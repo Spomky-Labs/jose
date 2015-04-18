@@ -33,8 +33,8 @@ class None implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("none" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('none' !== $key->getKeyType()) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 
@@ -43,6 +43,6 @@ class None implements SignatureInterface
      */
     public function getAlgorithmName()
     {
-        return "none";
+        return 'none';
     }
 }

@@ -13,8 +13,8 @@ class Dir implements DirectEncryptionInterface
      */
     public function getCEK(JWKInterface $key, array $header)
     {
-        if ("dir" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('dir' !== $key->getKeyType()) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
 
         return Base64Url::decode($key->getValue('dir'));
@@ -25,6 +25,6 @@ class Dir implements DirectEncryptionInterface
      */
     public function getAlgorithmName()
     {
-        return "dir";
+        return 'dir';
     }
 }

@@ -49,14 +49,14 @@ class RSAConverter
             $res = openssl_pkey_get_public($certificate);
         }
         if ($res === false) {
-            throw new \Exception("Unable to load the certificate");
+            throw new \Exception('Unable to load the certificate');
         }
         $details = openssl_pkey_get_details($res);
         if ($details === false) {
-            throw new \Exception("Unable to get details of the certificate");
+            throw new \Exception('Unable to get details of the certificate');
         }
         if (!is_array($details) || !isset($details['rsa'])) {
-            throw new \Exception("Certificate is not a valid RSA certificate");
+            throw new \Exception('Certificate is not a valid RSA certificate');
         }
 
         return $details['rsa'];
@@ -72,12 +72,12 @@ class RSAConverter
         $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
-            if ($key === "dmp1") {
-                $result["dp"] = $value;
-            } elseif ($key === "dmq1") {
-                $result["dq"] = $value;
-            } elseif ($key === "iqmp") {
-                $result["qi"] = $value;
+            if ($key === 'dmp1') {
+                $result['dp'] = $value;
+            } elseif ($key === 'dmq1') {
+                $result['dq'] = $value;
+            } elseif ($key === 'iqmp') {
+                $result['qi'] = $value;
             } else {
                 $result[$key] = $value;
             }
@@ -104,18 +104,18 @@ class RSAConverter
                 case 0:
                     break; // No pad chars in this case
                 case 2:
-                    $value .= "==";
+                    $value .= '==';
                     break; // Two pad chars
                 case 3:
-                    $value .= "=";
+                    $value .= '=';
                     break; // One pad char
                 default:
-                    throw new \Exception("Invalid data");
+                    throw new \Exception('Invalid data');
             }
 
             $result .= "\t<$element>$value</$element>\n";
         }
-        $result .= "</RSAKeyPair>";
+        $result .= '</RSAKeyPair>';
 
         return $result;
     }
@@ -128,14 +128,14 @@ class RSAConverter
     protected static function getElement($key)
     {
         $values = array(
-            'n' => "Modulus",
-            'e' => "Exponent",
-            'p' => "P",
-            'd' => "D",
-            'q' => "Q",
-            'dp' => "DP",
-            'dq' => "DQ",
-            'qi' => "InverseQ",
+            'n' => 'Modulus',
+            'e' => 'Exponent',
+            'p' => 'P',
+            'd' => 'D',
+            'q' => 'Q',
+            'dp' => 'DP',
+            'dq' => 'DQ',
+            'qi' => 'InverseQ',
         );
         if (array_key_exists($key, $values)) {
             return $values[$key];

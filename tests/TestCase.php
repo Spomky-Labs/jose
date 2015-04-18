@@ -188,6 +188,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                         ->addAlgorithm(new A192GCMKW())
                         ->addAlgorithm(new A256GCMKW());
         }
+
         return $key_manager;
     }
 

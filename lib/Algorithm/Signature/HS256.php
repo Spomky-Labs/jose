@@ -24,6 +24,6 @@ class HS256 extends HMAC
      */
     public function getAlgorithmName()
     {
-        return "HS256";
+        return 'HS256';
     }
 }

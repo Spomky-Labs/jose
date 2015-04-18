@@ -22,6 +22,6 @@ class ECDHESA256KW extends ECDHESAESKW
      */
     public function getAlgorithmName()
     {
-        return "ECDH-ES+A256KW";
+        return 'ECDH-ES+A256KW';
     }
 }

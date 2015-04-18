@@ -34,7 +34,7 @@ abstract class Signer implements SignerInterface
     {
         $this->checkInput($input);
         if (empty($instructions)) {
-            throw new \InvalidArgumentException("No instruction.");
+            throw new \InvalidArgumentException('No instruction.');
         }
 
         $jwt_payload = Base64Url::encode($input->getPayload());
@@ -42,14 +42,14 @@ abstract class Signer implements SignerInterface
         $signatures = array();
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
-                throw new \InvalidArgumentException("Bad instruction. Must implement SignatureInstructionInterface.");
+                throw new \InvalidArgumentException('Bad instruction. Must implement SignatureInstructionInterface.');
             }
             $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
             $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
             $complete_header = array_merge($protected_header, $protected_header);
 
             $jwt_protected_header   = Base64Url::encode(json_encode($protected_header));
-            $alg = array_key_exists("alg", $complete_header) ? $complete_header["alg"] : null;
+            $alg = array_key_exists('alg', $complete_header) ? $complete_header['alg'] : null;
 
             if (null === $alg) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
@@ -60,30 +60,30 @@ abstract class Signer implements SignerInterface
                 throw new \InvalidArgumentException("The algorithm '$alg' is not supported.");
             }
 
-            $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.".".$jwt_payload);
+            $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
             $jwt_signature = Base64Url::encode($signature);
             switch ($serialization) {
                 case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
-                    $signatures[] = $jwt_protected_header.".".$jwt_payload.".".$jwt_signature;
+                    $signatures[] = $jwt_protected_header.'.'.$jwt_payload.'.'.$jwt_signature;
                     break;
                 case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
                     $result = array(
-                        "payload" => $jwt_payload,
-                        "protected" => $jwt_protected_header,
-                        "signature" => $jwt_signature,
+                        'payload' => $jwt_payload,
+                        'protected' => $jwt_protected_header,
+                        'signature' => $jwt_signature,
                     );
                     if (!empty($unprotected_header)) {
-                        $result["header"] = $unprotected_header;
+                        $result['header'] = $unprotected_header;
                     }
                     $signatures[] = json_encode($result);
                     break;
                 case JSONSerializationModes::JSON_SERIALIZATION:
                     $result = array(
-                        "protected" => $jwt_protected_header,
-                        "signature" => $jwt_signature,
+                        'protected' => $jwt_protected_header,
+                        'signature' => $jwt_signature,
                     );
                     if (!empty($unprotected_header)) {
-                        $result["header"] = $unprotected_header;
+                        $result['header'] = $unprotected_header;
                     }
                     $signatures['signatures'][] = $result;
                     break;

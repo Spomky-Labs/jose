@@ -50,7 +50,7 @@ abstract class RSA implements SignatureInterface
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         if ($rsa->getPrivateKey() === false) {
-            throw new \InvalidArgumentException("The key is not a private key");
+            throw new \InvalidArgumentException('The key is not a private key');
         }
 
         $rsa->setHash($this->getAlgorithm());
@@ -62,7 +62,7 @@ abstract class RSA implements SignatureInterface
 
         $result = $rsa->sign($input);
         if ($result === false) {
-            throw new \RuntimeException("An error occured during the creation of the signature");
+            throw new \RuntimeException('An error occured during the creation of the signature');
         }
 
         return $result;
@@ -73,8 +73,8 @@ abstract class RSA implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("RSA" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('RSA' !== $key->getKeyType()) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 }

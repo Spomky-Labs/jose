@@ -27,7 +27,7 @@ class EncrypterTest extends TestCase
         $encrypted = $encrypter->encrypt(
             $this->getKeyToEncrypt(),
             array($instruction),
-            array("kid" => "123456789", "enc" => "A256CBC-HS512", "alg" => "RSA-OAEP-256", "zip" => "DEF"),
+            array('kid' => '123456789', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'),
             array(),
             JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
@@ -37,9 +37,9 @@ class EncrypterTest extends TestCase
 
         $this->assertInstanceOf("Jose\JWEInterface", $loaded);
         $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
-        $this->assertEquals("RSA-OAEP-256", $loaded->getAlgorithm());
-        $this->assertEquals("A256CBC-HS512", $loaded->getEncryptionAlgorithm());
-        $this->assertEquals("DEF", $loaded->getZip());
+        $this->assertEquals('RSA-OAEP-256', $loaded->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('DEF', $loaded->getZip());
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
     }
 
@@ -54,15 +54,15 @@ class EncrypterTest extends TestCase
         $instruction = new EncryptionInstruction();
         $instruction->setRecipientKey($this->getRSARecipientKey());
 
-        $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), array($instruction), array("kid" => "123456789", "enc" => "A128CBC-HS256", "alg" => "RSA-OAEP-256", "zip" => "DEF"), array(), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), array($instruction), array('kid' => '123456789', 'enc' => 'A128CBC-HS256', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'), array(), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
         $loaded = $loader->load($encrypted);
 
         $this->assertInstanceOf("Jose\JWEInterface", $loaded);
         $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
-        $this->assertEquals("RSA-OAEP-256", $loaded->getAlgorithm());
-        $this->assertEquals("A128CBC-HS256", $loaded->getEncryptionAlgorithm());
-        $this->assertEquals("DEF", $loaded->getZip());
+        $this->assertEquals('RSA-OAEP-256', $loaded->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('DEF', $loaded->getZip());
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
     }
 
@@ -77,14 +77,14 @@ class EncrypterTest extends TestCase
         $instruction = new EncryptionInstruction();
         $instruction->setRecipientKey($this->getDirectKey());
 
-        $encrypted = $encrypter->encrypt($this->getKeySetToEncrypt(), array($instruction), array("kid" => "DIR_1", "enc" => "A192CBC-HS384", "alg" => "dir"), array());
+        $encrypted = $encrypter->encrypt($this->getKeySetToEncrypt(), array($instruction), array('kid' => 'DIR_1', 'enc' => 'A192CBC-HS384', 'alg' => 'dir'), array());
 
         $loaded = $loader->load($encrypted);
 
         $this->assertInstanceOf("Jose\JWEInterface", $loaded);
         $this->assertInstanceOf("Jose\JWKSetInterface", $loaded->getPayload());
-        $this->assertEquals("dir", $loaded->getAlgorithm());
-        $this->assertEquals("A192CBC-HS384", $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('dir', $loaded->getAlgorithm());
+        $this->assertEquals('A192CBC-HS384', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
         $this->assertEquals($this->getKeySetToEncrypt(), $loaded->getPayload());
     }
@@ -101,16 +101,16 @@ class EncrypterTest extends TestCase
         $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
                     ->setSenderKey($this->getECDHSenderPrivateKey());
 
-        $encrypted = $encrypter->encrypt(array("user_id" => "1234", "exp" => 3600), array($instruction), array("kid" => "e9bc097a-ce51-4036-9562-d2ade882db0d", "enc" => "A192CBC-HS384", "alg" => "ECDH-ES"), array());
+        $encrypted = $encrypter->encrypt(array('user_id' => '1234', 'exp' => 3600), array($instruction), array('kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'), array());
 
         $loaded = $loader->load($encrypted);
 
         $this->assertInstanceOf("Jose\JWEInterface", $loaded);
         $this->assertTrue(is_array($loaded->getPayload()));
-        $this->assertEquals("ECDH-ES", $loaded->getAlgorithm());
-        $this->assertEquals("A192CBC-HS384", $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('ECDH-ES', $loaded->getAlgorithm());
+        $this->assertEquals('A192CBC-HS384', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
-        $this->assertEquals(array("user_id" => "1234", "exp" => 3600), $loaded->getPayload());
+        $this->assertEquals(array('user_id' => '1234', 'exp' => 3600), $loaded->getPayload());
     }
 
     /**
@@ -125,16 +125,16 @@ class EncrypterTest extends TestCase
         $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
                     ->setSenderKey($this->getECDHSenderPrivateKey());
 
-        $encrypted = $encrypter->encrypt("Je suis Charlie", array($instruction), array("kid" => "e9bc097a-ce51-4036-9562-d2ade882db0d", "enc" => "A256CBC-HS512", "alg" => "ECDH-ES+A256KW"), array());
+        $encrypted = $encrypter->encrypt('Je suis Charlie', array($instruction), array('kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'), array());
 
         $loaded = $loader->load($encrypted);
 
         $this->assertInstanceOf("Jose\JWEInterface", $loaded);
         $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals("ECDH-ES+A256KW", $loaded->getAlgorithm());
-        $this->assertEquals("A256CBC-HS512", $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
-        $this->assertEquals("Je suis Charlie", $loaded->getPayload());
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
 
     /**
@@ -144,11 +144,11 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "EC",
-            "crv" => "P-256",
-            "x" => "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-            "y" => "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-            "d" => "jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI",
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x' => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y' => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd' => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ));
 
         return $key;
@@ -161,11 +161,11 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "EC",
-            "crv" => "P-256",
-            "x" => "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-            "y" => "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
-            "d" => "jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI",
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x' => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y' => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd' => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ));
 
         $key_set = new JWKSet();
@@ -181,7 +181,7 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "RSA",
+            'kty' => 'RSA',
             'n' => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
             'e' => 'AQAB',
         ));
@@ -196,10 +196,10 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "EC",
-            "crv" => "P-256",
-            "x"   => "f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU",
-            "y"   => "x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0",
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
         ));
 
         return $key;
@@ -212,11 +212,11 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "EC",
-            "crv" => "P-256",
-            "x"   => "gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0",
-            "y"   => "SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps",
-            "d"   => "0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo",
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
+            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
+            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ));
 
         return $key;
@@ -229,9 +229,9 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK();
         $key->setValues(array(
-            "kid" => "DIR_1",
-            "kty" => "dir",
-            'dir' => Base64Url::encode(hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F")),
+            'kid' => 'DIR_1',
+            'kty' => 'dir',
+            'dir' => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),
         ));
 
         return $key;
