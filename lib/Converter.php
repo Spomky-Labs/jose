@@ -10,20 +10,21 @@ class Converter
      * This function will try to convert JWS/JWE from a serialization mode into an other.
      * It always returns an array:.
      *
-     * @param array|string $input The JWS/JWE to convert
-     * @param string       $mode  Output mode
+     * @param array|string $input    The JWS/JWE to convert
+     * @param string       $mode     Output mode
+     * @param bool         $toString If true, the output is serialized, else, an array is returned
      *
-     * @return array
+     * @return array|string
      */
-    public static function convert($input, $mode)
+    public static function convert($input, $mode, $toString = true)
     {
         $prepared = array();
         self::getMode($input, $prepared);
         switch ($mode) {
             case JSONSerializationModes::JSON_SERIALIZATION:
-                return json_encode($prepared);
+                return $toString ? json_encode($prepared) : $prepared;
             case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
-                return self::convertToFlattened($prepared);
+                return self::convertToFlattened($prepared, $toString);
             case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
                 return self::convertToCompact($prepared);
             default:
@@ -166,13 +167,13 @@ class Converter
      *
      * @return array
      */
-    private static function convertToFlattened($input)
+    private static function convertToFlattened($input, $toString)
     {
         if (array_key_exists('signatures', $input)) {
-            return self::convertSignatureToFlattened($input);
+            return self::convertSignatureToFlattened($input, $toString);
         }
 
-        return self::convertRecipientToFlattened($input);
+        return self::convertRecipientToFlattened($input, $toString);
     }
 
     /**
@@ -180,7 +181,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertSignatureToFlattened($input)
+    private static function convertSignatureToFlattened($input, $toString)
     {
         $signatures = array();
         foreach ($input['signatures'] as $signature) {
@@ -193,7 +194,7 @@ class Converter
                     $temp[$key] = $signature[$key];
                 }
             }
-            $signatures[] = json_encode($temp);
+            $signatures[] = $toString ? json_encode($temp) : $temp;
         }
 
         return $signatures;
@@ -204,7 +205,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertRecipientToFlattened($input)
+    private static function convertRecipientToFlattened($input, $toString)
     {
         $recipients = array();
         foreach ($input['recipients'] as $recipient) {
@@ -219,7 +220,7 @@ class Converter
                     $temp[$key] = $recipient[$key];
                 }
             }
-            $recipients[] = json_encode($temp);
+            $recipients[] = $toString ? json_encode($temp) : $temp;
         }
 
         return $recipients;
