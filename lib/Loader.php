@@ -79,24 +79,63 @@ abstract class Loader implements LoaderInterface
      */
     public function verify(JWTInterface $jwt)
     {
+        $methods = array('checkExpirationTime', 'checkNotBefore', 'checkIssuedAt', 'checkCritical');
+        foreach ($methods as $method) {
+            $this->$method($jwt);
+        }
+        return true;
+    }
+
+    /**
+     * @param \Jose\JWTInterface $jwt
+     *
+     * @throws \Exception
+     */
+    protected function checkExpirationTime(JWTInterface $jwt)
+    {
         if (null !== $jwt->getExpirationTime() && time() > $jwt->getExpirationTime()) {
             throw new \Exception('The JWT has expired.');
         }
+    }
+
+    /**
+     * @param \Jose\JWTInterface $jwt
+     *
+     * @throws \Exception
+     */
+    protected function checkNotBefore(JWTInterface $jwt)
+    {
         if (null !== $jwt->getNotBefore() && time() < $jwt->getNotBefore()) {
             throw new \Exception('The JWT has expired.');
         }
+    }
+
+    /**
+     * @param \Jose\JWTInterface $jwt
+     *
+     * @throws \Exception
+     */
+    protected function checkIssuedAt(JWTInterface $jwt)
+    {
         if (null !== $jwt->getIssuedAt() && time() < $jwt->getIssuedAt()) {
             throw new \Exception('The JWT is issued in the futur.');
         }
+    }
+
+    /**
+     * @param \Jose\JWTInterface $jwt
+     *
+     * @throws \Exception
+     */
+    protected function checkCritical(JWTInterface $jwt)
+    {
         if (null !== $jwt->getCritical()) {
-            foreach ($jwt->getCritical() as $crit) {
-                if (null === $jwt->getHeaderValue($crit) && null === $jwt->getPayloadValue($crit)) {
-                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $crit));
+            foreach ($jwt->getCritical() as $critical) {
+                if (null === $jwt->getHeaderValue($critical) && null === $jwt->getPayloadValue($critical)) {
+                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $critical));
                 }
             }
         }
-
-        return true;
     }
 
     /**
