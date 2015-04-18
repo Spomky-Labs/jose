@@ -79,7 +79,9 @@ class Converter
     private static function mergeJWS($inputs)
     {
         //We determine if all common information are identical
-        $payload = null;
+        foreach (array('payload') as $key) {
+            $$key = null;
+        }
         foreach ($inputs as $input) {
             foreach (array('payload') as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {
@@ -122,12 +124,10 @@ class Converter
     private static function mergeJWE($inputs)
     {
         //We determine if all common information are identical
-        $ciphertext = null;
-        $protected = null;
-        $unprotected = null;
-        $iv = null;
-        $aad = null;
         $tag = null;
+        foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+            $$key = null;
+        }
         foreach ($inputs as $input) {
             foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {
