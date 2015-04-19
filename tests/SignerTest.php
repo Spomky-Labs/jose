@@ -14,7 +14,7 @@ use Jose\JSONSerializationModes;
 class SignerTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No instruction.
      */
     public function testNoInstruction()
@@ -27,7 +27,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unsupported input type.
      */
     public function testUnsupportedInputType()
@@ -40,7 +40,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Bad instruction. Must implement SignatureInstructionInterface.
      */
     public function testBadInstruction()
@@ -53,7 +53,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No 'alg' parameter set in the header or the key.
      */
     public function testAlgParameterIsMissing()
@@ -70,7 +70,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The algorithm 'foo' is not supported.
      */
     public function testAlgParameterIsNotSupported()
@@ -87,7 +87,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The serialization method 'foo_serialization' is not supported.
      */
     public function testSerializationIsNotSupported()
@@ -121,24 +121,24 @@ class SignerTest extends TestCase
         $instruction2->setKey($this->getKey2())
                      ->setProtectedHeader(array('alg' => 'RS512'));
 
-        $signatures = $signer->sign($input, array($instruction1, $instruction2));
+        $signatures = $signer->sign($input, array($instruction1, $instruction2), JSONSerializationModes::JSON_SERIALIZATION);
 
-        $this->assertTrue(is_array($signatures));
-        $this->assertEquals(2, count($signatures));
+        $this->assertTrue(is_string($signatures));
 
-        $this->assertTrue(is_string($signatures[0]));
-        $this->assertTrue(is_string($signatures[1]));
+        /**
+         * @var \Jose\JWSInterface[]
+         */
+        $loaded = $loader->load($signatures);
 
-        $loaded1 = $loader->load($signatures[0]);
-        $loaded2 = $loader->load($signatures[1]);
+        $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded1);
-        $this->assertInstanceOf("Jose\JWKInterface", $loaded1->getPayload());
-        $this->assertEquals('HS512', $loaded1->getAlgorithm());
+        $this->assertInstanceOf("\Jose\JWSInterface", $loaded[0]);
+        $this->assertInstanceOf("\Jose\JWKInterface", $loaded[0]->getPayload());
+        $this->assertEquals('HS512', $loaded[0]->getAlgorithm());
 
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded2);
-        $this->assertInstanceOf("Jose\JWKInterface", $loaded2->getPayload());
-        $this->assertEquals('RS512', $loaded2->getAlgorithm());
+        $this->assertInstanceOf("\Jose\JWSInterface", $loaded[1]);
+        $this->assertInstanceOf("\Jose\JWKInterface", $loaded[1]->getPayload());
+        $this->assertEquals('RS512', $loaded[1]->getAlgorithm());
     }
 
     /**
@@ -154,28 +154,18 @@ class SignerTest extends TestCase
                      ->setProtectedHeader(array('alg' => 'HS512'))
                      ->setUnprotectedHeader(array('foo' => 'bar'));
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(array('alg' => 'RS512'));
+        $signatures = $signer->sign(array('baz', 'ban'), array($instruction1), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
-        $signatures = $signer->sign(array('baz', 'ban'), array($instruction1, $instruction2), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $this->assertTrue(is_string($signatures));
 
-        $this->assertTrue(is_array($signatures));
-        $this->assertEquals(2, count($signatures));
+        /**
+         * @var \Jose\JWSInterface
+         */
+        $loaded = $loader->load($signatures);
 
-        $this->assertTrue(is_string($signatures[0]));
-        $this->assertTrue(is_string($signatures[1]));
-
-        $loaded1 = $loader->load($signatures[0]);
-        $loaded2 = $loader->load($signatures[1]);
-
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded1);
-        $this->assertTrue(is_array($loaded1->getPayload()));
-        $this->assertEquals('HS512', $loaded1->getAlgorithm());
-
-        $this->assertInstanceOf("Jose\JWSInterface", $loaded2);
-        $this->assertTrue(is_array($loaded2->getPayload()));
-        $this->assertEquals('RS512', $loaded2->getAlgorithm());
+        $this->assertInstanceOf("\Jose\JWSInterface", $loaded);
+        $this->assertTrue(is_array($loaded->getPayload()));
+        $this->assertEquals('HS512', $loaded->getAlgorithm());
     }
 
     /**
@@ -200,10 +190,13 @@ class SignerTest extends TestCase
 
         $loaded = $loader->load($signatures);
 
+        /*
+         * @var \Jose\JWSInterface[] $loaded
+         */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf("Jose\JWSInterface", $jws);
+            $this->assertInstanceOf("\Jose\JWSInterface", $jws);
             $this->assertEquals('Je suis Charlie', $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }
@@ -295,10 +288,13 @@ class SignerTest extends TestCase
 
         $loaded = $loader->load($signatures);
 
+        /*
+         * @var \Jose\JWSInterface[] $loaded
+         */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf("Jose\JWSInterface", $jws);
+            $this->assertInstanceOf("\Jose\JWSInterface", $jws);
             $this->assertEquals($this->getKeyset(), $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }

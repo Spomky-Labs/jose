@@ -116,7 +116,7 @@ class EncrypterTest extends TestCase
     /**
      *
      */
-    public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
+    public function testEncryptAndLoadCompactKeyAgreementWithWrappingCompact()
     {
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
@@ -135,6 +135,71 @@ class EncrypterTest extends TestCase
         $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+    }
+
+    /**
+     *
+     */
+    public function testEncryptAndLoadCompactKeyAgreementWithWrappingFlattened()
+    {
+        $encrypter = $this->getEncrypter();
+        $loader = $this->getLoader();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
+                    ->setSenderKey($this->getECDHSenderPrivateKey());
+
+        $encrypted = $encrypter->encrypt('Je suis Charlie', array($instruction), array('kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'), array(), JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+
+        $loaded = $loader->load($encrypted);
+
+        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertTrue(is_string($loaded->getPayload()));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getZip());
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+    }
+
+    /**
+     *
+     */
+    public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
+    {
+        $encrypter = $this->getEncrypter();
+        $loader = $this->getLoader();
+
+        $instruction1 = new EncryptionInstruction();
+        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
+        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction1->setRecipientUnprotectedHeader(array('kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW'));
+
+        $instruction2 = new EncryptionInstruction();
+        $instruction2->setRecipientKey($this->getRSARecipientKey());
+        $instruction2->setRecipientUnprotectedHeader(array('kid' => '123456789', 'alg' => 'RSA-OAEP-256'));
+
+        $encrypted = $encrypter->encrypt('Je suis Charlie', array($instruction1, $instruction2), array('enc' => 'A256CBC-HS512'), array(), JSONSerializationModes::JSON_SERIALIZATION);
+
+        $loaded = $loader->load($encrypted);
+
+        /*
+         * @var \Jose\JWEInterface[] $loaded
+         */
+        $this->assertEquals(2, count($loaded));
+
+        $this->assertInstanceOf("Jose\JWEInterface", $loaded[0]);
+        $this->assertTrue(is_string($loaded[0]->getPayload()));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded[0]->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded[0]->getEncryptionAlgorithm());
+        $this->assertNull($loaded[0]->getZip());
+        $this->assertEquals('Je suis Charlie', $loaded[0]->getPayload());
+
+        $this->assertInstanceOf("Jose\JWEInterface", $loaded[1]);
+        $this->assertTrue(is_string($loaded[1]->getPayload()));
+        $this->assertEquals('RSA-OAEP-256', $loaded[1]->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded[1]->getEncryptionAlgorithm());
+        $this->assertNull($loaded[1]->getZip());
+        $this->assertEquals('Je suis Charlie', $loaded[1]->getPayload());
     }
 
     /**

@@ -28,16 +28,13 @@ abstract class Signer implements SignerInterface
      * @param array                                                  $instructions  Signature instructions
      * @param string                                                 $serialization Serialization Overview
      *
-     * @return string[]|string
+     * @return string
      */
     public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
     {
         $this->checkInput($input);
-        $this->checkInstructions($instructions);
+        $this->checkInstructions($instructions, $serialization);
 
-        /*
-         * @var string
-         */
         $jwt_payload = Base64Url::encode($input->getPayload());
 
         $signatures = array(
@@ -51,7 +48,7 @@ abstract class Signer implements SignerInterface
 
         $prepared = Converter::convert($signatures, $serialization);
 
-        return is_array($prepared) && count($prepared) === 1 ? current($prepared) : $prepared;
+        return is_array($prepared) ? current($prepared) : $prepared;
     }
 
     /**
@@ -107,10 +104,17 @@ abstract class Signer implements SignerInterface
         return $signature_algorithm;
     }
 
-    protected function checkInstructions(array $instructions)
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param string                                 $serialization
+     */
+    protected function checkInstructions(array $instructions, $serialization)
     {
         if (empty($instructions)) {
             throw new \InvalidArgumentException('No instruction.');
+        }
+        if (count($instructions) > 1 && JSONSerializationModes::JSON_SERIALIZATION !== $serialization) {
+            throw new \InvalidArgumentException('Only one instruction authorized when Compact or Flattened Serialization Overview is selected.');
         }
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
