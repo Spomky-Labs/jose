@@ -18,7 +18,6 @@ class Converter
      */
     public static function convert($input, $mode, $toString = true)
     {
-        $prepared = array();
         $prepared = self::getPreparedInput($input);
         switch ($mode) {
             case JSONSerializationModes::JSON_SERIALIZATION:
