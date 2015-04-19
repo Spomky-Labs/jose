@@ -58,127 +58,308 @@ abstract class Encrypter implements EncrypterInterface
      */
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
-        if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
-            throw new \RuntimeException('JSON serialization not yet supported.');
-        }
         $this->checkInput($input);
         $this->checkInstructions($instructions);
 
         $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
         $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
 
-        // AAD
-        $jwt_aad = is_null($aad) ? null : Base64Url::encode($aad);
+        // We check if key management mode is OK
+        $key_management_mode = $this->getKeyManagementMode($instructions, $protected_header, $unprotected_header);
 
-        $recipients = array();
-        foreach ($instructions as $instruction) {
-            $recipients[] = $this->computeCEKEncryption($instruction, $input, $protected_header, $unprotected_header, $serialization, $aad, $jwt_aad);
+        // We get the content encryption algorithm
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($instructions, $protected_header, $unprotected_header);
+
+        // CEK
+        $additional_header_values = array();
+        $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $unprotected_header, $additional_header_values, $content_encryption_algorithm->getCEKSize());
+
+        if (!empty($additional_header_values) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+            $protected_header = array_merge($protected_header, $additional_header_values);
         }
 
-        return count($recipients) === 1 ? current($recipients) : $recipients;
-    }
-
-    protected function computeCEKEncryption(EncryptionInstructionInterface $instruction, JWTInterface $input, $protected_header, $unprotected_header, $serialization, $aad, $jwt_aad)
-    {
-        $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-        $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
-        $this->checkCompleteHeader($complete_header);
-
+        // We prepare the payload and compress it if required
         $payload = $input->getPayload();
-        $this->compressPayload($payload, $complete_header);
+        $compression_method = $this->findCompressionMethod($instructions, $protected_header, $unprotected_header);
+        $this->compressPayload($payload, $compression_method);
 
-        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
-
-        // IV
+        // We compute the initialization vector
         $iv = null;
         if (!is_null($iv_size = $content_encryption_algorithm->getIVSize())) {
             $iv = $this->createIV($iv_size);
         }
-        $jwt_iv = Base64Url::encode($iv);
 
-        // CEK
-        $cek     = null;
-        $jwt_cek = null;
-        if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
-            $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-            $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
-        } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            if (is_null($instruction->getSenderKey())) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
-            $cek = $this->createCEK($content_encryption_algorithm->getCEKSize());
-            if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $complete_header, $protected_header));
-            } else {
-                $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $content_encryption_algorithm->getCEKSize(), $complete_header, $recipient_header));
-            }
-        } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            if (is_null($instruction->getSenderKey())) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
-            if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
-                $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $protected_header);
-            } else {
-                $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $recipient_header);
-            }
-            $jwt_cek = '';
-        } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
-            $cek = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), array());
-            $jwt_cek = '';
-        }
-
-        // Shared protected header
+        // JWT Shared protected header
         $jwt_shared_protected_header = Base64Url::encode(json_encode($protected_header));
 
-        // Cyphertext
+        // We encrypt the payload and get the tag
         $tag = null;
-        $cyphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $jwt_shared_protected_header, $tag);
-        $jwt_cyphertext = Base64Url::encode($cyphertext);
+        $ciphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $jwt_shared_protected_header, $tag);
 
-        // Tag
+        // JWT Ciphertext
+        $jwt_ciphertext = Base64Url::encode($ciphertext);
+
+        // JWT AAD
+        $jwt_aad = is_null($aad) ? null : Base64Url::encode($aad);
+
+        // JWT Tag
         $jwt_tag = is_null($tag) ? null : Base64Url::encode($tag);
 
-        $result = array(
-            'ciphertext' => $jwt_cyphertext,
+        // JWT IV
+        $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
+
+        $recipients = array(
+            'ciphertext' => $jwt_ciphertext,
+            'recipients' => array(),
         );
         $values = array(
             'protected'     => $jwt_shared_protected_header,
             'unprotected'   => $unprotected_header,
-            'header'        => $recipient_header,
             'iv'            => $jwt_iv,
             'tag'           => $jwt_tag,
             'aad'           => $jwt_aad,
-            'encrypted_key' => $jwt_cek,
         );
         foreach ($values as $key => $value) {
             if (!empty($value)) {
-                $result[$key] = $value;
+                $recipients[$key] = $value;
             }
         }
-        $prepared = Converter::convert($result, $serialization);
+
+        foreach ($instructions as $instruction) {
+            $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
+        }
+
+        $prepared = Converter::convert($recipients, $serialization);
 
         return is_array($prepared) && count($prepared) === 1 ? current($prepared) : $prepared;
+    }
+
+    protected function computeRecipient(EncryptionInstructionInterface $instruction, $protected_header, $unprotected_header, $cek, $cek_size, $serialization)
+    {
+        $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+        $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+        $jwt_cek = null;
+        if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
+            $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            $add = array();
+            $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $add));
+            if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION !== $serialization) {
+                $recipient_header = array_merge($recipient_header, $add);
+            }
+        }
+
+        $result = array();
+        if (!is_null($jwt_cek)) {
+            $result['encrypted_key'] = $jwt_cek;
+        }
+        if (!empty($recipient_header)) {
+            $result['header'] = $recipient_header;
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     *
+     * @return string
+     */
+    protected function getKeyManagementMode(array $instructions, $protected_header, $unprotected_header)
+    {
+        $mode = null;
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+            $temp = $this->getKeyManagementMode2($complete_header);
+            if (is_null($mode)) {
+                $mode = $temp;
+            } else {
+                if (!$this->areKeyManagementModeAuthorized($mode, $temp)) {
+                    throw new \RuntimeException('Foreign key management mode forbidden.');
+                }
+            }
+        }
+
+        return $mode;
+    }
+
+    /**
+     * @param string $mode1
+     * @param string $mode2
+     *
+     * @return boolean
+     */
+    protected function areKeyManagementModeAuthorized($mode1, $mode2)
+    {
+        if ($mode1 > $mode2) {
+            $temp = $mode1;
+            $mode1 = $mode2;
+            $mode2 = $temp;
+        }
+        switch ($mode1.$mode2) {
+            case 'encenc':
+            case 'encwrap':
+            case 'wrapwrap':
+            case 'agreeagree':
+            case 'dirdir':
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
      * @param array $complete_header
      *
-     * @throws \InvalidArgumentException
+     * @return string
      */
-    protected function checkCompleteHeader(array $complete_header)
+    protected function getKeyManagementMode2($complete_header)
     {
-        foreach (array('enc', 'alg') as $key) {
-            if (!array_key_exists($key, $complete_header)) {
-                throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
-            }
+        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+        if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
+            return 'enc';
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            return 'wrap';
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+            return 'agree';
+        } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
+            return 'dir';
+        } else {
+            throw new \RuntimeException('Unable to get key management mode.');
         }
     }
 
-    protected function compressPayload(&$payload, array $complete_header)
+    /**
+     * @param string                                 $key_management_mode
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     * @param array                                  $additional_header_values
+     * @param int                                    $cek_size
+     *
+     * @return string
+     */
+    protected function determineCEK($key_management_mode, array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek_size)
     {
-        if (array_key_exists('zip', $complete_header)) {
-            $compression_method = $this->getCompressionMethod($complete_header['zip']);
+        switch ($key_management_mode) {
+            case 'enc':
+                return $this->createCEK($cek_size);
+            case 'wrap':
+                $cek = $this->createCEK($cek_size);
+                $this->getAgreementKeyWithWrapping($cek, $instructions, $protected_header, $unprotected_header, $additional_header_values, $cek, $cek_size);
+
+                return $cek;
+            case 'dir':
+                return $this->getDirectKey($instructions, $protected_header, $unprotected_header);
+            case 'agree':
+                return $this->getAgreementKey($instructions, $protected_header, $unprotected_header, $additional_header_values, $cek_size);
+            default:
+                throw new \RuntimeException('Unable to get CEK (unsupported key management mode).');
+        }
+    }
+
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     *
+     * @return string
+     */
+    protected function getDirectKey(array $instructions, $protected_header, $unprotected_header)
+    {
+        $cek = null;
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+            $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+            $temp = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), $complete_header);
+            if (is_null($cek)) {
+                $cek = $temp;
+            } else {
+                if ($cek !== $temp) {
+                    throw new \RuntimeException('Foreign CEK forbidden using direct key.');
+                }
+            }
+        }
+
+        return $cek;
+    }
+
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     * @param array                                  $additional_header_values
+     * @param int                                    $cek_size
+     *
+     * @return string
+     */
+    protected function getAgreementKey(array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek_size)
+    {
+        $cek = null;
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+            $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
+            $temp = $key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values);
+            if (is_null($cek)) {
+                $cek = $temp;
+            } else {
+                if ($cek !== $temp) {
+                    throw new \RuntimeException('Foreign CEK forbidden using direct key agreement.');
+                }
+            }
+        }
+
+        return $cek;
+    }
+
+    /**
+     * @param string                                 $cek
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     * @param array                                  $additional_header_values
+     * @param int                                    $cek_size
+     */
+    protected function getAgreementKeyWithWrapping($cek, array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek, $cek_size)
+    {
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+
+            $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
+            $key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values);
+        }
+    }
+
+    /**
+     * @param string $payload
+     * @param string $method
+     */
+    protected function compressPayload(&$payload, $method = null)
+    {
+        if (!is_null($method)) {
+            $compression_method = $this->getCompressionMethod($method);
             $payload = $compression_method->compress($payload);
             if (!is_string($payload)) {
                 throw new \RuntimeException('Compression failed.');
@@ -186,6 +367,40 @@ abstract class Encrypter implements EncrypterInterface
         }
     }
 
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
+     *
+     * @return string
+     */
+    protected function findCompressionMethod(array $instructions, $protected_header, $unprotected_header)
+    {
+        $method = null;
+        $first = true;
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            if ($first) {
+                if (array_key_exists('zip', $complete_header)) {
+                    $method = $complete_header['zip'];
+                }
+                $first = null;
+            } else {
+                if (array_key_exists('zip', $complete_header) && $method !== $complete_header['zip']) {
+                    throw new \RuntimeException('Foreign compression method forbidden');
+                }
+            }
+        }
+
+        return $method;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return \Jose\Compression\CompressionInterface
+     */
     protected function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
@@ -196,6 +411,9 @@ abstract class Encrypter implements EncrypterInterface
         return $compression_method;
     }
 
+    /**
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     */
     protected function checkInstructions(array $instructions)
     {
         if (empty($instructions)) {
@@ -209,13 +427,16 @@ abstract class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param string $algorithm
+     * @param array $complete_header
      *
      * @return \Jose\Operation\DirectEncryptionInterface|\Jose\Operation\KeyEncryptionInterface|\Jose\Operation\KeyAgreementInterface|\Jose\Operation\KeyAgreementWrappingInterface
      */
-    protected function getKeyEncryptionAlgorithm($algorithm)
+    protected function getKeyEncryptionAlgorithm($complete_header)
     {
-        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
+        if (!array_key_exists('alg', $complete_header)) {
+            throw new \RuntimeException("Parameter 'alg' is missing.");
+        }
+        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         foreach (array(
                      '\Jose\Operation\DirectEncryptionInterface',
                      '\Jose\Operation\KeyEncryptionInterface',
@@ -226,19 +447,37 @@ abstract class Encrypter implements EncrypterInterface
                 return $key_encryption_algorithm;
             }
         }
-        throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or not a key encryption algorithm instance.", $algorithm));
+        throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or not a key encryption algorithm instance.", $complete_header['alg']));
     }
 
     /**
-     * @param $algorithm
+     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param array                                  $protected_header
+     * @param array                                  $unprotected_header
      *
      * @return \Jose\Operation\ContentEncryptionInterface
      */
-    protected function getContentEncryptionAlgorithm($algorithm)
+    protected function getContentEncryptionAlgorithm(array $instructions, array $protected_header = array(), array $unprotected_header = array())
     {
+        $algorithm = null;
+        foreach ($instructions as $instruction) {
+            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
+            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            if (!array_key_exists('enc', $complete_header)) {
+                throw new \InvalidArgumentException("Parameters 'enc' is missing.");
+            }
+            if (is_null($algorithm)) {
+                $algorithm = $complete_header['enc'];
+            } else {
+                if ($algorithm !== $complete_header['enc']) {
+                    throw new \InvalidArgumentException("Foreign 'enc' parameter forbidden.");
+                }
+            }
+        }
+
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
         if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-            throw new \RuntimeException("The algorithm '".$algorithm."' does not implement ContentEncryptionInterface.");
+            throw new \RuntimeException(sprintf("The algorithm '%s' does not implement ContentEncryptionInterface.", $algorithm));
         }
 
         return $content_encryption_algorithm;
