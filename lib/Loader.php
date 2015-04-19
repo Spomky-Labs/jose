@@ -205,7 +205,7 @@ abstract class Loader implements LoaderInterface
     protected function getCompleteHeader($protected_header, $unprotected_header)
     {
         $complete_header = array();
-        if ($protected_header !== null) {
+        if (!is_null($protected_header)) {
             $tmp = json_decode(Base64Url::decode($protected_header), true);
             if (!is_array($tmp)) {
                 throw new \InvalidArgumentException('Invalid protected header');
@@ -244,9 +244,9 @@ abstract class Loader implements LoaderInterface
      * @param                                            $encrypted_cek
      * @param array                                      $header
      *
-     * @return mixed|string
+     * @return string
      */
-    public function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    public function getCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($key, $header);
@@ -268,11 +268,6 @@ abstract class Loader implements LoaderInterface
     protected function loadSerializedJsonJWE($data, JWKSetInterface $jwk_set = null)
     {
         $ciphertext = Base64Url::decode($data['ciphertext']);
-        if (array_key_exists('unprotected', $data)) {
-            $unprotected_header = $data['unprotected'];
-        } else {
-            $unprotected_header = array();
-        }
         $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : array();
         $unprotected = array_key_exists('unprotected', $data) ? $data['unprotected'] : array();
         $aad = array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null;
@@ -280,56 +275,129 @@ abstract class Loader implements LoaderInterface
         $iv  = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
 
         foreach ($data['recipients'] as $recipient) {
-            $encrypted_key = array_key_exists('encrypted_key', $recipient) ? Base64Url::decode($recipient['encrypted_key']) : null;
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : array();
             $complete_header = array_merge($protected, $unprotected, $header);
 
-            if (!array_key_exists('alg', $complete_header) || !array_key_exists('enc', $complete_header)) {
-                throw new \InvalidArgumentException("Parameters 'enc' or 'alg' are missing.");
-            }
-            $keys = $jwk_set;
-            if (is_null($keys)) {
-                $keys = $this->getKeysFromCompleteHeader($complete_header);
-            }
-            $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
-            $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['enc']);
-            if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-                throw new \RuntimeException("The algorithm '".$complete_header['enc']."' does not implement ContentEncryptionInterface.");
-            }
-            if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
-                !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
-                !$key_encryption_algorithm instanceof KeyAgreementInterface &&
-                !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-                throw new \RuntimeException("The key encryption algorithm '".$complete_header['alg']."' is not supported or not a key encryption algorithm instance.");
-            }
+            $cek = $this->decryptCEK($recipient, $complete_header, $jwk_set);
+            if (!is_null($cek)) {
+                $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
 
-            foreach ($keys as $key) {
-                $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
-                if ($cek !== null) {
-                    $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data['protected'], $tag);
+                $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data['protected'], $tag);
 
-                    if (array_key_exists('zip', $complete_header)) {
-                        $method = $this->getCompressionManager()->getCompressionAlgorithm($complete_header['zip']);
-                        if ($method === null) {
-                            throw new \RuntimeException("Compression method '".$complete_header['zip']."' not supported");
-                        }
-                        $payload = $method->uncompress($payload);
-                        if (!is_string($payload)) {
-                            throw new \RuntimeException('Decompression failed');
-                        }
-                    }
+                $this->uncompressedPayload($payload, $complete_header);
 
-                    $this->convertJWTContent($complete_header, $payload);
+                $this->convertJWTContent($complete_header, $payload);
 
-                    $jwe = $this->getJWTManager()->createJWE();
-                    $jwe->setProtectedHeader($protected)
-                        ->setUnprotectedHeader(array_merge($unprotected_header, $header))
-                        ->setPayload($payload);
+                $jwe = $this->getJWTManager()->createJWE();
+                $jwe->setProtectedHeader($protected)
+                    ->setUnprotectedHeader(array_merge($unprotected, $header))
+                    ->setPayload($payload);
 
-                    return $jwe;
-                }
+                return $jwe;
             }
         }
+    }
+
+    /**
+     * @param array                 $recipient
+     * @param array                 $complete_header
+     * @param \Jose\JWKSetInterface $jwk_set
+     *
+     * @return string|null
+     */
+    protected function decryptCEK(array $recipient, array $complete_header, JWKSetInterface $jwk_set = null)
+    {
+        $encrypted_key = array_key_exists('encrypted_key', $recipient) ? Base64Url::decode($recipient['encrypted_key']) : null;
+
+        $this->checkCompleteHeader($complete_header);
+        $keys = $jwk_set;
+        if (is_null($keys)) {
+            $keys = $this->getKeysFromCompleteHeader($complete_header);
+        }
+        $key_encryption_algorithm     = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
+
+        foreach ($keys as $key) {
+            $cek = $this->getCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
+            if (!is_null($cek)) {
+                return $cek;
+            }
+        }
+    }
+
+    /**
+     * @param array $complete_header
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function checkCompleteHeader(array $complete_header)
+    {
+        foreach (array('enc', 'alg') as $key) {
+            if (!array_key_exists($key, $complete_header)) {
+                throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
+            }
+        }
+    }
+
+    /**
+     * @param string $algorithm
+     *
+     * @return \Jose\Operation\DirectEncryptionInterface
+     * @return \Jose\Operation\KeyEncryptionInterface
+     * @return \Jose\Operation\KeyAgreementInterface
+     * @return \Jose\Operation\KeyAgreementWrappingInterface
+     */
+    protected function getKeyEncryptionAlgorithm($algorithm)
+    {
+        $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($algorithm);
+        if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
+            !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
+            !$key_encryption_algorithm instanceof KeyAgreementInterface &&
+            !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            throw new \RuntimeException("The key encryption algorithm '".$algorithm."' is not supported or not a key encryption algorithm instance.");
+        }
+
+        return $key_encryption_algorithm;
+    }
+
+    /**
+     * @param $algorithm
+     *
+     * @return \Jose\Operation\ContentEncryptionInterface
+     */
+    protected function getContentEncryptionAlgorithm($algorithm)
+    {
+        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
+        if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
+            throw new \RuntimeException("The algorithm '".$algorithm."' does not implement ContentEncryptionInterface.");
+        }
+
+        return $content_encryption_algorithm;
+    }
+
+    /**
+     * @param string $payload
+     * @param array  $complete_header
+     */
+    protected function uncompressedPayload(&$payload, array $complete_header)
+    {
+        if (array_key_exists('zip', $complete_header)) {
+            $compression_method = $this->getCompressionMethod($complete_header['zip']);
+            $payload = $compression_method->uncompress($payload);
+            if (!is_string($payload)) {
+                throw new \RuntimeException('Decompression failed');
+            }
+        }
+    }
+
+    protected function getCompressionMethod($method)
+    {
+        $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
+        if (is_null($compression_method)) {
+            throw new \RuntimeException(sprintf("Compression method '%s' not supported"), $method);
+        }
+
+        return $compression_method;
     }
 
     protected function getKeysFromCompleteHeader(array $header)
