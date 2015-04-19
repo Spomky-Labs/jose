@@ -27,6 +27,6 @@ class RSA15 extends RSA
      */
     public function getAlgorithmName()
     {
-        return "RSA1_5";
+        return 'RSA1_5';
     }
 }

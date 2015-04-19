@@ -19,66 +19,62 @@ This library aims to provide an implementation of:
 * JW**A** [JSON Web Algorithms (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40).
 * JW**K** [JSON Web Key (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-key-40).
 
-## Status of implementations: ##
+# Status of implementations
 
 [Please see this page](doc/Status.md).
 
-## The Release Process ##
+# The Release Process
 
-We manage the releases of the library through features and time-based models.
+The release process [is described here](doc/Release.md).
 
-- A new patch version comes out every month when you made backwards-compatible bug fixes.
-- A new minor version comes every six months when we added functionality in a backwards-compatible manner.
-- A new major version comes every year when we make incompatible API changes.
-
-The meaning of "patch" "minor" and "major" comes from the Semantic [Versioning strategy](http://semver.org/).
-
-This release process applies for all versions.
-
-### Backwards Compatibility
-
-We allow developers to upgrade with confidence from one minor version to the next one.
-
-Whenever keeping backward compatibility is not possible, the feature, the enhancement or the bug fix will be scheduled for the next major version.
-
-## Prerequisites ##
+# Prerequisites
 
 This library needs at least
 
 * `PHP 5.4`
-* PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
+
+Depending on algorithms you want to use, please consider the following optionnal requirements:
 * `OpenSSL` library for PHP
 * `phpseclib/phpseclib` library for RSA and AES algorithms.
-* `mdanter/ecc` library for Elliptic Curves algorithms.
-* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms.
+* `mdanter/ecc` library for Elliptic Curves algorithms (v0.2).
+	* PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
+* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on `PHP 7` and `HHVM`).
+* `spomky-labs/pbkdf2` for `PBES2-*` algorithms.
+* `spomky-labs/aes-key-wrap` for Key Wrap (`A128KW`, `PBES2-HS256+A128KW`...) algorithms.
 
-It has been successfully tested using `PHP 5.4` to `PHP 5.6`.
-Tests with `HHVM` fail because of `phpseclib/phpseclib` which is not compatible.
+It has been successfully tested using `PHP 5.4` to `PHP 5.6` with all algorithms.
 
-## Installation ##
+Tests with `PHP 7` and `HHVM` fail because of `phpseclib/phpseclib` which is not yet compatible.
+
+# Installation
 
 The preferred way to install this library is to rely on Composer:
 
-    composer require spomky-labs/jose
+```sh
+composer require spomky-labs/jose "1.0.0@dev"
+```
 
-## Extend the library ##
+# Extend the library
 
 This library only contains the logic. You must extend classes (algorithms, compression, managers...) to define setters and getters.
 
 Look at [Extend classes](doc/Extend.md) for more informations and examples.
 
-## How to use ##
+# How to use
 
 Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
-## Todo
+# Unsecure JWS
 
-[Next modifications](doc/Todo.md).
+This library supports unsecured `JWS` (`none` algorithm).
 
-## Contributing
+**Unsecured `JWS` is something you probably do not want to use.**
+After you loaded data you received, you should verify that the algorithm used is not `none`.
+
+# Contributing
 
 Requests for new features, bug fixed and all other ideas to make this library usefull are welcome. [Please follow these best practices](doc/Contributing.md).
 
-## Licence
+# Licence
 
 This software is release under [MIT licence](LICENSE).

@@ -45,6 +45,6 @@ class ES256 extends ECDSA
      */
     public function getAlgorithmName()
     {
-        return "ES256";
+        return 'ES256';
     }
 }

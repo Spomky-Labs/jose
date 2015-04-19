@@ -19,13 +19,13 @@ trait KeyChecker
         if (null !== $use) {
             switch ($use) {
                 case 'sig':
-                    if ("verification" !== $usage) {
-                        throw new \Exception("The key can not be used for signature verifications.");
+                    if ('verification' !== $usage) {
+                        throw new \Exception('The key can not be used for signature verifications.');
                     }
                     break;
                 case 'enc':
-                    if ("encryption" !== $usage) {
-                        throw new \Exception("The key can not be used for encryption.");
+                    if ('encryption' !== $usage) {
+                        throw new \Exception('The key can not be used for encryption.');
                     }
                     break;
                 default:
@@ -36,13 +36,13 @@ trait KeyChecker
         if (is_array($ops)) {
             switch ($use) {
                 case 'sign':
-                    if ("signature" !== $usage) {
-                        throw new \Exception("The key can not be used for signature verifications.");
+                    if ('signature' !== $usage) {
+                        throw new \Exception('The key can not be used for signature verifications.');
                     }
                     break;
                 case 'enc':
-                    if ("encryption" !== $usage) {
-                        throw new \Exception("The key can not be used for encryption.");
+                    if ('encryption' !== $usage) {
+                        throw new \Exception('The key can not be used for encryption.');
                     }
                     break;
                 default:

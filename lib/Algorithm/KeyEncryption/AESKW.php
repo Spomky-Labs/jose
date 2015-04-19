@@ -12,6 +12,16 @@ use Jose\Operation\KeyEncryptionInterface;
 abstract class AESKW implements KeyEncryptionInterface
 {
     /**
+     *
+     */
+    public function __construct()
+    {
+        if (!trait_exists("\AESKW\AESKW")) {
+            throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
+        }
+    }
+
+    /**
      * @param JWKInterface $key
      * @param string       $cek
      * @param array        $header
@@ -23,7 +33,7 @@ abstract class AESKW implements KeyEncryptionInterface
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
 
-        return $wrapper->wrap(Base64Url::decode($key->getValue("k")), $cek);
+        return $wrapper->wrap(Base64Url::decode($key->getValue('k')), $cek);
     }
 
     /**
@@ -38,7 +48,7 @@ abstract class AESKW implements KeyEncryptionInterface
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
 
-        return $wrapper->unwrap(Base64Url::decode($key->getValue("k")), $encryted_cek);
+        return $wrapper->unwrap(Base64Url::decode($key->getValue('k')), $encryted_cek);
     }
 
     /**
@@ -46,8 +56,8 @@ abstract class AESKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 

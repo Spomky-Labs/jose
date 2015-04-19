@@ -16,12 +16,12 @@ class Deflate implements CompressionInterface
     protected $compression_level = -1;
 
     /**
-     * @param integer $level
+     * @param int $level
      */
     public function setCompressionLevel($level)
     {
         if (!is_numeric($level) || $level < -1 || $level > 9) {
-            throw new \InvalidArgumentException("The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.");
+            throw new \InvalidArgumentException('The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.');
         }
 
         return $this;

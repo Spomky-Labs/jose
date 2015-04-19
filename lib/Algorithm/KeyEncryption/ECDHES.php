@@ -32,55 +32,31 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param JWKInterface $receiver_key
-     * @param int          $encryption_key_length
-     * @param array        $header
-     *
-     * @return string
+     * @inheritdoc
      */
-    public function getAgreementKey(JWKInterface $receiver_key, $encryption_key_length, array $header)
+    public function getAgreementKey($encryption_key_length, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = array(), array &$additional_header_values = array())
     {
-        $this->checkKey($receiver_key, true);
-        $sender_key = new JWK();
-        $sender_key->setValues($header["epk"]);
-        $this->checkKey($sender_key, false);
-        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
-            throw new \RuntimeException("Curves are different");
+        $this->checkKey($private_key, true);
+        if (is_null($public_key)) {
+            $public_key = $this->getPublicKey($complete_header);
+        } else {
+            $this->checkKey($public_key, false);
+            $additional_header_values = array_merge($additional_header_values, array(
+                'epk' => array(
+                    'kty' => $private_key->getKeyType(),
+                    'crv' => $private_key->getValue('crv'),
+                    'x'   => $private_key->getValue('x'),
+                    'y'   => $private_key->getValue('y'),
+                ),
+            ));
+        }
+        if ($private_key->getValue('crv') !== $public_key->getValue('crv')) {
+            throw new \RuntimeException('Curves are different');
         }
 
-        $agreed_key = $this->calculateAgreementKey($receiver_key, $sender_key);
+        $agreed_key = $this->calculateAgreementKey($private_key, $public_key);
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
-    }
-
-    /**
-     * @param JWKInterface $sender_key
-     * @param JWKInterface $receiver_key
-     * @param int          $encryption_key_length
-     * @param array        $header
-     *
-     * @return string
-     */
-    public function setAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $encryption_key_length, array &$header)
-    {
-        $this->checkKey($sender_key, true);
-        $this->checkKey($receiver_key, false);
-        if ($sender_key->getValue("crv") !== $receiver_key->getValue("crv")) {
-            throw new \RuntimeException("Curves are different");
-        }
-
-        $agreed_key = $this->calculateAgreementKey($sender_key, $receiver_key);
-
-        $header = array_merge($header, array(
-            "epk" => array(
-                "kty" => $sender_key->getKeyType(),
-                "crv" => $sender_key->getValue("crv"),
-                "x"   => $sender_key->getValue("x"),
-                "y"   => $sender_key->getValue("y"),
-            ),
-        ));
-
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $header["enc"], $encryption_key_length);
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $complete_header['enc'], $encryption_key_length);
     }
 
     /**
@@ -110,20 +86,40 @@ class ECDHES implements KeyAgreementInterface
      */
     public function getAlgorithmName()
     {
-        return "ECDH-ES";
+        return 'ECDH-ES';
+    }
+
+    /**
+     * @param array $complete_header
+     *
+     * @return \Jose\JWKInterface
+     */
+    private function getPublicKey(array $complete_header)
+    {
+        if (!array_key_exists('epk', $complete_header)) {
+            throw new \RuntimeException('"epk" parameter missing');
+        }
+        if (!is_array($complete_header['epk'])) {
+            throw new \RuntimeException('"epk" parameter is not an array of parameter');
+        }
+        $public_key = new JWK();
+        $public_key->setValues($complete_header['epk']);
+        $this->checkKey($public_key, false);
+
+        return $public_key;
     }
 
     /**
      * @param JWKInterface $key
-     * @param $is_private
+     * @param bool         $is_private
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        if ("EC" !== $key->getKeyType()) {
+        if ('EC' !== $key->getKeyType()) {
             throw new \RuntimeException("The key type must be 'EC'");
         }
         if (null === $key->getValue('d') && true === $is_private) {
-            throw new \RuntimeException("The key must be private");
+            throw new \RuntimeException('The key must be private');
         }
     }
 

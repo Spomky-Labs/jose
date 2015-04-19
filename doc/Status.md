@@ -1,82 +1,74 @@
-# Status of the implementation #
+Status of the implementation
+============================
 
-## JWT ##
+# JWT #
 
-### Supported ###
+## Supported ##
 
-Input supported:
-* Plain text
-* Array
-* JWTInterface object
-* jwk+json content type (JWKInterface object)
-* jwkset+json content type (JWKSetInterface object)
+* Input supported:
+    * [x] Plain text
+    * [x] Array
+    * [x] JWTInterface object
+    * [x] jwk+json content type (JWKInterface object)
+    * [x] jwkset+json content type (JWKSetInterface object)
 
-Serialization modes supported:
-* JSON Compact Serialization Overview (JWS/JWS creation and loading)
-* JSON Flattened Serialization Overview (JWS/JWS creation and loading)
-* JSON Serialization Overview (JWE creation in this mode is not supported)
+* Serialization modes supported:
+    * [x] JSON Compact Serialization Overview (JWS/JWS creation and loading)
+    * [x] JSON Flattened Serialization Overview (JWS/JWS creation and loading)
+    * [x] JSON Serialization Overview (JWS/JWS creation and loading)
 
-Compression support for JWE objects:
-* Deflate —DEF—
-* GZip —GZ— *(this compression method is not described in the specification)*
-* ZLib —ZLIB— *(this compression method is not described in the specification)*
+* Compression support for JWE objects:
+    * [x] Deflate —DEF—
+    * [x] GZip —GZ— *(this compression method is not described in the specification)*
+    * [x] ZLib —ZLIB— *(this compression method is not described in the specification)*
 
-### Unsupported ###
+# JWA #
 
-* JSON Serialization Overview
-    * JWE (creation only)
-
-## JWA ##
-
-### Supported algorithms ###
+## Supported algorithms ##
 
 * Signature:
-    * HS256, HS384, HS512
-    * ES256, ES384, ES512
-    * RS256, RS384, RS512
-    * PS256, PS384, PS512
-    * none
+    * [x] HS256, HS384, HS512
+    * [x] ES256, ES384, ES512
+    * [x] RS256, RS384, RS512
+    * [x] PS256, PS384, PS512
+    * [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
 * Encryption:
     * Key Encryption:
-        * dir
-        * RSA1_5
-        * RSA-OAEP
-        * RSA-OAEP-256
-        * ECDH-ES
-        * ECDH-ES+A128KW
-        * ECDH-ES+A192KW
-        * ECDH-ES+A256KW
-        * A128KW
-        * A192KW
-        * A256KW
-        * PBES2-HS256+A128KW
-        * PBES2-HS384+A192KW
-        * PBES2-HS512+A256KW
-        * A128GCMKW
-        * A192GCMKW
-        * A256GCMKW
+        * [x] dir
+        * [x] RSA1_5
+        * [x] RSA-OAEP
+        * [x] RSA-OAEP-256
+        * [x] ECDH-ES
+        * [x] ECDH-ES+A128KW
+        * [x] ECDH-ES+A192KW
+        * [x] ECDH-ES+A256KW
+        * [x] A128KW
+        * [x] A192KW
+        * [x] A256KW
+        * [x] PBES2-HS256+A128KW
+        * [x] PBES2-HS384+A192KW
+        * [x] PBES2-HS512+A256KW
+        * [x] A128GCMKW
+        * [x] A192GCMKW
+        * [x] A256GCMKW
     * Content Encryption:
-        * A128CBC-HS256
-        * A192CBC-HS384
-        * A256CBC-HS512
-        * A128GCM
-        * A192GCM
-        * A256GCM
+        * [x] A128CBC-HS256
+        * [x] A192CBC-HS384
+        * [x] A256CBC-HS512
+        * [x] A128GCM
+        * [x] A192GCM
+        * [x] A256GCM
 
-### Unsupported algorithms ###
+## Unsupported algorithms ##
 
-**None!** All algortihms described in the specification are supported.
+**None!** All algorithms described in the specification are supported. Some of these algorithms requires additional dependencies to be used.
 
-## JWK ##
+# JWK and JWKSet #
 
-JWK are fully supported
+JWK and JWKSet is fully supported
 
-## JWKSet ##
+# JWKManager and JWKSetManager #
 
-JWKSet are fully supported
+This project provides key and keyset managers. These managers are able to find keys according to the header of data loaded.
 
-## JWKManager ##
-
-This project provides a key manager. This manager is able to find keys according to the header of data loaded.
-
-You can extend it to add your own methods to find specific keys using header values. For example, if you manage your keys using X509 thumprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.
+You can extend them to add your own methods to find specific keys using header values. For example, if you manage your keys using X509 thumbprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.

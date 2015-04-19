@@ -35,7 +35,7 @@ trait PayloadConverter
     protected function convertJWTContent(array $header, &$payload)
     {
         //The payload is a JWKSet or JWK object
-        if (array_key_exists("cty", $header)) {
+        if (array_key_exists('cty', $header)) {
             switch ($header['cty']) {
                 case 'jwk+json':
                     $payload = $this->getJWKManager()->createJWK(json_decode($payload, true));
@@ -43,8 +43,8 @@ trait PayloadConverter
                     return;
                 case 'jwkset+json':
                     $values = json_decode($payload, true);
-                    if (!array_key_exists("keys", $values)) {
-                        throw new \Exception("Not a valid key set");
+                    if (!array_key_exists('keys', $values)) {
+                        throw new \Exception('Not a valid key set');
                     }
                     $payload = $this->getJWKSetManager()->createJWKSet($values['keys']);
 
@@ -71,7 +71,7 @@ trait PayloadConverter
         if ($input instanceof JWKInterface) {
             $jwt = $this->getJWTManager()->createJWT();
             $jwt->setPayload(json_encode($input))
-                ->setProtectedHeaderValue("cty", "jwk+json");
+                ->setProtectedHeaderValue('cty', 'jwk+json');
             $input = $jwt;
 
             return;
@@ -79,7 +79,7 @@ trait PayloadConverter
         if ($input instanceof JWKSetInterface) {
             $jwt = $this->getJWTManager()->createJWT();
             $jwt->setPayload(json_encode($input))
-                ->setProtectedHeaderValue("cty", "jwkset+json");
+                ->setProtectedHeaderValue('cty', 'jwkset+json');
             $input = $jwt;
 
             return;
@@ -99,7 +99,7 @@ trait PayloadConverter
             return;
         }
         if (!$input instanceof JWTInterface) {
-            throw new \InvalidArgumentException("Unsupported input type.");
+            throw new \InvalidArgumentException('Unsupported input type.');
         }
     }
 }

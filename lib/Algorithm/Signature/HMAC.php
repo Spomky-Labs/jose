@@ -27,7 +27,7 @@ abstract class HMAC implements SignatureInterface
      */
     public function verify(JWKInterface $key, $input, $signature)
     {
-        if (function_exists("hash_equals")) {
+        if (function_exists('hash_equals')) {
             return hash_equals($signature, $this->sign($key, $input));
         }
 
@@ -40,7 +40,7 @@ abstract class HMAC implements SignatureInterface
      * @param string $signature   The internal signature to be checked
      * @param string $signedInput The signed input submitted value
      *
-     * @return boolean true if the two strings are identical.
+     * @return bool true if the two strings are identical.
      */
     public function timingSafeEquals($signature, $signedInput)
     {
@@ -64,8 +64,8 @@ abstract class HMAC implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 

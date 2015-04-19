@@ -24,7 +24,7 @@ class ECConverter
 
         if (isset($minVersions[PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION]) &&
             version_compare(PHP_VERSION, $minVersions[PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION], '<')) {
-            throw new \RuntimeException("PHP ".PHP_VERSION." does not support Elliptic Curves algorithms.");
+            throw new \RuntimeException('PHP '.PHP_VERSION.' does not support Elliptic Curves algorithms.');
         }
     }
 
@@ -43,14 +43,14 @@ class ECConverter
             $res = openssl_pkey_get_public($certificate);
         }
         if ($res === false) {
-            throw new \Exception("Unable to load the certificate");
+            throw new \Exception('Unable to load the certificate');
         }
         $details = openssl_pkey_get_details($res);
         if ($details === false) {
-            throw new \Exception("Unable to get details of the certificate");
+            throw new \Exception('Unable to get details of the certificate');
         }
         if (!is_array($details) || !isset($details['key'])) {
-            throw new \Exception("Certificate is not a valid RSA certificate");
+            throw new \Exception('Certificate is not a valid RSA certificate');
         }
 
         return $details['key'];
@@ -77,7 +77,7 @@ class ECConverter
             $values += self::loadPublicKey($matches[1]);
         }
 
-        return empty($values) ? false : array('kty' => 'EC')+$values;
+        return empty($values) ? false : array('kty' => 'EC') + $values;
     }
 
     /**
@@ -113,7 +113,7 @@ class ECConverter
         }
 
         return array(
-            "d" => Base64Url::encode(base64_decode($mappedDetails["secret"])),
+            'd' => Base64Url::encode(base64_decode($mappedDetails['secret'])),
         );
     }
 
@@ -153,9 +153,9 @@ class ECConverter
             return false;
         }
 
-        $details = Base64Url::decode($mappedDetails["subjectPublicKey"]);
+        $details = Base64Url::decode($mappedDetails['subjectPublicKey']);
 
-        if (!self::isAlgorithmSupported($mappedDetails["algorithm"]["id-ecSigType"])) {
+        if (!self::isAlgorithmSupported($mappedDetails['algorithm']['id-ecSigType'])) {
             return false;
         }
         if (substr($details, 0, 1) !== "\00") {
@@ -165,12 +165,12 @@ class ECConverter
             return false;
         }
 
-        $X = substr($details, 2, (strlen($details)-2)/2);
-        $Y = substr($details, (strlen($details)-2)/2+2, (strlen($details)-2)/2);
+        $X = substr($details, 2, (strlen($details) - 2) / 2);
+        $Y = substr($details, (strlen($details) - 2) / 2 + 2, (strlen($details) - 2) / 2);
 
         return array(
-            "x" => Base64Url::encode($X),
-            "y" => Base64Url::encode($Y),
+            'x' => Base64Url::encode($X),
+            'y' => Base64Url::encode($Y),
         );
     }
 
@@ -181,6 +181,6 @@ class ECConverter
      */
     protected static function isAlgorithmSupported($algorithm)
     {
-        return in_array($algorithm, array("1.2.840.10045.3.1.7", "1.3.132.0.34", "1.3.132.0.35"));
+        return in_array($algorithm, array('1.2.840.10045.3.1.7', '1.3.132.0.34', '1.3.132.0.35'));
     }
 }

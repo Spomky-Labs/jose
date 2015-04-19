@@ -3,7 +3,6 @@
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
-use Base64Url\Base64Url;
 
 /**
  *
@@ -23,18 +22,17 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     /**
      * @inheritdoc
      */
-    public function encryptContent($input, $cek, $iv, $aad, array &$header, &$tag)
+    public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
-        $encoded_header = Base64Url::encode(json_encode($header));
-        $k = substr($cek, strlen($cek)/2);
+        $k = substr($cek, strlen($cek) / 2);
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
         $aes->setKey($k);
         $aes->setIV($iv);
 
-        $cyphertext = $aes->encrypt($input);
-        $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_header);
+        $cyphertext = $aes->encrypt($data);
+        $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
         return $cyphertext;
     }
@@ -44,30 +42,28 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      * @param $cek
      * @param $iv
      * @param $aad
-     * @param array $header
      * @param $tag
      *
      * @return String
      */
-    public function decryptContent($input, $cek, $iv, $aad, array $header, $tag)
+    public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
-        $encoded_header = Base64Url::encode(json_encode($header));
-        $this->checkAuthenticationTag($input, $cek, $iv, $aad, $encoded_header, $tag);
-        $k = substr($cek, strlen($cek)/2);
+        $this->checkAuthenticationTag($data, $cek, $iv, $aad, $encoded_protected_header, $tag);
+        $k = substr($cek, strlen($cek) / 2);
 
         $aes = new \Crypt_AES();
         $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
         $aes->setKey($k);
         $aes->setIV($iv);
 
-        return $aes->decrypt($input);
+        return $aes->decrypt($data);
     }
 
     /**
      * @param $encrypted_data
      * @param $cek
      * @param $iv
-     * @param $encoded_header
+     * @param string $encoded_header
      *
      * @return string
      */
@@ -77,7 +73,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key          = substr($cek, 0, strlen($cek)/2);
+        $mac_key          = substr($cek, 0, strlen($cek) / 2);
         $auth_data_length = strlen($encoded_header);
 
         $secured_input = implode('', array(
@@ -88,12 +84,16 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         ));
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
-        return substr($hash, 0, strlen($hash)/2);
+        return substr($hash, 0, strlen($hash) / 2);
     }
 
     /**
-     * @param string $authentication_tag
-     * @param string $encoded_header
+     * @param string      $authentication_tag
+     * @param string      $encoded_header
+     * @param string      $encrypted_data
+     * @param string      $cek
+     * @param string      $iv
+     * @param string|null $aad
      */
     protected function checkAuthenticationTag($encrypted_data, $cek, $iv, $aad, $encoded_header, $authentication_tag)
     {

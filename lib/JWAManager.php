@@ -63,7 +63,7 @@ class JWAManager extends Base
         } elseif (is_string($algorithm)) {
             $name = $algorithm;
         } else {
-            throw new \InvalidArgumentException("Argument must be a string or a JWAInterface object.");
+            throw new \InvalidArgumentException('Argument must be a string or a JWAInterface object.');
         }
         if (array_key_exists($name, $this->algorithms)) {
             unset($this->algorithms[$name]);

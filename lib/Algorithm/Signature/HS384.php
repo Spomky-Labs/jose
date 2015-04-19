@@ -24,6 +24,6 @@ class HS384 extends HMAC
      */
     public function getAlgorithmName()
     {
-        return "HS384";
+        return 'HS384';
     }
 }

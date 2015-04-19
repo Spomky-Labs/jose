@@ -22,7 +22,7 @@ class PBES2HS512A256KW extends PBES2AESKW
      */
     protected function getHashAlgorithm()
     {
-        return "sha512";
+        return 'sha512';
     }
 
     /**
@@ -30,7 +30,7 @@ class PBES2HS512A256KW extends PBES2AESKW
      */
     protected function getKeySize()
     {
-        return 256/8;
+        return 256 / 8;
     }
 
     /**
@@ -38,6 +38,6 @@ class PBES2HS512A256KW extends PBES2AESKW
      */
     public function getAlgorithmName()
     {
-        return "PBES2-HS512+A256KW";
+        return 'PBES2-HS512+A256KW';
     }
 }

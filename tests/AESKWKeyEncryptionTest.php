@@ -21,11 +21,11 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $header = array();
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => Base64Url::encode(hex2bin("000102030405060708090A0B0C0D0E0F")),
+            'kty' => 'oct',
+            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
         ));
 
-        $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
         $aeskw = new A128KW();
 
@@ -43,11 +43,11 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $header = array();
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => Base64Url::encode(hex2bin("000102030405060708090A0B0C0D0E0F1011121314151617")),
+            'kty' => 'oct',
+            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F1011121314151617')),
         ));
 
-        $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
         $aeskw = new A192KW();
 
@@ -65,11 +65,11 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $header = array();
         $key = new JWK();
         $key->setValues(array(
-            "kty" => "oct",
-            "k"  => Base64Url::encode(hex2bin("000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F")),
+            'kty' => 'oct',
+            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')),
         ));
 
-        $cek = hex2bin("00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F");
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
         $aeskw = new A256KW();
 

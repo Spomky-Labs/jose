@@ -20,6 +20,6 @@ class A192GCMKW extends AESGCMKW
      */
     public function getAlgorithmName()
     {
-        return "A192GCMKW";
+        return 'A192GCMKW';
     }
 }

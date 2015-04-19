@@ -1,1 +1,2 @@
-# Extending classes #
+Extending classes
+=================

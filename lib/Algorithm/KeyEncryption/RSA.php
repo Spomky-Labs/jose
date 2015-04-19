@@ -78,8 +78,8 @@ abstract class RSA implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("RSA" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('RSA' !== $key->getKeyType()) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 

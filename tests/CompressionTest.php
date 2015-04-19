@@ -22,7 +22,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
                 ->addCompressionAlgorithm(new GZip())
                 ->addCompressionAlgorithm(new ZLib());
 
-        $compression = $manager->getCompressionAlgorithm("DEF");
+        $compression = $manager->getCompressionAlgorithm('DEF');
         $this->assertInstanceOf("Jose\Compression\CompressionInterface", $compression);
     }
 
@@ -36,7 +36,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
                 ->addCompressionAlgorithm(new GZip())
                 ->addCompressionAlgorithm(new ZLib());
 
-        $compression = $manager->getCompressionAlgorithm("FOO");
+        $compression = $manager->getCompressionAlgorithm('FOO');
         $this->assertNull($compression);
     }
 
@@ -48,7 +48,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new Deflate();
         $compression->setCompressionLevel(9);
 
-        $data        = "Je suis Charlie";
+        $data        = 'Je suis Charlie';
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -63,7 +63,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new GZip();
         $compression->setCompressionLevel(9);
 
-        $data        = "Je suis Charlie";
+        $data        = 'Je suis Charlie';
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -78,7 +78,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new ZLib();
         $compression->setCompressionLevel(9);
 
-        $data        = "Je suis Charlie";
+        $data        = 'Je suis Charlie';
         $compressed   = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);

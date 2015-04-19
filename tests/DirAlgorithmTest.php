@@ -19,7 +19,7 @@ class DirAlgorithmTest extends TestCase
     {
         $header = array();
         $key  = new JWK();
-        $key->setValue("kty", "EC");
+        $key->setValue('kty', 'EC');
 
         $dir = new Dir();
 
@@ -33,11 +33,11 @@ class DirAlgorithmTest extends TestCase
     {
         $header = array();
         $key  = new JWK();
-        $key->setValue("kty", "dir")
-            ->setValue("dir", Base64Url::encode("ABCD"));
+        $key->setValue('kty', 'dir')
+            ->setValue('dir', Base64Url::encode('ABCD'));
 
         $dir = new Dir();
 
-        $this->assertEquals("ABCD", $dir->getCEK($key, $header));
+        $this->assertEquals('ABCD', $dir->getCEK($key, $header));
     }
 }

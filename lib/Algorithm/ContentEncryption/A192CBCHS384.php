@@ -28,6 +28,6 @@ class A192CBCHS384 extends AESCBCHS
      */
     public function getAlgorithmName()
     {
-        return "A192CBC-HS384";
+        return 'A192CBC-HS384';
     }
 }

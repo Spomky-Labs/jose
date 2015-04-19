@@ -54,8 +54,8 @@ abstract class ECDSA implements SignatureInterface
 
         $part_length = $this->getSignaturePartLength();
 
-        $R = str_pad($this->convertDecToHex($sign->getR()), $part_length, "0", STR_PAD_LEFT);
-        $S = str_pad($this->convertDecToHex($sign->getS()), $part_length, "0", STR_PAD_LEFT);
+        $R = str_pad($this->convertDecToHex($sign->getR()), $part_length, '0', STR_PAD_LEFT);
+        $S = str_pad($this->convertDecToHex($sign->getS()), $part_length, '0', STR_PAD_LEFT);
 
         return $this->convertHextoBin($R.$S);
     }
@@ -68,7 +68,7 @@ abstract class ECDSA implements SignatureInterface
         $this->checkKey($key);
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2*$part_length) {
+        if (strlen($signature) !== 2 * $part_length) {
             return false;
         }
 
@@ -110,7 +110,7 @@ abstract class ECDSA implements SignatureInterface
      */
     protected function convertHexToBin($value)
     {
-        return pack("H*", $value);
+        return pack('H*', $value);
     }
 
     /**
@@ -158,8 +158,8 @@ abstract class ECDSA implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("EC" !== $key->getKeyType()) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('EC' !== $key->getKeyType()) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 }

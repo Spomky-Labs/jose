@@ -20,6 +20,9 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         if (!class_exists("\Crypto\Cipher")) {
             throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
         }
+        if (!trait_exists("\AESKW\AESKW")) {
+            throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
+        }
     }
 
     /**
@@ -35,7 +38,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
 
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $cipher->setAAD(null);
-        $iv = openssl_random_pseudo_bytes(96/8);
+        $iv = openssl_random_pseudo_bytes(96 / 8);
         $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->getValue('k')), $iv);
 
         $header['iv'] = Base64Url::encode($iv);
@@ -70,8 +73,8 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ("oct" !== $key->getKeyType() || null === $key->getValue("k")) {
-            throw new \InvalidArgumentException("The key is not valid");
+        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+            throw new \InvalidArgumentException('The key is not valid');
         }
     }
 
@@ -80,7 +83,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     protected function checkAdditionalParameters(array $header)
     {
-        if (null === $header["iv"] || null === $header["tag"]) {
+        if (null === $header['iv'] || null === $header['tag']) {
             throw new \InvalidArgumentException("Parameters 'iv' or 'tag' are missing.");
         }
     }

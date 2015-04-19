@@ -161,9 +161,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new ES384())
                     ->addAlgorithm(new ES512())
 
-                    ->addAlgorithm(new A128GCM())
-                    ->addAlgorithm(new A192GCM())
-                    ->addAlgorithm(new A256GCM())
                     ->addAlgorithm(new A128CBCHS256())
                     ->addAlgorithm(new A192CBCHS384())
                     ->addAlgorithm(new A256CBCHS512())
@@ -171,9 +168,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new A128KW())
                     ->addAlgorithm(new A192KW())
                     ->addAlgorithm(new A256KW())
-                    ->addAlgorithm(new A128GCMKW())
-                    ->addAlgorithm(new A192GCMKW())
-                    ->addAlgorithm(new A256GCMKW())
                     ->addAlgorithm(new Dir())
                     ->addAlgorithm(new ECDHES())
                     ->addAlgorithm(new ECDHESA128KW())
@@ -186,6 +180,23 @@ class TestCase extends \PHPUnit_Framework_TestCase
                     ->addAlgorithm(new RSAOAEP())
                     ->addAlgorithm(new RSAOAEP256());
 
+        if ($this->isCryptoExtensionAvailable()) {
+            $key_manager->addAlgorithm(new A128GCM())
+                        ->addAlgorithm(new A192GCM())
+                        ->addAlgorithm(new A256GCM())
+                        ->addAlgorithm(new A128GCMKW())
+                        ->addAlgorithm(new A192GCMKW())
+                        ->addAlgorithm(new A256GCMKW());
+        }
+
         return $key_manager;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCryptoExtensionAvailable()
+    {
+        return class_exists("\Crypto\Cipher");
     }
 }

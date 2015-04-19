@@ -45,6 +45,6 @@ class ES512 extends ECDSA
      */
     public function getAlgorithmName()
     {
-        return "ES512";
+        return 'ES512';
     }
 }

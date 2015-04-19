@@ -28,6 +28,6 @@ class A128CBCHS256 extends AESCBCHS
      */
     public function getAlgorithmName()
     {
-        return "A128CBC-HS256";
+        return 'A128CBC-HS256';
     }
 }

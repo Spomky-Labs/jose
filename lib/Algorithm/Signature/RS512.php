@@ -12,7 +12,7 @@ class RS512 extends RSA
      */
     protected function getAlgorithm()
     {
-        return "sha512";
+        return 'sha512';
     }
 
     /**
@@ -28,6 +28,6 @@ class RS512 extends RSA
      */
     public function getAlgorithmName()
     {
-        return "RS512";
+        return 'RS512';
     }
 }
