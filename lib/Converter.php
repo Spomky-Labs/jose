@@ -19,14 +19,14 @@ class Converter
     public static function convert($input, $mode, $toString = true)
     {
         $prepared = array();
-        self::getMode($input, $prepared);
+        $prepared = self::getPreparedInput($input);
         switch ($mode) {
             case JSONSerializationModes::JSON_SERIALIZATION:
                 return $toString ? json_encode($prepared) : $prepared;
             case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
-                return self::convertToFlattened($prepared, $toString);
+                return self::fromSerializationToFlattenedSerialization($prepared, $toString);
             case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
-                return self::convertToCompact($prepared);
+                return self::fromSerializationToCompactSerialization($prepared);
             default:
                 throw new \InvalidArgumentException(sprintf("The serialization method '%s' is not supported.", $mode));
         }
@@ -167,13 +167,13 @@ class Converter
      *
      * @return array
      */
-    private static function convertToFlattened($input, $toString)
+    private static function fromSerializationToFlattenedSerialization($input, $toString)
     {
         if (array_key_exists('signatures', $input)) {
-            return self::convertSignatureToFlattened($input, $toString);
+            return self::fromSerializationSignatureToFlattenedSerialization($input, $toString);
         }
 
-        return self::convertRecipientToFlattened($input, $toString);
+        return self::fromSerializationRecipientToFlattenedSerialization($input, $toString);
     }
 
     /**
@@ -181,7 +181,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertSignatureToFlattened($input, $toString)
+    private static function fromSerializationSignatureToFlattenedSerialization($input, $toString)
     {
         $signatures = array();
         foreach ($input['signatures'] as $signature) {
@@ -205,7 +205,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertRecipientToFlattened($input, $toString)
+    private static function fromSerializationRecipientToFlattenedSerialization($input, $toString)
     {
         $recipients = array();
         foreach ($input['recipients'] as $recipient) {
@@ -231,13 +231,13 @@ class Converter
      *
      * @return array
      */
-    private static function convertToCompact($input)
+    private static function fromSerializationToCompactSerialization($input)
     {
         if (array_key_exists('signatures', $input)) {
-            return self::convertSignatureToCompact($input);
+            return self::fromSerializationSignatureToCompactSerialization($input);
         }
 
-        return self::convertRecipientToCompact($input);
+        return self::fromSerializationRecipientToCompactSerialization($input);
     }
 
     /**
@@ -245,7 +245,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertSignatureToCompact($input)
+    private static function fromSerializationSignatureToCompactSerialization($input)
     {
         $signatures = array();
         foreach ($input['signatures'] as $signature) {
@@ -271,7 +271,7 @@ class Converter
      *
      * @return array
      */
-    private static function convertRecipientToCompact($input)
+    private static function fromSerializationRecipientToCompactSerialization($input)
     {
         $recipients = array();
         foreach ($input['recipients'] as $recipient) {
@@ -281,11 +281,10 @@ class Converter
             if (!array_key_exists('protected', $input)) {
                 throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'protected' parameter is missing");
             }
-            if (array_key_exists('unprotected', $input)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'unprotected' parameter cannot be kept");
-            }
-            if (array_key_exists('aad', $input)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'aad' parameter cannot be kept");
+            foreach (array('unprotected', 'aad') as $key) {
+                if (array_key_exists($key, $input)) {
+                    throw new \InvalidArgumentException(sprintf("Cannot convert into Compact Json Serialisation: '%s' parameter cannot be kept", $key));
+                }
             }
             $temp = array(
                 $input['protected'],
@@ -315,94 +314,137 @@ class Converter
     }
 
     /**
-     * @param string|array $input
-     * @param array        $prepared
+     * @param $input
      *
-     * @return string
+     * @return array
      */
-    private static function getMode($input, array &$prepared)
+    private static function fromFlattenedSerializationRecipientToSerialization($input)
+    {
+        $recipient = array();
+        foreach (array('header', 'encrypted_key') as $key) {
+            if (array_key_exists($key, $input)) {
+                $recipient[$key] = $input[$key];
+            }
+        }
+        $recipients = array(
+            'ciphertext' => $input['ciphertext'],
+            'recipients' => array($recipient),
+        );
+        foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+            if (array_key_exists($key, $input)) {
+                $recipients[$key] = $input[$key];
+            }
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * @param $input
+     *
+     * @return array
+     */
+    private static function fromFlattenedSerializationSignatureToSerialization($input)
+    {
+        $signature = array(
+            'signature' => $input['signature'],
+        );
+        foreach (array('protected', 'header') as $key) {
+            if (array_key_exists($key, $input)) {
+                $signature[$key] = $input[$key];
+            }
+        }
+
+        return array(
+            'payload' => $input['payload'],
+            'signatures' => array($signature),
+        );
+    }
+
+    /**
+     * @param $input
+     *
+     * @return array
+     */
+    private static function fromCompactSerializationToSerialization($input)
+    {
+        $parts = explode('.', $input);
+        switch (count($parts)) {
+            case 3:
+                return self::fromCompactSerializationSignatureToSerialization($parts);
+            case 5:
+                return self::fromCompactSerializationRecipientToSerialization($parts);
+            default:
+                throw new \InvalidArgumentException('Unsupported input');
+        }
+    }
+
+    /**
+     * @param array $parts
+     *
+     * @return array
+     */
+    private static function fromCompactSerializationRecipientToSerialization(array $parts)
+    {
+        $recipient = array();
+        if (!empty($parts[1])) {
+            $recipient['encrypted_key'] = $parts[1];
+        }
+
+        $recipients = array(
+            'recipients' => array($recipient),
+        );
+        foreach (array(3 => 'ciphertext', 0 => 'protected', 2 => 'iv', 4 => 'tag') as $part => $key) {
+            if (!empty($parts[$part])) {
+                $recipients[$key] = $parts[$part];
+            }
+        }
+
+        return $recipients;
+    }
+
+    /**
+     * @param array $parts
+     *
+     * @return array
+     */
+    private static function fromCompactSerializationSignatureToSerialization(array $parts)
+    {
+        return array(
+            'payload' => $parts[1],
+            'signatures' => array(
+                array(
+                    'protected' => $parts[0],
+                    'signature' => $parts[2],
+                ),
+            ),
+        );
+    }
+
+    /**
+     * @param string|array $input
+     *
+     * @return array
+     */
+    private static function getPreparedInput($input)
     {
         if (is_array($input)) {
             if (array_key_exists('signatures', $input) || array_key_exists('recipients', $input)) {
-                $prepared = $input;
-
-                return JSONSerializationModes::JSON_SERIALIZATION;
+                return $input;
             }
             if (array_key_exists('signature', $input)) {
-                $signature = array(
-                    'signature' => $input['signature'],
-                );
-                foreach (array('protected', 'header') as $key) {
-                    if (array_key_exists($key, $input)) {
-                        $signature[$key] = $input[$key];
-                    }
-                }
-                $prepared = array(
-                    'payload' => $input['payload'],
-                    'signatures' => array($signature),
-                );
-
-                return JSONSerializationModes::JSON_FLATTENED_SERIALIZATION;
+                return self::fromFlattenedSerializationSignatureToSerialization($input);
             }
             if (array_key_exists('ciphertext', $input)) {
-                $recipient = array();
-                foreach (array('header', 'encrypted_key') as $key) {
-                    if (array_key_exists($key, $input)) {
-                        $recipient[$key] = $input[$key];
-                    }
-                }
-                $prepared = array(
-                    'ciphertext' => $input['ciphertext'],
-                    'recipients' => array($recipient),
-                );
-                foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
-                    if (array_key_exists($key, $input)) {
-                        $prepared[$key] = $input[$key];
-                    }
-                }
-
-                return JSONSerializationModes::JSON_FLATTENED_SERIALIZATION;
+                return self::fromFlattenedSerializationRecipientToSerialization($input);
             }
         } elseif (is_string($input)) {
             $json = json_decode($input, true);
             if (is_array($json)) {
-                return self::getMode($json, $prepared);
+                return self::getPreparedInput($json);
             }
-            $parts = explode('.', $input);
-            switch (count($parts)) {
-                case 3:
-                    $prepared = array(
-                        'payload' => $parts[1],
-                        'signatures' => array(
-                            array(
-                                'protected' => $parts[0],
-                                'signature' => $parts[2],
-                            ),
-                        ),
-                    );
 
-                    return JSONSerializationModes::JSON_COMPACT_SERIALIZATION;
-                case 5:
-                    $recipient = array();
-                    if (!empty($parts[1])) {
-                        $recipient['encrypted_key'] = $parts[1];
-                    }
-
-                    $prepared = array(
-                        'recipients' => array($recipient),
-                    );
-                    foreach (array(3 => 'ciphertext', 0 => 'protected', 2 => 'iv', 4 => 'tag') as $part => $key) {
-                        if (!empty($parts[$part])) {
-                            $prepared[$key] = $parts[$part];
-                        }
-                    }
-
-                    return JSONSerializationModes::JSON_COMPACT_SERIALIZATION;
-                default:
-                    throw new \InvalidArgumentException('Unsupported input');
-            }
-        } else {
-            throw new \InvalidArgumentException('Unsupported input');
+            return self::fromCompactSerializationToSerialization($input);
         }
         throw new \InvalidArgumentException('Unsupported input');
     }
