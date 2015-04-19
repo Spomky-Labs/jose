@@ -39,7 +39,10 @@ abstract class Signer implements SignerInterface
 
         $jwt_payload = Base64Url::encode($input->getPayload());
 
-        $signatures = array();
+        $signatures = array(
+            'payload' => $jwt_payload,
+        );
+
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
                 throw new \InvalidArgumentException('Bad instruction. Must implement SignatureInstructionInterface.');
@@ -62,42 +65,18 @@ abstract class Signer implements SignerInterface
 
             $signature = $algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
             $jwt_signature = Base64Url::encode($signature);
-            switch ($serialization) {
-                case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
-                    $signatures[] = $jwt_protected_header.'.'.$jwt_payload.'.'.$jwt_signature;
-                    break;
-                case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
-                    $result = array(
-                        'payload' => $jwt_payload,
-                        'protected' => $jwt_protected_header,
-                        'signature' => $jwt_signature,
-                    );
-                    if (!empty($unprotected_header)) {
-                        $result['header'] = $unprotected_header;
-                    }
-                    $signatures[] = json_encode($result);
-                    break;
-                case JSONSerializationModes::JSON_SERIALIZATION:
-                    $result = array(
-                        'protected' => $jwt_protected_header,
-                        'signature' => $jwt_signature,
-                    );
-                    if (!empty($unprotected_header)) {
-                        $result['header'] = $unprotected_header;
-                    }
-                    $signatures['signatures'][] = $result;
-                    break;
-                default:
-                    throw new \InvalidArgumentException("The serialization method '$serialization' is not supported.");
+            $result = array(
+                'protected' => $jwt_protected_header,
+                'signature' => $jwt_signature,
+            );
+            if (!empty($unprotected_header)) {
+                $result['header'] = $unprotected_header;
             }
+            $signatures['signatures'][] = $result;
         }
 
-        if (JSONSerializationModes::JSON_SERIALIZATION === $serialization) {
-            $signatures['payload'] = $jwt_payload;
+        $prepared = Converter::convert($signatures, $serialization);
 
-            return json_encode($signatures);
-        }
-
-        return count($signatures) === 1 ? current($signatures) : $signatures;
+        return is_array($prepared) && count($prepared) === 1 ? current($prepared) : $prepared;
     }
 }

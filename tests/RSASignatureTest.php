@@ -20,7 +20,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 class RSASignatureTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key is not valid
      */
     public function testInvalidKey()
@@ -35,7 +35,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key is not a private key
      */
     public function testKeyIsNotPrivate()
@@ -506,8 +506,8 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Unable to load the input
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unsupported input
      */
     public function testLoadInvalidInput()
     {
@@ -517,8 +517,8 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
-     * @expectedExceptionMessage Unable to load the input
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unsupported input
      */
     public function testLoadInvalidInput2()
     {

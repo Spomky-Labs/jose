@@ -160,34 +160,25 @@ abstract class Encrypter implements EncrypterInterface
             // Tag
             $jwt_tag = null !== $tag ? Base64Url::encode($tag) : null;
 
-            switch ($serialization) {
-                case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
-                    $recipients[] = "{$jwt_shared_protected_header}.{$jwt_cek}.{$jwt_iv}.{$jwt_cyphertext}.{$jwt_tag}";
-                    break;
-                case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
-                    $result = array(
-                        'ciphertext' => $jwt_cyphertext,
-                    );
-                    $values = array(
-                        'protected'     => $jwt_shared_protected_header,
-                        'unprotected'   => $unprotected_header,
-                        'header'        => $recipient_header,
-                        'iv'            => $jwt_iv,
-                        'tag'           => $jwt_tag,
-                        'aad'           => $jwt_aad,
-                        'encrypted_key' => $jwt_cek,
-                    );
-                    foreach ($values as $key => $value) {
-                        if (!empty($value)) {
-                            $result[$key] = $value;
-                        }
-                    }
-                    $recipients[] = json_encode($result);
-                    break;
-
-                default:
-                    throw new \RuntimeException('Unsupported serialization mode.');
+            $result = array(
+                'ciphertext' => $jwt_cyphertext,
+            );
+            $values = array(
+                'protected'     => $jwt_shared_protected_header,
+                'unprotected'   => $unprotected_header,
+                'header'        => $recipient_header,
+                'iv'            => $jwt_iv,
+                'tag'           => $jwt_tag,
+                'aad'           => $jwt_aad,
+                'encrypted_key' => $jwt_cek,
+            );
+            foreach ($values as $key => $value) {
+                if (!empty($value)) {
+                    $result[$key] = $value;
+                }
             }
+            $prepared = Converter::convert($result, $serialization);
+            $recipients[] = is_array($prepared) && count($prepared) === 1 ? current($prepared) : $prepared;
         }
 
         return count($recipients) === 1 ? current($recipients) : $recipients;
