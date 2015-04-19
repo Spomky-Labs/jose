@@ -280,22 +280,43 @@ abstract class Loader implements LoaderInterface
 
             $cek = $this->decryptCEK($recipient, $complete_header, $jwk_set);
             if (!is_null($cek)) {
-                $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
-
-                $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data['protected'], $tag);
-
-                $this->uncompressedPayload($payload, $complete_header);
-
-                $this->convertJWTContent($complete_header, $payload);
-
-                $jwe = $this->getJWTManager()->createJWE();
-                $jwe->setProtectedHeader($protected)
-                    ->setUnprotectedHeader(array_merge($unprotected, $header))
-                    ->setPayload($payload);
-
-                return $jwe;
+                return $this->decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data['protected'], $tag, $complete_header);
             }
         }
+    }
+
+    /**
+     * @param       $ciphertext
+     * @param       $cek
+     * @param       $iv
+     * @param       $aad
+     * @param       $unprotected
+     * @param       $header
+     * @param       $protected
+     * @param       $data_protected
+     * @param       $tag
+     * @param array $complete_header
+     *
+     * @return \Jose\JWEInterface
+     *
+     * @throws \Exception
+     */
+    protected function decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data_protected, $tag, array $complete_header)
+    {
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
+
+        $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data_protected, $tag);
+
+        $this->uncompressedPayload($payload, $complete_header);
+
+        $this->convertJWTContent($complete_header, $payload);
+
+        $jwe = $this->getJWTManager()->createJWE();
+        $jwe->setProtectedHeader($protected)
+            ->setUnprotectedHeader(array_merge($unprotected, $header))
+            ->setPayload($payload);
+
+        return $jwe;
     }
 
     /**
@@ -342,22 +363,22 @@ abstract class Loader implements LoaderInterface
     /**
      * @param string $algorithm
      *
-     * @return \Jose\Operation\DirectEncryptionInterface
-     * @return \Jose\Operation\KeyEncryptionInterface
-     * @return \Jose\Operation\KeyAgreementInterface
-     * @return \Jose\Operation\KeyAgreementWrappingInterface
+     * @return \Jose\Operation\DirectEncryptionInterface|\Jose\Operation\KeyEncryptionInterface|\Jose\Operation\KeyAgreementInterface|\Jose\Operation\KeyAgreementWrappingInterface
      */
     protected function getKeyEncryptionAlgorithm($algorithm)
     {
-        $key_encryption_algorithm     = $this->getJWAManager()->getAlgorithm($algorithm);
-        if (!$key_encryption_algorithm instanceof DirectEncryptionInterface &&
-            !$key_encryption_algorithm instanceof KeyEncryptionInterface &&
-            !$key_encryption_algorithm instanceof KeyAgreementInterface &&
-            !$key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            throw new \RuntimeException("The key encryption algorithm '".$algorithm."' is not supported or not a key encryption algorithm instance.");
+        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
+        foreach (array(
+                    '\Jose\Operation\DirectEncryptionInterface',
+                    '\Jose\Operation\KeyEncryptionInterface',
+                    '\Jose\Operation\KeyAgreementInterface',
+                    '\Jose\Operation\KeyAgreementWrappingInterface',
+                ) as $class) {
+            if ($key_encryption_algorithm instanceof $class) {
+                return $key_encryption_algorithm;
+            }
         }
-
-        return $key_encryption_algorithm;
+        throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or not a key encryption algorithm instance.", $algorithm));
     }
 
     /**
