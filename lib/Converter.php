@@ -28,7 +28,7 @@ class Converter
             case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
                 return self::convertToCompact($prepared);
             default:
-                throw new \InvalidArgumentException('Unsupported mode');
+                throw new \InvalidArgumentException(sprintf("The serialization method '%s' is not supported.", $mode));
         }
     }
 
