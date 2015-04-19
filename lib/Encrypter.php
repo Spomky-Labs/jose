@@ -54,12 +54,12 @@ abstract class Encrypter implements EncrypterInterface
      * @param string                                                 $serialization
      * @param null                                                   $aad
      *
-     * @return array|mixed
+     * @return string
      */
     public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
         $this->checkInput($input);
-        $this->checkInstructions($instructions);
+        $this->checkInstructions($instructions, $serialization);
 
         $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
         $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
@@ -71,11 +71,11 @@ abstract class Encrypter implements EncrypterInterface
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($instructions, $protected_header, $unprotected_header);
 
         // CEK
-        $additional_header_values = array();
-        $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $unprotected_header, $additional_header_values, $content_encryption_algorithm->getCEKSize());
+        $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $unprotected_header, $content_encryption_algorithm->getCEKSize());
 
-        if (!empty($additional_header_values) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
-            $protected_header = array_merge($protected_header, $additional_header_values);
+        $recipients = array('recipients' => array());
+        foreach ($instructions as $instruction) {
+            $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
         }
 
         // We prepare the payload and compress it if required
@@ -108,11 +108,8 @@ abstract class Encrypter implements EncrypterInterface
         // JWT IV
         $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
 
-        $recipients = array(
-            'ciphertext' => $jwt_ciphertext,
-            'recipients' => array(),
-        );
         $values = array(
+            'ciphertext'    => $jwt_ciphertext,
             'protected'     => $jwt_shared_protected_header,
             'unprotected'   => $unprotected_header,
             'iv'            => $jwt_iv,
@@ -125,16 +122,12 @@ abstract class Encrypter implements EncrypterInterface
             }
         }
 
-        foreach ($instructions as $instruction) {
-            $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
-        }
-
         $prepared = Converter::convert($recipients, $serialization);
 
-        return is_array($prepared) && count($prepared) === 1 ? current($prepared) : $prepared;
+        return is_array($prepared) ? current($prepared) : $prepared;
     }
 
-    protected function computeRecipient(EncryptionInstructionInterface $instruction, $protected_header, $unprotected_header, $cek, $cek_size, $serialization)
+    protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
         $recipient_header   = $instruction->getRecipientUnprotectedHeader();
         $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
@@ -145,11 +138,13 @@ abstract class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            $add = array();
-            $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $add));
-            if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION !== $serialization) {
-                $recipient_header = array_merge($recipient_header, $add);
-            }
+            $additional_header_values = array();
+            $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values));
+            $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
+        } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+            $additional_header_values = array();
+            $jwt_cek = Base64Url::encode($key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values));
+            $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         }
 
         $result = array();
@@ -161,6 +156,15 @@ abstract class Encrypter implements EncrypterInterface
         }
 
         return $result;
+    }
+
+    protected function updateHeader($additional_header_values, &$protected_header, &$recipient_header, $serialization)
+    {
+        if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+            $protected_header = array_merge($protected_header, $additional_header_values);
+        } else {
+            $recipient_header = array_merge($recipient_header, $additional_header_values);
+        }
     }
 
     /**
@@ -194,7 +198,7 @@ abstract class Encrypter implements EncrypterInterface
      * @param string $mode1
      * @param string $mode2
      *
-     * @return boolean
+     * @return bool
      */
     protected function areKeyManagementModeAuthorized($mode1, $mode2)
     {
@@ -242,25 +246,20 @@ abstract class Encrypter implements EncrypterInterface
      * @param \Jose\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
-     * @param array                                  $additional_header_values
      * @param int                                    $cek_size
      *
      * @return string
      */
-    protected function determineCEK($key_management_mode, array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek_size)
+    protected function determineCEK($key_management_mode, array $instructions, $protected_header, $unprotected_header, $cek_size)
     {
         switch ($key_management_mode) {
             case 'enc':
-                return $this->createCEK($cek_size);
             case 'wrap':
-                $cek = $this->createCEK($cek_size);
-                $this->getAgreementKeyWithWrapping($cek, $instructions, $protected_header, $unprotected_header, $additional_header_values, $cek, $cek_size);
-
-                return $cek;
+                return $this->createCEK($cek_size);
             case 'dir':
                 return $this->getDirectKey($instructions, $protected_header, $unprotected_header);
             case 'agree':
-                return $this->getAgreementKey($instructions, $protected_header, $unprotected_header, $additional_header_values, $cek_size);
+                return $this->getAgreementKey($instructions, $protected_header, $unprotected_header, $cek_size);
             default:
                 throw new \RuntimeException('Unable to get CEK (unsupported key management mode).');
         }
@@ -299,12 +298,11 @@ abstract class Encrypter implements EncrypterInterface
      * @param \Jose\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
-     * @param array                                  $additional_header_values
      * @param int                                    $cek_size
      *
      * @return string
      */
-    protected function getAgreementKey(array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek_size)
+    protected function getAgreementKey(array $instructions, $protected_header, $unprotected_header, $cek_size)
     {
         $cek = null;
         foreach ($instructions as $instruction) {
@@ -316,6 +314,7 @@ abstract class Encrypter implements EncrypterInterface
             if (is_null($instruction->getSenderKey())) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
+            $additional_header_values = array();
             $temp = $key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values);
             if (is_null($cek)) {
                 $cek = $temp;
@@ -327,29 +326,6 @@ abstract class Encrypter implements EncrypterInterface
         }
 
         return $cek;
-    }
-
-    /**
-     * @param string                                 $cek
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
-     * @param array                                  $protected_header
-     * @param array                                  $unprotected_header
-     * @param array                                  $additional_header_values
-     * @param int                                    $cek_size
-     */
-    protected function getAgreementKeyWithWrapping($cek, array $instructions, $protected_header, $unprotected_header, array &$additional_header_values, $cek, $cek_size)
-    {
-        foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
-
-            $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
-
-            if (is_null($instruction->getSenderKey())) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
-            $key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values);
-        }
     }
 
     /**
@@ -413,11 +389,15 @@ abstract class Encrypter implements EncrypterInterface
 
     /**
      * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param string                                 $serialization
      */
-    protected function checkInstructions(array $instructions)
+    protected function checkInstructions(array $instructions, $serialization)
     {
         if (empty($instructions)) {
             throw new \InvalidArgumentException('No instruction.');
+        }
+        if (count($instructions) > 1 && JSONSerializationModes::JSON_SERIALIZATION !== $serialization) {
+            throw new \InvalidArgumentException('Only one instruction authorized when Compact or Flattened Serialization Overview is selected.');
         }
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof EncryptionInstructionInterface) {

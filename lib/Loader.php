@@ -143,7 +143,7 @@ abstract class Loader implements LoaderInterface
     /**
      * @param $data
      *
-     * @return array|mixed
+     * @return array|\Jose\JWSInterface
      */
     protected function loadSerializedJsonJWS($data)
     {
@@ -274,15 +274,18 @@ abstract class Loader implements LoaderInterface
         $tag = array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null;
         $iv  = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
 
+        $result = array();
         foreach ($data['recipients'] as $recipient) {
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : array();
             $complete_header = array_merge($protected, $unprotected, $header);
 
             $cek = $this->decryptCEK($recipient, $complete_header, $jwk_set);
             if (!is_null($cek)) {
-                return $this->decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data['protected'], $tag, $complete_header);
+                $result[] = $this->decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data['protected'], $tag, $complete_header);
             }
         }
+
+        return count($result) > 1 ? $result : current($result);
     }
 
     /**
