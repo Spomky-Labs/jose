@@ -29,15 +29,15 @@ The release process [is described here](doc/Release.md).
 
 # Prerequisites
 
-This library needs at least
+This library needs at least:
+* `PHP 5.4`.
+* `OpenSSL` library for PHP.
 
-* `PHP 5.4`
-
-Depending on algorithms you want to use, please consider the following optionnal requirements:
-* `OpenSSL` library for PHP
-* `phpseclib/phpseclib` library for RSA and AES algorithms.
-* `mdanter/ecc` library for Elliptic Curves algorithms (v0.2).
-	* PHP Extension: `BC Math` or `GMP` (`GMP` is highly recommended!)
+Depending on algorithms you want to use, please consider the following optional requirements:
+* `phpseclib/phpseclib` library for RSA and AES algorithms except AES GCM (not available on `PHP 7` and `HHVM`).
+* `mdanter/ecc` library for Elliptic Curves algorithms (v0.2) with one of the following PHP extension:
+    * `GMP` (highly recommended!),
+    * `BC Math`.
 * [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on `PHP 7` and `HHVM`).
 * `spomky-labs/pbkdf2` for `PBES2-*` algorithms.
 * `spomky-labs/aes-key-wrap` for Key Wrap (`A128KW`, `PBES2-HS256+A128KW`...) algorithms.
@@ -58,13 +58,13 @@ composer require spomky-labs/jose "1.0.0@dev"
 
 This library only contains the logic. You must extend classes (algorithms, compression, managers...) to define setters and getters.
 
-Look at [Extend classes](doc/Extend.md) for more informations and examples.
+Look at [Extend classes](doc/Extend.md) for more information and examples.
 
 # How to use
 
 Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
-# Unsecure JWS
+# Unsecured JWS
 
 This library supports unsecured `JWS` (`none` algorithm).
 
@@ -73,7 +73,7 @@ After you loaded data you received, you should verify that the algorithm used is
 
 # Contributing
 
-Requests for new features, bug fixed and all other ideas to make this library usefull are welcome. [Please follow these best practices](doc/Contributing.md).
+Requests for new features, bug fixed and all other ideas to make this library useful are welcome. [Please follow these best practices](doc/Contributing.md).
 
 # Licence
 

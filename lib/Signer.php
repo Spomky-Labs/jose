@@ -66,7 +66,7 @@ abstract class Signer implements SignerInterface
 
         $jwt_protected_header = empty($protected_header) ? null : Base64Url::encode(json_encode($protected_header));
 
-        $signature_algorithm = $this->getSignatureAlgorithm($complete_header);
+        $signature_algorithm = $this->getSignatureAlgorithm($complete_header, $instruction->getKey());
 
         $signature = $signature_algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
 
@@ -90,15 +90,22 @@ abstract class Signer implements SignerInterface
      *
      * @return \Jose\Operation\SignatureInterface
      */
-    protected function getSignatureAlgorithm(array $complete_header)
+    protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
+        $alg = null;
         if (!array_key_exists('alg', $complete_header)) {
-            throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
+            if (is_null($key->getAlgorithm())) {
+                throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
+            } else {
+                $alg = $key->getAlgorithm();
+            }
+        } else {
+            $alg = $complete_header['alg'];
         }
 
-        $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
+        $signature_algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$signature_algorithm instanceof SignatureInterface) {
-            throw new \InvalidArgumentException("The algorithm '{$complete_header['alg']}' is not supported.");
+            throw new \InvalidArgumentException("The algorithm '$alg' is not supported.");
         }
 
         return $signature_algorithm;
