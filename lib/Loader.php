@@ -65,8 +65,8 @@ abstract class Loader implements LoaderInterface
         if (0 === count($jwk_set)) {
             return false;
         }
-        $algorithm = $this->getAlgorithm($complete_header);
         foreach ($jwk_set->getKeys() as $jwk) {
+            $algorithm = $this->getAlgorithm($complete_header, $jwk);
             if (true === $algorithm->verify($jwk, $jws->getInput(), $jws->getSignature())) {
                 return true;
             }
@@ -220,18 +220,27 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param $header
+     * @param array              $header
+     * @param \Jose\JWKInterface $key
      *
      * @return \Jose\Operation\SignatureInterface|null
      */
-    protected function getAlgorithm($header)
+    protected function getAlgorithm(array $header, JWKInterface $key)
     {
+        $alg = null;
         if (!array_key_exists('alg', $header)) {
-            throw new \RuntimeException("The header parameter 'alg' is missing.");
+            if (is_null($key->getAlgorithm())) {
+                throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
+            } else {
+                $alg = $key->getAlgorithm();
+            }
+        } else {
+            $alg = $header['alg'];
         }
-        $algorithm = $this->getJWAManager()->getAlgorithm($header['alg']);
+
+        $algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$algorithm instanceof SignatureInterface) {
-            throw new \RuntimeException("The algorithm '".$header['alg']."' is not supported or does not implement SignatureInterface.");
+            throw new \RuntimeException("The algorithm '$alg' is not supported or does not implement SignatureInterface.");
         }
 
         return $algorithm;
