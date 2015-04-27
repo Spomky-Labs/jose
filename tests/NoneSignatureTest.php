@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Jose\tests;
 
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\JWK;

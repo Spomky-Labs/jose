@@ -21,6 +21,7 @@ use Jose\Operation\ContentEncryptionInterface;
 abstract class Encrypter implements EncrypterInterface
 {
     use PayloadConverter;
+    use KeyChecker;
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -129,6 +130,10 @@ abstract class Encrypter implements EncrypterInterface
 
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
+        if (!$this->checkKeyUsage($instruction->getRecipientKey(), 'encryption')) {
+            throw new \InvalidArgumentException('Key cannot be used to sign');
+        }
+
         $recipient_header   = $instruction->getRecipientUnprotectedHeader();
         $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
 

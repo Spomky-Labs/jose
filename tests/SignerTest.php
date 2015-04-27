@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Jose\tests;
 
 use SpomkyLabs\Jose\JWS;
 use SpomkyLabs\Jose\JWK;
@@ -125,7 +125,7 @@ class SignerTest extends TestCase
 
         $this->assertTrue(is_string($signatures));
 
-        /**
+        /*
          * @var \Jose\JWSInterface[]
          */
         $loaded = $loader->load($signatures);
@@ -158,7 +158,7 @@ class SignerTest extends TestCase
 
         $this->assertTrue(is_string($signatures));
 
-        /**
+        /*
          * @var \Jose\JWSInterface
          */
         $loaded = $loader->load($signatures);

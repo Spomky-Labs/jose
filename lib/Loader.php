@@ -24,6 +24,7 @@ use Jose\Operation\ContentEncryptionInterface;
 abstract class Loader implements LoaderInterface
 {
     use PayloadConverter;
+    use KeyChecker;
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -66,6 +67,9 @@ abstract class Loader implements LoaderInterface
             return false;
         }
         foreach ($jwk_set->getKeys() as $jwk) {
+            if (!$this->checkKeyUsage($jwk, 'verification')) {
+                continue;
+            }
             $algorithm = $this->getAlgorithm($complete_header, $jwk);
             if (true === $algorithm->verify($jwk, $jws->getInput(), $jws->getSignature())) {
                 return true;
@@ -351,6 +355,9 @@ abstract class Loader implements LoaderInterface
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
 
         foreach ($keys as $key) {
+            if (!$this->checkKeyUsage($key, 'decryption')) {
+                continue;
+            }
             $cek = $this->getCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
             if (!is_null($cek)) {
                 return $cek;

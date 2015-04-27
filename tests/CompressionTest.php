@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Jose\tests;
 
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Compression\Deflate;

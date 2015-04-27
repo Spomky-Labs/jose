@@ -13,42 +13,62 @@ trait KeyChecker
     {
         $use = $key->getPublicKeyUse();
         $ops = $key->getKeyOperations();
-        if (null === $use && null === $ops) {
-            return;
+        if (is_null($use) && is_null($ops)) {
+            return true;
         }
-        if (null !== $use) {
-            switch ($use) {
-                case 'sig':
-                    if ('verification' !== $usage) {
-                        throw new \Exception('The key can not be used for signature verifications.');
+
+        if (!is_null($use)) {
+            switch ($usage) {
+                case 'verification':
+                case 'signature':
+                    if ('sig' === $use) {
+                        return true;
                     }
-                    break;
-                case 'enc':
-                    if ('encryption' !== $usage) {
-                        throw new \Exception('The key can not be used for encryption.');
+
+                    return false;
+                case 'encryption':
+                case 'decryption':
+                    if ('enc' === $use) {
+                        return true;
                     }
-                    break;
+
+                    return false;
                 default:
-                    # code...
+                    throw new \Exception('Unsupported key usage.');
+                    break;
+            }
+        } elseif (is_array($ops)) {
+            switch ($usage) {
+                case 'verification':
+                    if (in_array('verify', $ops)) {
+                        return true;
+                    }
+
+                    return false;
+                case 'signature':
+                    if (in_array('sign', $ops)) {
+                        return true;
+                    }
+
+                    return false;
+                case 'encryption':
+                    if (in_array('encrypt', $ops) || in_array('wrapKey', $ops)) {
+                        return true;
+                    }
+
+                    return false;
+                case 'decryption':
+                    if (in_array('decrypt', $ops) || in_array('unwrapKey', $ops)) {
+                        return true;
+                    }
+
+                    return false;
+                default:
+                    throw new \Exception('Unsupported key usage.');
                     break;
             }
         }
-        if (is_array($ops)) {
-            switch ($use) {
-                case 'sign':
-                    if ('signature' !== $usage) {
-                        throw new \Exception('The key can not be used for signature verifications.');
-                    }
-                    break;
-                case 'enc':
-                    if ('encryption' !== $usage) {
-                        throw new \Exception('The key can not be used for encryption.');
-                    }
-                    break;
-                default:
-                    # code...
-                    break;
-            }
-        }
+
+        return true;
     }
 }

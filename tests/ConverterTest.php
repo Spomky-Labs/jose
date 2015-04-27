@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Jose\tests;
 
 use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\Converter;
