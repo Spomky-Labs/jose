@@ -17,6 +17,7 @@ use Jose\SignatureInstructionInterface;
 abstract class Signer implements SignerInterface
 {
     use PayloadConverter;
+    use KeyChecker;
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -67,6 +68,10 @@ abstract class Signer implements SignerInterface
         $jwt_protected_header = empty($protected_header) ? null : Base64Url::encode(json_encode($protected_header));
 
         $signature_algorithm = $this->getSignatureAlgorithm($complete_header, $instruction->getKey());
+
+        if (!$this->checkKeyUsage($instruction->getKey(), 'signature')) {
+            throw new \InvalidArgumentException('Key cannot be used to sign');
+        }
 
         $signature = $signature_algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
 
