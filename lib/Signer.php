@@ -97,7 +97,6 @@ abstract class Signer implements SignerInterface
      */
     protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
-        $alg = null;
         if (!array_key_exists('alg', $complete_header)) {
             if (is_null($key->getAlgorithm())) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
@@ -106,6 +105,9 @@ abstract class Signer implements SignerInterface
             }
         } else {
             $alg = $complete_header['alg'];
+        }
+        if (!is_null($key->getAlgorithm()) && $key->getAlgorithm() !== $alg) {
+            throw new \InvalidArgumentException("The algorithm '$alg' is allowed with this key.");
         }
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($alg);

@@ -2,6 +2,8 @@
 
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
+
 /**
  * Class RS256.
  */
@@ -20,7 +22,7 @@ class RS256 extends RSA
      */
     protected function getSignatureMethod()
     {
-        return CRYPT_RSA_SIGNATURE_PKCS1;
+        return PHPSecLibRSA::SIGNATURE_PKCS1;
     }
 
     /**

@@ -5,6 +5,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 use Jose\JWKInterface;
 use SpomkyLabs\Jose\Util\RSAConverter;
 use Jose\Operation\KeyEncryptionInterface;
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
  * Class RSA.
@@ -16,7 +17,7 @@ abstract class RSA implements KeyEncryptionInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Crypt_RSA")) {
+        if (!class_exists("\phpseclib\Crypt\RSA")) {
             throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
         }
     }
@@ -58,14 +59,14 @@ abstract class RSA implements KeyEncryptionInterface
     /**
      * @param array $values
      *
-     * @return \Crypt_RSA
+     * @return \phpseclib\Crypt\RSA
      */
     private function getRsaObject(array $values)
     {
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
         $encryption_mode = $this->getEncryptionMode();
         $rsa->setEncryptionMode($encryption_mode);
-        if (CRYPT_RSA_ENCRYPTION_OAEP === $encryption_mode) {
+        if (PHPSecLibRSA::ENCRYPTION_OAEP === $encryption_mode) {
             $rsa->setHash($this->getHashAlgorithm());
             $rsa->setMGFHash($this->getHashAlgorithm());
         }

@@ -55,6 +55,8 @@ class JWAManager extends Base
 
     /**
      * @param string $algorithm
+     *
+     * @return $this
      */
     public function removeAlgorithm($algorithm)
     {

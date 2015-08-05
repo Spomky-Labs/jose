@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\JWK;
@@ -30,7 +30,7 @@ class NoneSignatureTest extends TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key is not valid
      */
     public function testInvalidKey()

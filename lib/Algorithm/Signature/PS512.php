@@ -2,6 +2,8 @@
 
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
+
 /**
  * Class PS512.
  */
@@ -20,7 +22,7 @@ class PS512 extends RSA
      */
     protected function getSignatureMethod()
     {
-        return CRYPT_RSA_SIGNATURE_PSS;
+        return PHPSecLibRSA::SIGNATURE_PSS;
     }
 
     /**

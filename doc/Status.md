@@ -71,4 +71,5 @@ JWK and JWKSet is fully supported
 
 This project provides key and keyset managers. These managers are able to find keys according to the header of data loaded.
 
-You can extend them to add your own methods to find specific keys using header values. For example, if you manage your keys using X509 thumbprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.
+You can extend them to add your own methods to find specific keys using header values.
+For example, if you manage your keys using X509 thumbprint, you can add a method to read the value of "x5t" or "x5t#256" parameters and find the correct key.

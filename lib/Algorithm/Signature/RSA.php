@@ -5,6 +5,7 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 use SpomkyLabs\Jose\Util\RSAConverter;
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
  * Class RSA.
@@ -31,7 +32,7 @@ abstract class RSA implements SignatureInterface
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
+        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());
             $rsa->setSaltLength(0);
         }
@@ -54,7 +55,7 @@ abstract class RSA implements SignatureInterface
         }
 
         $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === CRYPT_RSA_SIGNATURE_PSS) {
+        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());
             $rsa->setSaltLength(0);
         }

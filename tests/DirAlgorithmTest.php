@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
@@ -12,7 +12,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
 class DirAlgorithmTest extends TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key is not valid
      */
     public function testInvalidKey()

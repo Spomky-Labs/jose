@@ -10,12 +10,23 @@ use Jose\Operation\ContentEncryptionInterface;
 abstract class AESCBCHS implements ContentEncryptionInterface
 {
     /**
+     * @var null|\SpomkyLabs\Jose\Algorithm\ContentEncryption\AESInterface
+     */
+    private $aes_interface = null;
+
+    /**
      *
      */
     public function __construct()
     {
-        if (!class_exists("\Crypt_AES")) {
-            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use AES based (except AES-GCM based) algorithms");
+        if (extension_loaded('openssl')) {
+            $this->aes_interface = new AESOpenSSL();
+        } elseif (extension_loaded('mcrypt')) {
+            $this->aes_interface = new AESMCrypt();
+        } elseif (class_exists('\phpseclib\Crypt\AES')) {
+            $this->aes_interface = new AESPHPSecLib();
+        } else {
+            throw new \RuntimeException("Please install 'phpseclib/phpseclib' (v2.0.x), MCrypt extension or OpenSSL extension to use AES based (except AES-GCM based) algorithms");
         }
     }
 
@@ -26,37 +37,29 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     {
         $k = substr($cek, strlen($cek) / 2);
 
-        $aes = new \Crypt_AES();
-        $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
-        $aes->setKey($k);
-        $aes->setIV($iv);
+        $cyphertext = $this->aes_interface->encrypt($data, $k, $iv);
 
-        $cyphertext = $aes->encrypt($data);
         $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
         return $cyphertext;
     }
 
     /**
-     * @param $input
+     * @param $data
      * @param $cek
      * @param $iv
      * @param $aad
+     * @param $encoded_protected_header
      * @param $tag
      *
-     * @return String
+     * @return string
      */
     public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
         $this->checkAuthenticationTag($data, $cek, $iv, $aad, $encoded_protected_header, $tag);
         $k = substr($cek, strlen($cek) / 2);
 
-        $aes = new \Crypt_AES();
-        $aes->Crypt_Base(CRYPT_AES_MODE_CBC);
-        $aes->setKey($k);
-        $aes->setIV($iv);
-
-        return $aes->decrypt($data);
+        return $this->aes_interface->decrypt($data, $k, $iv);
     }
 
     /**
@@ -94,6 +97,8 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      * @param string      $cek
      * @param string      $iv
      * @param string|null $aad
+     *
+     * @return bool
      */
     protected function checkAuthenticationTag($encrypted_data, $cek, $iv, $aad, $encoded_header, $authentication_tag)
     {
@@ -115,7 +120,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
      */
     public function getIVSize()
     {
-        return $this->getKeySize();
+        return 128;
     }
 
     /**

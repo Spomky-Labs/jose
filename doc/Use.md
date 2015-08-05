@@ -29,7 +29,7 @@ There are four types of keys:
 * `RSA` keys,
 * `EC` (Elliptic Curves) keys,
 * `oct` keys,
-* `dir` keys.
+* `dir` (direct) keys.
 
 A key can be used with different algorithms. But an algorithm only supports one type.
 For example, `ES256`, `ES384` and `ES512` algorithms only accept `EC` keys.
@@ -42,7 +42,7 @@ It is recommended to group your public and private keys in different JWKSet.
 
 All JWK and JWKSet are managed using a JWKManager object.
 
-**Note: in a near futur, the JWKManager will be splitted into two managers: JWKManager and JWKSetManager**
+**Note: in a near future, the JWKManager will be split into two managers: JWKManager and JWKSetManager**
 
 ## Data
 
@@ -62,8 +62,7 @@ So you can sign or encrypt
 
 In this example, we suppose that you already have (extended the required components)[Extend the library](Extend.md).
 
-
-In this example, you are Alice and you want to send a very important message to Bob: ```"Meet me in the front of train station at 8:00AM"```.
+You are Alice and you want to send a very important message to Bob: ```"Meet me in the front of train station at 8:00AM"```.
 
 The public key of Bob is a RSA Certificate. Using JWK representation, it will be:
 
@@ -86,7 +85,7 @@ The public key of Bob is a RSA Certificate. Using JWK representation, it will be
     $certificate = RSAConverter::loadKeyFromFile("/path/to/your/certificate", "passphrase");
 ```
 
-Alice will encrypt the message (=create a JWE object) using the key encryption algorithm ```RSA-OAEP-256``` and the content encryption algorithm ```A256CBC-HS512```.
+Alice will encrypt the message (=create a JWE object) using the key encryption algorithm `RSA-OAEP-256` and the content encryption algorithm ```A256CBC-HS512```.
 
 As there is only one receiver, we can use the compact serialization.
 
@@ -97,13 +96,13 @@ As there is only one receiver, we can use the compact serialization.
     $bobJWK   = ...; //The key of Bob (JWK object). See below.
     $message  = "Meet me in the front of train station at 8:00AM";
 
-	//We create an encryption instruction
+    //We create an encryption instruction
     $instruction = new EncryptionInstruction();
     $instruction->setRecipientPublicKey($bobJWK)
-    $instruction->setSenderPrivateKey($aliceJWK); //This is not mandatory execpt when using specific algorithms (e.g. ECDH-ES)
+    $instruction->setSenderPrivateKey($aliceJWK); //This is not mandatory except when using specific algorithms (e.g. ECDH-ES)
 
     //The first argument is the data you want to encrypt
-    //The second argument is an aray of instructions. We have only one.
+    //The second argument is an array of instructions. We have only one.
     //The third argument is the shared protected headers. We set the algorithms and we want to compress the data before encryption using the DEFLATE method.
     //The fourth argument is the unprotected shared headers. We set nothing because the compact serialization method does not support it
     //The fifth argument define the expected serialization method.
@@ -116,7 +115,7 @@ As there is only one receiver, we can use the compact serialization.
     );
 ```
 
-The variable ```$jwe``` now contains your encrypted message. You can send it to Bob.
+The variable `$jwe` now contains your encrypted message. You can send it to Bob.
 The encrypted message will look like:
 
 ```php
@@ -152,12 +151,12 @@ If you want to use a specific key set, you can pass it as second argument.
 ```php
     <?php
 
-	$my_keyset = ...; //A JWKSet object that contains keys.
+    $my_keyset = ...; //A JWKSet object that contains keys.
 
     $result = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r", $my_keyset);
 ```
 
-The variable ```$result``` now contains an object that implements JWEInterface. You can get the headers (protected or unprotected) and the message of Alice: 
+The variable `$result` now contains an object that implements JWEInterface. You can get the headers (protected or unprotected) and the message of Alice: 
 
 ```php
     echo $result->getPayload(); // "Meet me in the front of train station at 8:00AM"

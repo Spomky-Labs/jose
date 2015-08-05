@@ -128,6 +128,11 @@ abstract class Encrypter implements EncrypterInterface
         return is_array($prepared) ? current($prepared) : $prepared;
     }
 
+    /**
+     * @param string $cek
+     * @param integer $cek_size
+     * @param string $serialization
+     */
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
         if (!$this->checkKeyUsage($instruction->getRecipientKey(), 'encryption')) {
