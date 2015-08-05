@@ -9,6 +9,9 @@ use Jose\JWKInterface;
  */
 trait KeyChecker
 {
+    /**
+     * @param string $usage
+     */
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {
         $use = $key->getPublicKeyUse();

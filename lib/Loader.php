@@ -172,11 +172,11 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param $input
+     * @param string $input
      * @param $protected_header
      * @param $unprotected_header
-     * @param $payload
-     * @param $signature
+     * @param string $payload
+     * @param string $signature
      *
      * @return \Jose\JWSInterface
      *
@@ -254,7 +254,7 @@ abstract class Loader implements LoaderInterface
      * @param \Jose\JWAInterface                         $key_encryption_algorithm
      * @param \Jose\Operation\ContentEncryptionInterface $content_encryption_algorithm
      * @param \Jose\JWKInterface                         $key
-     * @param                                            $encrypted_cek
+     * @param                                            string|null $encrypted_cek
      * @param array                                      $header
      *
      * @return string
@@ -302,15 +302,15 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param       $ciphertext
-     * @param       $cek
-     * @param       $iv
-     * @param       $aad
+     * @param       string $ciphertext
+     * @param       string $cek
+     * @param       string|null $iv
+     * @param       string|null $aad
      * @param       $unprotected
      * @param       $header
      * @param       $protected
      * @param       $data_protected
-     * @param       $tag
+     * @param       string|null $tag
      * @param array $complete_header
      *
      * @return \Jose\JWEInterface
