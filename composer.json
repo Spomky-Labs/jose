@@ -35,14 +35,13 @@
         "spomky-labs/aes-key-wrap": "~2.0"
     },
    "suggest":{
-        "lib-openssl": "Required to use AES algorithms (except AES GCM)",
-        "ext-gmp":"Required if BCMath is not installed (this extension is highly recommended!)",
-        "ext-bcmath":"Required if GMP is not installed",
-        "ext-crypto":"Required to use AES GCM algorithms",
-        "phpseclib/phpseclib":"Required to use RSA based algorithms",
+        "lib-openssl": "Required to use AES based algorithms (except AES-GCM).",
+        "ext-crypto":"Required to use AES GCM based algorithms.",
+        "ext-mcrypt":"Required to use AES based (except AES-GCM) algorithms (only needed if lib-openssl is not enabled).",
+        "phpseclib/phpseclib":"Required to use RSA based algorithms and for AES based algorithms (only if lib-openssl and ext-mcrypt are not enabled).",
         "mdanter/ecc":"Required to use Elliptic Curves based algorithms",
         "spomky-labs/pbkdf2": "Required to use PBES2-* algorithms",
-        "spomky-labs/aes-key-wrap": "Required to use Key Wrap (A128KW, PBES2-HS256+A128KW...) algorithms"
+        "spomky-labs/aes-key-wrap": "Required to use Key Wrapped (A128KW, PBES2-HS256+A128KW...) algorithms"
    },
     "extra": {
         "branch-alias": {
