@@ -13,11 +13,11 @@
 
 This library aims to provide an implementation of:
 
-* JW**S** [JSON Web Signature (draft 41)](https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41),
-* JW**T** [JSON Web Token (draft 32)](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32),
-* JW**E** [JSON Web Encryption (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-40),
-* JW**A** [JSON Web Algorithms (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40).
-* JW**K** [JSON Web Key (draft 40)](http://tools.ietf.org/html/draft-ietf-jose-json-web-key-40).
+* JW**S** [JSON Web Signature (RFC 7515)](https://tools.ietf.org/html/rfc7515),
+* JW**T** [JSON Web Token (RFC 7519)](https://tools.ietf.org/html/rfc7519),
+* JW**E** [JSON Web Encryption (RFC 7516)](http://tools.ietf.org/html/rfc7516),
+* JW**A** [JSON Web Algorithms (RFC 7518)](http://tools.ietf.org/html/rfc7518).
+* JW**K** [JSON Web Key (RFC 7517)](http://tools.ietf.org/html/rfc7517).
 
 # Status of implementations
 
@@ -31,20 +31,26 @@ The release process [is described here](doc/Release.md).
 
 This library needs at least:
 * `PHP 5.4`.
-* `OpenSSL` library for PHP.
 
 Depending on algorithms you want to use, please consider the following optional requirements:
-* `phpseclib/phpseclib` library for RSA and AES algorithms except AES GCM (not available on `PHP 7` and `HHVM`).
-* `mdanter/ecc` library for Elliptic Curves algorithms (v0.2) with one of the following PHP extension:
-    * `GMP` (highly recommended!),
-    * `BC Math`.
-* [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on `PHP 7` and `HHVM`).
-* `spomky-labs/pbkdf2` for `PBES2-*` algorithms.
-* `spomky-labs/aes-key-wrap` for Key Wrap (`A128KW`, `PBES2-HS256+A128KW`...) algorithms.
+* Elliptic Curves based algorithms (`ESxxx` signatures, `ECDHES` encryptions):
+    * [`mdanter/ecc`](https://github.com/mdanter/phpecc) (v0.3) library.
+* RSA based algorithms (`RSxxx` or `PSxxx` signatures, `RSA1_5`, `RSA_OAEP`, `RSA_OAEP-256`...):
+    * `phpseclib/phpseclib` (v2.0.x).
+* Password Based Key Derivation Function 2 (PBKDF2) based algorithms (`PBES2-*`):
+     [`spomky-labs/pbkdf2`](https://github.com/spomky-labs/pbkdf2).
+* Key Wrapped based algorithms (`A128KW`, `PBES2-HS256+A128KW`...):
+     [`spomky-labs/aes-key-wrap`](https://github.com/spomky-labs/aes-key-wrap).
+* AES based algorithms (excluding `AES-GCM`):
+    * `OpenSSL` library for AES algorithms.
+    * or `MCrypt` library for AES algorithms.
+    * or `phpseclib/phpseclib` (v2.0.x).
+* AES-GCM based algorithms:
+    * [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on `PHP 7` and `HHVM`).
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6` with all algorithms.
 
-Tests with `PHP 7` and `HHVM` fail because of `phpseclib/phpseclib` which is not yet compatible.
+Tests with `PHP 7` and `HHVM` are incomplete because of [PHP Crypto](https://github.com/bukka/php-crypto).
 
 # Installation
 

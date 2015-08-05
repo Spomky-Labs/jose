@@ -5,14 +5,14 @@ This page lists algorithms and supported key types.
 
 # Signature
 
-* `ES256`, `ES384` and `ES512`: `EC` type,
+* `ES256`, `ES384` and `ES512`: `EC` (Elliptic Curves) type,
 * `RS256`, `RS384`,  `RS512`, `PS256`, `PS384` and  `PS512`: `RSA` type,
 * `HS256`, `HS384` and `HS512`: `oct` type,
 
 # Key encryption
 
-* `dir`: `dir` type,
-* `ECDH-ES`, `ECDH-ES+A128KW`, `ECDH-ES+A192KW` and `ECDH-ES+A256KW`: `EC` type,
+* `dir`: `dir` (direct) type,
+* `ECDH-ES`, `ECDH-ES+A128KW`, `ECDH-ES+A192KW` and `ECDH-ES+A256KW`: `EC` (Elliptic Curves) type,
 * `RSA1_5`, `RSA-OAEP` and `RSA-OAEP-256`: `RSA` type,
 * `PBES2-HS256+A128KW`, `PBES2-HS384+A192KW` and `PBES2-HS512+A256KW`: `oct` type,
 * `A256KW`, `A384KW` and `A512KW`: `oct` type,
