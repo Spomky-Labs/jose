@@ -15,7 +15,7 @@ class RSAConverter
     /**
      *
      */
-    protected static function checkRequirements()
+    private static function checkRequirements()
     {
         if (!class_exists('\phpseclib\Crypt\RSA')) {
             throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
@@ -44,10 +44,10 @@ class RSAConverter
      * @param null|string $passphrase
      *
      *
-     * @return mixed
+     * @return array
      * @throws \Exception
      */
-    protected static function loadCertificateValues($certificate, $passphrase = null)
+    private static function getCertificateValues($certificate, $passphrase = null)
     {
         $res = openssl_pkey_get_private($certificate, $passphrase);
         if ($res === false) {
@@ -56,12 +56,23 @@ class RSAConverter
         if ($res === false) {
             throw new \Exception('Unable to load the certificate');
         }
-        $details = openssl_pkey_get_details($res);
+        return self::getOpenSSLResourceValues($res);
+    }
+
+    /**
+     * @param $resource
+     *
+     * @return array
+     * @throws \Exception
+     */
+    private static function getOpenSSLResourceValues($resource)
+    {
+        $details = openssl_pkey_get_details($resource);
         if ($details === false) {
-            throw new \Exception('Unable to get details of the certificate');
+            throw new \Exception('Unable to get details of the key');
         }
         if (!is_array($details) || !isset($details['rsa'])) {
-            throw new \Exception('Certificate is not a valid RSA certificate');
+            throw new \Exception('Key is not a valid RSA key');
         }
 
         return $details['rsa'];
@@ -77,7 +88,29 @@ class RSAConverter
      */
     public static function loadKeyFromFile($certificate, $passphrase = null)
     {
-        $values = self::loadCertificateValues($certificate, $passphrase);
+        $values = self::getCertificateValues($certificate, $passphrase);
+        return self::convertToKeyArray($values);
+    }
+
+    /**
+     * @param $resource
+     *
+     * @return array
+     * @throws \Exception
+     */
+    public static function loadKeyFromOpenSSLResource($resource)
+    {
+        $values = self::getOpenSSLResourceValues($resource);
+        return self::convertToKeyArray($values);
+    }
+
+    /**
+     * @param array $values
+     *
+     * @return array
+     */
+    private static function convertToKeyArray(array $values)
+    {
         $result = array('kty' => 'RSA');
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
@@ -134,7 +167,7 @@ class RSAConverter
      *
      * @return mixed
      */
-    protected static function getElement($key)
+    private static function getElement($key)
     {
         $values = array(
             'n' => 'Modulus',
