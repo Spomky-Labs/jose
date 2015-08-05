@@ -391,7 +391,7 @@ abstract class Encrypter implements EncrypterInterface
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
         if (is_null($compression_method)) {
-            throw new \RuntimeException(sprintf("Compression method '%s' not supported"), $method);
+            throw new \RuntimeException(sprintf("Compression method '%s' not supported", $method));
         }
 
         return $compression_method;
