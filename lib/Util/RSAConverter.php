@@ -86,7 +86,21 @@ class RSAConverter
      * @return mixed
      * @throws \Exception
      */
-    public static function loadKeyFromFile($certificate, $passphrase = null)
+    public static function loadKeyFromFile($file, $passphrase = null)
+    {
+        $content = file_get_contents($file);
+        return self::loadKeyFromPEM($content, $passphrase);
+    }
+
+    /**
+     * @param string $certificate
+     * @param null|string $passphrase
+     *
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function loadKeyFromPEM($certificate, $passphrase = null)
     {
         $values = self::getCertificateValues($certificate, $passphrase);
         return self::convertToKeyArray($values);
