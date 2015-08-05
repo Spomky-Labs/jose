@@ -70,7 +70,7 @@ class ECDHES implements KeyAgreementInterface
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
     {
         $p     = $this->getGenerator($private_key);
-        $curve = $this->getCurve($private_key);
+        //$curve = $this->getCurve($private_key);
 
         $rec_x = $this->convertBase64ToDec($public_key->getValue('x'));
         $rec_y = $this->convertBase64ToDec($public_key->getValue('y'));

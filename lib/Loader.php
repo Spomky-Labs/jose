@@ -231,7 +231,6 @@ abstract class Loader implements LoaderInterface
      */
     protected function getAlgorithm(array $header, JWKInterface $key)
     {
-        $alg = null;
         if (!array_key_exists('alg', $header)) {
             if (is_null($key->getAlgorithm())) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
