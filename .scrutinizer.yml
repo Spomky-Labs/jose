@@ -14,6 +14,5 @@ tools:
         excluded_dirs: [vendor/*, doc/*, tests/*]
     external_code_coverage:
         timeout: 3600
-        runs: 3
 filter:
     excluded_paths: [vendor/*, doc/*, tests/*]
