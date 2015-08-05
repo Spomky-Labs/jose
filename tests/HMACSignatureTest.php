@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
@@ -13,7 +13,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\HS512;
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key is not valid
      */
     public function testInvalidKey()

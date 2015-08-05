@@ -4,11 +4,9 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
-use Mdanter\Ecc\Point;
-use Mdanter\Ecc\PublicKey;
-use Mdanter\Ecc\PrivateKey;
-use Mdanter\Ecc\Signature;
+use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
+use Mdanter\Ecc\Random\RandomGeneratorFactory;
 use Base64Url\Base64Url;
 
 /**
@@ -17,7 +15,7 @@ use Base64Url\Base64Url;
 abstract class ECDSA implements SignatureInterface
 {
     /**
-     * @var \Mdanter\Ecc\MathAdapter
+     * @var \Mdanter\Ecc\Math\MathAdapterInterface
      */
     private $adapter;
 
@@ -26,7 +24,7 @@ abstract class ECDSA implements SignatureInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Mdanter\Ecc\Point") || !class_exists("\Mdanter\Ecc\EccFactory")) {
+        if (!class_exists("\Mdanter\Ecc\EccFactory")) {
             throw new \RuntimeException("The library 'mdanter/ecc' is required to use Elliptic Curves based algorithm algorithms");
         }
         $this->adapter = EccFactory::getAdapter();
@@ -40,22 +38,22 @@ abstract class ECDSA implements SignatureInterface
         $this->checkKey($key);
 
         $p     = $this->getGenerator();
-        $curve = $this->getCurve();
-        $x     = $this->convertBase64ToDec($key->getValue('x'));
-        $y     = $this->convertBase64ToDec($key->getValue('y'));
+        //$x     = $this->convertBase64ToDec($key->getValue('x'));
+        //$y     = $this->convertBase64ToDec($key->getValue('y'));
         $d     = $this->convertBase64ToDec($key->getValue('d'));
         $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        $k = $this->adapter->rand($p->getOrder());
+        $k = RandomGeneratorFactory::getRandomGenerator()->generate($p->getOrder());
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $this->adapter), $this->adapter);
-        $private_key = new PrivateKey($public_key, $d, $this->adapter);
-        $sign = $private_key->sign($hash, $k);
+        $signer = EccFactory::getSigner();
+
+        $private_key = $p->getPrivateKeyFrom($d);
+        $signature = $signer->sign($private_key, $hash, $k);
 
         $part_length = $this->getSignaturePartLength();
 
-        $R = str_pad($this->convertDecToHex($sign->getR()), $part_length, '0', STR_PAD_LEFT);
-        $S = str_pad($this->convertDecToHex($sign->getS()), $part_length, '0', STR_PAD_LEFT);
+        $R = str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
+        $S = str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
 
         return $this->convertHextoBin($R.$S);
     }
@@ -73,25 +71,26 @@ abstract class ECDSA implements SignatureInterface
         }
 
         $p     = $this->getGenerator();
-        $curve = $this->getCurve();
         $x     = $this->convertBase64ToDec($key->getValue('x'));
         $y     = $this->convertBase64ToDec($key->getValue('y'));
         $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S     = $this->convertHexToDec(substr($signature, $part_length));
         $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
-        $public_key = new PublicKey($p, new Point($curve, $x, $y, $p->getOrder(), $this->adapter), $this->adapter);
+        $public_key = $p->getPublicKeyFrom($x, $y);
 
-        return $public_key->verifies($hash, new Signature($R, $S));
+        $signer = EccFactory::getSigner();
+
+        return $signer->verify($public_key, new Signature($R, $S), $hash);
     }
 
     /**
-     * @return mixed
+     * @return \Mdanter\Ecc\Primitives\CurveFp
      */
     abstract protected function getCurve();
 
     /**
-     * @return mixed
+     * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      */
     abstract protected function getGenerator();
 
@@ -101,12 +100,14 @@ abstract class ECDSA implements SignatureInterface
     abstract protected function getHashAlgorithm();
 
     /**
-     * @return mixed
+     * @return int
      */
     abstract protected function getSignaturePartLength();
 
     /**
      * @param string $value
+     *
+     * @return string
      */
     protected function convertHexToBin($value)
     {

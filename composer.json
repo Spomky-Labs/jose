@@ -27,8 +27,9 @@
     },
     "require-dev": {
         "lib-openssl": "*",
-        "phpseclib/phpseclib": ">=0.3.5",
-        "mdanter/ecc": "~0.2",
+        "ext-mcrypt": "*",
+        "phpseclib/phpseclib": "~2.0.0",
+        "mdanter/ecc": "0.3",
         "phpunit/phpunit": "~4.5",
         "spomky-labs/pbkdf2": "~1.0",
         "spomky-labs/aes-key-wrap": "~2.0"

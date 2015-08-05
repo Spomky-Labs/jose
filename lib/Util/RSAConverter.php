@@ -3,6 +3,7 @@
 namespace SpomkyLabs\Jose\Util;
 
 use Base64Url\Base64Url;
+use phpseclib\Crypt\RSA;
 
 /**
  * Class RSAConverter.
@@ -16,7 +17,7 @@ class RSAConverter
      */
     protected static function checkRequirements()
     {
-        if (!class_exists("\Crypt_RSA")) {
+        if (!class_exists('\phpseclib\Crypt\RSA')) {
             throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
         }
     }
@@ -24,7 +25,7 @@ class RSAConverter
     /**
      * @param array $data
      *
-     * @return \Crypt_RSA
+     * @return \phpseclib\Crypt\RSA
      *
      * @throws \Exception
      */
@@ -32,7 +33,7 @@ class RSAConverter
     {
         self::checkRequirements();
         $xml = self::fromArrayToXML($data);
-        $rsa = new \Crypt_RSA();
+        $rsa = new RSA();
         $rsa->loadKey($xml);
 
         return $rsa;
@@ -40,7 +41,11 @@ class RSAConverter
 
     /**
      * @param string $certificate
-     * @param string $passphrase
+     * @param null|string $passphrase
+     *
+     *
+     * @return mixed
+     * @throws \Exception
      */
     protected static function loadCertificateValues($certificate, $passphrase = null)
     {
@@ -64,7 +69,11 @@ class RSAConverter
 
     /**
      * @param string $certificate
-     * @param string $passphrase
+     * @param null|string $passphrase
+     *
+     *
+     * @return mixed
+     * @throws \Exception
      */
     public static function loadKeyFromFile($certificate, $passphrase = null)
     {

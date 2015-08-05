@@ -1,6 +1,7 @@
 <?php
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
  * Class RSAOAEP.
@@ -12,7 +13,7 @@ class RSAOAEP extends RSA
      */
     protected function getEncryptionMode()
     {
-        return CRYPT_RSA_ENCRYPTION_OAEP;
+        return PHPSecLibRSA::ENCRYPTION_OAEP;
     }
 
     /**

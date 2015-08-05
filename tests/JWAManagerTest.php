@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 /**
  * Class JWAManagerTest.

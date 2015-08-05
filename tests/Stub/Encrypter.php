@@ -107,9 +107,21 @@ class Encrypter extends Base
 
     /**
      * @param int $length
+     *
+     * @return string
      */
     private function generateRandomString($length)
     {
-        return crypt_random_string($length);
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
+        }elseif (function_exists('mcrypt_create_iv')) {
+            return mcrypt_create_iv($length);
+        }elseif (function_exists('openssl_random_pseudo_bytes')) {
+            return openssl_random_pseudo_bytes($length);
+        } elseif (class_exists('\phpseclib\Crypt\Random')) {
+            return \phpseclib\Crypt\Random::string($length);
+        } else {
+            throw new \Exception('Unable to create a random string');
+        }
     }
 }

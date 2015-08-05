@@ -2,8 +2,8 @@
 
 namespace SpomkyLabs\Jose\Util;
 
-use File_ASN1;
 use Base64Url\Base64Url;
+use phpseclib\File\ASN1;
 
 /**
  * This class will help you to load an EC key (private or public) and get values to create a JWK object
@@ -87,22 +87,22 @@ class ECConverter
      */
     protected static function loadPrivateKey($privateKey)
     {
-        $asn1 = new File_ASN1();
+        $asn1 = new ASN1();
 
         $asnSubjectPrivateKeyInfo = array(
-            'type' => FILE_ASN1_TYPE_SEQUENCE,
+            'type' => ASN1::TYPE_SEQUENCE,
             'children' => array(
                 'version' => array(
-                    'type' => FILE_ASN1_TYPE_INTEGER,
+                    'type' => ASN1::TYPE_INTEGER,
                 ),
                 'secret' => array(
-                    'type' => FILE_ASN1_TYPE_OCTET_STRING,
+                    'type' => ASN1::TYPE_OCTET_STRING,
                 ),
                 'algorithm' => array(
-                    'type' => FILE_ASN1_TYPE_INTEGER,
+                    'type' => ASN1::TYPE_INTEGER,
                 ),
                 'subjectPublicKey' => array(
-                    'type' => FILE_ASN1_TYPE_INTEGER,
+                    'type' => ASN1::TYPE_INTEGER,
                 ),
             ),
         );
@@ -124,26 +124,26 @@ class ECConverter
      */
     protected static function loadPublicKey($publicKey)
     {
-        $asn1 = new File_ASN1();
+        $asn1 = new ASN1();
 
         $asnAlgorithmIdentifier = array(
-            'type' => FILE_ASN1_TYPE_SEQUENCE,
+            'type' => ASN1::TYPE_SEQUENCE,
             'children' => array(
                 'ansi-X9-62' => array(
-                    'type' => FILE_ASN1_TYPE_OBJECT_IDENTIFIER,
+                    'type' => ASN1::TYPE_OBJECT_IDENTIFIER,
                 ),
                 'id-ecSigType' => array(
-                    'type' => FILE_ASN1_TYPE_OBJECT_IDENTIFIER,
+                    'type' => ASN1::TYPE_OBJECT_IDENTIFIER,
                 ),
             ),
         );
 
         $asnSubjectPublicKeyInfo = array(
-            'type' => FILE_ASN1_TYPE_SEQUENCE,
+            'type' => ASN1::TYPE_SEQUENCE,
             'children' => array(
                 'algorithm' => $asnAlgorithmIdentifier,
                 'subjectPublicKey' => array(
-                'type' => FILE_ASN1_TYPE_BIT_STRING,
+                'type' => ASN1::TYPE_BIT_STRING,
                 ),
             ),
         );

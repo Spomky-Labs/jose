@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\tests;
+namespace SpomkyLabs\Jose\Tests;
 
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;

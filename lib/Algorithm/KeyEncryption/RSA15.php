@@ -1,6 +1,7 @@
 <?php
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
  * Class RSA15.
@@ -12,7 +13,7 @@ class RSA15 extends RSA
      */
     protected function getEncryptionMode()
     {
-        return CRYPT_RSA_ENCRYPTION_PKCS1;
+        return PHPSecLibRSA::ENCRYPTION_PKCS1;
     }
 
     /**
