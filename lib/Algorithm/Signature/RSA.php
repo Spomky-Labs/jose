@@ -63,7 +63,7 @@ abstract class RSA implements SignatureInterface
 
         $result = $rsa->sign($input);
         if ($result === false) {
-            throw new \RuntimeException('An error occured during the creation of the signature');
+            throw new \RuntimeException('An error occurred during the creation of the signature');
         }
 
         return $result;
