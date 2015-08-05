@@ -100,6 +100,10 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $calc_method  = self::getMethod('\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'calculateAuthenticationTag');
         $check_method = self::getMethod('\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'checkAuthenticationTag');
 
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped("Relies on missing HHVM functionaility");
+            return;
+        }
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad));
         $this->assertEquals($expected_T, $T);
         $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad, $T)));
@@ -128,6 +132,10 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $calc_method  = self::getMethod('\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'calculateAuthenticationTag');
         $check_method = self::getMethod('\SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'checkAuthenticationTag');
 
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped("Relies on missing HHVM functionaility");
+            return;
+        }
         $T = $calc_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad));
         $this->assertEquals($expected_T, $T);
         $this->assertTrue($check_method->invokeArgs($algorithm, array($cyphertext, $K, $iv, null, $aad, $T)));
@@ -136,6 +144,8 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $class
      * @param string $name
+     *
+     * @return \ReflectionMethod
      */
     protected static function getMethod($class, $name)
     {
