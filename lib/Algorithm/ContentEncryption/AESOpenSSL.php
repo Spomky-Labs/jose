@@ -18,18 +18,6 @@ class AESOpenSSL implements AESInterface
 
     private static function getMode($k)
     {
-        return 'aes-'.(8*self::getLengthSafe($k)).'-cbc';
-    }
-
-    private static function getLengthSafe($str) {
-        if (function_exists('mb_strlen')) {
-            $length = mb_strlen($str, '8bit');
-            if ($length === false) {
-                throw new \Exception("Invalid encoding for mb_strlen()");
-            }
-            return $length;
-        } else {
-            return strlen($str);
-        }
+        return 'aes-'.(8*strlen($k)).'-cbc';
     }
 }

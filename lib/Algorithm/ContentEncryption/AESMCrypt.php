@@ -26,29 +26,17 @@ class AESMCrypt implements AESInterface
         return $decrypted_text;
     }
 
-    public function pad($data, $block_size)
+    private static function pad($data, $block_size)
     {
-        $padding = $block_size - (self::getLengthSafe($data) % $block_size);
+        $padding = $block_size - (strlen($data) % $block_size);
         $pattern = chr($padding);
         return $data . str_repeat($pattern, $padding);
     }
 
-    public function unpad($data)
+    private static function unpad($data)
     {
         $padChar = substr($data, -1);
         $padLength = ord($padChar);
         return substr($data, 0, -$padLength);
-    }
-
-    private static function getLengthSafe($str) {
-        if (function_exists('mb_strlen')) {
-            $length = mb_strlen($str, '8bit');
-            if ($length === false) {
-                throw new \Exception("Invalid encoding for mb_strlen()");
-            }
-            return $length;
-        } else {
-            return strlen($str);
-        }
     }
 }
