@@ -154,10 +154,16 @@ abstract class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
             $additional_header_values = array();
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
             $additional_header_values = array();
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);

@@ -42,7 +42,7 @@ abstract class Loader implements LoaderInterface
     public function load($input, JWKSetInterface $jwk_set = null)
     {
         $json = Converter::convert($input, JSONSerializationModes::JSON_SERIALIZATION, false);
-        if (!is_null($json)) {
+        if (is_array($json)) {
             if (array_key_exists('signatures', $json)) {
                 return $this->loadSerializedJsonJWS($json);
             }
