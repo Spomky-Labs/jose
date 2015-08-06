@@ -145,11 +145,11 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param $data
+     * @param array $data
      *
-     * @return array|\Jose\JWSInterface
+     * @return \Jose\JWSInterface|\Jose\JWSInterface[]
      */
-    protected function loadSerializedJsonJWS($data)
+    protected function loadSerializedJsonJWS(array $data)
     {
         $encoded_payload = $data['payload'];
         $payload = Base64Url::decode($encoded_payload);
@@ -275,9 +275,9 @@ abstract class Loader implements LoaderInterface
      * @param array                 $data
      * @param \Jose\JWKSetInterface $jwk_set
      *
-     * @return \Jose\JWEInterface|null
+     * @return \Jose\JWEInterface|\Jose\JWEInterface[]
      */
-    protected function loadSerializedJsonJWE($data, JWKSetInterface $jwk_set = null)
+    protected function loadSerializedJsonJWE(array $data, JWKSetInterface $jwk_set = null)
     {
         $ciphertext = Base64Url::decode($data['ciphertext']);
         $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : array();
