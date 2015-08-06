@@ -42,7 +42,7 @@ abstract class HMAC implements SignatureInterface
      *
      * @return bool true if the two strings are identical.
      */
-    public function timingSafeEquals($signature, $signedInput)
+    private function timingSafeEquals($signature, $signedInput)
     {
         $signatureLength   = strlen($signature);
         $signedInputLength = strlen($signedInput);

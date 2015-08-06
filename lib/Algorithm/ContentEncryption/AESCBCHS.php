@@ -12,7 +12,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     /**
      * @var null|\SpomkyLabs\Jose\Algorithm\ContentEncryption\AESInterface
      */
-    private $aes_interface = null;
+    private $aes_engine = null;
 
     /**
      *
@@ -20,11 +20,11 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     public function __construct()
     {
         if (extension_loaded('openssl')) {
-            $this->aes_interface = new AESOpenSSL();
+            $this->aes_engine = new AESOpenSSL();
         } elseif (extension_loaded('mcrypt')) {
-            $this->aes_interface = new AESMCrypt();
+            $this->aes_engine = new AESMCrypt();
         } elseif (class_exists('\phpseclib\Crypt\AES')) {
-            $this->aes_interface = new AESPHPSecLib();
+            $this->aes_engine = new AESPHPSecLib();
         } else {
             throw new \RuntimeException("Please install 'phpseclib/phpseclib' (v2.0.x), MCrypt extension or OpenSSL extension to use AES based (except AES-GCM based) algorithms");
         }
@@ -37,7 +37,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     {
         $k = substr($cek, strlen($cek) / 2);
 
-        $cyphertext = $this->aes_interface->encrypt($data, $k, $iv);
+        $cyphertext = $this->aes_engine->encrypt($data, $k, $iv);
 
         $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
@@ -62,13 +62,14 @@ abstract class AESCBCHS implements ContentEncryptionInterface
 
         $k = substr($cek, strlen($cek) / 2);
 
-        return $this->aes_interface->decrypt($data, $k, $iv);
+        return $this->aes_engine->decrypt($data, $k, $iv);
     }
 
     /**
      * @param $encrypted_data
      * @param $cek
      * @param $iv
+     * @param $aad
      * @param string $encoded_header
      *
      * @return string

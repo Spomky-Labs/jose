@@ -131,7 +131,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return JWKManager
+     * @return JWKSetManager
      */
     protected function getJWKSetManager()
     {
@@ -197,6 +197,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     private function isCryptoExtensionAvailable()
     {
-        return class_exists("\Crypto\Cipher");
+        return class_exists('\Crypto\Cipher');
     }
 }
