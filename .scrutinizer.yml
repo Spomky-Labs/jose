@@ -1,8 +1,6 @@
 before_commands:
     - "composer install --prefer-dist"
 
-sudo: false
-
 tools:
     external_code_coverage: true
     php_mess_detector: true
