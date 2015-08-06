@@ -24,7 +24,7 @@ abstract class ECDSA implements SignatureInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Mdanter\Ecc\EccFactory")) {
+        if (!class_exists('\Mdanter\Ecc\EccFactory')) {
             throw new \RuntimeException("The library 'mdanter/ecc' is required to use Elliptic Curves based algorithm algorithms");
         }
         $this->adapter = EccFactory::getAdapter();

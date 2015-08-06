@@ -35,8 +35,8 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
-        $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertInstanceOf('Jose\JWKInterface', $loaded->getPayload());
         $this->assertEquals('RSA-OAEP-256', $loaded->getAlgorithm());
         $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
         $this->assertEquals('DEF', $loaded->getZip());
@@ -58,8 +58,8 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
-        $this->assertInstanceOf("Jose\JWKInterface", $loaded->getPayload());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertInstanceOf('Jose\JWKInterface', $loaded->getPayload());
         $this->assertEquals('RSA-OAEP-256', $loaded->getAlgorithm());
         $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
         $this->assertEquals('DEF', $loaded->getZip());
@@ -81,8 +81,8 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
-        $this->assertInstanceOf("Jose\JWKSetInterface", $loaded->getPayload());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertInstanceOf('Jose\JWKSetInterface', $loaded->getPayload());
         $this->assertEquals('dir', $loaded->getAlgorithm());
         $this->assertEquals('A192CBC-HS384', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
@@ -105,7 +105,7 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals('ECDH-ES', $loaded->getAlgorithm());
         $this->assertEquals('A192CBC-HS384', $loaded->getEncryptionAlgorithm());
@@ -129,7 +129,7 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getAlgorithm());
         $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
@@ -153,10 +153,40 @@ class EncrypterTest extends TestCase
 
         $loaded = $loader->load($encrypted);
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded);
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getAlgorithm());
         $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getZip());
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+    }
+
+    /**
+     *
+     */
+    public function testEncryptAndLoadWithGCMAndAAD()
+    {
+        $encrypter = $this->getEncrypter();
+        $loader = $this->getLoader();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
+            ->setSenderKey($this->getECDHSenderPrivateKey());
+
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            array($instruction),
+            array('kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256GCM', 'alg' => 'ECDH-ES+A256KW'),
+            array(),
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz');
+
+        $loaded = $loader->load($encrypted);
+
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertTrue(is_string($loaded->getPayload()));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getAlgorithm());
+        $this->assertEquals('A256GCM', $loaded->getEncryptionAlgorithm());
         $this->assertNull($loaded->getZip());
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
@@ -187,14 +217,14 @@ class EncrypterTest extends TestCase
          */
         $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded[0]);
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded[0]);
         $this->assertTrue(is_string($loaded[0]->getPayload()));
         $this->assertEquals('ECDH-ES+A256KW', $loaded[0]->getAlgorithm());
         $this->assertEquals('A256CBC-HS512', $loaded[0]->getEncryptionAlgorithm());
         $this->assertNull($loaded[0]->getZip());
         $this->assertEquals('Je suis Charlie', $loaded[0]->getPayload());
 
-        $this->assertInstanceOf("Jose\JWEInterface", $loaded[1]);
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded[1]);
         $this->assertTrue(is_string($loaded[1]->getPayload()));
         $this->assertEquals('RSA-OAEP-256', $loaded[1]->getAlgorithm());
         $this->assertEquals('A256CBC-HS512', $loaded[1]->getEncryptionAlgorithm());

@@ -17,7 +17,7 @@ class RSA15 extends RSA
     }
 
     /**
-     *
+     * @codeCoverageIgnore
      */
     protected function getHashAlgorithm()
     {

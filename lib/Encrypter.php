@@ -174,7 +174,13 @@ abstract class Encrypter implements EncrypterInterface
         return $result;
     }
 
-    protected function updateHeader($additional_header_values, &$protected_header, &$recipient_header, $serialization)
+    /**
+     * @param array  $additional_header_values
+     * @param array  $protected_header
+     * @param array  $recipient_header
+     * @param string $serialization
+     */
+    protected function updateHeader(array $additional_header_values, array &$protected_header, array &$recipient_header, $serialization)
     {
         if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
             $protected_header = array_merge($protected_header, $additional_header_values);
