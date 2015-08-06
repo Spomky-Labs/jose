@@ -79,7 +79,7 @@ class RSAConverter
     }
 
     /**
-     * @param string $certificate
+     * @param string $file
      * @param null|string $passphrase
      *
      *

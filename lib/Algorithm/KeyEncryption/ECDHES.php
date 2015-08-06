@@ -142,28 +142,6 @@ class ECDHES implements KeyAgreementInterface
     /**
      * @param JWKInterface $key
      *
-     * @return \Mdanter\Ecc\Primitives\CurveFpInterface
-     *
-     * @throws \Exception
-     */
-    private function getCurve(JWKInterface $key)
-    {
-        $crv = $key->getValue('crv');
-        switch ($crv) {
-            case 'P-256':
-                return EccFactory::getNistCurves()->curve256();
-            case 'P-384':
-                return EccFactory::getNistCurves()->curve384();
-            case 'P-521':
-                return EccFactory::getNistCurves()->curve521();
-            default:
-                throw new \Exception("Curve $crv is not supported");
-        }
-    }
-
-    /**
-     * @param JWKInterface $key
-     *
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      *
      * @throws \Exception

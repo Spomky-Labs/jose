@@ -38,7 +38,6 @@ trait KeyChecker
                     return false;
                 default:
                     throw new \Exception('Unsupported key usage.');
-                    break;
             }
         } elseif (is_array($ops)) {
             switch ($usage) {
@@ -68,7 +67,6 @@ trait KeyChecker
                     return false;
                 default:
                     throw new \Exception('Unsupported key usage.');
-                    break;
             }
         }
 

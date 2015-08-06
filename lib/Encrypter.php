@@ -129,9 +129,15 @@ abstract class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param string $cek
-     * @param integer $cek_size
-     * @param string $serialization
+     * @param \Jose\EncryptionInstructionInterface $instruction
+     * @param                                      $protected_header
+     * @param                                      $unprotected_header
+     * @param  string                              $cek
+     * @param  integer                             $cek_size
+     * @param  string                              $serialization
+     *
+     * @return array
+     * @throws \Exception
      */
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
@@ -290,6 +296,9 @@ abstract class Encrypter implements EncrypterInterface
             $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+            if (!$key_encryption_algorithm instanceof DirectEncryptionInterface) {
+                throw new \RuntimeException('The key encryption algorithm is not an instance of DirectEncryptionInterface');
+            }
 
             $temp = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), $complete_header);
             if (is_null($cek)) {
@@ -320,6 +329,10 @@ abstract class Encrypter implements EncrypterInterface
             $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+            if (!$key_encryption_algorithm instanceof KeyAgreementInterface) {
+                throw new \RuntimeException('The key encryption algorithm is not an instance of KeyAgreementInterface');
+            }
 
             if (is_null($instruction->getSenderKey())) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
