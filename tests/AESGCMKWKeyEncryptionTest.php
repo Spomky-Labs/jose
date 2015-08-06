@@ -18,11 +18,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -48,11 +43,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -78,11 +68,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
         $header = array();
         $key = new JWK();
         $key->setValues(array(
@@ -101,13 +86,5 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header['iv']);
         $this->assertNotNull($header['tag']);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCryptoExtensionAvailable()
-    {
-        return class_exists("\Crypto\Cipher");
     }
 }
