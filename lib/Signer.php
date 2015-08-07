@@ -10,7 +10,6 @@ use Jose\SignerInterface;
 use Jose\JSONSerializationModes;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
-use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
@@ -19,6 +18,11 @@ use SpomkyLabs\Jose\Util\Converter;
 abstract class Signer implements SignerInterface
 {
     use KeyChecker;
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    abstract protected function getPayloadConverter();
 
     /**
      * @return \Jose\JWTManagerInterface

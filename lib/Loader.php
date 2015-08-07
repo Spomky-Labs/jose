@@ -27,6 +27,11 @@ abstract class Loader implements LoaderInterface
     use KeyChecker;
 
     /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    abstract protected function getPayloadConverter();
+
+    /**
      * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
      */
     abstract protected function getCheckerManager();
