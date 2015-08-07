@@ -14,14 +14,34 @@ use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\ContentEncryptionInterface;
+use SpomkyLabs\Jose\Util\Converter;
 
 /**
  * Class representing a JSON Web Token Manager.
  */
 abstract class Encrypter implements EncrypterInterface
 {
-    use PayloadConverter;
     use KeyChecker;
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    abstract protected function getPayloadConverter();
+
+    /**
+     * @return \Jose\JWTManagerInterface
+     */
+    abstract protected function getJWTManager();
+
+    /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -46,6 +66,24 @@ abstract class Encrypter implements EncrypterInterface
      * @return string
      */
     abstract protected function createIV($size);
+
+    /**
+     * @param $input
+     */
+    private function checkInput(&$input)
+    {
+        if ($input instanceof JWTInterface) {
+            return;
+        }
+
+        $header = array();
+        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
+
+        $jwt = $this->getJWTManager()->createJWT();
+        $jwt->setPayload($payload)
+            ->setProtectedHeader($header);
+        $input = $jwt;
+    }
 
     /**
      * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input
@@ -132,11 +170,12 @@ abstract class Encrypter implements EncrypterInterface
      * @param \Jose\EncryptionInstructionInterface $instruction
      * @param                                      $protected_header
      * @param                                      $unprotected_header
-     * @param  string                              $cek
-     * @param  integer                             $cek_size
-     * @param  string                              $serialization
+     * @param string                               $cek
+     * @param int                                  $cek_size
+     * @param string                               $serialization
      *
      * @return array
+     *
      * @throws \Exception
      */
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)

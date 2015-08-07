@@ -107,6 +107,6 @@ class JWAManagerTest extends TestCase
      */
     private function isCryptoExtensionAvailable()
     {
-        return class_exists("\Crypto\Cipher");
+        return class_exists('\Crypto\Cipher');
     }
 }

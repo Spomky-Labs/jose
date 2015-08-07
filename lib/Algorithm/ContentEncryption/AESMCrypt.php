@@ -13,6 +13,7 @@ class AESMCrypt implements AESInterface
         mcrypt_generic_init($resource, $k, $iv);
         $cipherText = mcrypt_generic($resource, $padded_text);
         mcrypt_generic_deinit($resource);
+
         return $cipherText;
     }
 
@@ -23,6 +24,7 @@ class AESMCrypt implements AESInterface
         $decrypted = mdecrypt_generic($resource, $data);
         mcrypt_generic_deinit($resource);
         $decrypted_text = self::unpad($decrypted);
+
         return $decrypted_text;
     }
 
@@ -30,13 +32,15 @@ class AESMCrypt implements AESInterface
     {
         $padding = $block_size - (strlen($data) % $block_size);
         $pattern = chr($padding);
-        return $data . str_repeat($pattern, $padding);
+
+        return $data.str_repeat($pattern, $padding);
     }
 
     private static function unpad($data)
     {
         $padChar = substr($data, -1);
         $padLength = ord($padChar);
+
         return substr($data, 0, -$padLength);
     }
 }

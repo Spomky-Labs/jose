@@ -3,7 +3,7 @@
 namespace SpomkyLabs\Jose\Tests;
 
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\Converter;
+use SpomkyLabs\Jose\Util\Converter;
 
 /**
  */

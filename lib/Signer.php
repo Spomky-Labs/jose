@@ -10,19 +10,71 @@ use Jose\SignerInterface;
 use Jose\JSONSerializationModes;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
+use SpomkyLabs\Jose\Util\Converter;
 
 /**
  * Class representing a JSON Web Token Manager.
  */
 abstract class Signer implements SignerInterface
 {
-    use PayloadConverter;
     use KeyChecker;
+
+    protected $payload_conterter_manager = null;
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_conterter_manager)) {
+            $this->payload_conterter_manager = new PayloadConverterManager(
+                $this->getJWTManager(),
+                $this->getJWKManager(),
+                $this->getJWKSetManager()
+            );
+        }
+
+        return $this->payload_conterter_manager;
+    }
+
+    /**
+     * @return \Jose\JWTManagerInterface
+     */
+    abstract protected function getJWTManager();
+
+    /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
 
     /**
      * @return \Jose\JWAManagerInterface
      */
     abstract protected function getJWAManager();
+
+    /**
+     * @param $input
+     */
+    private function checkInput(&$input)
+    {
+        if ($input instanceof JWTInterface) {
+            return;
+        }
+
+        $header = array();
+        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
+
+        $jwt = $this->getJWTManager()->createJWT();
+        $jwt->setPayload($payload)
+            ->setProtectedHeader($header);
+        $input = $jwt;
+    }
 
     /**
      * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input         The input to sign

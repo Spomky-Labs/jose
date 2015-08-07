@@ -70,31 +70,19 @@ class ECDHES implements KeyAgreementInterface
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
     {
         $p     = $this->getGenerator($private_key);
-        //$curve = $this->getCurve($private_key);
 
         $rec_x = $this->convertBase64ToDec($public_key->getValue('x'));
         $rec_y = $this->convertBase64ToDec($public_key->getValue('y'));
-        //$sen_x = $this->convertBase64ToDec($private_key->getValue('x'));
-        //$sen_y = $this->convertBase64ToDec($private_key->getValue('y'));
         $sen_d = $this->convertBase64ToDec($private_key->getValue('d'));
 
-        //$generator = new GeneratorPoint($this->adapter, $curve, $sen_x, $sen_y);
         $private_key = $p->getPrivateKeyFrom($sen_d);
 
-        //$generator = new GeneratorPoint($this->adapter, $curve, $rec_x, $rec_y);
-        //$public_key = new PublicKey($this->adapter, $p, new Point($this->adapter, $curve, $rec_x, $rec_y, $p->getOrder()));
         $public_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
         $message = new MessageFactory($this->adapter);
         $exchange = $private_key->createExchange($message, $public_key);
 
         return $exchange->calculateSharedKey();
-        //var_dump($exchange->calculateSharedKey());
-        //die();
-
-        //$receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
-
-        //return $receiver_point->mul($sen_d)->getX();
     }
 
     /**

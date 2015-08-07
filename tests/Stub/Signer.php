@@ -4,7 +4,12 @@ namespace SpomkyLabs\Jose\Tests\Stub;
 
 use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
+use Jose\JWKSetManagerInterface;
 use Jose\JWTManagerInterface;
+use SpomkyLabs\Jose\Payload\JWKConverter;
+use SpomkyLabs\Jose\Payload\JWKSetConverter;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
+use SpomkyLabs\Jose\Payload\PrimitiveConverter;
 use SpomkyLabs\Jose\Signer as Base;
 
 /**
@@ -16,6 +21,21 @@ class Signer extends Base
     protected $jwa_manager;
     protected $jwk_manager;
     protected $jwkset_manager;
+    protected $payload_converter_manager;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_converter_manager)) {
+            $this->payload_converter_manager = new PayloadConverterManager();
+            $this->payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
+                ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+        }
+
+        return $this->payload_converter_manager;
+    }
 
     /**
      * {@inheritdoc}

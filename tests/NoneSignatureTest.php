@@ -66,10 +66,13 @@ class NoneSignatureTest extends TestCase
         $loader = $this->getLoader();
 
         $signed = $signer->sign($jwt, array($instruction1));
+
         $this->assertTrue(is_string($signed));
+
         $result = $loader->load($signed);
 
-        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertInstanceOf('Jose\JWSInterface', $result);
+
         $this->assertEquals('Je suis Charlie', $result->getPayload());
         $this->assertEquals('none', $result->getAlgorithm());
     }

@@ -32,11 +32,9 @@ class SignerTest extends TestCase
      */
     public function testUnsupportedInputType()
     {
+        $resource = fopen(__FILE__, 'r');
         $signer = $this->getSigner();
-
-        $input = $this->getKey3();
-
-        $signatures = $signer->sign(new \StdClass(), array());
+        $signer->sign($resource, array());
     }
 
     /**
@@ -132,12 +130,12 @@ class SignerTest extends TestCase
 
         $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf("\Jose\JWSInterface", $loaded[0]);
-        $this->assertInstanceOf("\Jose\JWKInterface", $loaded[0]->getPayload());
+        $this->assertInstanceOf('\Jose\JWSInterface', $loaded[0]);
+        $this->assertInstanceOf('\Jose\JWKInterface', $loaded[0]->getPayload());
         $this->assertEquals('HS512', $loaded[0]->getAlgorithm());
 
-        $this->assertInstanceOf("\Jose\JWSInterface", $loaded[1]);
-        $this->assertInstanceOf("\Jose\JWKInterface", $loaded[1]->getPayload());
+        $this->assertInstanceOf('\Jose\JWSInterface', $loaded[1]);
+        $this->assertInstanceOf('\Jose\JWKInterface', $loaded[1]->getPayload());
         $this->assertEquals('RS512', $loaded[1]->getAlgorithm());
     }
 
@@ -163,7 +161,7 @@ class SignerTest extends TestCase
          */
         $loaded = $loader->load($signatures);
 
-        $this->assertInstanceOf("\Jose\JWSInterface", $loaded);
+        $this->assertInstanceOf('\Jose\JWSInterface', $loaded);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals('HS512', $loaded->getAlgorithm());
     }
@@ -196,7 +194,7 @@ class SignerTest extends TestCase
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf("\Jose\JWSInterface", $jws);
+            $this->assertInstanceOf('\Jose\JWSInterface', $jws);
             $this->assertEquals('Je suis Charlie', $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }
@@ -220,7 +218,7 @@ class SignerTest extends TestCase
 
     /**
      * @expectedException \Exception
-     * @expectedExceptionMessage The JWT has expired.
+     * @expectedExceptionMessage Can not use this JWT yet.
      */
     public function testInvalidNotBeforeJWS()
     {
@@ -294,7 +292,7 @@ class SignerTest extends TestCase
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf("\Jose\JWSInterface", $jws);
+            $this->assertInstanceOf('\Jose\JWSInterface', $jws);
             $this->assertEquals($this->getKeyset(), $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }

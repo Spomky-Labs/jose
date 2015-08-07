@@ -1,6 +1,7 @@
 <?php
 
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
+
 use phpseclib\Crypt\AES;
 
 /**

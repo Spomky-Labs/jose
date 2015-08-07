@@ -16,6 +16,8 @@ use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\ContentEncryptionInterface;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
+use SpomkyLabs\Jose\Util\Converter;
 
 /**
  * Class able to load JWS or JWE.
@@ -23,8 +25,45 @@ use Jose\Operation\ContentEncryptionInterface;
  */
 abstract class Loader implements LoaderInterface
 {
-    use PayloadConverter;
     use KeyChecker;
+
+    protected $payload_conterter_manager = null;
+
+    /**
+     * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     */
+    abstract protected function getCheckerManager();
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_conterter_manager)) {
+            $this->payload_conterter_manager = new PayloadConverterManager(
+                $this->getJWTManager(),
+                $this->getJWKManager(),
+                $this->getJWKSetManager()
+            );
+        }
+
+        return $this->payload_conterter_manager;
+    }
+
+    /**
+     * @return \Jose\JWTManagerInterface
+     */
+    abstract protected function getJWTManager();
+
+    /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -84,64 +123,9 @@ abstract class Loader implements LoaderInterface
      */
     public function verify(JWTInterface $jwt)
     {
-        $methods = array('checkExpirationTime', 'checkNotBefore', 'checkIssuedAt', 'checkCritical');
-        foreach ($methods as $method) {
-            $this->$method($jwt);
-        }
+        $this->getCheckerManager()->checkJWT($jwt);
 
         return true;
-    }
-
-    /**
-     * @param \Jose\JWTInterface $jwt
-     *
-     * @throws \Exception
-     */
-    protected function checkExpirationTime(JWTInterface $jwt)
-    {
-        if (!is_null($jwt->getExpirationTime()) && time() > $jwt->getExpirationTime()) {
-            throw new \Exception('The JWT has expired.');
-        }
-    }
-
-    /**
-     * @param \Jose\JWTInterface $jwt
-     *
-     * @throws \Exception
-     */
-    protected function checkNotBefore(JWTInterface $jwt)
-    {
-        if (!is_null($jwt->getNotBefore()) && time() < $jwt->getNotBefore()) {
-            throw new \Exception('The JWT has expired.');
-        }
-    }
-
-    /**
-     * @param \Jose\JWTInterface $jwt
-     *
-     * @throws \Exception
-     */
-    protected function checkIssuedAt(JWTInterface $jwt)
-    {
-        if (!is_null($jwt->getIssuedAt()) && time() < $jwt->getIssuedAt()) {
-            throw new \Exception('The JWT is issued in the futur.');
-        }
-    }
-
-    /**
-     * @param \Jose\JWTInterface $jwt
-     *
-     * @throws \Exception
-     */
-    protected function checkCritical(JWTInterface $jwt)
-    {
-        if (!is_null($jwt->getCritical())) {
-            foreach ($jwt->getCritical() as $critical) {
-                if (is_null($jwt->getHeaderValue($critical)) && is_null($jwt->getPayloadValue($critical))) {
-                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $critical));
-                }
-            }
-        }
     }
 
     /**
@@ -185,7 +169,7 @@ abstract class Loader implements LoaderInterface
     protected function createJWS($input, $protected_header, $unprotected_header, $payload, $signature)
     {
         $complete_header = array_merge($protected_header, $unprotected_header);
-        $this->convertJWTContent($complete_header, $payload);
+        $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
         $jws = $this->getJWTManager()->createJWS();
         $jws->setPayload($payload);
         $jws->setInput($input);
@@ -253,7 +237,7 @@ abstract class Loader implements LoaderInterface
      * @param \Jose\JWAInterface                         $key_encryption_algorithm
      * @param \Jose\Operation\ContentEncryptionInterface $content_encryption_algorithm
      * @param \Jose\JWKInterface                         $key
-     * @param                                            string|null $encrypted_cek
+     * @param string|null                                $encrypted_cek
      * @param array                                      $header
      *
      * @return string
@@ -301,16 +285,16 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * @param       string $ciphertext
-     * @param       string $cek
-     * @param       string|null $iv
-     * @param       string|null $aad
-     * @param       $unprotected
-     * @param       $header
-     * @param       $protected
-     * @param       $data_protected
-     * @param       string|null $tag
-     * @param array $complete_header
+     * @param string      $ciphertext
+     * @param string      $cek
+     * @param string|null $iv
+     * @param string|null $aad
+     * @param             $unprotected
+     * @param             $header
+     * @param             $protected
+     * @param             $data_protected
+     * @param string|null $tag
+     * @param array       $complete_header
      *
      * @return \Jose\JWEInterface
      *
@@ -324,7 +308,7 @@ abstract class Loader implements LoaderInterface
 
         $this->uncompressedPayload($payload, $complete_header);
 
-        $this->convertJWTContent($complete_header, $payload);
+        $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
 
         $jwe = $this->getJWTManager()->createJWE();
         $jwe->setProtectedHeader($protected)

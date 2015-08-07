@@ -13,9 +13,9 @@ Status of the implementation
     * [x] jwkset+json content type (JWKSetInterface object)
 
 * Serialization modes supported:
-    * [x] JSON Compact Serialization Overview (JWS/JWS creation and loading)
-    * [x] JSON Flattened Serialization Overview (JWS/JWS creation and loading)
-    * [x] JSON Serialization Overview (JWS/JWS creation and loading)
+    * [x] JSON Compact Serialization Overview (JWS/JWE creation and loading)
+    * [x] JSON Flattened Serialization Overview (JWS/JWE creation and loading)
+    * [x] JSON Serialization Overview (JWS/JWE creation and loading)
 
 * Compression support for JWE objects:
     * [x] Deflate —DEF—

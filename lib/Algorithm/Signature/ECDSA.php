@@ -38,8 +38,6 @@ abstract class ECDSA implements SignatureInterface
         $this->checkKey($key);
 
         $p     = $this->getGenerator();
-        //$x     = $this->convertBase64ToDec($key->getValue('x'));
-        //$y     = $this->convertBase64ToDec($key->getValue('y'));
         $d     = $this->convertBase64ToDec($key->getValue('d'));
         $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose;
+namespace SpomkyLabs\Jose\Util;
 
 use Jose\JSONSerializationModes;
 

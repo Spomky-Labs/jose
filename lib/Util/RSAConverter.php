@@ -40,11 +40,11 @@ class RSAConverter
     }
 
     /**
-     * @param string $certificate
+     * @param string      $certificate
      * @param null|string $passphrase
      *
-     *
      * @return array
+     *
      * @throws \Exception
      */
     private static function getCertificateValues($certificate, $passphrase = null)
@@ -56,6 +56,7 @@ class RSAConverter
         if ($res === false) {
             throw new \Exception('Unable to load the certificate');
         }
+
         return self::getOpenSSLResourceValues($res);
     }
 
@@ -63,6 +64,7 @@ class RSAConverter
      * @param $resource
      *
      * @return array
+     *
      * @throws \Exception
      */
     private static function getOpenSSLResourceValues($resource)
@@ -79,30 +81,32 @@ class RSAConverter
     }
 
     /**
-     * @param string $file
+     * @param string      $file
      * @param null|string $passphrase
      *
-     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function loadKeyFromFile($file, $passphrase = null)
     {
         $content = file_get_contents($file);
+
         return self::loadKeyFromPEM($content, $passphrase);
     }
 
     /**
-     * @param string $certificate
+     * @param string      $certificate
      * @param null|string $passphrase
      *
-     *
      * @return mixed
+     *
      * @throws \Exception
      */
     public static function loadKeyFromPEM($certificate, $passphrase = null)
     {
         $values = self::getCertificateValues($certificate, $passphrase);
+
         return self::convertToKeyArray($values);
     }
 
@@ -110,11 +114,13 @@ class RSAConverter
      * @param $resource
      *
      * @return array
+     *
      * @throws \Exception
      */
     public static function loadKeyFromOpenSSLResource($resource)
     {
         $values = self::getOpenSSLResourceValues($resource);
+
         return self::convertToKeyArray($values);
     }
 

@@ -57,7 +57,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
         if (false === $this->checkAuthenticationTag($data, $cek, $iv, $aad, $encoded_protected_header, $tag)) {
-            return null;
+            return;
         }
 
         $k = substr($cek, strlen($cek) / 2);

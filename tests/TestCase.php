@@ -78,6 +78,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $signer = new Signer();
         $signer->setJWTManager($this->getJWTManager())
                ->setJWKManager($this->getJWKManager())
+               ->setJWKSetManager($this->getJWKSetManager())
                ->setJWAManager($this->getJWAManager());
 
         return $signer;
@@ -91,6 +92,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $encrypter = new Encrypter();
         $encrypter->setCompressionManager($this->getCompressionManager())
                   ->setJWKManager($this->getJWKManager())
+                  ->setJWKSetManager($this->getJWKSetManager())
                   ->setJWTManager($this->getJWTManager())
                   ->setJWAManager($this->getJWAManager());
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
