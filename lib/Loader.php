@@ -16,7 +16,6 @@ use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\ContentEncryptionInterface;
-use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
@@ -27,28 +26,10 @@ abstract class Loader implements LoaderInterface
 {
     use KeyChecker;
 
-    protected $payload_conterter_manager = null;
-
     /**
      * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
      */
     abstract protected function getCheckerManager();
-
-    /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    protected function getPayloadConverter()
-    {
-        if (is_null($this->payload_conterter_manager)) {
-            $this->payload_conterter_manager = new PayloadConverterManager(
-                $this->getJWTManager(),
-                $this->getJWKManager(),
-                $this->getJWKSetManager()
-            );
-        }
-
-        return $this->payload_conterter_manager;
-    }
 
     /**
      * @return \Jose\JWTManagerInterface

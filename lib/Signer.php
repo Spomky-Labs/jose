@@ -20,24 +20,6 @@ abstract class Signer implements SignerInterface
 {
     use KeyChecker;
 
-    protected $payload_conterter_manager = null;
-
-    /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    protected function getPayloadConverter()
-    {
-        if (is_null($this->payload_conterter_manager)) {
-            $this->payload_conterter_manager = new PayloadConverterManager(
-                $this->getJWTManager(),
-                $this->getJWKManager(),
-                $this->getJWKSetManager()
-            );
-        }
-
-        return $this->payload_conterter_manager;
-    }
-
     /**
      * @return \Jose\JWTManagerInterface
      */
