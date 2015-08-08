@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Util;
 
 use Base64Url\Base64Url;
@@ -25,9 +34,9 @@ class RSAConverter
     /**
      * @param array $data
      *
-     * @return \phpseclib\Crypt\RSA
-     *
      * @throws \Exception
+     *
+     * @return \phpseclib\Crypt\RSA
      */
     public static function fromArrayToRSACrypt(array $data)
     {
@@ -43,9 +52,9 @@ class RSAConverter
      * @param string      $certificate
      * @param null|string $passphrase
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     private static function getCertificateValues($certificate, $passphrase = null)
     {
@@ -63,9 +72,9 @@ class RSAConverter
     /**
      * @param $resource
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     private static function getOpenSSLResourceValues($resource)
     {
@@ -84,9 +93,9 @@ class RSAConverter
      * @param string      $file
      * @param null|string $passphrase
      *
-     * @return mixed
-     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     public static function loadKeyFromFile($file, $passphrase = null)
     {
@@ -99,9 +108,9 @@ class RSAConverter
      * @param string      $certificate
      * @param null|string $passphrase
      *
-     * @return mixed
-     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     public static function loadKeyFromPEM($certificate, $passphrase = null)
     {
@@ -113,9 +122,9 @@ class RSAConverter
     /**
      * @param $resource
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     public static function loadKeyFromOpenSSLResource($resource)
     {
@@ -131,7 +140,7 @@ class RSAConverter
      */
     private static function convertToKeyArray(array $values)
     {
-        $result = array('kty' => 'RSA');
+        $result = ['kty' => 'RSA'];
         foreach ($values as $key => $value) {
             $value = Base64Url::encode($value);
             if ($key === 'dmp1') {
@@ -151,9 +160,9 @@ class RSAConverter
     /**
      * @param array $data
      *
-     * @return string
-     *
      * @throws \Exception
+     *
+     * @return string
      */
     public static function fromArrayToXML(array $data)
     {
@@ -189,16 +198,16 @@ class RSAConverter
      */
     private static function getElement($key)
     {
-        $values = array(
-            'n' => 'Modulus',
-            'e' => 'Exponent',
-            'p' => 'P',
-            'd' => 'D',
-            'q' => 'Q',
+        $values = [
+            'n'  => 'Modulus',
+            'e'  => 'Exponent',
+            'p'  => 'P',
+            'd'  => 'D',
+            'q'  => 'Q',
             'dp' => 'DP',
             'dq' => 'DQ',
             'qi' => 'InverseQ',
-        );
+        ];
         if (array_key_exists($key, $values)) {
             return $values[$key];
         }

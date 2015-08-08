@@ -1,15 +1,24 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
-use Jose\JWKInterface;
-use Jose\JWTInterface;
-use Jose\JWKSetInterface;
-use Jose\SignerInterface;
 use Jose\JSONSerializationModes;
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
+use Jose\JWTInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
+use Jose\SignerInterface;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
@@ -53,7 +62,7 @@ abstract class Signer implements SignerInterface
             return;
         }
 
-        $header = array();
+        $header = [];
         $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
 
         $jwt = $this->getJWTManager()->createJWT();
@@ -76,10 +85,10 @@ abstract class Signer implements SignerInterface
 
         $jwt_payload = Base64Url::encode($input->getPayload());
 
-        $signatures = array(
-            'payload' => $jwt_payload,
-            'signatures' => array(),
-        );
+        $signatures = [
+            'payload'    => $jwt_payload,
+            'signatures' => [],
+        ];
 
         foreach ($instructions as $instruction) {
             $signatures['signatures'][] = $this->computeSignature($instruction, $input, $jwt_payload);
@@ -99,7 +108,7 @@ abstract class Signer implements SignerInterface
      */
     protected function computeSignature(SignatureInstructionInterface $instruction, JWTInterface $input, $jwt_payload)
     {
-        $protected_header   = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
+        $protected_header = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
         $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
         $complete_header = array_merge($protected_header, $protected_header);
 
@@ -115,9 +124,9 @@ abstract class Signer implements SignerInterface
 
         $jwt_signature = Base64Url::encode($signature);
 
-        $result = array(
+        $result = [
             'signature' => $jwt_signature,
-        );
+        ];
         if (!is_null($protected_header)) {
             $result['protected'] = $jwt_protected_header;
         }

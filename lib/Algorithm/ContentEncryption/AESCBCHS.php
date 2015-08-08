@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
@@ -31,7 +40,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
@@ -80,15 +89,15 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key          = substr($cek, 0, strlen($cek) / 2);
+        $mac_key = substr($cek, 0, strlen($cek) / 2);
         $auth_data_length = strlen($encoded_header);
 
-        $secured_input = implode('', array(
+        $secured_input = implode('', [
             $calculated_aad,
             $iv,
             $encrypted_data,
             pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8), // str_pad(dechex($auth_data_length), 4, "0", STR_PAD_LEFT)
-        ));
+        ]);
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
         return substr($hash, 0, strlen($hash) / 2);

@@ -1,12 +1,21 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Test\Stub;
 
+use Jose\Compression\CompressionManagerInterface;
 use Jose\JWAManagerInterface;
-use Jose\JWTManagerInterface;
 use Jose\JWKManagerInterface;
 use Jose\JWKSetManagerInterface;
-use Jose\Compression\CompressionManagerInterface;
+use Jose\JWTManagerInterface;
 use SpomkyLabs\Jose\Encrypter as Base;
 use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;

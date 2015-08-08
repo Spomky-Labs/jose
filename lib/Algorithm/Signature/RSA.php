@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
-use SpomkyLabs\Jose\Util\RSAConverter;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
+use SpomkyLabs\Jose\Util\RSAConverter;
 
 /**
  * Class RSA.
@@ -23,12 +32,12 @@ abstract class RSA implements SignatureInterface
     abstract protected function getSignatureMethod();
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function verify(JWKInterface $key, $input, $signature)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e')));
+        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e']));
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         $rsa->setHash($this->getAlgorithm());
@@ -42,12 +51,12 @@ abstract class RSA implements SignatureInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function sign(JWKInterface $key, $input)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi')));
+        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
         $rsa = RSAConverter::fromArrayToRSACrypt($values);
 
         if ($rsa->getPrivateKey() === false) {

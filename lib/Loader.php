@@ -1,21 +1,30 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use Jose\JWAInterface;
-use Jose\JWSInterface;
 use Jose\JWKInterface;
-use Jose\JWTInterface;
 use Jose\JWKSetInterface;
+use Jose\JWSInterface;
+use Jose\JWTInterface;
 use Jose\LoaderInterface;
-use Jose\Operation\SignatureInterface;
+use Jose\Operation\ContentEncryptionInterface;
+use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
-use Jose\Operation\DirectEncryptionInterface;
-use Jose\Operation\ContentEncryptionInterface;
+use Jose\Operation\SignatureInterface;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
@@ -124,16 +133,16 @@ abstract class Loader implements LoaderInterface
         $encoded_payload = $data['payload'];
         $payload = Base64Url::decode($encoded_payload);
 
-        $jws = array();
+        $jws = [];
         foreach ($data['signatures'] as $signature) {
             if (array_key_exists('protected', $signature)) {
                 $encoded_protected_header = $signature['protected'];
                 $protected_header = json_decode(Base64Url::decode($encoded_protected_header), true);
             } else {
                 $encoded_protected_header = null;
-                $protected_header = array();
+                $protected_header = [];
             }
-            $unprotected_header = isset($signature['header']) ? $signature['header'] : array();
+            $unprotected_header = isset($signature['header']) ? $signature['header'] : [];
 
             $jws[] = $this->createJWS($encoded_protected_header.'.'.$encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
         }
@@ -148,9 +157,9 @@ abstract class Loader implements LoaderInterface
      * @param string $payload
      * @param string $signature
      *
-     * @return \Jose\JWSInterface
-     *
      * @throws \Exception
+     *
+     * @return \Jose\JWSInterface
      */
     protected function createJWS($input, $protected_header, $unprotected_header, $payload, $signature)
     {
@@ -178,7 +187,7 @@ abstract class Loader implements LoaderInterface
      */
     protected function getCompleteHeader($protected_header, $unprotected_header)
     {
-        $complete_header = array();
+        $complete_header = [];
         if (!is_null($protected_header)) {
             $tmp = json_decode(Base64Url::decode($protected_header), true);
             if (!is_array($tmp)) {
@@ -250,15 +259,15 @@ abstract class Loader implements LoaderInterface
     protected function loadSerializedJsonJWE(array $data, JWKSetInterface $jwk_set = null)
     {
         $ciphertext = Base64Url::decode($data['ciphertext']);
-        $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : array();
-        $unprotected = array_key_exists('unprotected', $data) ? $data['unprotected'] : array();
+        $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : [];
+        $unprotected = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
         $aad = array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null;
         $tag = array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null;
-        $iv  = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
+        $iv = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
 
-        $result = array();
+        $result = [];
         foreach ($data['recipients'] as $recipient) {
-            $header = array_key_exists('header', $recipient) ? $recipient['header'] : array();
+            $header = array_key_exists('header', $recipient) ? $recipient['header'] : [];
             $complete_header = array_merge($protected, $unprotected, $header);
 
             $cek = $this->decryptCEK($recipient, $complete_header, $jwk_set);
@@ -282,9 +291,9 @@ abstract class Loader implements LoaderInterface
      * @param string|null $tag
      * @param array       $complete_header
      *
-     * @return \Jose\JWEInterface
-     *
      * @throws \Exception
+     *
+     * @return \Jose\JWEInterface
      */
     protected function decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data_protected, $tag, array $complete_header)
     {
@@ -320,7 +329,7 @@ abstract class Loader implements LoaderInterface
         if (is_null($keys)) {
             $keys = $this->getKeysFromCompleteHeader($complete_header);
         }
-        $key_encryption_algorithm     = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
+        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
 
         foreach ($keys as $key) {
@@ -341,7 +350,7 @@ abstract class Loader implements LoaderInterface
      */
     protected function checkCompleteHeader(array $complete_header)
     {
-        foreach (array('enc', 'alg') as $key) {
+        foreach (['enc', 'alg'] as $key) {
             if (!array_key_exists($key, $complete_header)) {
                 throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
             }
@@ -356,12 +365,12 @@ abstract class Loader implements LoaderInterface
     protected function getKeyEncryptionAlgorithm($algorithm)
     {
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
-        foreach (array(
+        foreach ([
                     '\Jose\Operation\DirectEncryptionInterface',
                     '\Jose\Operation\KeyEncryptionInterface',
                     '\Jose\Operation\KeyAgreementInterface',
                     '\Jose\Operation\KeyAgreementWrappingInterface',
-                ) as $class) {
+                ] as $class) {
             if ($key_encryption_algorithm instanceof $class) {
                 return $key_encryption_algorithm;
             }

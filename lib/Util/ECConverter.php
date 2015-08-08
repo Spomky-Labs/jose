@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Util;
 
 use Base64Url\Base64Url;
@@ -16,11 +25,11 @@ class ECConverter
      */
     protected static function checkRequirements()
     {
-        $minVersions = array(
+        $minVersions = [
             '5.4' => '5.4.26',
             '5.5' => '5.5.10',
             '5.6' => '5.6.0',
-        );
+        ];
 
         if (isset($minVersions[PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION]) &&
             version_compare(PHP_VERSION, $minVersions[PHP_MAJOR_VERSION.'.'.PHP_MINOR_VERSION], '<')) {
@@ -32,9 +41,9 @@ class ECConverter
      * @param $certificate
      * @param null $passphrase
      *
-     * @return mixed
-     *
      * @throws \Exception
+     *
+     * @return mixed
      */
     protected static function loadKey($certificate, $passphrase = null)
     {
@@ -59,15 +68,15 @@ class ECConverter
     /**
      * @param $file
      *
-     * @return array|bool|void
-     *
      * @throws \Exception
+     *
+     * @return array|bool|void
      */
     public static function loadKeyFromFile($file)
     {
         self::checkRequirements();
         $details = file_get_contents($file);
-        $values = array();
+        $values = [];
 
         if (0 !== preg_match('/-----BEGIN EC PRIVATE KEY-----([^-]+)-----END EC PRIVATE KEY-----/', $details, $matches)) {
             $values += self::loadPrivateKey($matches[1]);
@@ -77,7 +86,7 @@ class ECConverter
             $values += self::loadPublicKey($matches[1]);
         }
 
-        return empty($values) ? false : array('kty' => 'EC') + $values;
+        return empty($values) ? false : ['kty' => 'EC'] + $values;
     }
 
     /**
@@ -89,32 +98,32 @@ class ECConverter
     {
         $asn1 = new ASN1();
 
-        $asnSubjectPrivateKeyInfo = array(
-            'type' => ASN1::TYPE_SEQUENCE,
-            'children' => array(
-                'version' => array(
+        $asnSubjectPrivateKeyInfo = [
+            'type'     => ASN1::TYPE_SEQUENCE,
+            'children' => [
+                'version' => [
                     'type' => ASN1::TYPE_INTEGER,
-                ),
-                'secret' => array(
+                ],
+                'secret' => [
                     'type' => ASN1::TYPE_OCTET_STRING,
-                ),
-                'algorithm' => array(
+                ],
+                'algorithm' => [
                     'type' => ASN1::TYPE_INTEGER,
-                ),
-                'subjectPublicKey' => array(
+                ],
+                'subjectPublicKey' => [
                     'type' => ASN1::TYPE_INTEGER,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         $decoded = $asn1->decodeBER(base64_decode($privateKey));
         $mappedDetails = $asn1->asn1map($decoded[0], $asnSubjectPrivateKeyInfo);
         if (null === $mappedDetails) {
-            return array();
+            return [];
         }
 
-        return array(
+        return [
             'd' => Base64Url::encode(base64_decode($mappedDetails['secret'])),
-        );
+        ];
     }
 
     /**
@@ -126,27 +135,27 @@ class ECConverter
     {
         $asn1 = new ASN1();
 
-        $asnAlgorithmIdentifier = array(
-            'type' => ASN1::TYPE_SEQUENCE,
-            'children' => array(
-                'ansi-X9-62' => array(
+        $asnAlgorithmIdentifier = [
+            'type'     => ASN1::TYPE_SEQUENCE,
+            'children' => [
+                'ansi-X9-62' => [
                     'type' => ASN1::TYPE_OBJECT_IDENTIFIER,
-                ),
-                'id-ecSigType' => array(
+                ],
+                'id-ecSigType' => [
                     'type' => ASN1::TYPE_OBJECT_IDENTIFIER,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
-        $asnSubjectPublicKeyInfo = array(
-            'type' => ASN1::TYPE_SEQUENCE,
-            'children' => array(
-                'algorithm' => $asnAlgorithmIdentifier,
-                'subjectPublicKey' => array(
+        $asnSubjectPublicKeyInfo = [
+            'type'     => ASN1::TYPE_SEQUENCE,
+            'children' => [
+                'algorithm'        => $asnAlgorithmIdentifier,
+                'subjectPublicKey' => [
                 'type' => ASN1::TYPE_BIT_STRING,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
         $decoded = $asn1->decodeBER(base64_decode($publicKey));
         $mappedDetails = $asn1->asn1map($decoded[0], $asnSubjectPublicKeyInfo);
         if (null === $mappedDetails) {
@@ -168,10 +177,10 @@ class ECConverter
         $X = substr($details, 2, (strlen($details) - 2) / 2);
         $Y = substr($details, (strlen($details) - 2) / 2 + 2, (strlen($details) - 2) / 2);
 
-        return array(
+        return [
             'x' => Base64Url::encode($X),
             'y' => Base64Url::encode($Y),
-        );
+        ];
     }
 
     /**
@@ -181,6 +190,6 @@ class ECConverter
      */
     protected static function isAlgorithmSupported($algorithm)
     {
-        return in_array($algorithm, array('1.2.840.10045.3.1.7', '1.3.132.0.34', '1.3.132.0.35'));
+        return in_array($algorithm, ['1.2.840.10045.3.1.7', '1.3.132.0.34', '1.3.132.0.35']);
     }
 }
