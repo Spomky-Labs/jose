@@ -41,6 +41,9 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
      */
     public function convertPayloadToString(array &$header, $payload)
     {
+        if (is_string($payload)) {
+            return $payload;
+        }
         foreach ($this->getConverters() as $converter) {
             $header = [];
             if ($converter->isPayloadToStringSupported($header, $payload)) {
