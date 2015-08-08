@@ -1,17 +1,17 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Test;
 
 use SpomkyLabs\Jose\JWAManager;
 use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 use SpomkyLabs\Jose\Compression\Deflate;
-use SpomkyLabs\Jose\Tests\Stub\Loader;
-use SpomkyLabs\Jose\Tests\Stub\Signer;
-use SpomkyLabs\Jose\Tests\Stub\Encrypter;
-use SpomkyLabs\Jose\Tests\Stub\JWTManager;
-use SpomkyLabs\Jose\Tests\Stub\JWKManager;
-use SpomkyLabs\Jose\Tests\Stub\JWKSetManager;
+use SpomkyLabs\Test\Stub\Loader;
+use SpomkyLabs\Test\Stub\Signer;
+use SpomkyLabs\Test\Stub\Encrypter;
+use SpomkyLabs\Test\Stub\JWTManager;
+use SpomkyLabs\Test\Stub\JWKManager;
+use SpomkyLabs\Test\Stub\JWKSetManager;
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\Signature\HS384;

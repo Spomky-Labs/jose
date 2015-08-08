@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+namespace SpomkyLabs\Test\Stub;
 
 use SpomkyLabs\Jose\JWKSet;
 use Jose\JWKManagerInterface;

@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+namespace SpomkyLabs\Test\Stub;
 
 use Jose\JWAManagerInterface;
 use Jose\JWTManagerInterface;
@@ -17,7 +17,6 @@ use SpomkyLabs\Jose\Loader as Base;
 use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;
 use SpomkyLabs\Jose\Payload\PayloadConverterManager;
-use SpomkyLabs\Jose\Payload\PrimitiveConverter;
 
 /**
  * Class representing a JSON Web Signature.
@@ -139,6 +138,7 @@ class Loader extends Base
                                   ->addChecker(new ExpirationChecker())
                                   ->addChecker(new CriticalChecker());
         }
+
         return $this->checker_manager;
     }
 }

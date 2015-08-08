@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+namespace SpomkyLabs\Test\Stub;
 
 use Jose\JWAManagerInterface;
 use Jose\JWTManagerInterface;
@@ -11,7 +11,6 @@ use SpomkyLabs\Jose\Encrypter as Base;
 use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;
 use SpomkyLabs\Jose\Payload\PayloadConverterManager;
-use SpomkyLabs\Jose\Payload\PrimitiveConverter;
 
 /**
  * Class representing a JSON Web Signature.
@@ -133,9 +132,9 @@ class Encrypter extends Base
     {
         if (function_exists('random_bytes')) {
             return random_bytes($length);
-        }elseif (function_exists('mcrypt_create_iv')) {
+        } elseif (function_exists('mcrypt_create_iv')) {
             return mcrypt_create_iv($length);
-        }elseif (function_exists('openssl_random_pseudo_bytes')) {
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
         } elseif (class_exists('\phpseclib\Crypt\Random')) {
             return \phpseclib\Crypt\Random::string($length);

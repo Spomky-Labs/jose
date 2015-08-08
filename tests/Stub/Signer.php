@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+namespace SpomkyLabs\Test\Stub;
 
 use Jose\JWKManagerInterface;
 use Jose\JWAManagerInterface;
@@ -9,7 +9,6 @@ use Jose\JWTManagerInterface;
 use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;
 use SpomkyLabs\Jose\Payload\PayloadConverterManager;
-use SpomkyLabs\Jose\Payload\PrimitiveConverter;
 use SpomkyLabs\Jose\Signer as Base;
 
 /**

@@ -11,6 +11,8 @@
 
 [![Documentation Status](https://readthedocs.org/projects/spomky-labsjose/badge/?version=latest)](https://readthedocs.org/projects/spomky-labsjose/?badge=latest)
 
+[![StyleCI](https://styleci.io/repos/22874677/shield)](https://styleci.io/repos/22874677)
+
 This library aims to provide an implementation of:
 
 * JW**S** [JSON Web Signature (RFC 7515)](https://tools.ietf.org/html/rfc7515),

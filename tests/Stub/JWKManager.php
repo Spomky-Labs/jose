@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+namespace SpomkyLabs\Test\Stub;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;

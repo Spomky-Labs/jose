@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Test;
 
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;

@@ -1,6 +1,6 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+namespace SpomkyLabs\Test;
 
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESOpenSSL;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESPHPSecLib;
@@ -20,17 +20,17 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
     {
         $k = substr($K, strlen($K) / 2);
 
-        $openssl_cyphertext = AESOpenSSL::encrypt($plaintext,$k,$iv);
-        $phpseclib_cyphertext = AESPHPSecLib::encrypt($plaintext,$k,$iv);
-        $mcrypt_cyphertext = AESMCrypt::encrypt($plaintext,$k,$iv);
+        $openssl_cyphertext = AESOpenSSL::encrypt($plaintext, $k, $iv);
+        $phpseclib_cyphertext = AESPHPSecLib::encrypt($plaintext, $k, $iv);
+        $mcrypt_cyphertext = AESMCrypt::encrypt($plaintext, $k, $iv);
 
         $this->assertEquals($expected_cyphertext, $openssl_cyphertext);
         $this->assertEquals($expected_cyphertext, $phpseclib_cyphertext);
         $this->assertEquals($expected_cyphertext, $mcrypt_cyphertext);
 
-        $this->assertEquals($plaintext, AESOpenSSL::decrypt($openssl_cyphertext,$k,$iv));
-        $this->assertEquals($plaintext, AESPHPSecLib::decrypt($phpseclib_cyphertext,$k,$iv));
-        $this->assertEquals($plaintext, AESMCrypt::decrypt($mcrypt_cyphertext,$k,$iv));
+        $this->assertEquals($plaintext, AESOpenSSL::decrypt($openssl_cyphertext, $k, $iv));
+        $this->assertEquals($plaintext, AESPHPSecLib::decrypt($phpseclib_cyphertext, $k, $iv));
+        $this->assertEquals($plaintext, AESMCrypt::decrypt($mcrypt_cyphertext, $k, $iv));
     }
 
     public function getTestVectors()
@@ -59,7 +59,7 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
                 hex2bin('1af38c2dc2b96ffdd86694092341bc04'),
                 hex2bin('41206369706865722073797374656d206d757374206e6f7420626520726571756972656420746f206265207365637265742c20616e64206974206d7573742062652061626c6520746f2066616c6c20696e746f207468652068616e6473206f662074686520656e656d7920776974686f757420696e636f6e76656e69656e6365'),
                 hex2bin('4affaaadb78c31c5da4b1b590d10ffbd3dd8d5d302423526912da037ecbcc7bd822c301dd67c373bccb584ad3e9279c2e6d12a1374b77f077553df829410446b36ebd97066296ae6427ea75c2e0846a11a09ccf5370dc80bfecbad28c73f09b3a3b75e662a2594410ae496b2e2e6609e31e6e02cc837f053d21f37ff4f51950bbe2638d09dd7a4930930806d0703b1f6'),
-            )
+            ),
         );
     }
 
