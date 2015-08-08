@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 use SpomkyLabs\Jose\JWS;
 
 /**
@@ -13,15 +22,15 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     public function testJWS()
     {
         $jws = new JWS();
-        $jws->setProtectedHeader(array(
-            'jty' => 'JWT',
-            'cty' => 'JOSE+JSON',
-            'crit' => array('alg', 'iss'),
-        ));
-        $jws->setUnprotectedHeader(array(
+        $jws->setProtectedHeader([
+            'jty'  => 'JWT',
+            'cty'  => 'JOSE+JSON',
+            'crit' => ['alg', 'iss'],
+        ]);
+        $jws->setUnprotectedHeader([
             'alg' => 'ES256',
-        ));
-        $jws->setPayload(array(
+        ]);
+        $jws->setPayload([
             'jti' => 'ABCD',
             'iss' => 'me.example.com',
             'aud' => 'you.example.com',
@@ -29,7 +38,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
             'exp' => 123456,
             'nbf' => 123000,
             'iat' => 123000,
-        ));
+        ]);
 
         $this->assertEquals('ABCD', $jws->getJWTID());
         $this->assertEquals('me.example.com', $jws->getIssuer());
@@ -48,6 +57,6 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($jws->getX509CertificateChain());
         $this->assertNull($jws->getX509CertificateSha1Thumbprint());
         $this->assertNull($jws->getX509CertificateSha256Thumbprint());
-        $this->assertEquals(array('alg', 'iss'), $jws->getCritical());
+        $this->assertEquals(['alg', 'iss'], $jws->getCritical());
     }
 }

@@ -1,13 +1,22 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
+use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
-use Base64Url\Base64Url;
 
 /**
  * Class ECDSA.
@@ -31,15 +40,15 @@ abstract class ECDSA implements SignatureInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
 
-        $p     = $this->getGenerator();
-        $d     = $this->convertBase64ToDec($key->getValue('d'));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
+        $p = $this->getGenerator();
+        $d = $this->convertBase64ToDec($key->getValue('d'));
+        $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $k = RandomGeneratorFactory::getRandomGenerator()->generate($p->getOrder());
 
@@ -57,7 +66,7 @@ abstract class ECDSA implements SignatureInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function verify(JWKInterface $key, $data, $signature)
     {
@@ -68,12 +77,12 @@ abstract class ECDSA implements SignatureInterface
             return false;
         }
 
-        $p     = $this->getGenerator();
-        $x     = $this->convertBase64ToDec($key->getValue('x'));
-        $y     = $this->convertBase64ToDec($key->getValue('y'));
-        $R     = $this->convertHexToDec(substr($signature, 0, $part_length));
-        $S     = $this->convertHexToDec(substr($signature, $part_length));
-        $hash  = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
+        $p = $this->getGenerator();
+        $x = $this->convertBase64ToDec($key->getValue('x'));
+        $y = $this->convertBase64ToDec($key->getValue('y'));
+        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
+        $S = $this->convertHexToDec(substr($signature, $part_length));
+        $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
 

@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Test;
 
 /**
@@ -27,7 +36,7 @@ class JWAManagerTest extends TestCase
     public function testListAlgorithms()
     {
         if ($this->isCryptoExtensionAvailable()) {
-            $expected_list = array(
+            $expected_list = [
                 'HS256',
                 'HS384',
                 'HS512',
@@ -64,9 +73,9 @@ class JWAManagerTest extends TestCase
                 'A128GCMKW',
                 'A192GCMKW',
                 'A256GCMKW',
-            );
+            ];
         } else {
-            $expected_list = array(
+            $expected_list = [
                 'HS256',
                 'HS384',
                 'HS512',
@@ -97,7 +106,7 @@ class JWAManagerTest extends TestCase
                 'RSA1_5',
                 'RSA-OAEP',
                 'RSA-OAEP-256',
-            );
+            ];
         }
         $this->assertEquals($expected_list, $this->getJWAManager()->listAlgorithms());
     }

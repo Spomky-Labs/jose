@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Checker;
 
 use Jose\JWTInterface;
@@ -9,7 +18,7 @@ class CheckerManager implements CheckerManagerInterface
     /**
      * @var \SpomkyLabs\Jose\Checker\CheckerInterface[]
      */
-    private $checkers = array();
+    private $checkers = [];
 
     /**
      * {@inheritdoc}

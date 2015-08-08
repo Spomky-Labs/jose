@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Util;
 
 /**
@@ -23,7 +32,7 @@ class ConcatKDF
      */
     public static function generate($Z, $encryption_algorithm, $encryption_key_size, $apu = '', $apv = '')
     {
-        $encryption_segments = array(
+        $encryption_segments = [
             self::toInt32Bits(1),                                                   // Round number 1
             $Z,                                                                     // Z (shared secret)
             self::toInt32Bits(strlen($encryption_algorithm)).$encryption_algorithm, // Size of algorithm's name and algorithm
@@ -31,7 +40,7 @@ class ConcatKDF
             self::toInt32Bits(strlen($apv)).$apv,                                   // PartyVInfo
             self::toInt32Bits($encryption_key_size),                                // SuppPubInfo (the encryption key size)
             '',                                                                     // SuppPrivInfo
-        );
+        ];
 
         return substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size / 8);
     }

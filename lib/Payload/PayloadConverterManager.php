@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Payload;
 
 class PayloadConverterManager implements PayloadConverterManagerInterface
@@ -7,7 +16,7 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
     /**
      * @var \SpomkyLabs\Jose\Payload\PayloadConverterInterface[]
      */
-    private $converters = array();
+    private $converters = [];
 
     /**
      * @return \SpomkyLabs\Jose\Payload\PayloadConverterInterface[]
@@ -33,7 +42,7 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
     public function convertPayloadToString(array &$header, $payload)
     {
         foreach ($this->getConverters() as $converter) {
-            $header = array();
+            $header = [];
             if ($converter->isPayloadToStringSupported($header, $payload)) {
                 return $converter->convertPayloadToString($header, $payload);
             }

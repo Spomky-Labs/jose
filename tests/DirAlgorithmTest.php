@@ -1,10 +1,19 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Test;
 
-use SpomkyLabs\Jose\JWK;
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
+use SpomkyLabs\Jose\JWK;
 
 /**
  * Class DirAlgorithmTest.
@@ -17,8 +26,8 @@ class DirAlgorithmTest extends TestCase
      */
     public function testInvalidKey()
     {
-        $header = array();
-        $key  = new JWK();
+        $header = [];
+        $key = new JWK();
         $key->setValue('kty', 'EC');
 
         $dir = new Dir();
@@ -31,8 +40,8 @@ class DirAlgorithmTest extends TestCase
      */
     public function testValidCEK()
     {
-        $header = array();
-        $key  = new JWK();
+        $header = [];
+        $key = new JWK();
         $key->setValue('kty', 'dir')
             ->setValue('dir', Base64Url::encode('ABCD'));
 
