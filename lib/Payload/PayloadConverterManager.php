@@ -52,7 +52,7 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
         }
         try {
             $result = json_encode($payload);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \InvalidArgumentException('Unsupported input type.');
         }
         if (false !== $result) {
