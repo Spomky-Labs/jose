@@ -17,10 +17,12 @@ class X509Thumbprint
     {
         if (function_exists('openssl_x509_fingerprint')) {
             $cert = openssl_x509_read($certificate);
+
             return openssl_x509_fingerprint($cert, $hash);
         }
         $cert = preg_replace('#-.*-|\r|\n#', '', $certificate);
         $bin = base64_decode($cert);
+
         return hash($hash, $bin);
     }
 }
