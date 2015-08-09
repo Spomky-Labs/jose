@@ -87,29 +87,35 @@ class Converter
      */
     private static function mergeJWS($inputs)
     {
-        //We determine if all common information are identical
-        foreach (['payload'] as $key) {
-            $$key = null;
-        }
+        $payload = null;
+        //We verify if all common information are identical
         foreach ($inputs as $input) {
-            foreach (['payload'] as $key) {
-                if (is_null($$key) && array_key_exists($key, $input)) {
-                    $$key = $input[$key];
-                } elseif (!is_null($$key) && array_key_exists($key, $input)) {
-                    if ($$key !== $input[$key]) {
-                        throw new \InvalidArgumentException('Unable to merge: parameter "%s" is not identical with other inputs');
-                    }
+            if (is_null($payload) && array_key_exists('payload', $input)) {
+                $payload = $input['payload'];
+            } elseif (!is_null($payload) && array_key_exists('payload', $input)) {
+                if ($payload !== $input['payload']) {
+                    throw new \InvalidArgumentException('Unable to merge: a payload is not identical with other inputs');
                 }
             }
         }
         //All good!
         $result = [];
-        foreach (['payload'] as $key) {
-            if (!is_null($$key)) {
-                $result[$key] = $$key;
-            }
+        if (!is_null($payload)) {
+            $result['payload'] = $payload;
         }
-        $result['signatures'] = [];
+        $result['signatures'] = self::mergeSignatures($inputs);
+
+        return $result;
+    }
+
+    /**
+     * @param array $inputs
+     *
+     * @return array
+     */
+    private static function mergeSignatures($inputs)
+    {
+        $result = [];
         foreach ($inputs as $input) {
             foreach ($input['signatures'] as $recipient) {
                 $temp = [];
@@ -118,10 +124,9 @@ class Converter
                         $temp[$key] = $recipient[$key];
                     }
                 }
-                $result['signatures'][] = $temp;
+                $result[] = $temp;
             }
         }
-
         return $result;
     }
 
@@ -154,7 +159,19 @@ class Converter
                 $result[$key] = $$key;
             }
         }
-        $result['recipients'] = [];
+        $result['recipients'] = self::mergeRecipients($inputs);
+
+        return $result;
+    }
+
+    /**
+     * @param array $inputs
+     *
+     * @return array
+     */
+    private static function mergeRecipients($inputs)
+    {
+        $result = [];
         foreach ($inputs as $input) {
             foreach ($input['recipients'] as $recipient) {
                 $temp = [];
@@ -163,15 +180,15 @@ class Converter
                         $temp[$key] = $recipient[$key];
                     }
                 }
-                $result['recipients'][] = $temp;
+                $result[] = $temp;
             }
         }
-
         return $result;
     }
 
     /**
      * @param array $input
+     * @param $toString
      *
      * @return array
      */
