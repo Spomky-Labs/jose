@@ -1,11 +1,20 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWT;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\SignatureInstruction;
+namespace SpomkyLabs\Jose\tests;
+
 use SpomkyLabs\Jose\Algorithm\Signature\None;
+use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\JWT;
+use SpomkyLabs\Jose\SignatureInstruction;
 
 /**
  * Class NoneSignatureTest.
@@ -17,7 +26,7 @@ class NoneSignatureTest extends TestCase
      */
     public function testNoneSignAndVerifyAlgorithm()
     {
-        $key  = new JWK();
+        $key = new JWK();
         $key->setValue('kty', 'none');
 
         $none = new None();
@@ -35,7 +44,7 @@ class NoneSignatureTest extends TestCase
      */
     public function testInvalidKey()
     {
-        $key  = new JWK();
+        $key = new JWK();
         $key->setValue('kty', 'EC');
 
         $none = new None();
@@ -50,22 +59,22 @@ class NoneSignatureTest extends TestCase
     public function testNoneSignAndVerifyComplete()
     {
         $jwt = new JWT();
-        $jwt->setProtectedHeader(array(
+        $jwt->setProtectedHeader([
             'alg' => 'none',
-        ));
+        ]);
         $jwt->setPayload('Je suis Charlie');
 
-        $jwk  = new JWK();
+        $jwk = new JWK();
         $jwk->setValue('kty', 'none');
 
         $instruction1 = new SignatureInstruction();
         $instruction1->setKey($jwk)
-                     ->setProtectedHeader(array('alg' => 'none'));
+                     ->setProtectedHeader(['alg' => 'none']);
 
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $signed = $signer->sign($jwt, array($instruction1));
+        $signed = $signer->sign($jwt, [$instruction1]);
         $this->assertTrue(is_string($signed));
         $result = $loader->load($signed);
 

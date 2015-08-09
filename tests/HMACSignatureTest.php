@@ -1,11 +1,20 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWK;
+namespace SpomkyLabs\Jose\tests;
+
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\Signature\HS384;
 use SpomkyLabs\Jose\Algorithm\Signature\HS512;
+use SpomkyLabs\Jose\JWK;
 
 /**
  * Class HMACSignatureTest.
@@ -18,7 +27,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidKey()
     {
-        $key  = new JWK();
+        $key = new JWK();
         $key->setValue('kty', 'EC');
 
         $hmac = new HS256();
@@ -33,10 +42,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     public function testHS256SignAndVerify()
     {
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => 'foo',
-        ));
+            'k'   => 'foo',
+        ]);
         $hmac = new HS256();
         $data = 'Je suis Charlie';
 
@@ -52,10 +61,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     public function testHS384SignAndVerify()
     {
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => 'foo',
-        ));
+            'k'   => 'foo',
+        ]);
         $hmac = new HS384();
         $data = 'Je suis Charlie';
 
@@ -71,10 +80,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     public function testHS512SignAndVerify()
     {
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => 'foo',
-        ));
+            'k'   => 'foo',
+        ]);
         $hmac = new HS512();
         $data = 'Je suis Charlie';
 

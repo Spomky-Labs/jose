@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
-use Jose\JWKInterface;
 use Base64Url\Base64Url;
+use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 
 /**
@@ -13,7 +22,7 @@ use Jose\Operation\SignatureInterface;
 abstract class HMAC implements SignatureInterface
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function sign(JWKInterface $key, $input)
     {
@@ -23,7 +32,7 @@ abstract class HMAC implements SignatureInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function verify(JWKInterface $key, $input, $signature)
     {
@@ -44,9 +53,9 @@ abstract class HMAC implements SignatureInterface
      */
     public function timingSafeEquals($signature, $signedInput)
     {
-        $signatureLength   = strlen($signature);
+        $signatureLength = strlen($signature);
         $signedInputLength = strlen($signedInput);
-        $result            = 0;
+        $result = 0;
 
         if ($signedInputLength != $signatureLength) {
             return false;
