@@ -1,6 +1,15 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
+namespace SpomkyLabs\Jose\tests;
 
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Compression\Deflate;
@@ -48,8 +57,8 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new Deflate();
         $compression->setCompressionLevel(9);
 
-        $data        = 'Je suis Charlie';
-        $compressed   = $compression->compress($data);
+        $data = 'Je suis Charlie';
+        $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
         $this->assertSame($data, $uncompressed);
@@ -63,8 +72,8 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new GZip();
         $compression->setCompressionLevel(9);
 
-        $data        = 'Je suis Charlie';
-        $compressed   = $compression->compress($data);
+        $data = 'Je suis Charlie';
+        $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
         $this->assertSame($data, $uncompressed);
@@ -78,8 +87,8 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $compression = new ZLib();
         $compression->setCompressionLevel(9);
 
-        $data        = 'Je suis Charlie';
-        $compressed   = $compression->compress($data);
+        $data = 'Je suis Charlie';
+        $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
         $this->assertSame($data, $uncompressed);

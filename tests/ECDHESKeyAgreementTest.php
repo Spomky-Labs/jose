@@ -1,11 +1,20 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWK;
+namespace SpomkyLabs\Jose\tests;
+
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
+use SpomkyLabs\Jose\JWK;
 
 /**
  * Class ECDHESKeyAgreementTest.
@@ -44,7 +53,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAgreementKeyWithA128KeyWrap()
     {
-        $header = array('enc' => 'A128GCM');
+        $header = ['enc' => 'A128GCM'];
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -82,7 +91,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAgreementKeyWithA192KeyWrap()
     {
-        $header = array('enc' => 'A192GCM');
+        $header = ['enc' => 'A192GCM'];
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')
@@ -120,7 +129,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAgreementKeyWithA256KeyWrap()
     {
-        $header = array('enc' => 'A256GCM');
+        $header = ['enc' => 'A256GCM'];
         $receiver = new JWK();
         $receiver->setValue('kty', 'EC')
                  ->setValue('crv', 'P-256')

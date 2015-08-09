@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Compression;
 
 use Jose\Compression\CompressionInterface;
@@ -13,7 +22,7 @@ class CompressionManager implements CompressionManagerInterface
     /**
      * @var array
      */
-    protected $compression_algorithms = array();
+    protected $compression_algorithms = [];
 
     /**
      * @param CompressionInterface $compression_algorithm
