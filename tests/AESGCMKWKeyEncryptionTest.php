@@ -1,12 +1,21 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWK;
+namespace SpomkyLabs\Test;
+
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
+use SpomkyLabs\Jose\JWK;
 
 /**
  * Class AESGCMKWKeyEncryptionTest.
@@ -18,17 +27,12 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
-        $header = array();
+        $header = [];
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
-        ));
+            'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
+        ]);
 
         $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
@@ -48,17 +52,12 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
-        $header = array();
+        $header = [];
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F1011121314151617')),
-        ));
+            'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F1011121314151617')),
+        ]);
 
         $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
@@ -78,17 +77,12 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
-        if (!$this->isCryptoExtensionAvailable()) {
-            $this->markTestSkipped('PHP Crypto extension not available.');
-
-            return;
-        }
-        $header = array();
+        $header = [];
         $key = new JWK();
-        $key->setValues(array(
+        $key->setValues([
             'kty' => 'oct',
-            'k'  => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')),
-        ));
+            'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')),
+        ]);
 
         $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
 
@@ -101,13 +95,5 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header['iv']);
         $this->assertNotNull($header['tag']);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCryptoExtensionAvailable()
-    {
-        return class_exists("\Crypto\Cipher");
     }
 }

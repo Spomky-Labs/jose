@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
@@ -12,7 +21,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     /**
      * @var null|\SpomkyLabs\Jose\Algorithm\ContentEncryption\AESInterface
      */
-    private $aes_interface = null;
+    private $aes_engine = null;
 
     /**
      *
@@ -20,24 +29,24 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     public function __construct()
     {
         if (extension_loaded('openssl')) {
-            $this->aes_interface = new AESOpenSSL();
+            $this->aes_engine = new AESOpenSSL();
         } elseif (extension_loaded('mcrypt')) {
-            $this->aes_interface = new AESMCrypt();
+            $this->aes_engine = new AESMCrypt();
         } elseif (class_exists('\phpseclib\Crypt\AES')) {
-            $this->aes_interface = new AESPHPSecLib();
+            $this->aes_engine = new AESPHPSecLib();
         } else {
             throw new \RuntimeException("Please install 'phpseclib/phpseclib' (v2.0.x), MCrypt extension or OpenSSL extension to use AES based (except AES-GCM based) algorithms");
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
         $k = substr($cek, strlen($cek) / 2);
 
-        $cyphertext = $this->aes_interface->encrypt($data, $k, $iv);
+        $cyphertext = $this->aes_engine->encrypt($data, $k, $iv);
 
         $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
@@ -57,18 +66,19 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
         if (false === $this->checkAuthenticationTag($data, $cek, $iv, $aad, $encoded_protected_header, $tag)) {
-            return null;
+            return;
         }
 
         $k = substr($cek, strlen($cek) / 2);
 
-        return $this->aes_interface->decrypt($data, $k, $iv);
+        return $this->aes_engine->decrypt($data, $k, $iv);
     }
 
     /**
      * @param $encrypted_data
      * @param $cek
      * @param $iv
+     * @param $aad
      * @param string $encoded_header
      *
      * @return string
@@ -79,15 +89,15 @@ abstract class AESCBCHS implements ContentEncryptionInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key          = substr($cek, 0, strlen($cek) / 2);
+        $mac_key = substr($cek, 0, strlen($cek) / 2);
         $auth_data_length = strlen($encoded_header);
 
-        $secured_input = implode('', array(
+        $secured_input = implode('', [
             $calculated_aad,
             $iv,
             $encrypted_data,
             pack('N2', ($auth_data_length / 2147483647) * 8, ($auth_data_length % 2147483647) * 8), // str_pad(dechex($auth_data_length), 4, "0", STR_PAD_LEFT)
-        ));
+        ]);
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
         return substr($hash, 0, strlen($hash) / 2);

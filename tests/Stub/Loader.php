@@ -1,13 +1,31 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
+namespace SpomkyLabs\Test\Stub;
+
+use Jose\Compression\CompressionManagerInterface;
 use Jose\JWAManagerInterface;
-use Jose\JWTManagerInterface;
 use Jose\JWKManagerInterface;
 use Jose\JWKSetManagerInterface;
-use Jose\Compression\CompressionManagerInterface;
+use Jose\JWTManagerInterface;
+use SpomkyLabs\Jose\Checker\AudienceChecker;
+use SpomkyLabs\Jose\Checker\CheckerManager;
+use SpomkyLabs\Jose\Checker\CriticalChecker;
+use SpomkyLabs\Jose\Checker\ExpirationChecker;
+use SpomkyLabs\Jose\Checker\IssuedAtChecker;
+use SpomkyLabs\Jose\Checker\NotBeforeChecker;
 use SpomkyLabs\Jose\Loader as Base;
+use SpomkyLabs\Jose\Payload\JWKConverter;
+use SpomkyLabs\Jose\Payload\JWKSetConverter;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 
 /**
  * Class representing a JSON Web Signature.
@@ -19,6 +37,22 @@ class Loader extends Base
     protected $jwk_manager;
     protected $jwkset_manager;
     protected $compression_manager;
+    protected $checker_manager = null;
+    protected $payload_converter_manager = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_converter_manager)) {
+            $this->payload_converter_manager = new PayloadConverterManager();
+            $this->payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
+                ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+        }
+
+        return $this->payload_converter_manager;
+    }
 
     protected function getAudience()
     {
@@ -98,5 +132,22 @@ class Loader extends Base
         $this->compression_manager = $compression_manager;
 
         return $this;
+    }
+
+    /**
+     * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     */
+    protected function getCheckerManager()
+    {
+        if (is_null($this->checker_manager)) {
+            $this->checker_manager = new CheckerManager();
+            $this->checker_manager->addChecker(new AudienceChecker('my service'))
+                                  ->addChecker(new IssuedAtChecker())
+                                  ->addChecker(new NotBeforeChecker())
+                                  ->addChecker(new ExpirationChecker())
+                                  ->addChecker(new CriticalChecker());
+        }
+
+        return $this->checker_manager;
     }
 }

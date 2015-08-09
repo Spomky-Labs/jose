@@ -1,13 +1,22 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
+use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Message\MessageFactory;
 use SpomkyLabs\Jose\JWK;
-use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Util\ConcatKDF;
 
 /**
@@ -32,23 +41,23 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
-    public function getAgreementKey($encryption_key_length, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = array(), array &$additional_header_values = array())
+    public function getAgreementKey($encryption_key_length, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = [])
     {
         $this->checkKey($private_key, true);
         if (is_null($public_key)) {
             $public_key = $this->getPublicKey($complete_header);
         } else {
             $this->checkKey($public_key, false);
-            $additional_header_values = array_merge($additional_header_values, array(
-                'epk' => array(
+            $additional_header_values = array_merge($additional_header_values, [
+                'epk' => [
                     'kty' => $private_key->getKeyType(),
                     'crv' => $private_key->getValue('crv'),
                     'x'   => $private_key->getValue('x'),
                     'y'   => $private_key->getValue('y'),
-                ),
-            ));
+                ],
+            ]);
         }
         if ($private_key->getValue('crv') !== $public_key->getValue('crv')) {
             throw new \RuntimeException('Curves are different');
@@ -63,38 +72,26 @@ class ECDHES implements KeyAgreementInterface
      * @param JWKInterface $private_key
      * @param JWKInterface $public_key
      *
-     * @return int|string|void
-     *
      * @throws \Exception
+     *
+     * @return int|string|void
      */
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
     {
-        $p     = $this->getGenerator($private_key);
-        //$curve = $this->getCurve($private_key);
+        $p = $this->getGenerator($private_key);
 
         $rec_x = $this->convertBase64ToDec($public_key->getValue('x'));
         $rec_y = $this->convertBase64ToDec($public_key->getValue('y'));
-        //$sen_x = $this->convertBase64ToDec($private_key->getValue('x'));
-        //$sen_y = $this->convertBase64ToDec($private_key->getValue('y'));
         $sen_d = $this->convertBase64ToDec($private_key->getValue('d'));
 
-        //$generator = new GeneratorPoint($this->adapter, $curve, $sen_x, $sen_y);
         $private_key = $p->getPrivateKeyFrom($sen_d);
 
-        //$generator = new GeneratorPoint($this->adapter, $curve, $rec_x, $rec_y);
-        //$public_key = new PublicKey($this->adapter, $p, new Point($this->adapter, $curve, $rec_x, $rec_y, $p->getOrder()));
         $public_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
         $message = new MessageFactory($this->adapter);
         $exchange = $private_key->createExchange($message, $public_key);
 
         return $exchange->calculateSharedKey();
-        //var_dump($exchange->calculateSharedKey());
-        //die();
-
-        //$receiver_point = new Point($curve, $rec_x, $rec_y, $p->getOrder(), $this->adapter);
-
-        //return $receiver_point->mul($sen_d)->getX();
     }
 
     /**
@@ -142,31 +139,9 @@ class ECDHES implements KeyAgreementInterface
     /**
      * @param JWKInterface $key
      *
-     * @return \Mdanter\Ecc\Primitives\CurveFpInterface
-     *
      * @throws \Exception
-     */
-    private function getCurve(JWKInterface $key)
-    {
-        $crv = $key->getValue('crv');
-        switch ($crv) {
-            case 'P-256':
-                return EccFactory::getNistCurves()->curve256();
-            case 'P-384':
-                return EccFactory::getNistCurves()->curve384();
-            case 'P-521':
-                return EccFactory::getNistCurves()->curve521();
-            default:
-                throw new \Exception("Curve $crv is not supported");
-        }
-    }
-
-    /**
-     * @param JWKInterface $key
      *
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint
-     *
-     * @throws \Exception
      */
     private function getGenerator(JWKInterface $key)
     {

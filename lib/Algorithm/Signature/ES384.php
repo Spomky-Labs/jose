@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\Signature;
 
 use Mdanter\Ecc\EccFactory;
@@ -9,7 +18,7 @@ use Mdanter\Ecc\EccFactory;
 class ES384 extends ECDSA
 {
     /**
-     * @return \Mdanter\Ecc\CurveFp
+     * @return \Mdanter\Ecc\Primitives\CurveFp
      */
     protected function getCurve()
     {
@@ -17,7 +26,7 @@ class ES384 extends ECDSA
     }
 
     /**
-     * @return \Mdanter\Ecc\GeneratorPoint
+     * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      */
     protected function getGenerator()
     {

@@ -1,13 +1,25 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
+namespace SpomkyLabs\Test\Stub;
+
+use Jose\Compression\CompressionManagerInterface;
 use Jose\JWAManagerInterface;
-use Jose\JWTManagerInterface;
 use Jose\JWKManagerInterface;
 use Jose\JWKSetManagerInterface;
-use Jose\Compression\CompressionManagerInterface;
+use Jose\JWTManagerInterface;
 use SpomkyLabs\Jose\Encrypter as Base;
+use SpomkyLabs\Jose\Payload\JWKConverter;
+use SpomkyLabs\Jose\Payload\JWKSetConverter;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 
 /**
  * Class representing a JSON Web Signature.
@@ -19,6 +31,21 @@ class Encrypter extends Base
     protected $jwk_manager;
     protected $jwkset_manager;
     protected $compression_manager;
+    protected $payload_converter_manager;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_converter_manager)) {
+            $this->payload_converter_manager = new PayloadConverterManager();
+            $this->payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
+                                            ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+        }
+
+        return $this->payload_converter_manager;
+    }
 
     /**
      * {@inheritdoc}
@@ -114,9 +141,9 @@ class Encrypter extends Base
     {
         if (function_exists('random_bytes')) {
             return random_bytes($length);
-        }elseif (function_exists('mcrypt_create_iv')) {
+        } elseif (function_exists('mcrypt_create_iv')) {
             return mcrypt_create_iv($length);
-        }elseif (function_exists('openssl_random_pseudo_bytes')) {
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
         } elseif (class_exists('\phpseclib\Crypt\Random')) {
             return \phpseclib\Crypt\Random::string($length);

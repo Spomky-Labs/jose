@@ -1,10 +1,23 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use Jose\JWKManagerInterface;
+namespace SpomkyLabs\Test\Stub;
+
 use Jose\JWAManagerInterface;
+use Jose\JWKManagerInterface;
+use Jose\JWKSetManagerInterface;
 use Jose\JWTManagerInterface;
+use SpomkyLabs\Jose\Payload\JWKConverter;
+use SpomkyLabs\Jose\Payload\JWKSetConverter;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 use SpomkyLabs\Jose\Signer as Base;
 
 /**
@@ -16,6 +29,21 @@ class Signer extends Base
     protected $jwa_manager;
     protected $jwk_manager;
     protected $jwkset_manager;
+    protected $payload_converter_manager;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPayloadConverter()
+    {
+        if (is_null($this->payload_converter_manager)) {
+            $this->payload_converter_manager = new PayloadConverterManager();
+            $this->payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
+                ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+        }
+
+        return $this->payload_converter_manager;
+    }
 
     /**
      * {@inheritdoc}

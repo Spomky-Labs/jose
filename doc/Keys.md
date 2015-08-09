@@ -8,6 +8,7 @@ This page lists algorithms and supported key types.
 * `ES256`, `ES384` and `ES512`: `EC` (Elliptic Curves) type,
 * `RS256`, `RS384`,  `RS512`, `PS256`, `PS384` and  `PS512`: `RSA` type,
 * `HS256`, `HS384` and `HS512`: `oct` type,
+* `none`: `none` type,
 
 # Key encryption
 

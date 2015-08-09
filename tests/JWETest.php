@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 use SpomkyLabs\Jose\JWE;
 
 /**
@@ -13,19 +22,19 @@ class JWETest extends \PHPUnit_Framework_TestCase
     public function testJWE()
     {
         $jwe = new JWE();
-        $jwe->setProtectedHeader(array(
-            'jty' => 'JWT',
-            'cty' => 'JOSE+JSON',
-            'crit' => array('alg', 'iss'),
-            'zip' => 'DEF',
-        ));
+        $jwe->setProtectedHeader([
+            'jty'  => 'JWT',
+            'cty'  => 'JOSE+JSON',
+            'crit' => ['alg', 'iss'],
+            'zip'  => 'DEF',
+        ]);
         $jwe->setProtectedHeaderValue('foo', 'www.example.com');
-        $jwe->setUnprotectedHeader(array(
+        $jwe->setUnprotectedHeader([
             'alg' => 'ES256',
             'enc' => 'A128CBC-HS256',
-        ));
+        ]);
         $jwe->setUnprotectedHeaderValue('bar', 'me@example.com');
-        $jwe->setPayload(array(
+        $jwe->setPayload([
             'jti' => 'ABCD',
             'iss' => 'me.example.com',
             'aud' => 'you.example.com',
@@ -33,7 +42,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
             'exp' => 123456,
             'nbf' => 123000,
             'iat' => 123000,
-        ));
+        ]);
 
         $this->assertEquals('ABCD', $jwe->getJWTID());
         $this->assertEquals('me.example.com', $jwe->getIssuer());
@@ -54,6 +63,6 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $this->assertNull($jwe->getX509CertificateChain());
         $this->assertNull($jwe->getX509CertificateSha1Thumbprint());
         $this->assertNull($jwe->getX509CertificateSha256Thumbprint());
-        $this->assertEquals(array('alg', 'iss'), $jwe->getCritical());
+        $this->assertEquals(['alg', 'iss'], $jwe->getCritical());
     }
 }

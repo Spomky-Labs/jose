@@ -1,12 +1,21 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWK;
+namespace SpomkyLabs\Test;
+
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\Signature\ES256;
 use SpomkyLabs\Jose\Algorithm\Signature\ES384;
 use SpomkyLabs\Jose\Algorithm\Signature\ES512;
+use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\ECConverter;
 
 /**
@@ -22,7 +31,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidKey()
     {
-        $key  = new JWK();
+        $key = new JWK();
         $key->setValue('kty', 'RSA');
 
         $ecdsa = new ES256();

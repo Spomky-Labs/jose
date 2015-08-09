@@ -1,11 +1,20 @@
 <?php
 
-namespace SpomkyLabs\Jose\Tests\Stub;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
 
-use SpomkyLabs\Jose\JWT;
-use SpomkyLabs\Jose\JWS;
-use SpomkyLabs\Jose\JWE;
+namespace SpomkyLabs\Test\Stub;
+
 use Jose\JWTManagerInterface;
+use SpomkyLabs\Jose\JWE;
+use SpomkyLabs\Jose\JWS;
+use SpomkyLabs\Jose\JWT;
 
 /**
  * Class representing a JSON Web Signature.

@@ -1,11 +1,20 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
-use SpomkyLabs\Jose\Util\RSAConverter;
 use Jose\Operation\KeyEncryptionInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
+use SpomkyLabs\Jose\Util\RSAConverter;
 
 /**
  * Class RSA.
@@ -17,18 +26,18 @@ abstract class RSA implements KeyEncryptionInterface
      */
     public function __construct()
     {
-        if (!class_exists("\phpseclib\Crypt\RSA")) {
+        if (!class_exists('\phpseclib\Crypt\RSA')) {
             throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
         }
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e')));
+        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e']));
         $rsa = $this->getRsaObject($values);
 
         try {
@@ -40,12 +49,12 @@ abstract class RSA implements KeyEncryptionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function decryptKey(JWKInterface $key, $encrypted_key, array $header)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(array('n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi')));
+        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
         $rsa = $this->getRsaObject($values);
 
         try {

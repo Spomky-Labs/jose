@@ -1,6 +1,15 @@
 <?php
 
-namespace SpomkyLabs\Jose;
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
+namespace SpomkyLabs\Jose\Util;
 
 use Jose\JSONSerializationModes;
 
@@ -39,7 +48,7 @@ class Converter
      */
     public static function merge()
     {
-        $inputs = array();
+        $inputs = [];
 
         //We convert all parameters into Json Serialization
         foreach (func_get_args() as $arg) {
@@ -79,11 +88,11 @@ class Converter
     private static function mergeJWS($inputs)
     {
         //We determine if all common information are identical
-        foreach (array('payload') as $key) {
+        foreach (['payload'] as $key) {
             $$key = null;
         }
         foreach ($inputs as $input) {
-            foreach (array('payload') as $key) {
+            foreach (['payload'] as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {
                     $$key = $input[$key];
                 } elseif (!is_null($$key) && array_key_exists($key, $input)) {
@@ -94,17 +103,17 @@ class Converter
             }
         }
         //All good!
-        $result = array();
-        foreach (array('payload') as $key) {
+        $result = [];
+        foreach (['payload'] as $key) {
             if (!is_null($$key)) {
                 $result[$key] = $$key;
             }
         }
-        $result['signatures'] = array();
+        $result['signatures'] = [];
         foreach ($inputs as $input) {
             foreach ($input['signatures'] as $recipient) {
-                $temp = array();
-                foreach (array('header', 'protected', 'signature') as $key) {
+                $temp = [];
+                foreach (['header', 'protected', 'signature'] as $key) {
                     if (array_key_exists($key, $recipient)) {
                         $temp[$key] = $recipient[$key];
                     }
@@ -124,11 +133,11 @@ class Converter
     private static function mergeJWE($inputs)
     {
         //We determine if all common information are identical
-        foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
             $$key = null;
         }
         foreach ($inputs as $input) {
-            foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+            foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {
                     $$key = $input[$key];
                 } elseif (!is_null($$key) && array_key_exists($key, $input)) {
@@ -139,17 +148,17 @@ class Converter
             }
         }
         //All good!
-        $result = array();
-        foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+        $result = [];
+        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
             if (!is_null($$key)) {
                 $result[$key] = $$key;
             }
         }
-        $result['recipients'] = array();
+        $result['recipients'] = [];
         foreach ($inputs as $input) {
             foreach ($input['recipients'] as $recipient) {
-                $temp = array();
-                foreach (array('header', 'encrypted_key') as $key) {
+                $temp = [];
+                foreach (['header', 'encrypted_key'] as $key) {
                     if (array_key_exists($key, $recipient)) {
                         $temp[$key] = $recipient[$key];
                     }
@@ -182,13 +191,13 @@ class Converter
      */
     private static function fromSerializationSignatureToFlattenedSerialization($input, $toString)
     {
-        $signatures = array();
+        $signatures = [];
         foreach ($input['signatures'] as $signature) {
-            $temp = array(
-                'payload' => $input['payload'],
+            $temp = [
+                'payload'   => $input['payload'],
                 'signature' => $signature['signature'],
-            );
-            foreach (array('protected', 'header') as $key) {
+            ];
+            foreach (['protected', 'header'] as $key) {
                 if (array_key_exists($key, $signature)) {
                     $temp[$key] = $signature[$key];
                 }
@@ -206,15 +215,15 @@ class Converter
      */
     private static function fromSerializationRecipientToFlattenedSerialization($input, $toString)
     {
-        $recipients = array();
+        $recipients = [];
         foreach ($input['recipients'] as $recipient) {
-            $temp = array();
-            foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+            $temp = [];
+            foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
                 if (array_key_exists($key, $input)) {
                     $temp[$key] = $input[$key];
                 }
             }
-            foreach (array('header', 'encrypted_key') as $key) {
+            foreach (['header', 'encrypted_key'] as $key) {
                 if (array_key_exists($key, $recipient)) {
                     $temp[$key] = $recipient[$key];
                 }
@@ -246,7 +255,7 @@ class Converter
      */
     private static function fromSerializationSignatureToCompactSerialization($input)
     {
-        $signatures = array();
+        $signatures = [];
         foreach ($input['signatures'] as $signature) {
             if (!array_key_exists('protected', $signature)) {
                 throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'protected' parameter is missing");
@@ -254,11 +263,11 @@ class Converter
             if (array_key_exists('header', $signature)) {
                 throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'header' parameter cannot be kept");
             }
-            $temp = array(
+            $temp = [
                 $signature['protected'],
                 $input['payload'],
                 $signature['signature'],
-            );
+            ];
             $signatures[] = implode('.', $temp);
         }
 
@@ -272,7 +281,7 @@ class Converter
      */
     private static function fromSerializationRecipientToCompactSerialization($input)
     {
-        $recipients = array();
+        $recipients = [];
         foreach ($input['recipients'] as $recipient) {
             if (array_key_exists('header', $recipient)) {
                 throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'header' parameter cannot be kept");
@@ -280,18 +289,18 @@ class Converter
             if (!array_key_exists('protected', $input)) {
                 throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'protected' parameter is missing");
             }
-            foreach (array('unprotected', 'aad') as $key) {
+            foreach (['unprotected', 'aad'] as $key) {
                 if (array_key_exists($key, $input)) {
                     throw new \InvalidArgumentException(sprintf("Cannot convert into Compact Json Serialisation: '%s' parameter cannot be kept", $key));
                 }
             }
-            $temp = array(
+            $temp = [
                 $input['protected'],
                 array_key_exists('encrypted_key', $recipient) ? $recipient['encrypted_key'] : '',
                 array_key_exists('iv', $input) ? $input['iv'] : '',
                 $input['ciphertext'],
                 array_key_exists('tag', $input) ? $input['tag'] : '',
-            );
+            ];
             $recipients[] = implode('.', $temp);
         }
 
@@ -319,17 +328,17 @@ class Converter
      */
     private static function fromFlattenedSerializationRecipientToSerialization($input)
     {
-        $recipient = array();
-        foreach (array('header', 'encrypted_key') as $key) {
+        $recipient = [];
+        foreach (['header', 'encrypted_key'] as $key) {
             if (array_key_exists($key, $input)) {
                 $recipient[$key] = $input[$key];
             }
         }
-        $recipients = array(
+        $recipients = [
             'ciphertext' => $input['ciphertext'],
-            'recipients' => array($recipient),
-        );
-        foreach (array('ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag') as $key) {
+            'recipients' => [$recipient],
+        ];
+        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
             if (array_key_exists($key, $input)) {
                 $recipients[$key] = $input[$key];
             }
@@ -345,19 +354,19 @@ class Converter
      */
     private static function fromFlattenedSerializationSignatureToSerialization($input)
     {
-        $signature = array(
+        $signature = [
             'signature' => $input['signature'],
-        );
-        foreach (array('protected', 'header') as $key) {
+        ];
+        foreach (['protected', 'header'] as $key) {
             if (array_key_exists($key, $input)) {
                 $signature[$key] = $input[$key];
             }
         }
 
-        return array(
-            'payload' => $input['payload'],
-            'signatures' => array($signature),
-        );
+        return [
+            'payload'    => $input['payload'],
+            'signatures' => [$signature],
+        ];
     }
 
     /**
@@ -385,15 +394,15 @@ class Converter
      */
     private static function fromCompactSerializationRecipientToSerialization(array $parts)
     {
-        $recipient = array();
+        $recipient = [];
         if (!empty($parts[1])) {
             $recipient['encrypted_key'] = $parts[1];
         }
 
-        $recipients = array(
-            'recipients' => array($recipient),
-        );
-        foreach (array(3 => 'ciphertext', 0 => 'protected', 2 => 'iv', 4 => 'tag') as $part => $key) {
+        $recipients = [
+            'recipients' => [$recipient],
+        ];
+        foreach ([3 => 'ciphertext', 0 => 'protected', 2 => 'iv', 4 => 'tag'] as $part => $key) {
             if (!empty($parts[$part])) {
                 $recipients[$key] = $parts[$part];
             }
@@ -409,15 +418,15 @@ class Converter
      */
     private static function fromCompactSerializationSignatureToSerialization(array $parts)
     {
-        return array(
-            'payload' => $parts[1],
-            'signatures' => array(
-                array(
+        return [
+            'payload'    => $parts[1],
+            'signatures' => [
+                [
                     'protected' => $parts[0],
                     'signature' => $parts[2],
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**

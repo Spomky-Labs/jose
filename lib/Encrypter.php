@@ -1,27 +1,56 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
-use Jose\JWKInterface;
-use Jose\JWTInterface;
-use Jose\JWKSetInterface;
 use Jose\EncrypterInterface;
-use Jose\JSONSerializationModes;
 use Jose\EncryptionInstructionInterface;
-use Jose\Operation\KeyEncryptionInterface;
+use Jose\JSONSerializationModes;
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
+use Jose\JWTInterface;
+use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
-use Jose\Operation\ContentEncryptionInterface;
+use Jose\Operation\KeyEncryptionInterface;
+use SpomkyLabs\Jose\Util\Converter;
 
 /**
  * Class representing a JSON Web Token Manager.
  */
 abstract class Encrypter implements EncrypterInterface
 {
-    use PayloadConverter;
     use KeyChecker;
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    abstract protected function getPayloadConverter();
+
+    /**
+     * @return \Jose\JWTManagerInterface
+     */
+    abstract protected function getJWTManager();
+
+    /**
+     * @return \Jose\JWKManagerInterface
+     */
+    abstract protected function getJWKManager();
+
+    /**
+     * @return \Jose\JWKSetManagerInterface
+     */
+    abstract protected function getJWKSetManager();
 
     /**
      * @return \Jose\JWAManagerInterface
@@ -48,6 +77,24 @@ abstract class Encrypter implements EncrypterInterface
     abstract protected function createIV($size);
 
     /**
+     * @param $input
+     */
+    private function checkInput(&$input)
+    {
+        if ($input instanceof JWTInterface) {
+            return;
+        }
+
+        $header = [];
+        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
+
+        $jwt = $this->getJWTManager()->createJWT();
+        $jwt->setPayload($payload)
+            ->setProtectedHeader($header);
+        $input = $jwt;
+    }
+
+    /**
      * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input
      * @param array                                                  $instructions
      * @param array                                                  $shared_protected_header
@@ -57,12 +104,12 @@ abstract class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    public function encrypt($input, array $instructions, array $shared_protected_header = array(), array $shared_unprotected_header = array(), $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
+    public function encrypt($input, array $instructions, array $shared_protected_header = [], array $shared_unprotected_header = [], $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
         $this->checkInput($input);
         $this->checkInstructions($instructions, $serialization);
 
-        $protected_header   = array_merge($input->getProtectedHeader(), $shared_protected_header);
+        $protected_header = array_merge($input->getProtectedHeader(), $shared_protected_header);
         $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
 
         // We check if key management mode is OK
@@ -74,7 +121,7 @@ abstract class Encrypter implements EncrypterInterface
         // CEK
         $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $unprotected_header, $content_encryption_algorithm->getCEKSize());
 
-        $recipients = array('recipients' => array());
+        $recipients = ['recipients' => []];
         foreach ($instructions as $instruction) {
             $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
         }
@@ -109,14 +156,14 @@ abstract class Encrypter implements EncrypterInterface
         // JWT IV
         $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
 
-        $values = array(
+        $values = [
             'ciphertext'    => $jwt_ciphertext,
             'protected'     => $jwt_shared_protected_header,
             'unprotected'   => $unprotected_header,
             'iv'            => $jwt_iv,
             'tag'           => $jwt_tag,
             'aad'           => $jwt_aad,
-        );
+        ];
         foreach ($values as $key => $value) {
             if (!empty($value)) {
                 $recipients[$key] = $value;
@@ -129,9 +176,16 @@ abstract class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param string $cek
-     * @param integer $cek_size
-     * @param string $serialization
+     * @param \Jose\EncryptionInstructionInterface $instruction
+     * @param                                      $protected_header
+     * @param                                      $unprotected_header
+     * @param string                               $cek
+     * @param int                                  $cek_size
+     * @param string                               $serialization
+     *
+     * @throws \Exception
+     *
+     * @return array
      */
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
@@ -139,8 +193,8 @@ abstract class Encrypter implements EncrypterInterface
             throw new \InvalidArgumentException('Key cannot be used to sign');
         }
 
-        $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-        $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+        $recipient_header = $instruction->getRecipientUnprotectedHeader();
+        $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
 
@@ -148,16 +202,22 @@ abstract class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            $additional_header_values = array();
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
+            $additional_header_values = [];
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            $additional_header_values = array();
+            if (is_null($instruction->getSenderKey())) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
+            $additional_header_values = [];
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         }
 
-        $result = array();
+        $result = [];
         if (!is_null($jwt_cek)) {
             $result['encrypted_key'] = $jwt_cek;
         }
@@ -168,7 +228,13 @@ abstract class Encrypter implements EncrypterInterface
         return $result;
     }
 
-    protected function updateHeader($additional_header_values, &$protected_header, &$recipient_header, $serialization)
+    /**
+     * @param array  $additional_header_values
+     * @param array  $protected_header
+     * @param array  $recipient_header
+     * @param string $serialization
+     */
+    protected function updateHeader(array $additional_header_values, array &$protected_header, array &$recipient_header, $serialization)
     {
         if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
             $protected_header = array_merge($protected_header, $additional_header_values);
@@ -188,8 +254,8 @@ abstract class Encrypter implements EncrypterInterface
     {
         $mode = null;
         foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            $recipient_header = $instruction->getRecipientUnprotectedHeader();
+            $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $temp = $this->getKeyManagementMode2($complete_header);
             if (is_null($mode)) {
@@ -286,10 +352,13 @@ abstract class Encrypter implements EncrypterInterface
     {
         $cek = null;
         foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            $recipient_header = $instruction->getRecipientUnprotectedHeader();
+            $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+            if (!$key_encryption_algorithm instanceof DirectEncryptionInterface) {
+                throw new \RuntimeException('The key encryption algorithm is not an instance of DirectEncryptionInterface');
+            }
 
             $temp = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), $complete_header);
             if (is_null($cek)) {
@@ -316,15 +385,19 @@ abstract class Encrypter implements EncrypterInterface
     {
         $cek = null;
         foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            $recipient_header = $instruction->getRecipientUnprotectedHeader();
+            $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+            if (!$key_encryption_algorithm instanceof KeyAgreementInterface) {
+                throw new \RuntimeException('The key encryption algorithm is not an instance of KeyAgreementInterface');
+            }
 
             if (is_null($instruction->getSenderKey())) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
-            $additional_header_values = array();
+            $additional_header_values = [];
             $temp = $key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values);
             if (is_null($cek)) {
                 $cek = $temp;
@@ -365,8 +438,8 @@ abstract class Encrypter implements EncrypterInterface
         $method = null;
         $first = true;
         foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            $recipient_header = $instruction->getRecipientUnprotectedHeader();
+            $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
             if ($first) {
                 if (array_key_exists('zip', $complete_header)) {
                     $method = $complete_header['zip'];
@@ -427,12 +500,12 @@ abstract class Encrypter implements EncrypterInterface
             throw new \RuntimeException("Parameter 'alg' is missing.");
         }
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
-        foreach (array(
+        foreach ([
                      '\Jose\Operation\DirectEncryptionInterface',
                      '\Jose\Operation\KeyEncryptionInterface',
                      '\Jose\Operation\KeyAgreementInterface',
                      '\Jose\Operation\KeyAgreementWrappingInterface',
-                 ) as $class) {
+                 ] as $class) {
             if ($key_encryption_algorithm instanceof $class) {
                 return $key_encryption_algorithm;
             }
@@ -447,12 +520,12 @@ abstract class Encrypter implements EncrypterInterface
      *
      * @return \Jose\Operation\ContentEncryptionInterface
      */
-    protected function getContentEncryptionAlgorithm(array $instructions, array $protected_header = array(), array $unprotected_header = array())
+    protected function getContentEncryptionAlgorithm(array $instructions, array $protected_header = [], array $unprotected_header = [])
     {
         $algorithm = null;
         foreach ($instructions as $instruction) {
-            $recipient_header   = $instruction->getRecipientUnprotectedHeader();
-            $complete_header    = array_merge($protected_header, $unprotected_header, $recipient_header);
+            $recipient_header = $instruction->getRecipientUnprotectedHeader();
+            $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
             if (!array_key_exists('enc', $complete_header)) {
                 throw new \InvalidArgumentException("Parameters 'enc' is missing.");
             }

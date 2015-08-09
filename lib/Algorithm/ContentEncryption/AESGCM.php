@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
@@ -21,7 +30,7 @@ abstract class AESGCM implements ContentEncryptionInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
@@ -39,7 +48,7 @@ abstract class AESGCM implements ContentEncryptionInterface
     }
 
     /**
-     *  @inheritdoc
+     *  {@inheritdoc}
      */
     public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
