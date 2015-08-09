@@ -40,7 +40,7 @@ class FlattenedTest extends TestCase
 
         $result = $loader->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}');
 
-        $this->assertInstanceOf("Jose\JWSInterface", $result);
+        $this->assertInstanceOf('Jose\JWSInterface', $result);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result->getPayload());
         $this->assertEquals('ES256', $result->getAlgorithm());
     }

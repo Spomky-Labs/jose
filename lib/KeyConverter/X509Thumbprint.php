@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Util;
+namespace SpomkyLabs\Jose\KeyConverter;
 
 class X509Thumbprint
 {

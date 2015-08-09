@@ -11,7 +11,7 @@
 
 namespace SpomkyLabs\Test;
 
-use SpomkyLabs\Jose\Util\ECConverter;
+use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 
 class ECKeysTest extends TestCase
 {
@@ -19,7 +19,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPublicEC256Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'x'   => 'vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U',
@@ -32,7 +32,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPrivateEC256Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.encrypted.key', 'test');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'd'   => 'q_VkzNnxTG39jHB0qkwA_SeVXud7yCHT7kb7kZv-0xQ',
@@ -45,7 +45,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPublicEC384Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'x'   => '6f-XZsg2Tvn0EoEapQ-ylMYNtsm8CPf0cb8HI2EkfY9Bqpt3QMzwlM7mVsFRmaMZ',
@@ -58,7 +58,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPrivateEC384Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.encrypted.key', 'test');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'd'   => 'pcSSXrbeZEOaBIs7IwqcU9M_OOM81XhZuOHoGgmS_2PdECwcdQcXzv7W8-lYL0cr',
@@ -71,7 +71,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPublicEC512Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
@@ -84,7 +84,7 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPrivateEC512Key()
     {
-        $details = ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key');
+        $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.encrypted.key', 'test');
         $this->assertEquals($details, [
             'kty' => 'EC',
             'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
