@@ -421,10 +421,10 @@ abstract class Loader implements LoaderInterface
     protected function getKeysFromCompleteHeader(array $header)
     {
         $keys = $this->getJWKSetManager()->createJWKSet();
-        if (!is_null($jwk = $this->getJWKManager()->findByHeader($header))) {
+        if (($jwk = $this->getJWKManager()->findByHeader($header)) instanceof JWKInterface) {
             $keys->addKey($jwk);
         }
-        if (!is_null($jwkset = $this->getJWKSetManager()->findByHeader($header))) {
+        if (($jwkset = $this->getJWKSetManager()->findByHeader($header)) instanceof JWKSetInterface) {
             foreach ($jwkset as $key) {
                 $keys->addKey($key);
             }
