@@ -50,7 +50,11 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
                 return $converter->convertPayloadToString($header, $payload);
             }
         }
-        $result = json_encode($payload);
+        try {
+            $result = json_encode($payload);
+        } catch(\Exception $e) {
+            throw new \InvalidArgumentException('Unsupported input type.');
+        }
         if (false !== $result) {
             return $result;
         }
