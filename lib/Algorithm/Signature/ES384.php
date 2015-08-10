@@ -38,7 +38,7 @@ class ES384 extends ECDSA
      */
     protected function getHashAlgorithm()
     {
-        return 'SHA384';
+        return 'sha384';
     }
 
     /**

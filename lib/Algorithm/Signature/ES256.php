@@ -38,7 +38,7 @@ class ES256 extends ECDSA
      */
     protected function getHashAlgorithm()
     {
-        return 'SHA256';
+        return 'sha256';
     }
 
     /**

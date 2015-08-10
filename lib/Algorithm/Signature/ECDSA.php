@@ -71,6 +71,7 @@ abstract class ECDSA implements SignatureInterface
     public function verify(JWKInterface $key, $data, $signature)
     {
         $this->checkKey($key);
+
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
         if (strlen($signature) !== 2 * $part_length) {
@@ -116,7 +117,7 @@ abstract class ECDSA implements SignatureInterface
      *
      * @return string
      */
-    protected function convertHexToBin($value)
+    private function convertHexToBin($value)
     {
         return pack('H*', $value);
     }
@@ -124,7 +125,7 @@ abstract class ECDSA implements SignatureInterface
     /**
      * @param string $value
      */
-    protected function convertBinToHex($value)
+    private function convertBinToHex($value)
     {
         $value = unpack('H*', $value);
 
@@ -134,7 +135,7 @@ abstract class ECDSA implements SignatureInterface
     /**
      * @return string
      */
-    protected function convertDecToHex($value)
+    private function convertDecToHex($value)
     {
         return $this->adapter->decHex($value);
     }
@@ -144,7 +145,7 @@ abstract class ECDSA implements SignatureInterface
      *
      * @return int|string
      */
-    protected function convertHexToDec($value)
+    private function convertHexToDec($value)
     {
         return $this->adapter->hexDec($value);
     }
@@ -154,7 +155,7 @@ abstract class ECDSA implements SignatureInterface
      *
      * @return int|string
      */
-    protected function convertBase64ToDec($value)
+    private function convertBase64ToDec($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
 
@@ -164,7 +165,7 @@ abstract class ECDSA implements SignatureInterface
     /**
      * @param JWKInterface $key
      */
-    protected function checkKey(JWKInterface $key)
+    private function checkKey(JWKInterface $key)
     {
         if ('EC' !== $key->getKeyType()) {
             throw new \InvalidArgumentException('The key is not valid');
