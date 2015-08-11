@@ -26,6 +26,8 @@ class GZip implements CompressionInterface
 
     /**
      * @param int $level
+     *
+     * @return self
      */
     public function setCompressionLevel($level)
     {

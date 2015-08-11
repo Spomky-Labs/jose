@@ -35,7 +35,9 @@ class JWKSet extends Base
     /**
      * Set keys in the Key.
      *
-     * @param JWKInterface $key A JWKInterface objects
+     * @param \Jose\JWKInterface $key A JWKInterface objects
+     *
+     * @return self
      */
     public function addKey(JWKInterface $key)
     {
@@ -45,9 +47,9 @@ class JWKSet extends Base
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @return $this
+     * @return self
      */
     public function removeKey($key)
     {

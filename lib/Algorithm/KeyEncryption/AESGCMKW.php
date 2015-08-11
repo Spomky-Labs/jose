@@ -26,10 +26,10 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Crypto\Cipher")) {
+        if (!class_exists('\Crypto\Cipher')) {
             throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
         }
-        if (!trait_exists("\AESKW\AESKW")) {
+        if (!trait_exists('\AESKW\AESKW')) {
             throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
         }
     }

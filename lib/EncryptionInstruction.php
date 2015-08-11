@@ -35,7 +35,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     /**
      * @param JWKInterface $recipient_public_key
      *
-     * @return $this
+     * @return self
      */
     public function setRecipientKey(JWKInterface $recipient_public_key)
     {
@@ -54,7 +54,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     /**
      * @param JWKInterface $sender_private_key
      *
-     * @return $this
+     * @return self
      */
     public function setSenderKey(JWKInterface $sender_private_key)
     {
@@ -73,7 +73,7 @@ class EncryptionInstruction implements EncryptionInstructionInterface
     /**
      * @param array $recipient_unprotected_header
      *
-     * @return $this
+     * @return self
      */
     public function setRecipientUnprotectedHeader(array $recipient_unprotected_header)
     {

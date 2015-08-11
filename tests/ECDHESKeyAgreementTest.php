@@ -54,11 +54,11 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $additional_header_values = [];
 
         $this->assertEquals($expected, $ecdh_es->getAgreementKey(128, $sender, $receiver, $header, $additional_header_values));
-        $this->assertTrue(array_key_exists('epk',$additional_header_values));
-        $this->assertTrue(array_key_exists('kty',$additional_header_values['epk']));
-        $this->assertTrue(array_key_exists('crv',$additional_header_values['epk']));
-        $this->assertTrue(array_key_exists('x',$additional_header_values['epk']));
-        $this->assertTrue(array_key_exists('y',$additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('epk', $additional_header_values));
+        $this->assertTrue(array_key_exists('kty', $additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('crv', $additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('x', $additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('y', $additional_header_values['epk']));
     }
 
     /**

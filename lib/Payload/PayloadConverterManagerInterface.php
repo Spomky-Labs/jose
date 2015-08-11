@@ -16,7 +16,7 @@ interface PayloadConverterManagerInterface
     /**
      * @param \SpomkyLabs\Jose\Payload\PayloadConverterInterface $converter
      *
-     * @return $this
+     * @return self
      */
     public function addConverter(PayloadConverterInterface $converter);
 

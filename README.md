@@ -26,6 +26,8 @@ This library aims to provide an implementation of:
 * JW**A** [JSON Web Algorithms (RFC 7518)](http://tools.ietf.org/html/rfc7518).
 * JW**K** [JSON Web Key (RFC 7517)](http://tools.ietf.org/html/rfc7517).
 
+Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are partially implemented.
+
 # Status of implementations
 
 [Please see this page](doc/Status.md).

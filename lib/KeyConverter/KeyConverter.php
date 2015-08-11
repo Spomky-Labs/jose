@@ -12,7 +12,6 @@
 namespace SpomkyLabs\Jose\KeyConverter;
 
 use Base64Url\Base64Url;
-use FG\ASN1\Object;
 use phpseclib\Crypt\RSA;
 
 /**
@@ -191,6 +190,8 @@ class KeyConverter
         ];
         if (array_key_exists($key, $values)) {
             return $values[$key];
+        } else {
+            throw new \InvalidArgumentException('Unsupported key data');
         }
     }
 }

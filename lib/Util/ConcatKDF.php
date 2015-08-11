@@ -23,6 +23,7 @@ class ConcatKDF
     /**
      * Key Derivation Function.
      *
+     * @param string $Z                    Shared secret
      * @param string $encryption_algorithm Encryption algorithm
      * @param int    $encryption_key_size  Size of the encryption key
      * @param string $apu                  Agreement PartyUInfo (information about the producer)

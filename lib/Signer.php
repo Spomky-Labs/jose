@@ -138,7 +138,8 @@ abstract class Signer implements SignerInterface
     }
 
     /**
-     * @param array $complete_header The complete header
+     * @param array              $complete_header The complete header
+     * @param \Jose\JWKInterface $key
      *
      * @return \Jose\Operation\SignatureInterface
      */

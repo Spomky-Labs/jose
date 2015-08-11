@@ -25,7 +25,7 @@ abstract class AESKW implements KeyEncryptionInterface
      */
     public function __construct()
     {
-        if (!trait_exists("\AESKW\AESKW")) {
+        if (!trait_exists('\AESKW\AESKW')) {
             throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
         }
     }

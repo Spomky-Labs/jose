@@ -24,7 +24,7 @@ abstract class AESGCM implements ContentEncryptionInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Crypto\Cipher")) {
+        if (!class_exists('\Crypto\Cipher')) {
             throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
         }
     }

@@ -55,7 +55,7 @@ trait JWable
     /**
      * @param array $values
      *
-     * @return $this
+     * @return self
      */
     public function setProtectedHeader(array $values)
     {
@@ -67,7 +67,7 @@ trait JWable
     /**
      * @param array $values
      *
-     * @return $this
+     * @return self
      */
     public function setUnprotectedHeader(array $values)
     {
@@ -79,6 +79,8 @@ trait JWable
     /**
      * @param string          $key
      * @param string|string[] $value
+     *
+     * @return self
      */
     public function setProtectedHeaderValue($key, $value)
     {
@@ -87,21 +89,23 @@ trait JWable
         return $this;
     }
 
-/**
- * @param string          $key
- * @param string|string[] $value
- */
-public function setUnprotectedHeaderValue($key, $value)
-{
-    $this->unprotected_headers[$key] = $value;
+    /**
+     * @param string          $key
+     * @param string|string[] $value
+     *
+     * @return self
+     */
+    public function setUnprotectedHeaderValue($key, $value)
+    {
+        $this->unprotected_headers[$key] = $value;
 
-    return $this;
-}
+        return $this;
+    }
 
     /**
      * @param $payload
      *
-     * @return $this
+     * @return self
      */
     public function setPayload($payload)
     {
