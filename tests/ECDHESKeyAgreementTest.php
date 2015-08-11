@@ -11,6 +11,8 @@
 
 namespace SpomkyLabs\Test;
 
+use Base64Url\Base64Url;
+use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHES;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
@@ -42,12 +44,21 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
             'd' => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd',
         ]);
 
-        $this->markTestIncomplete("This test passed when 'apu' and 'apv' parameters are forced. They are not yet supported by this implementation and this test is marked as incomplete. This mark will be removed when these parameter will be supported.");
+        $header = [
+            'enc' => 'A128GCM',
+            'apu' => 'QWxpY2U',
+            'apv' => 'Qm9i',
+        ];
+        $expected = Base64Url::decode('9FdsD3uzmeK4ImyoWpP5PA');
+        $ecdh_es = new ECDHES();
+        $additional_header_values = [];
 
-        //$header = array("enc" => "A128GCM");
-        //$expected = Base64Url::decode("VqqN6vgjbSBcIijNcacQGg");
-        //$ecdh_es = new ECDH_ES();
-        //$this->assertEquals($expected, $ecdh_es->getAgreementKey($receiver, 128, $header));
+        $this->assertEquals($expected, $ecdh_es->getAgreementKey(128, $sender, $receiver, $header, $additional_header_values));
+        $this->assertTrue(array_key_exists('epk',$additional_header_values));
+        $this->assertTrue(array_key_exists('kty',$additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('crv',$additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('x',$additional_header_values['epk']));
+        $this->assertTrue(array_key_exists('y',$additional_header_values['epk']));
     }
 
     /**
