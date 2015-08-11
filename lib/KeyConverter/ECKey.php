@@ -38,9 +38,9 @@ class ECKey extends Sequence
 
         if ($data instanceof JWKInterface) {
             $this->loadJWK($data->getValues());
-        } else if (is_array($data)) {
+        } elseif (is_array($data)) {
             $this->loadJWK($data);
-        } else if (is_string($data)) {
+        } elseif (is_string($data)) {
             $this->loadPEM($data);
         } else {
             throw new \InvalidArgumentException('Unsupported input');
@@ -51,6 +51,7 @@ class ECKey extends Sequence
      * @param $data
      *
      * @return array
+     *
      * @throws \Exception
      * @throws \FG\ASN1\Exception\ParserException
      */
@@ -81,6 +82,9 @@ class ECKey extends Sequence
         }
         if (!array_key_exists('crv', $jwk)) {
             throw new \InvalidArgumentException('Curve parameter is missing');
+        }
+        if (!array_key_exists('x', $jwk) || !array_key_exists('y', $jwk)) {
+            throw new \InvalidArgumentException('Point parameters are missing');
         }
         $this->curve = $jwk['crv'];
         $this->x = $jwk['x'];
@@ -121,19 +125,20 @@ class ECKey extends Sequence
         $this->addChild(new OctetString(bin2hex(Base64Url::decode($this->d))));
 
         $oid = new ObjectIdentifier($this->getOID($this->curve));
-        $this->addChild(new ExplicitlyTaggedObject(0,$oid));
+        $this->addChild(new ExplicitlyTaggedObject(0, $oid));
 
         $bits = '04';
         $bits .= bin2hex(Base64Url::decode($this->x));
         $bits .= bin2hex(Base64Url::decode($this->y));
         $bit = new BitString($bits);
-        $this->addChild(new ExplicitlyTaggedObject(1,$bit));
+        $this->addChild(new ExplicitlyTaggedObject(1, $bit));
     }
 
     /**
      * @param array $children
      *
      * @return array
+     *
      * @throws \Exception
      */
     private function loadPublicPEM(array $children)
@@ -169,6 +174,7 @@ class ECKey extends Sequence
      * @param array $children
      *
      * @return array
+     *
      * @throws \Exception
      */
     private function loadPrivatePEM(array $children)
@@ -218,7 +224,7 @@ class ECKey extends Sequence
     /**
      * @param \SpomkyLabs\Jose\KeyConverter\ECKey $private
      *
-     * @return mixed
+     * @return \SpomkyLabs\Jose\KeyConverter\ECKey
      */
     public static function toPublic(ECKey $private)
     {
@@ -226,6 +232,7 @@ class ECKey extends Sequence
         if (array_key_exists('d', $data)) {
             unset($data['d']);
         }
+
         return new ECKey($data);
     }
 
@@ -245,9 +252,10 @@ class ECKey extends Sequence
             'x' => $this->x,
             'y' => $this->y,
         ];
-        if( true === $this->private) {
+        if (true === $this->private) {
             $values['d'] = $this->d;
         }
+
         return $values;
     }
 
@@ -264,9 +272,9 @@ class ECKey extends Sequence
             }
         }
 
-        $result = "-----".($this->private?"BEGIN EC PRIVATE KEY":"BEGIN PUBLIC KEY")."-----".PHP_EOL;
+        $result = '-----'.($this->private ? 'BEGIN EC PRIVATE KEY' : 'BEGIN PUBLIC KEY').'-----'.PHP_EOL;
         $result .= $tmp.PHP_EOL;
-        $result .= "-----".($this->private?"END EC PRIVATE KEY":"END PUBLIC KEY")."-----".PHP_EOL;
+        $result .= '-----'.($this->private ? 'END EC PRIVATE KEY' : 'END PUBLIC KEY').'-----'.PHP_EOL;
 
         return $result;
     }
@@ -278,7 +286,7 @@ class ECKey extends Sequence
      */
     private function getOID($curve)
     {
-        switch($curve) {
+        switch ($curve) {
             case 'P-256':
                 return '1.2.840.10045.3.1.7';
             case 'P-384':
@@ -297,7 +305,7 @@ class ECKey extends Sequence
      */
     private function getCurve($oid)
     {
-        switch($oid) {
+        switch ($oid) {
             case '1.2.840.10045.3.1.7':
                 return 'P-256';
             case '1.3.132.0.34':

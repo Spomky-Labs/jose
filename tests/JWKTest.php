@@ -22,8 +22,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
      */
     public function testKey()
     {
-        $jwk = new JWK();
-        $jwk->setValues([
+        $jwk = new JWK([
             'kty'     => 'EC',
             'crv'     => 'P-256',
             'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
@@ -54,8 +53,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
      */
     public function testKeySet()
     {
-        $jwk1 = new JWK();
-        $jwk1->setValues([
+        $jwk1 = new JWK([
             'kty'     => 'EC',
             'crv'     => 'P-256',
             'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
@@ -66,8 +64,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'kid'     => '0123456789',
         ]);
 
-        $jwk2 = new JWK();
-        $jwk2->setValues([
+        $jwk2 = new JWK([
             'kty'     => 'EC',
             'crv'     => 'P-256',
             'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',

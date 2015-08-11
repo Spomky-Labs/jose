@@ -127,6 +127,7 @@ class Converter
                 $result[] = $temp;
             }
         }
+
         return $result;
     }
 
@@ -183,6 +184,7 @@ class Converter
                 $result[] = $temp;
             }
         }
+
         return $result;
     }
 

@@ -12,55 +12,57 @@
 namespace SpomkyLabs\Jose\KeyConverter;
 
 use Base64Url\Base64Url;
-use FG\ASN1\ExplicitlyTaggedObject;
 use FG\ASN1\Object;
-use FG\ASN1\Universal\BitString;
-use FG\ASN1\Universal\Integer;
-use FG\ASN1\Universal\ObjectIdentifier;
-use FG\ASN1\Universal\OctetString;
-use FG\ASN1\Universal\Sequence;
 use phpseclib\Crypt\RSA;
-use phpseclib\File\ASN1;
 
 /**
- * This class will help you to load an EC key or a RSA key (private or public) and get values to create a JWK object
+ * This class will help you to load an EC key or a RSA key (private or public) and get values to create a JWK object.
  */
 class KeyConverter
 {
     /**
-     * @param string $file
+     * @param string      $file
      * @param null|string $password
      *
      * @throws \Exception
      *
-     * @return array|bool|void
+     * @return array
      */
     public static function loadKeyFromFile($file, $password = null)
     {
         $content = file_get_contents($file);
+
         return self::loadKeyFromPEM($content, $password);
     }
 
     /**
-     * @param string $certificate
+     * @param string      $pem
      * @param null|string $passphrase
      *
      * @throws \Exception
      *
-     * @return mixed
+     * @return array
      */
-    public static function loadKeyFromPEM($certificate, $passphrase = null)
+    public static function loadKeyFromPEM($pem, $passphrase = null)
     {
-        $res = openssl_pkey_get_private($certificate, $passphrase);
+        $res = openssl_pkey_get_private($pem, $passphrase);
         if ($res === false) {
-            $res = openssl_pkey_get_public($certificate);
+            $res = openssl_pkey_get_public($pem);
         }
         if ($res === false) {
             throw new \Exception('Unable to load the key');
         }
+
         return self::loadKeyFromResource($res);
     }
 
+    /**
+     * @param resource $res
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
     public static function loadKeyFromResource($res)
     {
         $details = openssl_pkey_get_details($res);
@@ -76,8 +78,9 @@ class KeyConverter
                 // Public keys cannot be exported with openssl_pkey_export
             }
             $ec_key = new ECKey($pem);
+
             return $ec_key->toArray();
-        } else if (array_key_exists('rsa', $details)) {
+        } elseif (array_key_exists('rsa', $details)) {
             return self::loadRSAKey($details['rsa']);
         }
         throw new \Exception('Unsupported key type');
@@ -107,7 +110,6 @@ class KeyConverter
         return $result;
     }
 
-
     /**
      *
      */
@@ -120,6 +122,7 @@ class KeyConverter
 
     /**
      * @param array $data
+     *²
      *
      * @throws \Exception
      *

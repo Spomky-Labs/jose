@@ -246,8 +246,7 @@ class EncrypterTest extends TestCase
      */
     protected function getKeyToEncrypt()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
@@ -263,8 +262,7 @@ class EncrypterTest extends TestCase
      */
     protected function getKeySetToEncrypt()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
@@ -283,8 +281,7 @@ class EncrypterTest extends TestCase
      */
     protected function getRSARecipientKey()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'RSA',
             'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
             'e'   => 'AQAB',
@@ -298,8 +295,7 @@ class EncrypterTest extends TestCase
      */
     protected function getECDHRecipientPublicKey()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
@@ -314,8 +310,7 @@ class EncrypterTest extends TestCase
      */
     protected function getECDHSenderPrivateKey()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
@@ -331,8 +326,7 @@ class EncrypterTest extends TestCase
      */
     protected function getDirectKey()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kid' => 'DIR_1',
             'kty' => 'dir',
             'dir' => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),

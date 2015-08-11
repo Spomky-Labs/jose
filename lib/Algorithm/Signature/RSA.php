@@ -14,7 +14,7 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use SpomkyLabs\Jose\KeyConverter\RSAKey;
 
 /**
  * Class RSA.
@@ -37,9 +37,11 @@ abstract class RSA implements SignatureInterface
     public function verify(JWKInterface $key, $input, $signature)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e']));
-        $rsa = KeyConverter::fromArrayToRSACrypt($values);
+        $pem = RSAKey::toPublic(new RSAKey($key));
 
+        $rsa = new PHPSecLibRSA();
+
+        $rsa->loadKey($pem->toPEM());
         $rsa->setHash($this->getAlgorithm());
         if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());
@@ -56,13 +58,15 @@ abstract class RSA implements SignatureInterface
     public function sign(JWKInterface $key, $input)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
-        $rsa = KeyConverter::fromArrayToRSACrypt($values);
+        $pem = new RSAKey($key);
 
-        if ($rsa->getPrivateKey() === false) {
+        if (!$pem->isPrivate()) {
             throw new \InvalidArgumentException('The key is not a private key');
         }
 
+        $rsa = new PHPSecLibRSA();
+
+        $rsa->loadKey($pem->toPEM());
         $rsa->setHash($this->getAlgorithm());
         if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());

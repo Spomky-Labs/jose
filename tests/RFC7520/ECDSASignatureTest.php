@@ -12,15 +12,11 @@
 namespace SpomkyLabs\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use phpseclib\Crypt\Base;
-use SpomkyLabs\Jose\Algorithm\Signature\ES256;
-use SpomkyLabs\Jose\Algorithm\Signature\ES384;
 use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 
 /**
- * https://tools.ietf.org/html/rfc7520#section-4.3
+ * https://tools.ietf.org/html/rfc7520#section-4.3.
  */
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {
@@ -31,12 +27,12 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     {
         $public_key = new JWK();
         $public_key->setValues([
-            "kty" => "EC",
-            "kid" => "bilbo.baggins@hobbiton.example",
-            "use" => "sig",
-            "crv" => "P-521",
-            "x" => "AHKZLLOsCOzz5cY97ewNUajB957y-C-U88c3v13nmGZx6sYl_oJXu9A5RkTKqjqvjyekWF-7ytDyRXYgCF5cj0Kt",
-            "y" => "AdymlHvOiLxXkEhayXQnNCvDX4h9htZaCJN34kfmC6pV5OhQHiraVySsUdaQkAgDPrwQrJmbnX9cwlGfP-HqHZR1",
+            'kty' => 'EC',
+            'kid' => 'bilbo.baggins@hobbiton.example',
+            'use' => 'sig',
+            'crv' => 'P-521',
+            'x' => 'AHKZLLOsCOzz5cY97ewNUajB957y-C-U88c3v13nmGZx6sYl_oJXu9A5RkTKqjqvjyekWF-7ytDyRXYgCF5cj0Kt',
+            'y' => 'AdymlHvOiLxXkEhayXQnNCvDX4h9htZaCJN34kfmC6pV5OhQHiraVySsUdaQkAgDPrwQrJmbnX9cwlGfP-HqHZR1',
         ]);
 
         $header = 'eyJhbGciOiJFUzUxMiIsImtpZCI6ImJpbGJvLmJhZ2dpbnNAaG9iYml0b24uZXhhbXBsZSJ9';
@@ -44,6 +40,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $signature = 'AE_R_YZCChjn4791jSQCrdPZCNYqHXCTZH0-JZGYNlaAjP2kqaluUIIUnC9qvbu9Plon7KRTzoNEuT4Va2cmL1eJAQy3mtPBu_u_sDDyYjnAMDxXPn7XrT0lw-kvAD890jl8e2puQens_IEKBpHABlsbEPX6sFY8OcGDqoRuBomu9xQ2';
 
         $ecdsa = new ES512();
-        $this->assertTrue($ecdsa->verify($public_key, $header.".".$payload, Base64Url::decode($signature)));
+        $this->assertTrue($ecdsa->verify($public_key, $header.'.'.$payload, Base64Url::decode($signature)));
     }
 }

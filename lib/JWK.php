@@ -24,6 +24,14 @@ class JWK extends Base
     protected $values = [];
 
     /**
+     * @param array $values
+     */
+    public function __construct(array $values = [])
+    {
+        $this->setValues($values);
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()

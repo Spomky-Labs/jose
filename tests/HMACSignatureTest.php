@@ -27,8 +27,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidKey()
     {
-        $key = new JWK();
-        $key->setValue('kty', 'EC');
+        $key = new JWK([
+            'kty' => 'EC',
+        ]);
 
         $hmac = new HS256();
         $data = 'Je suis Charlie';
@@ -41,8 +42,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testHS256SignAndVerify()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => 'foo',
         ]);
@@ -60,8 +60,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testHS384SignAndVerify()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => 'foo',
         ]);
@@ -79,8 +78,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testHS512SignAndVerify()
     {
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => 'foo',
         ]);
