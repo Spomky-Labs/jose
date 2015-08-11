@@ -43,7 +43,7 @@ class DirAlgorithmTest extends TestCase
     {
         $header = [];
         $key = new JWK([
-            'kty' => 'EC',
+            'kty' => 'dir',
             'dir' => Base64Url::encode('ABCD'),
         ]);
 
