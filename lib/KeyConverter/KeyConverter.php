@@ -58,9 +58,9 @@ class KeyConverter
     /**
      * @param resource $res
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     public static function loadKeyFromResource($res)
     {
