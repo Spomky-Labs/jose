@@ -38,7 +38,7 @@ class ES512 extends ECDSA
      */
     protected function getHashAlgorithm()
     {
-        return 'SHA512';
+        return 'sha512';
     }
 
     /**

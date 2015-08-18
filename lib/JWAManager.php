@@ -51,7 +51,7 @@ class JWAManager extends Base
     /**
      * @param JWAInterface $algorithm
      *
-     * @return $this
+     * @return self
      */
     public function addAlgorithm(JWAInterface $algorithm)
     {
@@ -65,7 +65,7 @@ class JWAManager extends Base
     /**
      * @param string $algorithm
      *
-     * @return $this
+     * @return self
      */
     public function removeAlgorithm($algorithm)
     {

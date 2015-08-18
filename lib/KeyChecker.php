@@ -19,7 +19,12 @@ use Jose\JWKInterface;
 trait KeyChecker
 {
     /**
-     * @param string $usage
+     * @param \Jose\JWKInterface $key
+     * @param                    $usage
+     *
+     * @return bool
+     *
+     * @throws \Exception
      */
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {

@@ -35,7 +35,7 @@
         "spomky-labs/aes-key-wrap": "~2.0"
     },
    "suggest":{
-        "lib-openssl": "Required to use AES based algorithms (except AES-GCM).",
+        "lib-openssl": "Required to use AES based algorithms (except AES-GCM) and for RSA/EC keys conversions.",
         "ext-crypto":"Required to use AES GCM based algorithms.",
         "ext-mcrypt":"Required to use AES based (except AES-GCM) algorithms (only needed if lib-openssl is not enabled).",
         "phpseclib/phpseclib":"Required to use RSA based algorithms and for AES based algorithms (only if lib-openssl and ext-mcrypt are not enabled).",
@@ -45,7 +45,7 @@
    },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.0.x-dev"
+            "dev-master": "0.1.x-dev"
         }
     }
 }

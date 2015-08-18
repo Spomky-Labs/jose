@@ -27,7 +27,7 @@ class CompressionManager implements CompressionManagerInterface
     /**
      * @param CompressionInterface $compression_algorithm
      *
-     * @return $this
+     * @return self
      */
     public function addCompressionAlgorithm(CompressionInterface $compression_algorithm)
     {

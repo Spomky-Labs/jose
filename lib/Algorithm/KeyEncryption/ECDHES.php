@@ -34,7 +34,7 @@ class ECDHES implements KeyAgreementInterface
      */
     public function __construct()
     {
-        if (!class_exists("\Mdanter\Ecc\EccFactory")) {
+        if (!class_exists('\Mdanter\Ecc\EccFactory')) {
             throw new \RuntimeException("The library 'mdanter/ecc' is required to use Elliptic Curves based algorithm algorithms");
         }
         $this->adapter = EccFactory::getAdapter();
@@ -65,7 +65,10 @@ class ECDHES implements KeyAgreementInterface
 
         $agreed_key = $this->calculateAgreementKey($private_key, $public_key);
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $complete_header['enc'], $encryption_key_length);
+        $apu = array_key_exists('apu', $complete_header) ? $complete_header['apu'] : '';
+        $apv = array_key_exists('apv', $complete_header) ? $complete_header['apv'] : '';
+
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $complete_header['enc'], $encryption_key_length, $apu, $apv);
     }
 
     /**

@@ -22,7 +22,7 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-B
+     * @see https://tools.ietf.org/html/rfc7516#appendix-B
      */
     public function testA128CBCHS256EncryptAndDecrypt()
     {
@@ -58,7 +58,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39#appendix-B.1
+     * @see https://tools.ietf.org/html/rfc7518#appendix-B.1
      */
     public function testA128CBCHS256EncryptAndDecrypt_Bis()
     {
@@ -87,7 +87,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39#appendix-B.2
+     * @see https://tools.ietf.org/html/rfc7518#appendix-B.2
      */
     public function testA192CBC_HS384EncryptAndDecrypt()
     {
@@ -115,7 +115,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39#appendix-B.3
+     * @see https://tools.ietf.org/html/rfc7518#appendix-B.3
      */
     public function testA256CBC_HS512EncryptAndDecrypt()
     {

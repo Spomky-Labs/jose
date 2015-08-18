@@ -14,7 +14,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 use Jose\JWKInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
-use SpomkyLabs\Jose\Util\RSAConverter;
+use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 
 /**
  * Class RSA.
@@ -72,7 +72,7 @@ abstract class RSA implements KeyEncryptionInterface
      */
     private function getRsaObject(array $values)
     {
-        $rsa = RSAConverter::fromArrayToRSACrypt($values);
+        $rsa = KeyConverter::fromArrayToRSACrypt($values);
         $encryption_mode = $this->getEncryptionMode();
         $rsa->setEncryptionMode($encryption_mode);
         if (PHPSecLibRSA::ENCRYPTION_OAEP === $encryption_mode) {

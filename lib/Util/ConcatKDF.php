@@ -16,13 +16,14 @@ namespace SpomkyLabs\Jose\Util;
  *
  * This class is used by the ECDH-ES algorithms
  *
- * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-4.6
+ * @see https://tools.ietf.org/html/rfc7518#section-4.6.2
  */
 class ConcatKDF
 {
     /**
      * Key Derivation Function.
      *
+     * @param string $Z                    Shared secret
      * @param string $encryption_algorithm Encryption algorithm
      * @param int    $encryption_key_size  Size of the encryption key
      * @param string $apu                  Agreement PartyUInfo (information about the producer)

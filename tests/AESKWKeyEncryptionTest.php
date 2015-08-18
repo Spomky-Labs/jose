@@ -28,8 +28,7 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA128KW()
     {
         $header = [];
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
         ]);
@@ -50,8 +49,7 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA192KW()
     {
         $header = [];
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F1011121314151617')),
         ]);
@@ -72,8 +70,7 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA256KW()
     {
         $header = [];
-        $key = new JWK();
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F')),
         ]);

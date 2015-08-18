@@ -24,18 +24,20 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
      */
     public function __construct()
     {
-        if (!trait_exists("\AESKW\AESKW")) {
+        if (!trait_exists('\AESKW\AESKW')) {
             throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
         }
     }
 
     /**
-     * @param JWKInterface $sender_key
-     * @param JWKInterface $receiver_key
-     * @param string       $cek
-     * @param int          $encryption_key_length
+     * @param \Jose\JWKInterface $sender_key
+     * @param \Jose\JWKInterface $receiver_key
+     * @param string             $cek
+     * @param int                $encryption_key_length
+     * @param array              $complete_header
+     * @param array              $additional_header_values
      *
-     * @return mixed
+     * @return string
      */
     public function wrapAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $cek, $encryption_key_length, array $complete_header, array &$additional_header_values)
     {
@@ -48,11 +50,12 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
     }
 
     /**
-     * @param JWKInterface $receiver_key
-     * @param string       $encrypted_cek
-     * @param int          $encryption_key_length
+     * @param \Jose\JWKInterface $receiver_key
+     * @param string             $encrypted_cek
+     * @param int                $encryption_key_length
+     * @param array              $complete_header
      *
-     * @return mixed
+     * @return string
      */
     public function unwrapAgreementKey(JWKInterface $receiver_key, $encrypted_cek, $encryption_key_length, array $complete_header)
     {

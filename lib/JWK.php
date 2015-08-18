@@ -24,6 +24,14 @@ class JWK extends Base
     protected $values = [];
 
     /**
+     * @param array $values
+     */
+    public function __construct(array $values = [])
+    {
+        $this->setValues($values);
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize()
@@ -33,6 +41,8 @@ class JWK extends Base
 
     /**
      * @param string $key
+     *
+     * @return mixed|null
      */
     public function getValue($key)
     {
@@ -51,7 +61,7 @@ class JWK extends Base
      * @param string $key
      * @param mixed  $value
      *
-     * @return $this
+     * @return self
      */
     public function setValue($key, $value)
     {
@@ -63,7 +73,7 @@ class JWK extends Base
     /**
      * @param array $values
      *
-     * @return $this
+     * @return self
      */
     public function setValues(array $values)
     {

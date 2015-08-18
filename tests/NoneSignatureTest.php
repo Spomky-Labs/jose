@@ -26,8 +26,9 @@ class NoneSignatureTest extends TestCase
      */
     public function testNoneSignAndVerifyAlgorithm()
     {
-        $key = new JWK();
-        $key->setValue('kty', 'none');
+        $key = new JWK([
+            'kty' => 'none',
+        ]);
 
         $none = new None();
         $data = 'Je suis Charlie';
@@ -44,8 +45,9 @@ class NoneSignatureTest extends TestCase
      */
     public function testInvalidKey()
     {
-        $key = new JWK();
-        $key->setValue('kty', 'EC');
+        $key = new JWK([
+            'kty' => 'EC',
+        ]);
 
         $none = new None();
         $data = 'Je suis Charlie';
@@ -64,8 +66,9 @@ class NoneSignatureTest extends TestCase
         ]);
         $jwt->setPayload('Je suis Charlie');
 
-        $jwk = new JWK();
-        $jwk->setValue('kty', 'none');
+        $jwk = new JWK([
+            'kty' => 'none',
+        ]);
 
         $instruction1 = new SignatureInstruction();
         $instruction1->setKey($jwk)

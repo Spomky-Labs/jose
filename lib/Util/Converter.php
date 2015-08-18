@@ -127,6 +127,7 @@ class Converter
                 $result[] = $temp;
             }
         }
+
         return $result;
     }
 
@@ -183,6 +184,7 @@ class Converter
                 $result[] = $temp;
             }
         }
+
         return $result;
     }
 
@@ -203,6 +205,7 @@ class Converter
 
     /**
      * @param array $input
+     * @param bool  $toString
      *
      * @return array
      */
@@ -227,6 +230,7 @@ class Converter
 
     /**
      * @param array $input
+     * @param bool  $toString
      *
      * @return array
      */
@@ -335,6 +339,8 @@ class Converter
             return 'JWS';
         } elseif (array_key_exists('ciphertext', $input)) {
             return 'JWE';
+        } else {
+            throw new \RuntimeException('Unsupported input');
         }
     }
 

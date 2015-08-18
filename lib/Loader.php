@@ -247,6 +247,8 @@ abstract class Loader implements LoaderInterface
             return $key_encryption_algorithm->unwrapAgreementKey($key, $encrypted_cek, $content_encryption_algorithm->getCEKSize(), $header);
         } elseif ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $key_encryption_algorithm->decryptKey($key, $encrypted_cek, $header);
+        } else {
+            throw new \RuntimeException('Unsupported CEK generation');
         }
     }
 

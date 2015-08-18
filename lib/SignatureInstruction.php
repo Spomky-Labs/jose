@@ -35,7 +35,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     /**
      * @param JWKInterface $key
      *
-     * @return $this
+     * @return self
      */
     public function setKey(JWKInterface $key)
     {
@@ -54,7 +54,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     /**
      * @param array $protected_header
      *
-     * @return $this
+     * @return self
      */
     public function setProtectedHeader(array $protected_header)
     {
@@ -74,7 +74,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     /**
      * @param array $unprotected_header
      *
-     * @return $this
+     * @return self
      */
     public function setUnprotectedHeader(array $unprotected_header)
     {

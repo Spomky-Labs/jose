@@ -9,128 +9,80 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Util;
+namespace SpomkyLabs\Jose\KeyConverter;
 
 use Base64Url\Base64Url;
 use phpseclib\Crypt\RSA;
 
 /**
- * Class RSAConverter.
- *
- * This utility class will help to get details of a RSA key or certificate to generate a JWK
+ * This class will help you to load an EC key or a RSA key (private or public) and get values to create a JWK object.
  */
-class RSAConverter
+class KeyConverter
 {
     /**
-     *
-     */
-    private static function checkRequirements()
-    {
-        if (!class_exists('\phpseclib\Crypt\RSA')) {
-            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
-        }
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws \Exception
-     *
-     * @return \phpseclib\Crypt\RSA
-     */
-    public static function fromArrayToRSACrypt(array $data)
-    {
-        self::checkRequirements();
-        $xml = self::fromArrayToXML($data);
-        $rsa = new RSA();
-        $rsa->loadKey($xml);
-
-        return $rsa;
-    }
-
-    /**
-     * @param string      $certificate
-     * @param null|string $passphrase
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    private static function getCertificateValues($certificate, $passphrase = null)
-    {
-        $res = openssl_pkey_get_private($certificate, $passphrase);
-        if ($res === false) {
-            $res = openssl_pkey_get_public($certificate);
-        }
-        if ($res === false) {
-            throw new \Exception('Unable to load the certificate');
-        }
-
-        return self::getOpenSSLResourceValues($res);
-    }
-
-    /**
-     * @param $resource
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    private static function getOpenSSLResourceValues($resource)
-    {
-        $details = openssl_pkey_get_details($resource);
-        if ($details === false) {
-            throw new \Exception('Unable to get details of the key');
-        }
-        if (!is_array($details) || !isset($details['rsa'])) {
-            throw new \Exception('Key is not a valid RSA key');
-        }
-
-        return $details['rsa'];
-    }
-
-    /**
      * @param string      $file
-     * @param null|string $passphrase
+     * @param null|string $password
      *
      * @throws \Exception
      *
-     * @return mixed
+     * @return array
      */
-    public static function loadKeyFromFile($file, $passphrase = null)
+    public static function loadKeyFromFile($file, $password = null)
     {
         $content = file_get_contents($file);
 
-        return self::loadKeyFromPEM($content, $passphrase);
+        return self::loadKeyFromPEM($content, $password);
     }
 
     /**
-     * @param string      $certificate
+     * @param string      $pem
      * @param null|string $passphrase
-     *
-     * @throws \Exception
-     *
-     * @return mixed
-     */
-    public static function loadKeyFromPEM($certificate, $passphrase = null)
-    {
-        $values = self::getCertificateValues($certificate, $passphrase);
-
-        return self::convertToKeyArray($values);
-    }
-
-    /**
-     * @param $resource
      *
      * @throws \Exception
      *
      * @return array
      */
-    public static function loadKeyFromOpenSSLResource($resource)
+    public static function loadKeyFromPEM($pem, $passphrase = null)
     {
-        $values = self::getOpenSSLResourceValues($resource);
+        $res = openssl_pkey_get_private($pem, $passphrase);
+        if ($res === false) {
+            $res = openssl_pkey_get_public($pem);
+        }
+        if ($res === false) {
+            throw new \Exception('Unable to load the key');
+        }
 
-        return self::convertToKeyArray($values);
+        return self::loadKeyFromResource($res);
+    }
+
+    /**
+     * @param resource $res
+     *
+     * @return array
+     *
+     * @throws \Exception
+     */
+    public static function loadKeyFromResource($res)
+    {
+        $details = openssl_pkey_get_details($res);
+        if (!is_array($details)) {
+            throw new \Exception('Unable to get details of the key');
+        }
+
+        if (array_key_exists('ec', $details)) {
+            $pem = $details['key'];
+            try {
+                openssl_pkey_export($res, $pem);
+            } catch (\Exception $e) {
+                // Public keys cannot be exported with openssl_pkey_export
+            }
+            $ec_key = new ECKey($pem);
+
+            return $ec_key->toArray();
+        } elseif (array_key_exists('rsa', $details)) {
+            return self::loadRSAKey($details['rsa']);
+        }
+        throw new \Exception('Unsupported key type');
     }
 
     /**
@@ -138,7 +90,7 @@ class RSAConverter
      *
      * @return array
      */
-    private static function convertToKeyArray(array $values)
+    private static function loadRSAKey(array $values)
     {
         $result = ['kty' => 'RSA'];
         foreach ($values as $key => $value) {
@@ -155,6 +107,34 @@ class RSAConverter
         }
 
         return $result;
+    }
+
+    /**
+     *
+     */
+    private static function checkRequirements()
+    {
+        if (!class_exists('\phpseclib\Crypt\RSA')) {
+            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
+        }
+    }
+
+    /**
+     * @param array $data
+     *²
+     *
+     * @throws \Exception
+     *
+     * @return \phpseclib\Crypt\RSA
+     */
+    public static function fromArrayToRSACrypt(array $data)
+    {
+        self::checkRequirements();
+        $xml = self::fromArrayToXML($data);
+        $rsa = new RSA();
+        $rsa->loadKey($xml);
+
+        return $rsa;
     }
 
     /**
@@ -210,6 +190,8 @@ class RSAConverter
         ];
         if (array_key_exists($key, $values)) {
             return $values[$key];
+        } else {
+            throw new \InvalidArgumentException('Unsupported key data');
         }
     }
 }
