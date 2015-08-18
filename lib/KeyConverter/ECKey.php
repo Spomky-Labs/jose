@@ -14,8 +14,8 @@ namespace SpomkyLabs\Jose\KeyConverter;
 use Base64Url\Base64Url;
 use FG\ASN1\ExplicitlyTaggedObject;
 use FG\ASN1\Object;
-use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\BitString;
+use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
@@ -50,10 +50,10 @@ class ECKey extends Sequence
     /**
      * @param $data
      *
-     * @return array
-     *
      * @throws \Exception
      * @throws \FG\ASN1\Exception\ParserException
+     *
+     * @return array
      */
     private function loadPEM($data)
     {
@@ -137,9 +137,9 @@ class ECKey extends Sequence
     /**
      * @param array $children
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     private function loadPublicPEM(array $children)
     {
@@ -173,9 +173,9 @@ class ECKey extends Sequence
     /**
      * @param array $children
      *
-     * @return array
-     *
      * @throws \Exception
+     *
+     * @return array
      */
     private function loadPrivatePEM(array $children)
     {
@@ -233,7 +233,7 @@ class ECKey extends Sequence
             unset($data['d']);
         }
 
-        return new ECKey($data);
+        return new self($data);
     }
 
     public function __toString()
@@ -249,8 +249,8 @@ class ECKey extends Sequence
         $values = [
             'kty' => 'EC',
             'crv' => $this->curve,
-            'x' => $this->x,
-            'y' => $this->y,
+            'x'   => $this->x,
+            'y'   => $this->y,
         ];
         if (true === $this->private) {
             $values['d'] = $this->d;
@@ -267,8 +267,8 @@ class ECKey extends Sequence
         $tmp = base64_encode($this->getBinary());
 
         for ($i = 0; $i < strlen($tmp); $i++) {
-            if (($i+2) % 65 === 0) {
-                $tmp = substr($tmp, 0, $i+1).PHP_EOL.substr($tmp, $i+1);
+            if (($i + 2) % 65 === 0) {
+                $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
             }
         }
 

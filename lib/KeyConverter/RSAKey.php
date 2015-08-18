@@ -12,8 +12,8 @@
 namespace SpomkyLabs\Jose\KeyConverter;
 
 use Base64Url\Base64Url;
-use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\BitString;
+use FG\ASN1\Universal\Integer;
 use FG\ASN1\Universal\NullObject;
 use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\OctetString;
@@ -53,10 +53,10 @@ class RSAKey extends Sequence
     /**
      * @param $data
      *
-     * @return array
-     *
      * @throws \Exception
      * @throws \FG\ASN1\Exception\ParserException
+     *
+     * @return array
      */
     private function loadPEM($data)
     {
@@ -202,7 +202,7 @@ class RSAKey extends Sequence
             }
         }
 
-        return new RSAKey($data);
+        return new self($data);
     }
 
     public function __toString()
@@ -217,8 +217,8 @@ class RSAKey extends Sequence
     {
         $values = [
             'kty' => 'RSA',
-            'n' => $this->n,
-            'e' => $this->e,
+            'n'   => $this->n,
+            'e'   => $this->e,
         ];
         if (true === $this->private) {
             $values['p'] = $this->p;
@@ -240,8 +240,8 @@ class RSAKey extends Sequence
         $tmp = base64_encode($this->getBinary());
 
         for ($i = 0; $i < strlen($tmp); $i++) {
-            if (($i+2) % 65 === 0) {
-                $tmp = substr($tmp, 0, $i+1).PHP_EOL.substr($tmp, $i+1);
+            if (($i + 2) % 65 === 0) {
+                $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
             }
         }
 

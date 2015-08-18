@@ -20,8 +20,8 @@ use SpomkyLabs\Jose\Algorithm\Signature\RS384;
 use SpomkyLabs\Jose\Algorithm\Signature\RS512;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWT;
-use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use SpomkyLabs\Jose\SignatureInstruction;
 
 /**
  * Class RSASignatureTest.

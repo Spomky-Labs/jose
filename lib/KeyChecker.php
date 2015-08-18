@@ -22,9 +22,9 @@ trait KeyChecker
      * @param \Jose\JWKInterface $key
      * @param                    $usage
      *
-     * @return bool
-     *
      * @throws \Exception
+     *
+     * @return bool
      */
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {
