@@ -24,7 +24,7 @@ use SpomkyLabs\Jose\JWK;
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39#appendix-C
+     * @see https://tools.ietf.org/html/rfc7518#appendix-C
      */
     public function testGetAgreementKey()
     {

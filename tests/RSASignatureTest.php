@@ -454,9 +454,9 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see JWE Draft 31
+     * @see https://tools.ietf.org/html/rfc7516
      */
-    public function testLoadJWEFromIETFDraft()
+    public function testLoadJWEFromRFC7516()
     {
         $loader = $this->getLoader();
 
@@ -469,7 +469,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.4
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.4
      */
     public function testLoadJWEJSONSerialization()
     {
@@ -494,7 +494,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.4
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.4
      */
     public function testLoadJWSJSONSerialization()
     {
@@ -520,7 +520,7 @@ class RSASignatureTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
+        $loader->load('DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
     }
 
     /**
@@ -531,11 +531,11 @@ class RSASignatureTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('DtEhU3ljb.Eg8L.38VWAf.UAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
+        $loader->load('DtEhU3ljb.Eg8L.38VWAf.UAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.1
+     * @see https://tools.ietf.org/html/rfc7515#appendix-A.1
      */
     public function testLoadIETFExample1()
     {
@@ -549,7 +549,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.2
+     * @see https://tools.ietf.org/html/rfc7515#appendix-A.2
      */
     public function testLoadIETFExample2()
     {
@@ -563,7 +563,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.3
+     * @see https://tools.ietf.org/html/rfc7515#appendix-A.3
      */
     public function testLoadIETFExample3()
     {
@@ -577,7 +577,7 @@ class RSASignatureTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39#appendix-A.4
+     * @see https://tools.ietf.org/html/rfc7515#appendix-A.4
      */
     public function testLoadIETFExample4()
     {

@@ -17,7 +17,7 @@ namespace SpomkyLabs\Test;
 class FlattenedTest extends TestCase
 {
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.5
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.5
      */
     public function testLoadFlattenedJWE()
     {
@@ -32,7 +32,7 @@ class FlattenedTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.5
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.5
      */
     public function testLoadFlattenedJWS()
     {

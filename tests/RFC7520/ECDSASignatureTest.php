@@ -16,7 +16,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 use SpomkyLabs\Jose\JWK;
 
 /**
- * https://tools.ietf.org/html/rfc7520#section-4.3.
+ * @see https://tools.ietf.org/html/rfc7520#section-4.3
  */
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {

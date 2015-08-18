@@ -41,7 +41,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.2
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.2
      */
     public function testRSA1_5EncryptionAndDecryption()
     {
@@ -74,7 +74,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.1
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.1
      */
     public function testRSAOAEPEncryptionAndDecryption()
     {
@@ -107,7 +107,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.1
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.1
      */
     public function testRSAOAEP256EncryptionAndDecryption()
     {
@@ -137,7 +137,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.1
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.1
      */
     public function testLoadJWK1()
     {
@@ -152,7 +152,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.2
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.2
      */
     public function testLoadJWK2()
     {
@@ -167,7 +167,7 @@ class RSAKeyEncryptionTest extends TestCase
     }
 
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39#appendix-A.3
+     * @see https://tools.ietf.org/html/rfc7516#appendix-A.3
      */
     public function testLoadJWK3()
     {

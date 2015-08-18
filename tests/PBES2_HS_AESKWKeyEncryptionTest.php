@@ -23,7 +23,7 @@ use SpomkyLabs\Jose\JWK;
 class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-key-39#appendix-C
+     * @see https://tools.ietf.org/html/rfc7517#appendix-C
      */
     public function testPBES2HS256A128KW()
     {

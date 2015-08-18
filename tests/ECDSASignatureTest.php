@@ -21,7 +21,7 @@ use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 /**
  * Class ECDSASignatureTest.
  *
- * The values of these tests come from the JWS draft
+ * The values of these tests come from the JWS specification
  */
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {
