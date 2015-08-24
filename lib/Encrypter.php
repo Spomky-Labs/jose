@@ -134,7 +134,7 @@ class Encrypter implements EncrypterInterface
      */
     public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
     {
-        $this->jwset_manager = $jwkset_manager;
+        $this->jwkset_manager = $jwkset_manager;
 
         return $this;
     }
