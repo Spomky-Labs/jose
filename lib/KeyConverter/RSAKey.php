@@ -238,8 +238,9 @@ class RSAKey extends Sequence
     public function toPEM()
     {
         $tmp = base64_encode($this->getBinary());
+        $length = strlen($tmp);
 
-        for ($i = 0; $i < strlen($tmp); ++$i) {
+        for ($i = 0; $i < $length; ++$i) {
             if (($i + 2) % 65 === 0) {
                 $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
             }
