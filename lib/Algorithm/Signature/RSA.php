@@ -14,7 +14,6 @@ namespace SpomkyLabs\Jose\Algorithm\Signature;
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
-use SpomkyLabs\Jose\KeyConverter\RSAKey;
 use SpomkyLabs\Jose\KeyConverter\RSAConverter;
 
 /**
