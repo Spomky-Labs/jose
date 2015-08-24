@@ -39,7 +39,7 @@ The release process [is described here](doc/Release.md).
 # Prerequisites
 
 This library needs at least:
-* `PHP 5.4`.
+* ![PHP 5.4+](https://img.shields.io/badge/PHP-5.4%2B-ff69b4.svg).
 
 Depending on algorithms you want to use, please consider the following optional requirements:
 * Elliptic Curves based algorithms (`ESxxx` signatures, `ECDHES` encryptions):
@@ -47,9 +47,9 @@ Depending on algorithms you want to use, please consider the following optional 
 * RSA based algorithms (`RSxxx` or `PSxxx` signatures, `RSA1_5`, `RSA_OAEP`, `RSA_OAEP-256`...):
     * `phpseclib/phpseclib` (v2.0.x).
 * Password Based Key Derivation Function 2 (PBKDF2) based algorithms (`PBES2-*`):
-     [`spomky-labs/pbkdf2`](https://github.com/spomky-labs/pbkdf2).
+    * [`spomky-labs/pbkdf2`](https://github.com/spomky-labs/pbkdf2).
 * Key Wrapped based algorithms (`A128KW`, `PBES2-HS256+A128KW`...):
-     [`spomky-labs/aes-key-wrap`](https://github.com/spomky-labs/aes-key-wrap).
+    * [`spomky-labs/aes-key-wrap`](https://github.com/spomky-labs/aes-key-wrap).
 * AES based algorithms (excluding `AES-GCM`):
     * `OpenSSL` library for AES algorithms.
     * or `MCrypt` library for AES algorithms.
