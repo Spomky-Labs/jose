@@ -200,9 +200,9 @@ class Encrypter implements EncrypterInterface
     /**
      * @param int $length
      *
-     * @return string
-     *
      * @throws \Exception
+     *
+     * @return string
      */
     private function generateRandomString($length)
     {
@@ -300,12 +300,12 @@ class Encrypter implements EncrypterInterface
         $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
 
         $values = [
-            'ciphertext' => $jwt_ciphertext,
-            'protected' => $jwt_shared_protected_header,
+            'ciphertext'  => $jwt_ciphertext,
+            'protected'   => $jwt_shared_protected_header,
             'unprotected' => $unprotected_header,
-            'iv' => $jwt_iv,
-            'tag' => $jwt_tag,
-            'aad' => $jwt_aad,
+            'iv'          => $jwt_iv,
+            'tag'         => $jwt_tag,
+            'aad'         => $jwt_aad,
         ];
         foreach ($values as $key => $value) {
             if (!empty($value)) {

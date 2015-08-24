@@ -54,8 +54,8 @@ class ECDHES implements KeyAgreementInterface
                 'epk' => [
                     'kty' => $private_key->getKeyType(),
                     'crv' => $private_key->getValue('crv'),
-                    'x' => $private_key->getValue('x'),
-                    'y' => $private_key->getValue('y'),
+                    'x'   => $private_key->getValue('x'),
+                    'y'   => $private_key->getValue('y'),
                 ],
             ]);
         }

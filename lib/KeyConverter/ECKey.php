@@ -249,8 +249,8 @@ class ECKey extends Sequence
         $values = [
             'kty' => 'EC',
             'crv' => $this->curve,
-            'x' => $this->x,
-            'y' => $this->y,
+            'x'   => $this->x,
+            'y'   => $this->y,
         ];
         if (true === $this->private) {
             $values['d'] = $this->d;

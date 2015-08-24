@@ -179,11 +179,11 @@ class KeyConverter
     private static function getElement($key)
     {
         $values = [
-            'n' => 'Modulus',
-            'e' => 'Exponent',
-            'p' => 'P',
-            'd' => 'D',
-            'q' => 'Q',
+            'n'  => 'Modulus',
+            'e'  => 'Exponent',
+            'p'  => 'P',
+            'd'  => 'D',
+            'q'  => 'Q',
             'dp' => 'DP',
             'dq' => 'DQ',
             'qi' => 'InverseQ',

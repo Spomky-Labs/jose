@@ -59,12 +59,12 @@ use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
 use SpomkyLabs\Jose\Encrypter;
 use SpomkyLabs\Jose\JWAManager;
+use SpomkyLabs\Jose\JWTManager;
 use SpomkyLabs\Jose\Loader;
 use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;
 use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 use SpomkyLabs\Jose\Signer;
-use SpomkyLabs\Jose\JWTManager;
 use SpomkyLabs\Test\Stub\JWKManager;
 use SpomkyLabs\Test\Stub\JWKSetManager;
 
