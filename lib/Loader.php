@@ -570,13 +570,17 @@ class Loader implements LoaderInterface
     protected function getKeysFromCompleteHeader(array $header)
     {
         $keys = $this->getJWKSetManager()->createJWKSet();
-        if (($jwk = $this->getJWKManager()->findByHeader($header)) instanceof JWKInterface) {
+        $jwk = $this->getJWKManager()->findByHeader($header);
+        if ($jwk instanceof JWKInterface) {
             $keys->addKey($jwk);
         }
-        if (($jwkset = $this->getJWKSetManager()->findByHeader($header)) instanceof JWKSetInterface) {
+        $jwkset = $this->getJWKSetManager()->findByHeader($header);
+        if ($jwkset instanceof JWKSetInterface) {
             foreach ($jwkset as $key) {
                 $keys->addKey($key);
             }
+        } elseif ($jwkset instanceof JWKInterface) {
+            $keys->addKey($jwkset);
         }
 
         return $keys;

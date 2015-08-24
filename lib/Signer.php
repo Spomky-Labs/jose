@@ -12,7 +12,6 @@
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
-use Jose\Compression\CompressionManagerInterface;
 use Jose\JSONSerializationModes;
 use Jose\JWAManagerInterface;
 use Jose\JWKInterface;
@@ -57,11 +56,6 @@ class Signer implements SignerInterface
      * @var \Jose\JWAManagerInterface
      */
     private $jwa_manager;
-
-    /**
-     * @var \Jose\Compression\CompressionManagerInterface
-     */
-    private $compression_manager;
 
     /**
      * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
@@ -162,27 +156,6 @@ class Signer implements SignerInterface
     {
         return $this->jwa_manager;
     }
-
-    /**
-     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     *
-     * @return self
-     */
-    public function setCompressionManager(CompressionManagerInterface $compression_manager)
-    {
-        $this->compression_manager = $compression_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\Compression\CompressionManagerInterface
-     */
-    public function getCompressionManager()
-    {
-        return $this->compression_manager;
-    }
-
     /**
      * @param $input
      */
