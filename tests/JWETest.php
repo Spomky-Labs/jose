@@ -23,10 +23,10 @@ class JWETest extends \PHPUnit_Framework_TestCase
     {
         $jwe = new JWE();
         $jwe->setProtectedHeader([
-            'jty'  => 'JWT',
-            'cty'  => 'JOSE+JSON',
+            'jty' => 'JWT',
+            'cty' => 'JOSE+JSON',
             'crit' => ['alg', 'iss'],
-            'zip'  => 'DEF',
+            'zip' => 'DEF',
         ]);
         $jwe->setProtectedHeaderValue('foo', 'www.example.com');
         $jwe->setUnprotectedHeader([

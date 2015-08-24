@@ -44,7 +44,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK([
             'kty' => 'oct',
-            'k'   => 'foo',
+            'k' => 'foo',
         ]);
         $hmac = new HS256();
         $data = 'Je suis Charlie';
@@ -62,7 +62,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK([
             'kty' => 'oct',
-            'k'   => 'foo',
+            'k' => 'foo',
         ]);
         $hmac = new HS384();
         $data = 'Je suis Charlie';
@@ -80,7 +80,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK([
             'kty' => 'oct',
-            'k'   => 'foo',
+            'k' => 'foo',
         ]);
         $hmac = new HS512();
         $data = 'Je suis Charlie';

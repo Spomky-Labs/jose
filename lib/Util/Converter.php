@@ -214,7 +214,7 @@ class Converter
         $signatures = [];
         foreach ($input['signatures'] as $signature) {
             $temp = [
-                'payload'   => $input['payload'],
+                'payload' => $input['payload'],
                 'signature' => $signature['signature'],
             ];
             foreach (['protected', 'header'] as $key) {
@@ -387,7 +387,7 @@ class Converter
         }
 
         return [
-            'payload'    => $input['payload'],
+            'payload' => $input['payload'],
             'signatures' => [$signature],
         ];
     }
@@ -442,7 +442,7 @@ class Converter
     private static function fromCompactSerializationSignatureToSerialization(array $parts)
     {
         return [
-            'payload'    => $parts[1],
+            'payload' => $parts[1],
             'signatures' => [
                 [
                     'protected' => $parts[0],

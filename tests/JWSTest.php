@@ -23,8 +23,8 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     {
         $jws = new JWS();
         $jws->setProtectedHeader([
-            'jty'  => 'JWT',
-            'cty'  => 'JOSE+JSON',
+            'jty' => 'JWT',
+            'cty' => 'JOSE+JSON',
             'crit' => ['alg', 'iss'],
         ]);
         $jws->setUnprotectedHeader([

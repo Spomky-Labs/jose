@@ -12,46 +12,176 @@
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
+use Jose\Compression\CompressionManagerInterface;
 use Jose\JSONSerializationModes;
+use Jose\JWAManagerInterface;
 use Jose\JWKInterface;
+use Jose\JWKManagerInterface;
 use Jose\JWKSetInterface;
+use Jose\JWKSetManagerInterface;
 use Jose\JWTInterface;
+use Jose\JWTManagerInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
 use Jose\SignerInterface;
+use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
- * Class representing a JSON Web Token Manager.
  */
-abstract class Signer implements SignerInterface
+class Signer implements SignerInterface
 {
     use KeyChecker;
 
     /**
+     * @var \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    private $payload_converter;
+
+    /**
+     * @var \Jose\JWTManagerInterface
+     */
+    private $jwt_manager;
+
+    /**
+     * @var \Jose\JWKManagerInterface
+     */
+    private $jwk_manager;
+
+    /**
+     * @var \Jose\JWKSetManagerInterface
+     */
+    private $jwkset_manager;
+
+    /**
+     * @var \Jose\JWAManagerInterface
+     */
+    private $jwa_manager;
+
+    /**
+     * @var \Jose\Compression\CompressionManagerInterface
+     */
+    private $compression_manager;
+
+    /**
+     * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
+     *
+     * @return self
+     */
+    public function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
+    {
+        $this->payload_converter = $payload_converter;
+
+        return $this;
+    }
+
+    /**
      * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
      */
-    abstract protected function getPayloadConverter();
+    public function getPayloadConverter()
+    {
+        return $this->payload_converter;
+    }
+
+    /**
+     * @param \Jose\JWTManagerInterface $jwt_manager
+     *
+     * @return self
+     */
+    public function setJWTManager(JWTManagerInterface $jwt_manager)
+    {
+        $this->jwt_manager = $jwt_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWTManagerInterface
      */
-    abstract protected function getJWTManager();
+    public function getJWTManager()
+    {
+        return $this->jwt_manager;
+    }
+
+    /**
+     * @param \Jose\JWKManagerInterface $jwk_manager
+     *
+     * @return self
+     */
+    public function setJWKManager(JWKManagerInterface $jwk_manager)
+    {
+        $this->jwk_manager = $jwk_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWKManagerInterface
      */
-    abstract protected function getJWKManager();
+    public function getJWKManager()
+    {
+        return $this->jwk_manager;
+    }
+
+    /**
+     * @param \Jose\JWKSetManagerInterface $jwkset_manager
+     *
+     * @return self
+     */
+    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
+    {
+        $this->jwset_manager = $jwkset_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWKSetManagerInterface
      */
-    abstract protected function getJWKSetManager();
+    public function getJWKSetManager()
+    {
+        return $this->jwkset_manager;
+    }
+
+    /**
+     * @param \Jose\JWAManagerInterface $jwa_manager
+     *
+     * @return self
+     */
+    public function setJWAManager(JWAManagerInterface $jwa_manager)
+    {
+        $this->jwa_manager = $jwa_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWAManagerInterface
      */
-    abstract protected function getJWAManager();
+    public function getJWAManager()
+    {
+        return $this->jwa_manager;
+    }
+
+    /**
+     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
+     *
+     * @return self
+     */
+    public function setCompressionManager(CompressionManagerInterface $compression_manager)
+    {
+        $this->compression_manager = $compression_manager;
+
+        return $this;
+    }
+
+    /**
+     * @return \Jose\Compression\CompressionManagerInterface
+     */
+    public function getCompressionManager()
+    {
+        return $this->compression_manager;
+    }
 
     /**
      * @param $input
@@ -86,7 +216,7 @@ abstract class Signer implements SignerInterface
         $jwt_payload = Base64Url::encode($input->getPayload());
 
         $signatures = [
-            'payload'    => $jwt_payload,
+            'payload' => $jwt_payload,
             'signatures' => [],
         ];
 

@@ -47,17 +47,26 @@ use SpomkyLabs\Jose\Algorithm\Signature\PS512;
 use SpomkyLabs\Jose\Algorithm\Signature\RS256;
 use SpomkyLabs\Jose\Algorithm\Signature\RS384;
 use SpomkyLabs\Jose\Algorithm\Signature\RS512;
+use SpomkyLabs\Jose\Checker\AudienceChecker;
+use SpomkyLabs\Jose\Checker\CheckerManager;
+use SpomkyLabs\Jose\Checker\CriticalChecker;
+use SpomkyLabs\Jose\Checker\ExpirationChecker;
+use SpomkyLabs\Jose\Checker\IssuedAtChecker;
+use SpomkyLabs\Jose\Checker\NotBeforeChecker;
 use SpomkyLabs\Jose\Compression\CompressionManager;
 use SpomkyLabs\Jose\Compression\Deflate;
 use SpomkyLabs\Jose\Compression\GZip;
 use SpomkyLabs\Jose\Compression\ZLib;
+use SpomkyLabs\Jose\Encrypter;
 use SpomkyLabs\Jose\JWAManager;
-use SpomkyLabs\Test\Stub\Encrypter;
+use SpomkyLabs\Jose\Loader;
+use SpomkyLabs\Jose\Payload\JWKConverter;
+use SpomkyLabs\Jose\Payload\JWKSetConverter;
+use SpomkyLabs\Jose\Payload\PayloadConverterManager;
+use SpomkyLabs\Jose\Signer;
+use SpomkyLabs\Jose\JWTManager;
 use SpomkyLabs\Test\Stub\JWKManager;
 use SpomkyLabs\Test\Stub\JWKSetManager;
-use SpomkyLabs\Test\Stub\JWTManager;
-use SpomkyLabs\Test\Stub\Loader;
-use SpomkyLabs\Test\Stub\Signer;
 
 /**
  * Class TestCase.
@@ -74,7 +83,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
                ->setJWTManager($this->getJWTManager())
                ->setJWKManager($this->getJWKManager())
                ->setJWKSetManager($this->getJWKSetManager())
-               ->setJWAManager($this->getJWAManager());
+               ->setJWAManager($this->getJWAManager())
+               ->setCheckerManager($this->getCheckerManager())
+               ->setPayloadConverter($this->getPayloadConverterManager());
 
         return $loader;
     }
@@ -88,7 +99,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $signer->setJWTManager($this->getJWTManager())
                ->setJWKManager($this->getJWKManager())
                ->setJWKSetManager($this->getJWKSetManager())
-               ->setJWAManager($this->getJWAManager());
+               ->setJWAManager($this->getJWAManager())
+               ->setPayloadConverter($this->getPayloadConverterManager());
 
         return $signer;
     }
@@ -103,13 +115,42 @@ class TestCase extends \PHPUnit_Framework_TestCase
                   ->setJWKManager($this->getJWKManager())
                   ->setJWKSetManager($this->getJWKSetManager())
                   ->setJWTManager($this->getJWTManager())
-                  ->setJWAManager($this->getJWAManager());
+                  ->setJWAManager($this->getJWAManager())
+                  ->setPayloadConverter($this->getPayloadConverterManager());
 
         return $encrypter;
     }
 
     /**
-     * @return JWTManager
+     * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     */
+    protected function getCheckerManager()
+    {
+        $checker_manager = new CheckerManager();
+
+        $checker_manager->addChecker(new AudienceChecker('My service'))
+                        ->addChecker(new CriticalChecker())
+                        ->addChecker(new ExpirationChecker())
+                        ->addChecker(new NotBeforeChecker())
+                        ->addChecker(new IssuedAtChecker());
+
+        return $checker_manager;
+    }
+
+    /**
+     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    protected function getPayloadConverterManager()
+    {
+        $payload_converter_manager = new PayloadConverterManager();
+        $payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
+                                  ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+
+        return $payload_converter_manager;
+    }
+
+    /**
+     * @return \SpomkyLabs\Jose\JWTManager
      */
     protected function getJWTManager()
     {
@@ -119,7 +160,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return CompressionManager
+     * @return \SpomkyLabs\Jose\Compression\CompressionManager
      */
     protected function getCompressionManager()
     {
@@ -132,7 +173,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return JWKManager
+     * @return \SpomkyLabs\Test\Stub\JWKManager
      */
     protected function getJWKManager()
     {
@@ -142,7 +183,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return JWKSetManager
+     * @return \SpomkyLabs\Test\Stub\JWKSetManager
      */
     protected function getJWKSetManager()
     {
@@ -153,7 +194,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return JWAManager
+     * @return \SpomkyLabs\Jose\JWAManager
      */
     protected function getJWAManager()
     {

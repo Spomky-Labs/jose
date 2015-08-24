@@ -217,8 +217,8 @@ class RSAKey extends Sequence
     {
         $values = [
             'kty' => 'RSA',
-            'n'   => $this->n,
-            'e'   => $this->e,
+            'n' => $this->n,
+            'e' => $this->e,
         ];
         if (true === $this->private) {
             $values['p'] = $this->p;
@@ -239,7 +239,7 @@ class RSAKey extends Sequence
     {
         $tmp = base64_encode($this->getBinary());
 
-        for ($i = 0; $i < strlen($tmp); $i++) {
+        for ($i = 0; $i < strlen($tmp); ++$i) {
             if (($i + 2) % 65 === 0) {
                 $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
             }

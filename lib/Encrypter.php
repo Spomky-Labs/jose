@@ -12,69 +12,212 @@
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
+use Jose\Compression\CompressionManagerInterface;
 use Jose\EncrypterInterface;
 use Jose\EncryptionInstructionInterface;
 use Jose\JSONSerializationModes;
+use Jose\JWAManagerInterface;
 use Jose\JWKInterface;
+use Jose\JWKManagerInterface;
 use Jose\JWKSetInterface;
+use Jose\JWKSetManagerInterface;
 use Jose\JWTInterface;
+use Jose\JWTManagerInterface;
 use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
+use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
- * Class representing a JSON Web Token Manager.
  */
-abstract class Encrypter implements EncrypterInterface
+class Encrypter implements EncrypterInterface
 {
     use KeyChecker;
 
     /**
+     * @var \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     */
+    private $payload_converter;
+
+    /**
+     * @var \Jose\JWTManagerInterface
+     */
+    private $jwt_manager;
+
+    /**
+     * @var \Jose\JWKManagerInterface
+     */
+    private $jwk_manager;
+
+    /**
+     * @var \Jose\JWKSetManagerInterface
+     */
+    private $jwkset_manager;
+
+    /**
+     * @var \Jose\JWAManagerInterface
+     */
+    private $jwa_manager;
+
+    /**
+     * @var \Jose\Compression\CompressionManagerInterface
+     */
+    private $compression_manager;
+
+    /**
+     * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
+     *
+     * @return self
+     */
+    public function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
+    {
+        $this->payload_converter = $payload_converter;
+
+        return $this;
+    }
+
+    /**
      * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
      */
-    abstract protected function getPayloadConverter();
+    public function getPayloadConverter()
+    {
+        return $this->payload_converter;
+    }
+
+    /**
+     * @param \Jose\JWTManagerInterface $jwt_manager
+     *
+     * @return self
+     */
+    public function setJWTManager(JWTManagerInterface $jwt_manager)
+    {
+        $this->jwt_manager = $jwt_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWTManagerInterface
      */
-    abstract protected function getJWTManager();
+    public function getJWTManager()
+    {
+        return $this->jwt_manager;
+    }
+
+    /**
+     * @param \Jose\JWKManagerInterface $jwk_manager
+     *
+     * @return self
+     */
+    public function setJWKManager(JWKManagerInterface $jwk_manager)
+    {
+        $this->jwk_manager = $jwk_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWKManagerInterface
      */
-    abstract protected function getJWKManager();
+    public function getJWKManager()
+    {
+        return $this->jwk_manager;
+    }
+
+    /**
+     * @param \Jose\JWKSetManagerInterface $jwkset_manager
+     *
+     * @return self
+     */
+    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
+    {
+        $this->jwset_manager = $jwkset_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWKSetManagerInterface
      */
-    abstract protected function getJWKSetManager();
+    public function getJWKSetManager()
+    {
+        return $this->jwkset_manager;
+    }
+
+    /**
+     * @param \Jose\JWAManagerInterface $jwa_manager
+     *
+     * @return self
+     */
+    public function setJWAManager(JWAManagerInterface $jwa_manager)
+    {
+        $this->jwa_manager = $jwa_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\JWAManagerInterface
      */
-    abstract protected function getJWAManager();
+    public function getJWAManager()
+    {
+        return $this->jwa_manager;
+    }
+
+    /**
+     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
+     *
+     * @return self
+     */
+    public function setCompressionManager(CompressionManagerInterface $compression_manager)
+    {
+        $this->compression_manager = $compression_manager;
+
+        return $this;
+    }
 
     /**
      * @return \Jose\Compression\CompressionManagerInterface
      */
-    abstract protected function getCompressionManager();
+    public function getCompressionManager()
+    {
+        return $this->compression_manager;
+    }
+
+    protected function createCEK($size)
+    {
+        return $this->generateRandomString($size / 8);
+    }
+
+    protected function createIV($size)
+    {
+        return $this->generateRandomString($size / 8);
+    }
 
     /**
-     * @param int $size The size of the CEK in bits
+     * @param int $length
      *
      * @return string
-     */
-    abstract protected function createCEK($size);
-
-    /**
-     * @param int $size The size of the IV in bits
      *
-     * @return string
+     * @throws \Exception
      */
-    abstract protected function createIV($size);
+    private function generateRandomString($length)
+    {
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
+        } elseif (function_exists('mcrypt_create_iv')) {
+            return mcrypt_create_iv($length);
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
+            return openssl_random_pseudo_bytes($length);
+        } elseif (class_exists('\phpseclib\Crypt\Random')) {
+            return \phpseclib\Crypt\Random::string($length);
+        } else {
+            throw new \Exception('Unable to create a random string');
+        }
+    }
 
     /**
      * @param $input
@@ -157,12 +300,12 @@ abstract class Encrypter implements EncrypterInterface
         $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
 
         $values = [
-            'ciphertext'    => $jwt_ciphertext,
-            'protected'     => $jwt_shared_protected_header,
-            'unprotected'   => $unprotected_header,
-            'iv'            => $jwt_iv,
-            'tag'           => $jwt_tag,
-            'aad'           => $jwt_aad,
+            'ciphertext' => $jwt_ciphertext,
+            'protected' => $jwt_shared_protected_header,
+            'unprotected' => $unprotected_header,
+            'iv' => $jwt_iv,
+            'tag' => $jwt_tag,
+            'aad' => $jwt_aad,
         ];
         foreach ($values as $key => $value) {
             if (!empty($value)) {

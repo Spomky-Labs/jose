@@ -249,8 +249,8 @@ class ECKey extends Sequence
         $values = [
             'kty' => 'EC',
             'crv' => $this->curve,
-            'x'   => $this->x,
-            'y'   => $this->y,
+            'x' => $this->x,
+            'y' => $this->y,
         ];
         if (true === $this->private) {
             $values['d'] = $this->d;
@@ -266,7 +266,7 @@ class ECKey extends Sequence
     {
         $tmp = base64_encode($this->getBinary());
 
-        for ($i = 0; $i < strlen($tmp); $i++) {
+        for ($i = 0; $i < strlen($tmp); ++$i) {
             if (($i + 2) % 65 === 0) {
                 $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
             }

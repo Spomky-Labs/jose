@@ -16,7 +16,7 @@ use SpomkyLabs\Jose\Algorithm\Signature\ES256;
 use SpomkyLabs\Jose\Algorithm\Signature\ES384;
 use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use SpomkyLabs\Jose\KeyConverter\ECConverter;
 
 /**
  * Class ECDSASignatureTest.
@@ -49,8 +49,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
-            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
-            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'x' => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y' => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
         ]);
 
         $ecdsa = new ES256();
@@ -69,9 +69,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
-            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
-            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
-            'd'   => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
+            'x' => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y' => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd' => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ]);
 
         $ecdsa = new ES256();
@@ -88,9 +88,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES256SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
         $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.encrypted.key', 'test'));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key'));
 
         $ecdsa = new ES256();
         $data = 'Je suis Charlie';
@@ -105,9 +105,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES384SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
         $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.encrypted.key', 'test'));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key'));
 
         $ecdsa = new ES384();
         $data = 'Je suis Charlie';
@@ -122,9 +122,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     public function testES512SignAndVerify()
     {
         $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
+        $public_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
         $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.encrypted.key', 'test'));
+        $private_key->setValues(ECConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key'));
 
         $ecdsa = new ES512();
         $data = 'Je suis Charlie';
@@ -141,8 +141,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-521',
-            'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-            'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
+            'x' => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
+            'y' => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
         ]);
 
         $ecdsa = new ES512();
@@ -161,9 +161,9 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $key = new JWK([
             'kty' => 'EC',
             'crv' => 'P-521',
-            'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-            'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-            'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
+            'x' => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
+            'y' => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
+            'd' => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
         ]);
 
         $ecdsa = new ES512();

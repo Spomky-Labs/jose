@@ -9,12 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test\Stub;
+namespace SpomkyLabs\Jose;
 
 use Jose\JWTManagerInterface;
-use SpomkyLabs\Jose\JWE;
-use SpomkyLabs\Jose\JWS;
-use SpomkyLabs\Jose\JWT;
 
 /**
  * Class representing a JSON Web Signature.

@@ -61,7 +61,7 @@ abstract class HMAC implements SignatureInterface
             return false;
         }
 
-        for ($i = 0; $i < $signedInputLength; $i++) {
+        for ($i = 0; $i < $signedInputLength; ++$i) {
             $result |= (ord($signature[$i]) ^ ord($signedInput[$i]));
         }
 
