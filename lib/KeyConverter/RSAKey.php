@@ -217,8 +217,8 @@ class RSAKey extends Sequence
     {
         $values = [
             'kty' => 'RSA',
-            'n' => $this->n,
-            'e' => $this->e,
+            'n'   => $this->n,
+            'e'   => $this->e,
         ];
         if (true === $this->private) {
             $values['p'] = $this->p;

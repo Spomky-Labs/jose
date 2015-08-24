@@ -216,7 +216,7 @@ class Signer implements SignerInterface
         $jwt_payload = Base64Url::encode($input->getPayload());
 
         $signatures = [
-            'payload' => $jwt_payload,
+            'payload'    => $jwt_payload,
             'signatures' => [],
         ];
 

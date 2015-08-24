@@ -99,7 +99,7 @@ class ECConverter
         $asn1 = new ASN1();
 
         $asnSubjectPrivateKeyInfo = [
-            'type' => ASN1::TYPE_SEQUENCE,
+            'type'     => ASN1::TYPE_SEQUENCE,
             'children' => [
                 'version' => [
                     'type' => ASN1::TYPE_INTEGER,
@@ -136,7 +136,7 @@ class ECConverter
         $asn1 = new ASN1();
 
         $asnAlgorithmIdentifier = [
-            'type' => ASN1::TYPE_SEQUENCE,
+            'type'     => ASN1::TYPE_SEQUENCE,
             'children' => [
                 'ansi-X9-62' => [
                     'type' => ASN1::TYPE_OBJECT_IDENTIFIER,
@@ -148,9 +148,9 @@ class ECConverter
         ];
 
         $asnSubjectPublicKeyInfo = [
-            'type' => ASN1::TYPE_SEQUENCE,
+            'type'     => ASN1::TYPE_SEQUENCE,
             'children' => [
-                'algorithm' => $asnAlgorithmIdentifier,
+                'algorithm'        => $asnAlgorithmIdentifier,
                 'subjectPublicKey' => [
                     'type' => ASN1::TYPE_BIT_STRING,
                 ],
