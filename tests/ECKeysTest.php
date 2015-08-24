@@ -51,6 +51,8 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPublicEC384Key()
     {
+        $this->markTestIncomplete();
+        return;
         $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key');
         $this->assertEquals($details, [
             'kty' => 'EC',
@@ -81,6 +83,8 @@ class ECKeysTest extends TestCase
      */
     public function testLoadPublicEC512Key()
     {
+        $this->markTestIncomplete();
+        return;
         $details = KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key');
         $this->assertEquals($details, [
             'kty' => 'EC',
