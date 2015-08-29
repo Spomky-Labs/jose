@@ -19,6 +19,10 @@ trait JWable
     /**
      * @var array
      */
+    protected $encoded_protected_header = '';
+    /**
+     * @var array
+     */
     protected $protected_headers = [];
     /**
      * @var array
@@ -28,6 +32,14 @@ trait JWable
      * @var null
      */
     protected $payload = null;
+
+    /**
+     * @return array
+     */
+    public function getEncodedProtectedHeader()
+    {
+        return $this->encoded_protected_header;
+    }
 
     /**
      * @return array
@@ -50,6 +62,18 @@ trait JWable
     public function getPayload()
     {
         return $this->payload;
+    }
+
+    /**
+     * @param array $encoded_protected_header
+     *
+     * @return self
+     */
+    public function setEncodedProtectedHeader($encoded_protected_header)
+    {
+        $this->encoded_protected_header = $encoded_protected_header;
+
+        return $this;
     }
 
     /**

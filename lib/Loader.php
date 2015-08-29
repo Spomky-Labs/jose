@@ -16,6 +16,7 @@ use Jose\Compression\CompressionManagerInterface;
 use Jose\JSONSerializationModes;
 use Jose\JWAInterface;
 use Jose\JWAManagerInterface;
+use Jose\JWEInterface;
 use Jose\JWKInterface;
 use Jose\JWKManagerInterface;
 use Jose\JWKSetInterface;
@@ -30,6 +31,7 @@ use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\SignatureInterface;
+use phpseclib\Crypt\Base;
 use SpomkyLabs\Jose\Checker\CheckerManagerInterface;
 use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
 use SpomkyLabs\Jose\Util\Converter;
@@ -220,7 +222,7 @@ class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function load($input, JWKSetInterface $jwk_set = null)
+    public function load($input)
     {
         $json = Converter::convert($input, JSONSerializationModes::JSON_SERIALIZATION, false);
         if (is_array($json)) {
@@ -228,10 +230,41 @@ class Loader implements LoaderInterface
                 return $this->loadSerializedJsonJWS($json);
             }
             if (array_key_exists('recipients', $json)) {
-                return $this->loadSerializedJsonJWE($json, $jwk_set);
+                return $this->loadSerializedJsonJWE($json);
             }
         }
         throw new \InvalidArgumentException('Unable to load the input');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set = null)
+    {
+        $complete_header = array_merge(
+            $jwe->getProtectedHeader(),
+            $jwe->getUnprotectedHeader()
+        );
+
+        $this->checkCompleteHeader($complete_header);
+
+        if (is_null($jwk_set)) {
+            $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+        }
+        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
+
+        foreach ($jwk_set as $jwk) {
+            if (!$this->checkKeyUsage($jwk, 'decryption')) {
+                continue;
+            }
+            $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
+
+            if (!is_null($cek)) {
+                return $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
+            }
+        }
+        return false;
     }
 
     /**
@@ -382,9 +415,9 @@ class Loader implements LoaderInterface
      * @param string|null                                $encrypted_cek
      * @param array                                      $header
      *
-     * @return string
+     * @return string|null
      */
-    public function getCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    public function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($key, $header);
@@ -401,95 +434,68 @@ class Loader implements LoaderInterface
 
     /**
      * @param array                 $data
-     * @param \Jose\JWKSetInterface $jwk_set
      *
      * @return \Jose\JWEInterface|\Jose\JWEInterface[]
      */
-    protected function loadSerializedJsonJWE(array $data, JWKSetInterface $jwk_set = null)
+    protected function loadSerializedJsonJWE(array $data)
     {
-        $ciphertext = Base64Url::decode($data['ciphertext']);
-        $protected = array_key_exists('protected', $data) ? json_decode(Base64Url::decode($data['protected']), true) : [];
-        $unprotected = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
-        $aad = array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null;
-        $tag = array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null;
-        $iv = array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null;
-
         $result = [];
-        foreach ($data['recipients'] as $recipient) {
+        foreach($data['recipients'] as $recipient) {
+            $encoded_protected_header = array_key_exists('protected', $data) ? $data['protected'] : '';
+            $protected_header = empty($encoded_protected_header) ? [] : json_decode(Base64Url::decode($encoded_protected_header), true);
+            $unprotected_header = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : [];
-            $complete_header = array_merge($protected, $unprotected, $header);
 
-            $cek = $this->decryptCEK($recipient, $complete_header, $jwk_set);
-            if (!is_null($cek)) {
-                $result[] = $this->decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data['protected'], $tag, $complete_header);
-            }
+            $jwe = $this->getJWTManager()->createJWE();
+            $jwe->setAAD(array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null)
+                ->setCiphertext(Base64Url::decode($data['ciphertext']))
+                ->setEncryptedKey(array_key_exists('encrypted_key', $recipient) ? Base64Url::decode($recipient['encrypted_key']) : null)
+                ->setIV(array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null)
+                ->setTag($tag = array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null)
+                ->setProtectedHeader($protected_header)
+                ->setEncodedProtectedHeader($encoded_protected_header)
+                ->setUnprotectedHeader(array_merge($unprotected_header, $header));
+            $result[] = $jwe;
         }
 
         return count($result) > 1 ? $result : current($result);
     }
 
     /**
-     * @param string      $ciphertext
-     * @param string      $cek
-     * @param string|null $iv
-     * @param string|null $aad
-     * @param             $unprotected
-     * @param             $header
-     * @param             $protected
-     * @param             $data_protected
-     * @param string|null $tag
-     * @param array       $complete_header
-     *
-     * @throws \Exception
+     * @param \Jose\JWEInterface                         $jwe
+     * @param string                                     $cek
+     * @param \Jose\Operation\ContentEncryptionInterface $content_encryption_algorithm
      *
      * @return \Jose\JWEInterface
      */
-    protected function decryptPayload($ciphertext, $cek, $iv, $aad, $unprotected, $header, $protected, $data_protected, $tag, array $complete_header)
+    protected function decryptPayload(JWEInterface &$jwe, $cek, $content_encryption_algorithm)
     {
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
+        $payload = $content_encryption_algorithm->decryptContent(
+            $jwe->getCiphertext(),
+            $cek,
+            $jwe->getIV(),
+            $jwe->getAAD(),
+            $jwe->getEncodedProtectedHeader(),
+            $jwe->getTag()
+        );
 
-        $payload = $content_encryption_algorithm->decryptContent($ciphertext, $cek, $iv, $aad, $data_protected, $tag);
-
-        $this->uncompressedPayload($payload, $complete_header);
-
-        $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
-
-        $jwe = $this->getJWTManager()->createJWE();
-        $jwe->setProtectedHeader($protected)
-            ->setUnprotectedHeader(array_merge($unprotected, $header))
-            ->setPayload($payload);
-
-        return $jwe;
-    }
-
-    /**
-     * @param array                 $recipient
-     * @param array                 $complete_header
-     * @param \Jose\JWKSetInterface $jwk_set
-     *
-     * @return string|null
-     */
-    protected function decryptCEK(array $recipient, array $complete_header, JWKSetInterface $jwk_set = null)
-    {
-        $encrypted_key = array_key_exists('encrypted_key', $recipient) ? Base64Url::decode($recipient['encrypted_key']) : null;
-
-        $this->checkCompleteHeader($complete_header);
-        $keys = $jwk_set;
-        if (is_null($keys)) {
-            $keys = $this->getKeysFromCompleteHeader($complete_header);
+        if (is_null($payload)) {
+            return false;
         }
-        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
 
-        foreach ($keys as $key) {
-            if (!$this->checkKeyUsage($key, 'decryption')) {
-                continue;
-            }
-            $cek = $this->getCEK($key_encryption_algorithm, $content_encryption_algorithm, $key, $encrypted_key, $complete_header);
-            if (!is_null($cek)) {
-                return $cek;
+        if (!is_null($jwe->getZip())) {
+            $compression_method = $this->getCompressionMethod($jwe->getZip());
+            $payload = $compression_method->uncompress($payload);
+            if (!is_string($payload)) {
+                throw new \RuntimeException('Decompression failed');
             }
         }
+
+        $payload = $this->getPayloadConverter()->convertStringToPayload(array_merge($jwe->getProtectedHeader(), $jwe->getUnprotectedHeader()), $payload);
+
+        $jwe->setPayload($payload);
+
+        return true;
     }
 
     /**
@@ -540,21 +546,6 @@ class Loader implements LoaderInterface
         }
 
         return $content_encryption_algorithm;
-    }
-
-    /**
-     * @param string $payload
-     * @param array  $complete_header
-     */
-    protected function uncompressedPayload(&$payload, array $complete_header)
-    {
-        if (array_key_exists('zip', $complete_header)) {
-            $compression_method = $this->getCompressionMethod($complete_header['zip']);
-            $payload = $compression_method->uncompress($payload);
-            if (!is_string($payload)) {
-                throw new \RuntimeException('Decompression failed');
-            }
-        }
     }
 
     protected function getCompressionMethod($method)

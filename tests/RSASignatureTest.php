@@ -460,12 +460,17 @@ class RSASignatureTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
+        $loaded = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
 
-        $this->assertInstanceOf('Jose\JWEInterface', $result);
-        $this->assertEquals('Live long and prosper.', $result->getPayload());
-        $this->assertEquals('RSA1_5', $result->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $result->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertEquals('RSA1_5', $loaded->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getPayload());
+
+        $result = $loader->decrypt($loaded);
+
+        $this->assertTrue($result);
+        $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 
     /**
@@ -478,19 +483,29 @@ class RSASignatureTest extends TestCase
         /*
          * @var \Jose\JWEInterface[]
          */
-        $result = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"recipients":[{"header":{"alg":"RSA1_5","kid":"2011-04-29"},"encrypted_key":"UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A"},{"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"}],"iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
+        $loaded = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"recipients":[{"header":{"alg":"RSA1_5","kid":"2011-04-29"},"encrypted_key":"UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A"},{"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"}],"iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
 
-        $this->assertEquals(2, count($result));
+        $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf('Jose\JWEInterface', $result[0]);
-        $this->assertEquals('Live long and prosper.', $result[0]->getPayload());
-        $this->assertEquals('RSA1_5', $result[0]->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $result[0]->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded[0]);
+        $this->assertEquals('RSA1_5', $loaded[0]->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded[0]->getEncryptionAlgorithm());
+        $this->assertNull($loaded[0]->getPayload());
 
-        $this->assertInstanceOf('Jose\JWEInterface', $result[1]);
-        $this->assertEquals('Live long and prosper.', $result[1]->getPayload());
-        $this->assertEquals('A128KW', $result[1]->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $result[1]->getEncryptionAlgorithm());
+        $result = $loader->decrypt($loaded[0]);
+
+        $this->assertTrue($result);
+        $this->assertEquals('Live long and prosper.', $loaded[0]->getPayload());
+
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded[1]);
+        $this->assertEquals('A128KW', $loaded[1]->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded[1]->getEncryptionAlgorithm());
+        $this->assertNull($loaded[1]->getPayload());
+
+        $result = $loader->decrypt($loaded[1]);
+
+        $this->assertTrue($result);
+        $this->assertEquals('Live long and prosper.', $loaded[1]->getPayload());
     }
 
     /**

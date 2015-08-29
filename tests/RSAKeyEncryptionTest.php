@@ -143,12 +143,17 @@ class RSAKeyEncryptionTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg.48V1_ALb6US04U3b.5eym8TW_c8SuK0ltJ3rpYIzOeDQz7TALvtu6UG9oMo4vpzs9tX_EFShS8iB7j6jiSdiwkIr3ajwQzaBtQD_A.XFBoMYUZodetZdvTiFvSkQ');
+        $loaded = $loader->load('eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg.48V1_ALb6US04U3b.5eym8TW_c8SuK0ltJ3rpYIzOeDQz7TALvtu6UG9oMo4vpzs9tX_EFShS8iB7j6jiSdiwkIr3ajwQzaBtQD_A.XFBoMYUZodetZdvTiFvSkQ');
 
-        $this->assertInstanceOf("Jose\JWEInterface", $result);
-        $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $result->getPayload());
-        $this->assertEquals('RSA-OAEP', $result->getAlgorithm());
-        $this->assertEquals('A256GCM', $result->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertEquals('RSA-OAEP', $loaded->getAlgorithm());
+        $this->assertEquals('A256GCM', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getPayload());
+
+        $result = $loader->decrypt($loaded);
+
+        $this->assertTrue($result);
+        $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $loaded->getPayload());
     }
 
     /**
@@ -158,12 +163,17 @@ class RSAKeyEncryptionTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
+        $loaded = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
 
-        $this->assertInstanceOf("Jose\JWEInterface", $result);
-        $this->assertEquals('Live long and prosper.', $result->getPayload());
-        $this->assertEquals('RSA1_5', $result->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $result->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertEquals('RSA1_5', $loaded->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getPayload());
+
+        $result = $loader->decrypt($loaded);
+
+        $this->assertTrue($result);
+        $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 
     /**
@@ -173,11 +183,16 @@ class RSAKeyEncryptionTest extends TestCase
     {
         $loader = $this->getLoader();
 
-        $result = $loader->load('eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.U0m_YmjN04DJvceFICbCVQ');
+        $loaded = $loader->load('eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.U0m_YmjN04DJvceFICbCVQ');
 
-        $this->assertInstanceOf("Jose\JWEInterface", $result);
-        $this->assertEquals('Live long and prosper.', $result->getPayload());
-        $this->assertEquals('A128KW', $result->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $result->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertEquals('A128KW', $loaded->getAlgorithm());
+        $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
+        $this->assertNull($loaded->getPayload());
+
+        $result = $loader->decrypt($loaded);
+
+        $this->assertTrue($result);
+        $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 }

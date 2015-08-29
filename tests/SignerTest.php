@@ -32,7 +32,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $signatures = $signer->sign($input, []);
+        $signer->sign($input, []);
     }
 
     /**
@@ -56,7 +56,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $signatures = $signer->sign($input, ['Bad instruction']);
+        $signer->sign($input, ['Bad instruction']);
     }
 
     /**
@@ -73,7 +73,7 @@ class SignerTest extends TestCase
         $instruction->setKey($this->getKey1())
                     ->setProtectedHeader([]);
 
-        $signatures = $signer->sign($input, [$instruction]);
+        $signer->sign($input, [$instruction]);
     }
 
     /**
@@ -90,7 +90,7 @@ class SignerTest extends TestCase
         $instruction->setKey($this->getKey1())
                     ->setProtectedHeader(['alg' => 'foo']);
 
-        $signatures = $signer->sign($input, [$instruction]);
+        $signer->sign($input, [$instruction]);
     }
 
     /**
@@ -107,7 +107,7 @@ class SignerTest extends TestCase
         $instruction->setKey($this->getKey1())
                     ->setProtectedHeader(['alg' => 'HS512']);
 
-        $signatures = $signer->sign($input, [$instruction], 'foo_serialization');
+        $signer->sign($input, [$instruction], 'foo_serialization');
     }
 
     /**
