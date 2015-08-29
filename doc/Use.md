@@ -147,7 +147,13 @@ To decrypt the message, Bob will load the data he received:
 ```php
 <?php
 
-$result = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r");
+//In this case, the result is a JWE object.
+//The payload is still encrypted, but all other information such as protected header or unprotected header are available
+$jwe = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r");
+
+//The result is a boolean. If true, the payload of the JWE is populated with the decrypted value
+$result = $loader->decrypt($jwe);
+echo $result->getPayload(); // "Meet me in the front of train station at 8:00AM"
 ```
 
 If you want to use a specific key set, you can pass it as second argument.
@@ -157,11 +163,7 @@ If you want to use a specific key set, you can pass it as second argument.
 
 $my_keyset = ...; //A JWKSet object that contains keys.
 
-$result = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r", $my_keyset);
-```
+$jwe = $loader->load("eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMi...8drPvQGxL6L_r", $my_keyset);
 
-The variable `$result` now contains an object that implements JWEInterface. You can get the headers (protected or unprotected) and the message of Alice: 
-
-```php
-echo $result->getPayload(); // "Meet me in the front of train station at 8:00AM"
+$result = $loader->decrypt($jwe);
 ```
