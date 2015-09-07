@@ -294,7 +294,7 @@ class Converter
             }
             $temp = [
                 $signature['protected'],
-                isset($input['payload'])?$input['payload']:'',
+                isset($input['payload']) ? $input['payload'] : '',
                 $signature['signature'],
             ];
             $signatures[] = implode('.', $temp);
@@ -467,6 +467,7 @@ class Converter
             'protected' => $parts[0],
             'signature' => $parts[2],
         ]];
+
         return $temp;
     }
 

@@ -21,6 +21,7 @@ abstract class SubjectChecker implements CheckerInterface
      * @return true
      */
     abstract protected function isSubjectValid($subject);
+
     /**
      * {@inheritdoc}
      */
