@@ -105,4 +105,9 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header['tag']);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
     }
+
+    private function isCryptooExtensionInstalled()
+    {
+        return class_exists('\Crypto\Cipher');
+    }
 }
