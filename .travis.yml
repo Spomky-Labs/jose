@@ -1,6 +1,6 @@
 language: php
 
-sudo: false
+sudo: true
 
 php:
     - 5.4
@@ -14,9 +14,14 @@ matrix:
         - php: hhvm
 
 before_script:
-    - pyrus install crypto-0.1.1
-    - curl -s http://getcomposer.org/installer | php
-    - php composer.phar install --no-interaction
+    - git clone --recursive https://github.com/bukka/php-crypto.git
+    - cd php-crypto
+    - phpize
+    - ./configure
+    - make
+    - sudo make install
+    - cd ../
+    - composer install --no-interaction
 
 script:
     - vendor/bin/phpunit --coverage-clover=coverage.clover
