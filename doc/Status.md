@@ -11,6 +11,7 @@ Status of the implementation
     * [x] JWTInterface object
     * [x] jwk+json content type (JWKInterface object)
     * [x] jwkset+json content type (JWKSetInterface object)
+    * [ ] Detached content
 
 * Serialization modes supported:
     * [x] JSON Compact Serialization Overview (JWS/JWE creation and loading)

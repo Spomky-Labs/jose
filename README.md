@@ -55,14 +55,15 @@ Depending on algorithms you want to use, please consider the following optional 
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6` with all algorithms.
 
-Tests with `PHP 7` and `HHVM` are incomplete because of [PHP Crypto](https://github.com/bukka/php-crypto).
+Some tests on `PHP 7` and `HHVM` were skipped because [PHP Crypto](https://github.com/bukka/php-crypto) is not yet supported.
+You will not be able to use GCM algorithms on these platforms.
 
 # Installation
 
 The preferred way to install this library is to rely on Composer:
 
 ```sh
-composer require spomky-labs/jose "1.0.0@dev"
+composer require spomky-labs/jose "dev-master"
 ```
 
 # Extend the library

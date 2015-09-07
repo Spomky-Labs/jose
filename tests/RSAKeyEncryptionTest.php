@@ -142,7 +142,7 @@ class RSAKeyEncryptionTest extends TestCase
     public function testLoadJWK1()
     {
         if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestIncomplete('Crypto extension not available');
+            $this->markTestSkipped('Crypto extension not available');
             return;
         }
         $loader = $this->getLoader();

@@ -28,7 +28,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA128GCMKW()
     {
         if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestIncomplete('Crypto extension not available');
+            $this->markTestSkipped('Crypto extension not available');
             return;
         }
         $header = [];
@@ -56,7 +56,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA192GCMKW()
     {
         if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestIncomplete('Crypto extension not available');
+            $this->markTestSkipped('Crypto extension not available');
             return;
         }
         $header = [];
@@ -84,7 +84,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     public function testA256GCMKW()
     {
         if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestIncomplete('Crypto extension not available');
+            $this->markTestSkipped('Crypto extension not available');
             return;
         }
         $header = [];
