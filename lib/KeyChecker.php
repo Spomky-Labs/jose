@@ -20,11 +20,9 @@ trait KeyChecker
 {
     /**
      * @param \Jose\JWKInterface $key
-     * @param                    $usage
+     * @param string             $usage
      *
-     * @throws \Exception
-     *
-     * @return bool
+     * @throws \InvalidArgumentException
      */
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {
@@ -42,7 +40,7 @@ trait KeyChecker
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Unsupported key usage.');
                 case 'encryption':
                 case 'decryption':
                     if ('enc' === $use) {
@@ -51,7 +49,7 @@ trait KeyChecker
 
                     return false;
                 default:
-                    throw new \Exception('Unsupported key usage.');
+                    throw new \InvalidArgumentException('Unsupported key usage.');
             }
         } elseif (is_array($ops)) {
             switch ($usage) {
@@ -80,10 +78,23 @@ trait KeyChecker
 
                     return false;
                 default:
-                    throw new \Exception('Unsupported key usage.');
+                    throw new \InvalidArgumentException('Unsupported key usage.');
             }
         }
 
         return true;
+    }
+
+    /**
+     * @param \Jose\JWKInterface $key
+     * @param string             $algorithm
+     *
+     * @return bool
+     */
+    protected function checkKeyAlgorithm(JWKInterface $key, $algorithm)
+    {
+        $alg = $key->getAlgorithm();
+
+        return is_null($alg) || $alg === $algorithm;
     }
 }

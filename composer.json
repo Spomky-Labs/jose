@@ -22,17 +22,17 @@
         }
     },
     "require": {
-        "php": ">=5.3",
-        "spomky-labs/jose-interface": "~2.1.1"
+        "php": ">=5.4",
+        "spomky-labs/jose-interface": "~2.1.1",
+        "spomky-labs/pbkdf2": "~1.0",
+        "spomky-labs/aes-key-wrap": "~2.0"
     },
     "require-dev": {
         "lib-openssl": "*",
         "ext-mcrypt": "*",
-        "phpseclib/phpseclib": "~2.0.0",
         "mdanter/ecc": "0.3",
-        "phpunit/phpunit": "~4.5",
-        "spomky-labs/pbkdf2": "~1.0",
-        "spomky-labs/aes-key-wrap": "~2.0"
+        "phpseclib/phpseclib": "~2.0.0",
+        "phpunit/phpunit": "~4.5"
     },
    "suggest":{
         "lib-openssl": "Required to use AES based algorithms (except AES-GCM) and for RSA/EC keys conversions.",
@@ -40,8 +40,6 @@
         "ext-mcrypt":"Required to use AES based (except AES-GCM) algorithms (only needed if lib-openssl is not enabled).",
         "phpseclib/phpseclib":"Required to use RSA based algorithms and for AES based algorithms (only if lib-openssl and ext-mcrypt are not enabled).",
         "mdanter/ecc":"Required to use Elliptic Curves based algorithms",
-        "spomky-labs/pbkdf2": "Required to use PBES2-* algorithms",
-        "spomky-labs/aes-key-wrap": "Required to use Key Wrapped (A128KW, PBES2-HS256+A128KW...) algorithms"
    },
     "extra": {
         "branch-alias": {

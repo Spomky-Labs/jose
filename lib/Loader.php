@@ -258,6 +258,9 @@ class Loader implements LoaderInterface
             if (!$this->checkKeyUsage($jwk, 'decryption')) {
                 continue;
             }
+            if (!$this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName())) {
+                continue;
+            }
             $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
 
             if (!is_null($cek)) {
@@ -281,10 +284,13 @@ class Loader implements LoaderInterface
             return false;
         }
         foreach ($jwk_set->getKeys() as $jwk) {
+            $algorithm = $this->getAlgorithm($complete_header, $jwk);
             if (!$this->checkKeyUsage($jwk, 'verification')) {
                 continue;
             }
-            $algorithm = $this->getAlgorithm($complete_header, $jwk);
+            if (!$this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName())) {
+                continue;
+            }
             if (true === $algorithm->verify($jwk, $jws->getInput(), $jws->getSignature())) {
                 return true;
             }

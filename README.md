@@ -46,10 +46,6 @@ Depending on algorithms you want to use, please consider the following optional 
     * [`mdanter/ecc`](https://github.com/mdanter/phpecc) (v0.3) library.
 * RSA based algorithms (`RSxxx` or `PSxxx` signatures, `RSA1_5`, `RSA_OAEP`, `RSA_OAEP-256`...):
     * `phpseclib/phpseclib` (v2.0.x).
-* Password Based Key Derivation Function 2 (PBKDF2) based algorithms (`PBES2-*`):
-    * [`spomky-labs/pbkdf2`](https://github.com/spomky-labs/pbkdf2).
-* Key Wrapped based algorithms (`A128KW`, `PBES2-HS256+A128KW`...):
-    * [`spomky-labs/aes-key-wrap`](https://github.com/spomky-labs/aes-key-wrap).
 * AES based algorithms (excluding `AES-GCM`):
     * `OpenSSL` library for AES algorithms.
     * or `MCrypt` library for AES algorithms.

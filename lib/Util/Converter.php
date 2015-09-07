@@ -213,16 +213,21 @@ class Converter
     {
         $signatures = [];
         foreach ($input['signatures'] as $signature) {
-            $temp = [
-                'payload'   => $input['payload'],
-                'signature' => $signature['signature'],
-            ];
+            $temp = [];
+            if (!empty($input['payload'])) {
+                $temp['payload'] = $input['payload'];
+            }
+            $temp['signature'] = $signature['signature'];
+
             foreach (['protected', 'header'] as $key) {
                 if (array_key_exists($key, $signature)) {
                     $temp[$key] = $signature[$key];
                 }
             }
             $signatures[] = $toString ? json_encode($temp) : $temp;
+        }
+        if (1 === count($signatures)) {
+            $signatures = current($signatures);
         }
 
         return $signatures;
@@ -250,6 +255,9 @@ class Converter
                 }
             }
             $recipients[] = $toString ? json_encode($temp) : $temp;
+        }
+        if (1 === count($recipients)) {
+            $recipients = current($recipients);
         }
 
         return $recipients;
@@ -286,10 +294,13 @@ class Converter
             }
             $temp = [
                 $signature['protected'],
-                $input['payload'],
+                isset($input['payload'])?$input['payload']:'',
                 $signature['signature'],
             ];
             $signatures[] = implode('.', $temp);
+        }
+        if (1 === count($signatures)) {
+            $signatures = current($signatures);
         }
 
         return $signatures;
@@ -323,6 +334,9 @@ class Converter
                 array_key_exists('tag', $input) ? $input['tag'] : '',
             ];
             $recipients[] = implode('.', $temp);
+        }
+        if (1 === count($recipients)) {
+            $recipients = current($recipients);
         }
 
         return $recipients;
@@ -386,10 +400,13 @@ class Converter
             }
         }
 
-        return [
-            'payload'    => $input['payload'],
-            'signatures' => [$signature],
-        ];
+        $temp = [];
+        if (!empty($input['payload'])) {
+            $temp['payload'] = $input['payload'];
+        }
+        $temp['signatures'] = [$signature];
+
+        return $temp;
     }
 
     /**
@@ -441,15 +458,16 @@ class Converter
      */
     private static function fromCompactSerializationSignatureToSerialization(array $parts)
     {
-        return [
-            'payload'    => $parts[1],
-            'signatures' => [
-                [
-                    'protected' => $parts[0],
-                    'signature' => $parts[2],
-                ],
-            ],
-        ];
+        $temp = [];
+
+        if (!empty($parts[1])) {
+            $temp['payload'] = $parts[1];
+        }
+        $temp['signatures'] = [[
+            'protected' => $parts[0],
+            'signature' => $parts[2],
+        ]];
+        return $temp;
     }
 
     /**

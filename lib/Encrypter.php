@@ -333,13 +333,17 @@ class Encrypter implements EncrypterInterface
     protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
         if (!$this->checkKeyUsage($instruction->getRecipientKey(), 'encryption')) {
-            throw new \InvalidArgumentException('Key cannot be used to sign');
+            throw new \InvalidArgumentException('Key cannot be used to encrypt');
         }
 
         $recipient_header = $instruction->getRecipientUnprotectedHeader();
         $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
+
+        if (!$this->checkKeyAlgorithm($instruction->getRecipientKey(), $key_encryption_algorithm->getAlgorithmName())) {
+            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $key_encryption_algorithm->getAlgorithmName()));
+        }
 
         $jwt_cek = null;
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {

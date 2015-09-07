@@ -18,6 +18,8 @@ use SpomkyLabs\Jose\JWK;
 
 /**
  * Class HMACSignatureTest.
+ *
+ * @group HMAC
  */
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {

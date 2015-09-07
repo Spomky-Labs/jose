@@ -223,6 +223,10 @@ class Signer implements SignerInterface
             throw new \InvalidArgumentException('Key cannot be used to sign');
         }
 
+        if (!$this->checkKeyAlgorithm($instruction->getKey(), $signature_algorithm->getAlgorithmName())) {
+            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $signature_algorithm->getAlgorithmName()));
+        }
+
         $signature = $signature_algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
 
         $jwt_signature = Base64Url::encode($signature);
