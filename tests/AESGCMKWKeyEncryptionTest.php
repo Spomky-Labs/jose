@@ -27,6 +27,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -51,6 +55,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -75,6 +83,10 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',

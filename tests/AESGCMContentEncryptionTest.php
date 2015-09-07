@@ -26,6 +26,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMEncryptAndDecrypt()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A128GCM']));
         $tag = null;
 
@@ -46,6 +50,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMEncryptAndDecrypt()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A192GCM']));
         $tag = null;
 
@@ -66,6 +74,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMEncryptAndDecrypt()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A256GCM']));
         $tag = null;
 
@@ -86,6 +98,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMDecryptTestVector()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $algorithm = new A256GCM();
 
         $header = Base64Url::encode(json_encode(['alg' => 'RSA-OAEP', 'enc' => 'A256GCM']));
@@ -111,5 +127,10 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         }
 
         return hex2bin(implode('', $data));
+    }
+
+    private function isCryptooExtensionInstalled()
+    {
+        return class_exists('\Crypto\Cipher');
     }
 }
