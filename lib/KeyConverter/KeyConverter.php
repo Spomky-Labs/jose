@@ -121,7 +121,6 @@ class KeyConverter
 
     /**
      * @param array $data
-     *²
      *
      * @throws \Exception
      *

@@ -12,180 +12,38 @@
 namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
-use Jose\Compression\CompressionManagerInterface;
 use Jose\EncrypterInterface;
 use Jose\EncryptionInstructionInterface;
 use Jose\JSONSerializationModes;
-use Jose\JWAManagerInterface;
 use Jose\JWKInterface;
-use Jose\JWKManagerInterface;
 use Jose\JWKSetInterface;
-use Jose\JWKSetManagerInterface;
 use Jose\JWTInterface;
-use Jose\JWTManagerInterface;
 use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
-use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
+use phpseclib\Crypt\Random;
+use SpomkyLabs\Jose\Behaviour\HasCompressionManager;
+use SpomkyLabs\Jose\Behaviour\HasJWAManager;
+use SpomkyLabs\Jose\Behaviour\HasJWKManager;
+use SpomkyLabs\Jose\Behaviour\HasJWKSetManager;
+use SpomkyLabs\Jose\Behaviour\HasJWTManager;
+use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
+use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
  */
 class Encrypter implements EncrypterInterface
 {
-    use KeyChecker;
-
-    /**
-     * @var \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    private $payload_converter;
-
-    /**
-     * @var \Jose\JWTManagerInterface
-     */
-    private $jwt_manager;
-
-    /**
-     * @var \Jose\JWKManagerInterface
-     */
-    private $jwk_manager;
-
-    /**
-     * @var \Jose\JWKSetManagerInterface
-     */
-    private $jwkset_manager;
-
-    /**
-     * @var \Jose\JWAManagerInterface
-     */
-    private $jwa_manager;
-
-    /**
-     * @var \Jose\Compression\CompressionManagerInterface
-     */
-    private $compression_manager;
-
-    /**
-     * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
-     *
-     * @return self
-     */
-    public function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
-    {
-        $this->payload_converter = $payload_converter;
-
-        return $this;
-    }
-
-    /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    public function getPayloadConverter()
-    {
-        return $this->payload_converter;
-    }
-
-    /**
-     * @param \Jose\JWTManagerInterface $jwt_manager
-     *
-     * @return self
-     */
-    public function setJWTManager(JWTManagerInterface $jwt_manager)
-    {
-        $this->jwt_manager = $jwt_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWTManagerInterface
-     */
-    public function getJWTManager()
-    {
-        return $this->jwt_manager;
-    }
-
-    /**
-     * @param \Jose\JWKManagerInterface $jwk_manager
-     *
-     * @return self
-     */
-    public function setJWKManager(JWKManagerInterface $jwk_manager)
-    {
-        $this->jwk_manager = $jwk_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWKManagerInterface
-     */
-    public function getJWKManager()
-    {
-        return $this->jwk_manager;
-    }
-
-    /**
-     * @param \Jose\JWKSetManagerInterface $jwkset_manager
-     *
-     * @return self
-     */
-    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
-    {
-        $this->jwkset_manager = $jwkset_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWKSetManagerInterface
-     */
-    public function getJWKSetManager()
-    {
-        return $this->jwkset_manager;
-    }
-
-    /**
-     * @param \Jose\JWAManagerInterface $jwa_manager
-     *
-     * @return self
-     */
-    public function setJWAManager(JWAManagerInterface $jwa_manager)
-    {
-        $this->jwa_manager = $jwa_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWAManagerInterface
-     */
-    public function getJWAManager()
-    {
-        return $this->jwa_manager;
-    }
-
-    /**
-     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     *
-     * @return self
-     */
-    public function setCompressionManager(CompressionManagerInterface $compression_manager)
-    {
-        $this->compression_manager = $compression_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\Compression\CompressionManagerInterface
-     */
-    public function getCompressionManager()
-    {
-        return $this->compression_manager;
-    }
+    use HasKeyChecker;
+    use HasJWAManager;
+    use HasJWTManager;
+    use HasJWKManager;
+    use HasJWKSetManager;
+    use HasPayloadConverter;
+    use HasCompressionManager;
 
     protected function createCEK($size)
     {
@@ -213,7 +71,7 @@ class Encrypter implements EncrypterInterface
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
         } elseif (class_exists('\phpseclib\Crypt\Random')) {
-            return \phpseclib\Crypt\Random::string($length);
+            return Random::string($length);
         } else {
             throw new \Exception('Unable to create a random string');
         }

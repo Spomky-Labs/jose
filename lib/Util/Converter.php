@@ -138,10 +138,12 @@ class Converter
      */
     private static function mergeJWE($inputs)
     {
-        //We determine if all common information are identical
-        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
-            $$key = null;
-        }
+        $ciphertext = null;
+        $protected = null;
+        $unprotected = null;
+        $iv = null;
+        $aad = null;
+        $tag = null;
         foreach ($inputs as $input) {
             foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {

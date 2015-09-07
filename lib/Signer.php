@@ -13,149 +13,31 @@ namespace SpomkyLabs\Jose;
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
-use Jose\JWAManagerInterface;
 use Jose\JWKInterface;
-use Jose\JWKManagerInterface;
 use Jose\JWKSetInterface;
-use Jose\JWKSetManagerInterface;
 use Jose\JWTInterface;
-use Jose\JWTManagerInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
 use Jose\SignerInterface;
-use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
+use SpomkyLabs\Jose\Behaviour\HasJWAManager;
+use SpomkyLabs\Jose\Behaviour\HasJWKManager;
+use SpomkyLabs\Jose\Behaviour\HasJWKSetManager;
+use SpomkyLabs\Jose\Behaviour\HasJWTManager;
+use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
+use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
 use SpomkyLabs\Jose\Util\Converter;
 
 /**
  */
 class Signer implements SignerInterface
 {
-    use KeyChecker;
+    use HasKeyChecker;
+    use HasJWAManager;
+    use HasJWTManager;
+    use HasJWKManager;
+    use HasJWKSetManager;
+    use HasPayloadConverter;
 
-    /**
-     * @var \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    private $payload_converter;
-
-    /**
-     * @var \Jose\JWTManagerInterface
-     */
-    private $jwt_manager;
-
-    /**
-     * @var \Jose\JWKManagerInterface
-     */
-    private $jwk_manager;
-
-    /**
-     * @var \Jose\JWKSetManagerInterface
-     */
-    private $jwkset_manager;
-
-    /**
-     * @var \Jose\JWAManagerInterface
-     */
-    private $jwa_manager;
-
-    /**
-     * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
-     *
-     * @return self
-     */
-    public function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
-    {
-        $this->payload_converter = $payload_converter;
-
-        return $this;
-    }
-
-    /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
-     */
-    public function getPayloadConverter()
-    {
-        return $this->payload_converter;
-    }
-
-    /**
-     * @param \Jose\JWTManagerInterface $jwt_manager
-     *
-     * @return self
-     */
-    public function setJWTManager(JWTManagerInterface $jwt_manager)
-    {
-        $this->jwt_manager = $jwt_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWTManagerInterface
-     */
-    public function getJWTManager()
-    {
-        return $this->jwt_manager;
-    }
-
-    /**
-     * @param \Jose\JWKManagerInterface $jwk_manager
-     *
-     * @return self
-     */
-    public function setJWKManager(JWKManagerInterface $jwk_manager)
-    {
-        $this->jwk_manager = $jwk_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWKManagerInterface
-     */
-    public function getJWKManager()
-    {
-        return $this->jwk_manager;
-    }
-
-    /**
-     * @param \Jose\JWKSetManagerInterface $jwkset_manager
-     *
-     * @return self
-     */
-    public function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
-    {
-        $this->jwkset_manager = $jwkset_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWKSetManagerInterface
-     */
-    public function getJWKSetManager()
-    {
-        return $this->jwkset_manager;
-    }
-
-    /**
-     * @param \Jose\JWAManagerInterface $jwa_manager
-     *
-     * @return self
-     */
-    public function setJWAManager(JWAManagerInterface $jwa_manager)
-    {
-        $this->jwa_manager = $jwa_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWAManagerInterface
-     */
-    public function getJWAManager()
-    {
-        return $this->jwa_manager;
-    }
     /**
      * @param $input
      */

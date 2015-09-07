@@ -9,20 +9,19 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace SpomkyLabs\Jose\Behaviour;
 
 use Jose\JWKInterface;
 
-/**
- * Trait used to check key purpose.
- */
-trait KeyChecker
+trait HasKeyChecker
 {
     /**
      * @param \Jose\JWKInterface $key
      * @param string             $usage
      *
      * @throws \InvalidArgumentException
+     *
+     * @return bool
      */
     protected function checkKeyUsage(JWKInterface $key, $usage)
     {
