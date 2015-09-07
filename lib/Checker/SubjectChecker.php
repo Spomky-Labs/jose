@@ -18,7 +18,7 @@ abstract class SubjectChecker implements CheckerInterface
     /**
      * @param string $subject
      *
-     * @return true
+     * @return bool
      */
     abstract protected function isSubjectValid($subject);
 

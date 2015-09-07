@@ -13,17 +13,14 @@ namespace SpomkyLabs\Jose\Checker;
 
 use Jose\JWTInterface;
 
-class IssuerChecker implements CheckerInterface
+abstract class IssuerChecker implements CheckerInterface
 {
-    private $issuers = [];
-
     /**
-     * @param string[] $issuers
+     * @param string $issuer
+     *
+     * @return bool
      */
-    public function __construct(array $issuers)
-    {
-        $this->issuers = $issuers;
-    }
+    abstract protected function isIssuerValid($issuer);
 
     /**
      * {@inheritdoc}
@@ -31,7 +28,7 @@ class IssuerChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $iss = $jwt->getIssuer();
-        if (!is_null($iss) && !in_array($iss, $this->issuers)) {
+        if (!is_null($iss) && !$this->isIssuerValid($iss)) {
             throw new \Exception('Issuer not allowed.');
         }
 
