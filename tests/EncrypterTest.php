@@ -209,6 +209,7 @@ class EncrypterTest extends TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $encrypter = $this->getEncrypter();

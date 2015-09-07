@@ -99,6 +99,7 @@ class Loader implements LoaderInterface
                 return $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
             }
         }
+
         return false;
     }
 
@@ -271,14 +272,14 @@ class Loader implements LoaderInterface
     }
 
     /**
-     * @param array                 $data
+     * @param array $data
      *
      * @return \Jose\JWEInterface|\Jose\JWEInterface[]
      */
     protected function loadSerializedJsonJWE(array $data)
     {
         $result = [];
-        foreach($data['recipients'] as $recipient) {
+        foreach ($data['recipients'] as $recipient) {
             $encoded_protected_header = array_key_exists('protected', $data) ? $data['protected'] : '';
             $protected_header = empty($encoded_protected_header) ? [] : json_decode(Base64Url::decode($encoded_protected_header), true);
             $unprotected_header = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];

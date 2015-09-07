@@ -143,6 +143,7 @@ class RSAKeyEncryptionTest extends TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $loader = $this->getLoader();
