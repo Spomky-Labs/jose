@@ -13,7 +13,6 @@ namespace SpomkyLabs\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\Algorithm\Signature\ES512;
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\Util\Converter;
@@ -32,16 +31,16 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK();
 
-        /**
+        /*
          * Symmetric Key
          * @see https://tools.ietf.org/html/rfc7520#section-3.5
          */
         $key->setValues([
-            "kty" => "oct",
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037",
-            "use" => "sig",
-            "alg" => "HS256",
-            "k" => "hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg",
+            'kty' => 'oct',
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
+            'use' => 'sig',
+            'alg' => 'HS256',
+            'k'   => 'hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg',
         ]);
 
         $header = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9';
@@ -49,8 +48,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_signature = 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0';
 
         $hs256 = new HS256();
-        $this->assertEquals($expected_signature, Base64Url::encode($hs256->sign($key, $header . '.' . $payload)));
-        $this->assertTrue($hs256->verify($key, $header . '.' . $payload, Base64Url::decode($expected_signature)));
+        $this->assertEquals($expected_signature, Base64Url::encode($hs256->sign($key, $header.'.'.$payload)));
+        $this->assertTrue($hs256->verify($key, $header.'.'.$payload, Base64Url::decode($expected_signature)));
     }
 
     /**
@@ -60,16 +59,16 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
     {
         $key = new JWK();
 
-        /**
+        /*
          * Symmetric Key
          * @see https://tools.ietf.org/html/rfc7520#section-3.5
          */
         $key->setValues([
-            "kty" => "oct",
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037",
-            "use" => "sig",
-            "alg" => "HS256",
-            "k" => "hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg",
+            'kty' => 'oct',
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
+            'use' => 'sig',
+            'alg' => 'HS256',
+            'k'   => 'hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg',
         ]);
 
         $header = 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9';
@@ -77,8 +76,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_signature = 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0';
 
         $hs256 = new HS256();
-        $this->assertEquals($expected_signature, Base64Url::encode($hs256->sign($key, $header . '.' . $payload)));
-        $this->assertTrue($hs256->verify($key, $header . '.' . $payload, Base64Url::decode($expected_signature)));
+        $this->assertEquals($expected_signature, Base64Url::encode($hs256->sign($key, $header.'.'.$payload)));
+        $this->assertTrue($hs256->verify($key, $header.'.'.$payload, Base64Url::decode($expected_signature)));
     }
 
     /**
@@ -90,31 +89,31 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $payload = 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4';
         $signature = 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0';
 
-        /**
+        /*
          * Figure 35
          */
         $compact_serialization = $header.'.'.$payload.'.'.$signature;
 
-        /**
+        /*
          * Figure 35
          */
         $expected_general_serialization = [
-            "payload" => "SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4",
-            "signatures" => [
+            'payload'    => 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4',
+            'signatures' => [
                [
-                   "protected" => "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
-                    "signature" => "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0",
+                   'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
+                    'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                ],
-            ]
+            ],
         ];
 
-        /**
+        /*
          * Figure 36
          */
         $expected_flattened_serialization = [
-            "payload" => "SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4",
-            "protected" => "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
-            "signature" => "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+            'payload'   => 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4',
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
+            'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
         ];
 
         $this->assertEquals($expected_general_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION, false));
@@ -131,29 +130,29 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $payload = '';
         $signature = 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0';
 
-        /**
+        /*
          * Figure 35
          */
         $compact_serialization = $header.'.'.$payload.'.'.$signature;
 
-        /**
+        /*
          * Figure 35
          */
         $expected_general_serialization = [
-            "signatures" => [
+            'signatures' => [
                [
-                   "protected" => "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
-                    "signature" => "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0",
+                   'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
+                    'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                ],
-            ]
+            ],
         ];
 
-        /**
+        /*
          * Figure 36
          */
         $expected_flattened_serialization = [
-            "protected" => "eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9",
-            "signature" => "s0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0"
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
+            'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
         ];
 
         $this->assertEquals($expected_general_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION, false));

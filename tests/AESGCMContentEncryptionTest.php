@@ -28,6 +28,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A128GCM']));
@@ -52,6 +53,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A192GCM']));
@@ -76,6 +78,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A256GCM']));
@@ -100,6 +103,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $algorithm = new A256GCM();

@@ -29,6 +29,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = [];
@@ -57,6 +58,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = [];
@@ -85,6 +87,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
+
             return;
         }
         $header = [];

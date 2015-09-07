@@ -27,7 +27,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
     {
         $public_key = new JWK();
 
-        /**
+        /*
          * EC public key
          * @see https://tools.ietf.org/html/rfc7520#section-3.1
          */

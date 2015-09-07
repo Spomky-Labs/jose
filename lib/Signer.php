@@ -156,6 +156,7 @@ class Signer implements SignerInterface
     {
         return $this->jwa_manager;
     }
+
     /**
      * @param $input
      */

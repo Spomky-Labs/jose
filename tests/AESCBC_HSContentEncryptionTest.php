@@ -107,6 +107,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('The remaining tests does not work on HHVM. The error raised does not concern the library itself.');
+
             return;
         }
 
@@ -140,6 +141,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         if (defined('HHVM_VERSION')) {
             $this->markTestSkipped('The remaining tests does not work on HHVM. The error raised does not concern the library itself.');
+
             return;
         }
 
