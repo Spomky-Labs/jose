@@ -207,6 +207,10 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadWithGCMAndAAD()
     {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestIncomplete('Crypto extension not available');
+            return;
+        }
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
@@ -380,5 +384,10 @@ class EncrypterTest extends TestCase
         ]);
 
         return $key;
+    }
+
+    private function isCryptooExtensionInstalled()
+    {
+        return class_exists('\Crypto\Cipher');
     }
 }
