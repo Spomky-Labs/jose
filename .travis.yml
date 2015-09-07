@@ -10,7 +10,6 @@ php:
     - hhvm
 
 before_script:
-    - sudo apt-get install php5-dev
     - git clone --recursive https://github.com/bukka/php-crypto.git
     - cd php-crypto
     - phpize
