@@ -39,7 +39,7 @@
         "ext-crypto":"Required to use AES GCM based algorithms.",
         "ext-mcrypt":"Required to use AES based (except AES-GCM) algorithms (only needed if lib-openssl is not enabled).",
         "phpseclib/phpseclib":"Required to use RSA based algorithms and for AES based algorithms (only if lib-openssl and ext-mcrypt are not enabled).",
-        "mdanter/ecc":"Required to use Elliptic Curves based algorithms",
+        "mdanter/ecc":"Required to use Elliptic Curves based algorithms"
    },
     "extra": {
         "branch-alias": {
