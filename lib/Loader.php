@@ -118,7 +118,7 @@ class Loader implements LoaderInterface
             $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
         }
 
-        $input = $jws->getEncodedProtectedHeader().'.'.(is_null($detached_payload)?$jws->getEncodedPayload():$detached_payload);
+        $input = $jws->getEncodedProtectedHeader().'.'.(is_null($detached_payload) ? $jws->getEncodedPayload() : $detached_payload);
 
         if (0 === count($jwk_set)) {
             return false;
@@ -156,7 +156,7 @@ class Loader implements LoaderInterface
      */
     protected function loadSerializedJsonJWS(array $data)
     {
-        $encoded_payload = isset($data['payload'])?$data['payload']:'';
+        $encoded_payload = isset($data['payload']) ? $data['payload'] : '';
         $payload = Base64Url::decode($encoded_payload);
 
         $jws = [];

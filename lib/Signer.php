@@ -14,7 +14,6 @@ namespace SpomkyLabs\Jose;
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use Jose\JWKInterface;
-use Jose\JWKSetInterface;
 use Jose\JWTInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
