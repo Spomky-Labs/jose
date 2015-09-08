@@ -70,11 +70,9 @@ class KeyConverter
         }
 
         if (array_key_exists('ec', $details) || (array_key_exists('type', $details) &&  OPENSSL_KEYTYPE_EC === $details['type'])) {
-            var_dump($details['key']);
             $pem = $details['key'];
             try {
                 openssl_pkey_export($res, $pem);
-                var_dump($pem);
             } catch (\Exception $e) {
                 // Public keys cannot be exported with openssl_pkey_export
             }

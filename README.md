@@ -37,7 +37,7 @@ The release process [is described here](doc/Release.md).
 # Prerequisites
 
 This library needs at least:
-* ![PHP 5.4+](https://img.shields.io/badge/PHP-5.4%2B-ff69b4.svg).
+* ![PHP 5.6+](https://img.shields.io/badge/PHP-5.6%2B-ff69b4.svg).
 
 Depending on algorithms you want to use, please consider the following optional requirements:
 * Elliptic Curves based algorithms (`ESxxx` signatures, `ECDHES` encryptions):
