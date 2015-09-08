@@ -45,6 +45,9 @@ abstract class ECDSA implements SignatureInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
+        if (is_null($key->getValue('d'))) {
+            throw new \InvalidArgumentException('The EC key is not private');
+        }
 
         $p = $this->getGenerator();
         $d = $this->convertBase64ToDec($key->getValue('d'));
