@@ -23,7 +23,6 @@ use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
-use phpseclib\Crypt\Random;
 use SpomkyLabs\Jose\Behaviour\HasCompressionManager;
 use SpomkyLabs\Jose\Behaviour\HasJWAManager;
 use SpomkyLabs\Jose\Behaviour\HasJWKManager;
@@ -70,8 +69,6 @@ class Encrypter implements EncrypterInterface
             return mcrypt_create_iv($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
-        } elseif (class_exists('\phpseclib\Crypt\Random')) {
-            return Random::string($length);
         } else {
             throw new \Exception('Unable to create a random string');
         }

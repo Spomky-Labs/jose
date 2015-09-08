@@ -105,13 +105,20 @@ class Loader implements LoaderInterface
 
     /**
      * {@inheritdoc}
+     *
+     * @throws \InvalidArgumentException
      */
-    public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null)
+    public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null, $detached_payload = null)
     {
+        if (!is_null($detached_payload) && !empty($jws->getPayload())) {
+            throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
+        }
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
         if (is_null($jwk_set)) {
             $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
         }
+
+        $input = $jws->getEncodedProtectedHeader().'.'.(is_null($detached_payload)?$jws->getEncodedPayload():$detached_payload);
 
         if (0 === count($jwk_set)) {
             return false;
@@ -124,7 +131,7 @@ class Loader implements LoaderInterface
             if (!$this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName())) {
                 continue;
             }
-            if (true === $algorithm->verify($jwk, $jws->getInput(), $jws->getSignature())) {
+            if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
                 return true;
             }
         }
@@ -149,7 +156,7 @@ class Loader implements LoaderInterface
      */
     protected function loadSerializedJsonJWS(array $data)
     {
-        $encoded_payload = $data['payload'];
+        $encoded_payload = isset($data['payload'])?$data['payload']:'';
         $payload = Base64Url::decode($encoded_payload);
 
         $jws = [];
@@ -163,16 +170,17 @@ class Loader implements LoaderInterface
             }
             $unprotected_header = isset($signature['header']) ? $signature['header'] : [];
 
-            $jws[] = $this->createJWS($encoded_protected_header.'.'.$encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
+            $jws[] = $this->createJWS($encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
         }
 
         return count($jws) > 1 ? $jws : current($jws);
     }
 
     /**
-     * @param string $input
-     * @param $protected_header
-     * @param $unprotected_header
+     * @param string $encoded_protected_header
+     * @param string $encoded_payload
+     * @param array  $protected_header
+     * @param array  $unprotected_header
      * @param string $payload
      * @param string $signature
      *
@@ -180,13 +188,14 @@ class Loader implements LoaderInterface
      *
      * @return \Jose\JWSInterface
      */
-    protected function createJWS($input, $protected_header, $unprotected_header, $payload, $signature)
+    protected function createJWS($encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, $signature)
     {
         $complete_header = array_merge($protected_header, $unprotected_header);
         $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
         $jws = $this->getJWTManager()->createJWS();
         $jws->setPayload($payload);
-        $jws->setInput($input);
+        $jws->setEncodedProtectedHeader($encoded_protected_header);
+        $jws->setEncodedPayload($encoded_payload);
         $jws->setSignature($signature);
         if (!empty($protected_header)) {
             $jws->setProtectedHeader($protected_header);

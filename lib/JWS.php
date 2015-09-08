@@ -20,20 +20,7 @@ class JWS extends Base
 {
     use JWable;
 
-    protected $input;
     protected $signature;
-
-    public function getInput()
-    {
-        return $this->input;
-    }
-
-    public function setInput($input)
-    {
-        $this->input = $input;
-
-        return $this;
-    }
 
     public function getSignature()
     {

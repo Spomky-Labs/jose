@@ -57,13 +57,9 @@ class Signer implements SignerInterface
     }
 
     /**
-     * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input         The input to sign
-     * @param array                                                  $instructions  Signature instructions
-     * @param string                                                 $serialization Serialization Overview
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION)
+    public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $detached_signature = false, &$detached_payload = null)
     {
         $this->checkInput($input);
         $this->checkInstructions($instructions, $serialization);
@@ -77,6 +73,11 @@ class Signer implements SignerInterface
 
         foreach ($instructions as $instruction) {
             $signatures['signatures'][] = $this->computeSignature($instruction, $input, $jwt_payload);
+        }
+
+        if (true === $detached_signature) {
+            $detached_payload = $signatures['payload'];
+            unset($signatures['payload']);
         }
 
         $prepared = Converter::convert($signatures, $serialization);

@@ -13,7 +13,6 @@ namespace SpomkyLabs\Test;
 
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESMCrypt;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESOpenSSL;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESPHPSecLib;
 
 class AESEnginesTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,15 +29,12 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
         $k = substr($K, strlen($K) / 2);
 
         $openssl_cyphertext = AESOpenSSL::encrypt($plaintext, $k, $iv);
-        $phpseclib_cyphertext = AESPHPSecLib::encrypt($plaintext, $k, $iv);
         $mcrypt_cyphertext = AESMCrypt::encrypt($plaintext, $k, $iv);
 
         $this->assertEquals($expected_cyphertext, $openssl_cyphertext);
-        $this->assertEquals($expected_cyphertext, $phpseclib_cyphertext);
         $this->assertEquals($expected_cyphertext, $mcrypt_cyphertext);
 
         $this->assertEquals($plaintext, AESOpenSSL::decrypt($openssl_cyphertext, $k, $iv));
-        $this->assertEquals($plaintext, AESPHPSecLib::decrypt($phpseclib_cyphertext, $k, $iv));
         $this->assertEquals($plaintext, AESMCrypt::decrypt($mcrypt_cyphertext, $k, $iv));
     }
 

@@ -17,28 +17,44 @@ namespace SpomkyLabs\Jose;
 trait JWable
 {
     /**
-     * @var array
+     * @var string
      */
     protected $encoded_protected_header = '';
+
+    /**
+     * @var string
+     */
+    protected $encoded_payload = '';
+
     /**
      * @var array
      */
     protected $protected_headers = [];
+
     /**
      * @var array
      */
     protected $unprotected_headers = [];
+
     /**
      * @var null
      */
     protected $payload = null;
 
     /**
-     * @return array
+     * @return string
      */
     public function getEncodedProtectedHeader()
     {
         return $this->encoded_protected_header;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEncodedPayload()
+    {
+        return $this->encoded_payload;
     }
 
     /**
@@ -65,13 +81,25 @@ trait JWable
     }
 
     /**
-     * @param array $encoded_protected_header
+     * @param string $encoded_protected_header
      *
      * @return self
      */
     public function setEncodedProtectedHeader($encoded_protected_header)
     {
         $this->encoded_protected_header = $encoded_protected_header;
+
+        return $this;
+    }
+
+    /**
+     * @param string $encoded_payload
+     *
+     * @return self
+     */
+    public function setEncodedPayload($encoded_payload)
+    {
+        $this->encoded_payload = $encoded_payload;
 
         return $this;
     }

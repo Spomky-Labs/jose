@@ -45,6 +45,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
+     * {@inheritdoc}
      */
     public function getKey()
     {
@@ -64,7 +65,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getProtectedHeader()
     {
@@ -84,7 +85,7 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getUnprotectedHeader()
     {

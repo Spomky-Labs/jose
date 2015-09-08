@@ -23,7 +23,7 @@
     },
     "require": {
         "php": ">=5.4",
-        "spomky-labs/jose-interface": "~2.1.1",
+        "spomky-labs/jose-interface": "~2.2.1",
         "spomky-labs/pbkdf2": "~1.0",
         "spomky-labs/aes-key-wrap": "~2.0"
     },
