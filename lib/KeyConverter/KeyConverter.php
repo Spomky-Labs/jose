@@ -82,6 +82,7 @@ class KeyConverter
         } elseif (array_key_exists('rsa', $details)) {
             return self::loadRSAKey($details['rsa']);
         }
+        var_dump($details);
         throw new \Exception('Unsupported key type');
     }
 
