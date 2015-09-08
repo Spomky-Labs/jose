@@ -69,7 +69,8 @@ class KeyConverter
             throw new \Exception('Unable to get details of the key');
         }
 
-        if (array_key_exists('ec', $details) || (array_key_exists('bits', $details) && in_array($details['bits'], [256, 384, 521]) && array_key_exists('key', $details))) {
+        if (array_key_exists('ec', $details) || (array_key_exists('type', $details) &&  OPENSSL_KEYTYPE_EC === $details['type'])) {
+            var_dump($details['key']);
             $pem = $details['key'];
             try {
                 openssl_pkey_export($res, $pem);
