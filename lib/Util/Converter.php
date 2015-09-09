@@ -138,12 +138,9 @@ class Converter
      */
     private static function mergeJWE($inputs)
     {
-        $ciphertext = null;
-        $protected = null;
-        $unprotected = null;
-        $iv = null;
-        $aad = null;
-        $tag = null;
+        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
+            $$key = null;
+        }
         foreach ($inputs as $input) {
             foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
                 if (is_null($$key) && array_key_exists($key, $input)) {

@@ -171,6 +171,59 @@ class ECKey extends Sequence
     }
 
     /**
+     * @param \FG\ASN1\Object $children
+     *
+     * @throws \Exception
+     */
+    private function verifyVersion(Object $children)
+    {
+        if (!$children instanceof Integer || 1 !== (int) $children->getContent()) {
+            throw new \Exception('Unable to load the key');
+        }
+    }
+
+    /**
+     * @param \FG\ASN1\Object $children
+     * @param string|null     $x
+     * @param string|null     $y
+     *
+     * @throws \Exception
+     */
+    private function getXAndY(Object $children, &$x, &$y)
+    {
+        if (!$children instanceof ExplicitlyTaggedObject) {
+            throw new \Exception('Unable to load the key');
+        }
+        if (!$children->getContent() instanceof BitString) {
+            throw new \Exception('Unable to load the key');
+        }
+
+        $bits = $children->getContent()->getContent();
+
+        if (substr($bits, 0, 2) !== '04') {
+            throw new \Exception('Unsupported key type');
+        }
+
+        $x = substr($bits, 2, (strlen($bits) - 2) / 2);
+        $y = substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2);
+    }
+
+    /**
+     * @param \FG\ASN1\Object $children
+     *
+     * @return string
+     *
+     * @throws \Exception
+     */
+    private function getD(Object $children)
+    {
+        if (!$children instanceof OctetString) {
+            throw new \Exception('Unable to load the key');
+        }
+        return $children->getContent();
+    }
+
+    /**
      * @param array $children
      *
      * @throws \Exception
@@ -179,12 +232,13 @@ class ECKey extends Sequence
      */
     private function loadPrivatePEM(array $children)
     {
-        if (!$children[0] instanceof Integer || 1 !== (int) $children[0]->getContent()) {
-            throw new \Exception('Unable to load the key');
-        }
-        if (!$children[1] instanceof OctetString) {
-            throw new \Exception('Unable to load the key');
-        }
+        $this->verifyVersion($children[0]);
+
+        $x = null;
+        $y = null;
+        $d = $this->getD($children[1]);
+        $this->getXAndY($children[3], $x, $y);
+
 
         if (!$children[2] instanceof ExplicitlyTaggedObject) {
             throw new \Exception('Unable to load the key');
@@ -192,25 +246,13 @@ class ECKey extends Sequence
         if (!$children[2]->getContent() instanceof ObjectIdentifier) {
             throw new \Exception('Unable to load the key');
         }
-
-        if (!$children[3] instanceof ExplicitlyTaggedObject) {
-            throw new \Exception('Unable to load the key');
-        }
-        if (!$children[3]->getContent() instanceof BitString) {
-            throw new \Exception('Unable to load the key');
-        }
-
-        $bits = $children[3]->getContent()->getContent();
-
-        if (substr($bits, 0, 2) !== '04') {
-            throw new \Exception('Unsupported key type');
-        }
+        $curve = $children[2]->getContent()->getContent();
 
         $this->private = true;
-        $this->curve = $this->getCurve($children[2]->getContent()->getContent());
-        $this->d = Base64Url::encode(hex2bin($children[1]->getContent()));
-        $this->x = Base64Url::encode(hex2bin(substr($bits, 2, (strlen($bits) - 2) / 2)));
-        $this->y = Base64Url::encode(hex2bin(substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
+        $this->curve = $this->getCurve($curve);
+        $this->d = Base64Url::encode(hex2bin($d));
+        $this->x = Base64Url::encode(hex2bin($x));
+        $this->y = Base64Url::encode(hex2bin($y));
     }
 
     /**
@@ -281,7 +323,7 @@ class ECKey extends Sequence
     }
 
     /**
-     * @param string $curve
+     * @param $curve
      *
      * @return string
      */
