@@ -46,8 +46,8 @@ class KeyConverter
     {
         if (preg_match('#DEK-Info: (.+),(.+)#', $pem, $matches)) {
             $iv = pack('H*', trim($matches[2]));
-            $symkey = pack('H*', md5($password . substr($iv, 0, 8)));
-            $symkey .= pack('H*', md5($symkey . $password . substr($iv, 0, 8)));
+            $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
+            $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
             $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
             $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
 
@@ -75,17 +75,17 @@ class KeyConverter
             throw new \Exception('Unable to get details of the key');
         }
 
-        switch($details['type']) {
+        switch ($details['type']) {
             case OPENSSL_KEYTYPE_EC:
                 $ec_key = new ECKey($pem);
 
                 return $ec_key->toArray();
             case OPENSSL_KEYTYPE_RSA:
                 $temp = [
-                    'kty' => 'RSA'
+                    'kty' => 'RSA',
                 ];
 
-                foreach([
+                foreach ([
                     'n' => 'n',
                     'e' => 'e',
                     'd' => 'd',
@@ -94,13 +94,14 @@ class KeyConverter
                     'dp' => 'dmp1',
                     'dq' => 'dmq1',
                     'qi' => 'iqmp',
-                        ] as $A=>$B) {
+                        ] as $A => $B) {
                     if (array_key_exists($B, $details['rsa'])) {
                         $temp[$A] = Base64Url::encode($details['rsa'][$B]);
                     }
                 }
+
                 return $temp;
-                /**
+                /*
                  * The following lines will be used when FGrosse/PHPASN1 v1.4.0 will be available
                  * (not available because of current version of mdanter/phpecc.
                  * $rsa_key = new RSAKey($pem);

@@ -11,7 +11,6 @@
 
 namespace SpomkyLabs\Test;
 
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESMCrypt;
 use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESOpenSSL;
 
 class AESEnginesTest extends \PHPUnit_Framework_TestCase
