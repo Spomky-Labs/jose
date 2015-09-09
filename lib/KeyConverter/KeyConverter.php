@@ -73,6 +73,7 @@ class KeyConverter
             $pem = $details['key'];
             try {
                 openssl_pkey_export($res, $pem);
+                var_dump($pem);
             } catch (\Exception $e) {
                 // Public keys cannot be exported with openssl_pkey_export
             }
