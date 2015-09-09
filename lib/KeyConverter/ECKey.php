@@ -306,18 +306,9 @@ class ECKey extends Sequence
      */
     public function toPEM()
     {
-        $tmp = base64_encode($this->getBinary());
-        $length = strlen($tmp);
-
-        for ($i = 0; $i < $length; ++$i) {
-            if (($i + 2) % 65 === 0) {
-                $tmp = substr($tmp, 0, $i + 1).PHP_EOL.substr($tmp, $i + 1);
-            }
-        }
-
-        $result = '-----'.($this->private ? 'BEGIN EC PRIVATE KEY' : 'BEGIN PUBLIC KEY').'-----'.PHP_EOL;
-        $result .= chunk_split(base64_encode($this->getBinary()), 64);
-        $result .= '-----'.($this->private ? 'END EC PRIVATE KEY' : 'END PUBLIC KEY').'-----'.PHP_EOL;
+        $result = '-----BEGIN '.($this->private ? 'EC PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
+        $result .= chunk_split(base64_encode($this->getBinary()), 64, PHP_EOL);
+        $result .= '-----END '.($this->private ? 'EC PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
 
         return $result;
     }

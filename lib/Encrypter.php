@@ -65,8 +65,6 @@ class Encrypter implements EncrypterInterface
     {
         if (function_exists('random_bytes')) {
             return random_bytes($length);
-        } elseif (function_exists('mcrypt_create_iv')) {
-            return mcrypt_create_iv($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($length);
         } else {

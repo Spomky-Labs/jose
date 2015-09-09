@@ -39,22 +39,13 @@ The release process [is described here](doc/Release.md).
 This library needs at least:
 * ![PHP 5.6+](https://img.shields.io/badge/PHP-5.6%2B-ff69b4.svg).
 
-Depending on algorithms you want to use, please consider the following optional requirements:
-* Elliptic Curves based algorithms (`ESxxx` signatures, `ECDHES` encryptions):
-    * [`mdanter/ecc`](https://github.com/mdanter/phpecc) (v0.3) library.
-* RSA based algorithms (`RSxxx` or `PSxxx` signatures, `RSA1_5`, `RSA_OAEP`, `RSA_OAEP-256`...):
-    * `phpseclib/phpseclib` (v2.0.x).
-* AES based algorithms (excluding `AES-GCM`):
-    * `OpenSSL` library for AES algorithms.
-    * or `MCrypt` library for AES algorithms.
-    * or `phpseclib/phpseclib` (v2.0.x).
-* AES-GCM based algorithms:
-    * [PHP Crypto](https://github.com/bukka/php-crypto) Extension for AES GCM algorithms (not available on `PHP 7` and `HHVM`).
+Please consider the following optional requirements:
+* AES-GCM based algorithms (AxxxGCM and AxxxGCMKW): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (not yet available on `PHP 7` and `HHVM`).
 
 It has been successfully tested using `PHP 5.4` to `PHP 5.6` with all algorithms.
 
 Some tests on `PHP 7` and `HHVM` were skipped because [PHP Crypto](https://github.com/bukka/php-crypto) is not yet supported.
-You will not be able to use GCM algorithms on these platforms.
+At the moment, you will not be able to use GCM algorithms on these platforms.
 
 # Installation
 

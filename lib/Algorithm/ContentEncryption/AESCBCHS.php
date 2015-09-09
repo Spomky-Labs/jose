@@ -30,8 +30,6 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     {
         if (extension_loaded('openssl')) {
             $this->aes_engine = new AESOpenSSL();
-        } elseif (extension_loaded('mcrypt')) {
-            $this->aes_engine = new AESMCrypt();
         } else {
             throw new \RuntimeException('Please install MCrypt extension or OpenSSL extension to use AES based (except AES-GCM based) algorithms');
         }

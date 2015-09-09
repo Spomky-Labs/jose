@@ -29,13 +29,10 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
         $k = substr($K, strlen($K) / 2);
 
         $openssl_cyphertext = AESOpenSSL::encrypt($plaintext, $k, $iv);
-        $mcrypt_cyphertext = AESMCrypt::encrypt($plaintext, $k, $iv);
 
         $this->assertEquals($expected_cyphertext, $openssl_cyphertext);
-        $this->assertEquals($expected_cyphertext, $mcrypt_cyphertext);
 
         $this->assertEquals($plaintext, AESOpenSSL::decrypt($openssl_cyphertext, $k, $iv));
-        $this->assertEquals($plaintext, AESMCrypt::decrypt($mcrypt_cyphertext, $k, $iv));
     }
 
     public function getTestVectors()
