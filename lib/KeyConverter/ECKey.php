@@ -211,15 +211,16 @@ class ECKey extends Sequence
     /**
      * @param \FG\ASN1\Object $children
      *
-     * @return string
-     *
      * @throws \Exception
+     *
+     * @return string
      */
     private function getD(Object $children)
     {
         if (!$children instanceof OctetString) {
             throw new \Exception('Unable to load the key');
         }
+
         return $children->getContent();
     }
 
@@ -238,7 +239,6 @@ class ECKey extends Sequence
         $y = null;
         $d = $this->getD($children[1]);
         $this->getXAndY($children[3], $x, $y);
-
 
         if (!$children[2] instanceof ExplicitlyTaggedObject) {
             throw new \Exception('Unable to load the key');
