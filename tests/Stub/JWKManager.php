@@ -12,24 +12,12 @@
 namespace SpomkyLabs\Test\Stub;
 
 use Base64Url\Base64Url;
-use Jose\JWKManager as Base;
-use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Jose\JWKManager as Base;
 
 /**
  */
 class JWKManager extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function createJWK(array $values = [])
-    {
-        $jwk = new JWK();
-        $jwk->setValues($values);
-
-        return $jwk;
-    }
-
     /**
      * @param array $header
      *

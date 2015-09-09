@@ -11,53 +11,13 @@
 
 namespace SpomkyLabs\Test\Stub;
 
-use Jose\JWKManagerInterface;
-use Jose\JWKSetManager as Base;
+use SpomkyLabs\Jose\JWKSetManager as Base;
 use SpomkyLabs\Jose\JWKSet;
 
 /**
  */
 class JWKSetManager extends Base
 {
-    /**
-     * @var \Jose\JWKManagerInterface
-     */
-    protected $jwk_manager;
-
-    /**
-     * @param \Jose\JWKManagerInterface $jwk_manager
-     *
-     * @return self
-     */
-    public function setJWKManager(JWKManagerInterface $jwk_manager)
-    {
-        $this->jwk_manager = $jwk_manager;
-
-        return $this;
-    }
-
-    /**
-     * @return \Jose\JWKManagerInterface
-     */
-    protected function getJWKManager()
-    {
-        return $this->jwk_manager;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createJWKSet(array $values = [])
-    {
-        $key_set = new JWKSet();
-        foreach ($values as $value) {
-            $key = $this->getJWKManager()->createJWK($value);
-            $key_set->addKey($key);
-        }
-
-        return $key_set;
-    }
-
     /**
      * @return string[]
      */

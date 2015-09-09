@@ -71,6 +71,6 @@ class JWKSetConverter implements PayloadConverterInterface
             throw new \Exception('The content type claims content is a JWKSet, but cannot be converted into JWKSet');
         }
 
-        return $this->jwkset_manager->createJWKSet($jwk['keys']);
+        return $this->jwkset_manager->createJWKSet($jwk);
     }
 }
