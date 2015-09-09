@@ -36,79 +36,80 @@ class KeyConverter
 
     /**
      * @param string      $pem
-     * @param null|string $passphrase
+     * @param null|string $password
      *
      * @throws \Exception
      *
      * @return array
      */
-    public static function loadKeyFromPEM($pem, $passphrase = null)
+    public static function loadKeyFromPEM($pem, $password = null)
     {
-        $res = openssl_pkey_get_private($pem, $passphrase);
+        if (preg_match('#DEK-Info: (.+),(.+)#', $pem, $matches)) {
+            $iv = pack('H*', trim($matches[2]));
+            $symkey = pack('H*', md5($password . substr($iv, 0, 8)));
+            $symkey .= pack('H*', md5($symkey . $password . substr($iv, 0, 8)));
+            $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
+            $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
+
+            $decoded = openssl_decrypt($ciphertext, strtolower($matches[1]), $symkey, true, $iv);
+
+            $number = preg_match_all('#-{5}.*-{5}#', $pem, $result);
+            if (2 !== $number) {
+                throw new \InvalidArgumentException('Unable to load the key');
+            }
+            $pem = $result[0][0].PHP_EOL;
+            $pem .= chunk_split(base64_encode($decoded), 64);
+            $pem .= $result[0][1].PHP_EOL;
+        }
+
+        $res = openssl_pkey_get_private($pem);
         if ($res === false) {
             $res = openssl_pkey_get_public($pem);
         }
         if ($res === false) {
-            throw new \Exception('Unable to load the key');
+            throw new \InvalidArgumentException('Unable to load the key');
         }
 
-        return self::loadKeyFromResource($res);
-    }
-
-    /**
-     * @param resource $res
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    public static function loadKeyFromResource($res)
-    {
         $details = openssl_pkey_get_details($res);
-        if (!is_array($details)) {
+        if (!is_array($details) || !array_key_exists('type', $details)) {
             throw new \Exception('Unable to get details of the key');
         }
 
-        if (array_key_exists('ec', $details) || (array_key_exists('type', $details) &&  OPENSSL_KEYTYPE_EC === $details['type'])) {
-            $pem = $details['key'];
-            try {
-                openssl_pkey_export($res, $pem);
-                var_dump($pem);
-            } catch (\Exception $e) {
-                // Public keys cannot be exported with openssl_pkey_export
-            }
-            $ec_key = new ECKey($pem);
+        switch($details['type']) {
+            case OPENSSL_KEYTYPE_EC:
+                $ec_key = new ECKey($pem);
 
-            return $ec_key->toArray();
-        } elseif (array_key_exists('rsa', $details)) {
-            return self::loadRSAKey($details['rsa']);
+                return $ec_key->toArray();
+            case OPENSSL_KEYTYPE_RSA:
+                $temp = [
+                    'kty' => 'RSA'
+                ];
+
+                foreach([
+                    'n' => 'n',
+                    'e' => 'e',
+                    'd' => 'd',
+                    'p' => 'p',
+                    'q' => 'q',
+                    'dp' => 'dmp1',
+                    'dq' => 'dmq1',
+                    'qi' => 'iqmp',
+                        ] as $A=>$B) {
+                    if (array_key_exists($B, $details['rsa'])) {
+                        $temp[$A] = Base64Url::encode($details['rsa'][$B]);
+                    }
+                }
+                return $temp;
+                /**
+                 * The following lines will be used when FGrosse/PHPASN1 v1.4.0 will be available
+                 * (not available because of current version of mdanter/phpecc.
+                 * $rsa_key = new RSAKey($pem);
+                 *
+                 * return $rsa_key->toArray();
+                 */
+            default:
+                throw new \InvalidArgumentException('Unsupported key type');
         }
-        var_dump($details);
-        throw new \Exception('Unsupported key type');
-    }
-
-    /**
-     * @param array $values
-     *
-     * @return array
-     */
-    private static function loadRSAKey(array $values)
-    {
-        $result = ['kty' => 'RSA'];
-        foreach ($values as $key => $value) {
-            $value = Base64Url::encode($value);
-            if ($key === 'dmp1') {
-                $result['dp'] = $value;
-            } elseif ($key === 'dmq1') {
-                $result['dq'] = $value;
-            } elseif ($key === 'iqmp') {
-                $result['qi'] = $value;
-            } else {
-                $result[$key] = $value;
-            }
-        }
-
-        return $result;
     }
 
     /**

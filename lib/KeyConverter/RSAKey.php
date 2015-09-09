@@ -247,7 +247,7 @@ class RSAKey extends Sequence
         }
 
         $result = '-----BEGIN '.($this->private ? 'PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
-        $result .= $tmp.PHP_EOL;
+        $result .= chunk_split(base64_encode($this->getBinary()), 64);
         $result .= '-----END '.($this->private ? 'PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
 
         return $result;

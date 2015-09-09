@@ -274,7 +274,7 @@ class ECKey extends Sequence
         }
 
         $result = '-----'.($this->private ? 'BEGIN EC PRIVATE KEY' : 'BEGIN PUBLIC KEY').'-----'.PHP_EOL;
-        $result .= $tmp.PHP_EOL;
+        $result .= chunk_split(base64_encode($this->getBinary()), 64);
         $result .= '-----'.($this->private ? 'END EC PRIVATE KEY' : 'END PUBLIC KEY').'-----'.PHP_EOL;
 
         return $result;
