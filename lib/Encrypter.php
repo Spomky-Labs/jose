@@ -25,8 +25,6 @@ use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use SpomkyLabs\Jose\Behaviour\HasCompressionManager;
 use SpomkyLabs\Jose\Behaviour\HasJWAManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKSetManager;
 use SpomkyLabs\Jose\Behaviour\HasJWTManager;
 use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
 use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
@@ -39,8 +37,6 @@ class Encrypter implements EncrypterInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasJWTManager;
-    use HasJWKManager;
-    use HasJWKSetManager;
     use HasPayloadConverter;
     use HasCompressionManager;
 

@@ -19,8 +19,6 @@ use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
 use Jose\SignerInterface;
 use SpomkyLabs\Jose\Behaviour\HasJWAManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKSetManager;
 use SpomkyLabs\Jose\Behaviour\HasJWTManager;
 use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
 use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
@@ -33,8 +31,6 @@ class Signer implements SignerInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasJWTManager;
-    use HasJWKManager;
-    use HasJWKSetManager;
     use HasPayloadConverter;
 
     /**
