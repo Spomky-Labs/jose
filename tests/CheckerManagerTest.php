@@ -26,7 +26,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadIssuer()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('iss', 'foo');
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'foo',
+            'sub'=>'SUB2',
+            'aud'=>'My service',
+            'iat'=>time()-10000,
+            'nbf'=>time()-10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -38,7 +45,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadAudience()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('aud', 'foo');
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'ISS1',
+            'sub'=>'SUB2',
+            'aud'=>'foo',
+            'iat'=>time()-10000,
+            'nbf'=>time()-10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -50,7 +64,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckExpiredJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('exp', time()-1000);
+        $jwt->setPayload([
+            'exp'=>time()-10000,
+            'iss'=>'ISS1',
+            'sub'=>'SUB2',
+            'aud'=>'My service',
+            'iat'=>time()-10000,
+            'nbf'=>time()-10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -62,7 +83,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTIssuedInTheFutur()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('iat', time()+10000);
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'ISS1',
+            'sub'=>'SUB2',
+            'aud'=>'My service',
+            'iat'=>time()+10000,
+            'nbf'=>time()-10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -74,7 +102,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTNotYetUsable()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('nbf', time()+10000);
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'ISS1',
+            'sub'=>'SUB2',
+            'aud'=>'My service',
+            'iat'=>time()-10000,
+            'nbf'=>time()+10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -86,7 +121,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadSubject()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('sub','foo');
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'ISS1',
+            'sub'=>'foo',
+            'aud'=>'My service',
+            'iat'=>time()-10000,
+            'nbf'=>time()-10000
+        ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -94,12 +136,14 @@ class CheckerManagerTest extends TestCase
     public function testCheckValidJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('exp',time()+10000)
-            ->setProtectedHeaderValue('iss','ISS1')
-            ->setProtectedHeaderValue('sub','SUB2')
-            ->setProtectedHeaderValue('aud','My service')
-            ->setProtectedHeaderValue('iat',time()-10000)
-            ->setProtectedHeaderValue('nbf',time()-10000);
+        $jwt->setPayload([
+                'exp'=>time()+10000,
+                'iss'=>'ISS1',
+                'sub'=>'SUB2',
+                'aud'=>'My service',
+                'iat'=>time()-10000,
+                'nbf'=>time()-10000
+            ]);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
