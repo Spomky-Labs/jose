@@ -50,7 +50,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckExpiredJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('exp', time()-1);
+        $jwt->setProtectedHeaderValue('exp', time()-1000);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -62,7 +62,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTIssuedInTheFutur()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('iat', time()+1000);
+        $jwt->setProtectedHeaderValue('iat', time()+10000);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -74,7 +74,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTNotYetUsable()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('nbf', time()+1000);
+        $jwt->setProtectedHeaderValue('nbf', time()+10000);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
@@ -90,16 +90,16 @@ class CheckerManagerTest extends TestCase
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
-    
+
     public function testCheckValidJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('exp',time()+3600)
+        $jwt->setProtectedHeaderValue('exp',time()+10000)
             ->setProtectedHeaderValue('iss','ISS1')
             ->setProtectedHeaderValue('sub','SUB2')
             ->setProtectedHeaderValue('aud','My service')
-            ->setProtectedHeaderValue('iat',time()-1000)
-            ->setProtectedHeaderValue('nbf',time()-1000);
+            ->setProtectedHeaderValue('iat',time()-10000)
+            ->setProtectedHeaderValue('nbf',time()-10000);
 
         $this->getCheckerManager()->checkJWT($jwt);
     }
