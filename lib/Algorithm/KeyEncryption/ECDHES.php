@@ -57,7 +57,7 @@ class ECDHES implements KeyAgreementInterface
             ]);
         }
         if ($private_key->getValue('crv') !== $public_key->getValue('crv')) {
-            throw new \RuntimeException('Curves are different');
+            throw new \InvalidArgumentException('Curves are different');
         }
 
         $agreed_key = $this->calculateAgreementKey($private_key, $public_key);
@@ -72,7 +72,7 @@ class ECDHES implements KeyAgreementInterface
      * @param JWKInterface $private_key
      * @param JWKInterface $public_key
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      *
      * @return int|string|void
      */
@@ -110,10 +110,10 @@ class ECDHES implements KeyAgreementInterface
     private function getPublicKey(array $complete_header)
     {
         if (!array_key_exists('epk', $complete_header)) {
-            throw new \RuntimeException('"epk" parameter missing');
+            throw new \InvalidArgumentException('"epk" parameter missing');
         }
         if (!is_array($complete_header['epk'])) {
-            throw new \RuntimeException('"epk" parameter is not an array of parameter');
+            throw new \InvalidArgumentException('"epk" parameter is not an array of parameter');
         }
         $public_key = new JWK();
         $public_key->setValues($complete_header['epk']);
@@ -129,17 +129,17 @@ class ECDHES implements KeyAgreementInterface
     private function checkKey(JWKInterface $key, $is_private)
     {
         if ('EC' !== $key->getKeyType()) {
-            throw new \RuntimeException("The key type must be 'EC'");
+            throw new \InvalidArgumentException("The key type must be 'EC'");
         }
-        if (null === $key->getValue('d') && true === $is_private) {
-            throw new \RuntimeException('The key must be private');
+        if (is_null($key->getValue('d')) && true === $is_private) {
+            throw new \InvalidArgumentException('The key must be private');
         }
     }
 
     /**
      * @param JWKInterface $key
      *
-     * @throws \Exception
+     * @throws \InvalidArgumentException
      *
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      */
@@ -155,7 +155,7 @@ class ECDHES implements KeyAgreementInterface
             case 'P-521':
                 return EccFactory::getNistCurves()->generator521();
             default:
-                throw new \Exception("Curve $crv is not supported");
+                throw new \InvalidArgumentException("Curve $crv is not supported");
         }
     }
 

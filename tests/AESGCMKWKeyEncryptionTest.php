@@ -18,7 +18,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
 use SpomkyLabs\Jose\JWK;
 
 /**
- * Class AESGCMKWKeyEncryptionTest.
+ * @group AESGCMKW
  */
 class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,6 +49,53 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header['iv']);
         $this->assertNotNull($header['tag']);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  The key is not valid
+     */
+    public function testBadKey()
+    {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestSkipped('Crypto extension not available');
+
+            return;
+        }
+        $header = [];
+        $key = new JWK([
+            'kty' => 'EC',
+        ]);
+
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
+
+        $aeskw = new A128GCMKW();
+
+        $aeskw->encryptKey($key, $cek, $header);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  Missing parameters 'iv' or 'tag'.
+     */
+    public function testMissingParameters()
+    {
+        if (!$this->isCryptooExtensionInstalled()) {
+            $this->markTestSkipped('Crypto extension not available');
+
+            return;
+        }
+        $header = [];
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
+        ]);
+
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
+
+        $aeskw = new A128GCMKW();
+
+        $aeskw->decryptKey($key, $cek, $header);
     }
 
     /**

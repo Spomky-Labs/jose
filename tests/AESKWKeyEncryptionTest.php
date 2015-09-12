@@ -18,7 +18,7 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
 use SpomkyLabs\Jose\JWK;
 
 /**
- * Class AESKWKeyEncryptionTest.
+ * @group AESKW
  */
 class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,6 +41,24 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($wrapped_cek, hex2bin('11826840774D993FF9C2FA02CCA3CEA0E93B1E1CF96361F93EA6DC2F345194E7B30F964C79F9E61D'));
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  The key is not valid
+     */
+    public function testBadKey()
+    {
+        $header = [];
+        $key = new JWK([
+            'kty' => 'EC',
+        ]);
+
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
+
+        $aeskw = new A128KW();
+
+        $aeskw->encryptKey($key, $cek, $header);
     }
 
     /**

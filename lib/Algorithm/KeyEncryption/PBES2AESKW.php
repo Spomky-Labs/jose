@@ -77,7 +77,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+        if ('oct' !== $key->getKeyType() || is_null($key->getValue('k'))) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }
