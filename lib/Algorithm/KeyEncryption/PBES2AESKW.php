@@ -22,19 +22,6 @@ use PBKDF2\PBKDF2;
 abstract class PBES2AESKW implements KeyEncryptionInterface
 {
     /**
-     *
-     */
-    public function __construct()
-    {
-        if (!trait_exists('\AESKW\AESKW')) {
-            throw new \RuntimeException("The library 'spomky-labs/aes-key-wrap' is required to use Key Wrap based algorithms");
-        }
-        if (!class_exists('\PBKDF2\PBKDF2')) {
-            throw new \RuntimeException("The library 'spomky-labs/pbkdf2' is required to use PBES2-* based algorithms");
-        }
-    }
-
-    /**
      * @param JWKInterface $key
      * @param string       $cek
      * @param array        $header

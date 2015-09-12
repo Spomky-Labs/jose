@@ -32,6 +32,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'alg'     => 'ES256',
             'kid'     => '0123456789',
         ]);
+        $jwk->setValue('kid', '0123456789');
 
         $this->assertEquals('EC', $jwk->getKeyType());
         $this->assertEquals('ES256', $jwk->getAlgorithm());

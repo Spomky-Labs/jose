@@ -114,16 +114,6 @@ class KeyConverter
     }
 
     /**
-     *
-     */
-    private static function checkRequirements()
-    {
-        if (!class_exists('\phpseclib\Crypt\RSA')) {
-            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
-        }
-    }
-
-    /**
      * @param array $data
      *
      * @throws \Exception
@@ -132,7 +122,6 @@ class KeyConverter
      */
     public static function fromArrayToRSACrypt(array $data)
     {
-        self::checkRequirements();
         $xml = self::fromArrayToXML($data);
         $rsa = new RSA();
         $rsa->loadKey($xml);

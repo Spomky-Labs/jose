@@ -22,16 +22,6 @@ use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 abstract class RSA implements KeyEncryptionInterface
 {
     /**
-     *
-     */
-    public function __construct()
-    {
-        if (!class_exists('\phpseclib\Crypt\RSA')) {
-            throw new \RuntimeException("The library 'phpseclib/phpseclib' is required to use RSA based algorithms");
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
