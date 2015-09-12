@@ -10,6 +10,7 @@
  */
 
 namespace SpomkyLabs\Test;
+
 use SpomkyLabs\Jose\Algorithm\Signature\ES256;
 use SpomkyLabs\Jose\Algorithm\Signature\ES384;
 
