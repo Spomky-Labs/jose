@@ -22,6 +22,6 @@ class IssuerChecker extends Base
      */
     protected function isIssuerValid($issuer)
     {
-        return in_array($issuer, ['SUB1', 'SUB2']);
+        return in_array($issuer, ['ISS1', 'ISS2']);
     }
 }
