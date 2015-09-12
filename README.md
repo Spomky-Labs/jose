@@ -1,7 +1,7 @@
 # PHP JOSE Library
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/Spomky-Labs/jose/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
 
 [![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=master)](https://travis-ci.org/Spomky-Labs/jose)
 [![StyleCI](https://styleci.io/repos/22874677/shield)](https://styleci.io/repos/22874677)
@@ -49,11 +49,11 @@ It has been successfully tested using `PHP 5.6` with all algorithms.
 Some tests on `PHP 7` and `HHVM` were skipped because [PHP Crypto](https://github.com/bukka/php-crypto) is not yet supported.
 At the moment, you will not be able to use GCM algorithms on these platforms.
 
-We also track bugs using [Scrutinizer](https://scrutinizer-ci.com) and [Sensio Insight](https://insight.sensiolabs.com).
+We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
-Coding Standards are verified by [StyleCI](https://styleci.io).
+Coding Standards are verified by [StyleCI](https://styleci.io/repos/22874677).
 
-Code coverage is analyzed by Scrutinizer (will be changed in favour of Coveralls.io soon). 
+Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-Labs/jose). 
 
 # Installation
 
