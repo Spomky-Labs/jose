@@ -18,9 +18,9 @@ Before to start, you need to know object types provided by this library and the 
 
 # The operations
 
-Depending on operations you want to perform, you you to initialize required components first.
+Depending on operations you want to perform, you have to initialize required components first.
 
-## Signature data
+## How To Sign
 
 ### Initialize components
 
@@ -35,7 +35,7 @@ If you want to sign data, you must initialize:
 
 
 
-## Encrypt data
+## How To Encrypt
 
 ### Initialize components
 
@@ -51,7 +51,7 @@ If you want to encrypt data, you must initialize:
 
 
 
-## Load data
+## How To Load
 
 ### Initialize components
 
