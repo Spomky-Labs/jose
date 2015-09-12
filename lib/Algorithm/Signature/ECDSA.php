@@ -93,11 +93,6 @@ abstract class ECDSA implements SignatureInterface
     }
 
     /**
-     * @return \Mdanter\Ecc\Primitives\CurveFp
-     */
-    abstract protected function getCurve();
-
-    /**
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      */
     abstract protected function getGenerator();
@@ -133,6 +128,8 @@ abstract class ECDSA implements SignatureInterface
     }
 
     /**
+     * @param $value
+     *
      * @return string
      */
     private function convertDecToHex($value)

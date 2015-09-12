@@ -18,14 +18,6 @@ use Mdanter\Ecc\EccFactory;
 class ES256 extends ECDSA
 {
     /**
-     * @return \Mdanter\Ecc\Primitives\CurveFp
-     */
-    protected function getCurve()
-    {
-        return EccFactory::getNistCurves()->curve256();
-    }
-
-    /**
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint
      */
     protected function getGenerator()

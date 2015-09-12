@@ -10,6 +10,8 @@
  */
 
 namespace SpomkyLabs\Test;
+use SpomkyLabs\Jose\Algorithm\Signature\ES256;
+use SpomkyLabs\Jose\Algorithm\Signature\ES384;
 
 /**
  * Class JWAManagerTest.
@@ -24,10 +26,16 @@ class JWAManagerTest extends TestCase
         $jwa_manager = $this->getJWAManager();
 
         $this->assertTrue($jwa_manager->isAlgorithmSupported('ES256'));
+        $this->assertTrue($jwa_manager->isAlgorithmSupported('ES384'));
 
         $jwa_manager->removeAlgorithm('ES256');
+        $jwa_manager->removeAlgorithm(new ES384());
 
         $this->assertFalse($jwa_manager->isAlgorithmSupported('ES256'));
+        $this->assertFalse($jwa_manager->isAlgorithmSupported('ES384'));
+
+        $jwa_manager->addAlgorithm(new ES256());
+        $jwa_manager->addAlgorithm(new ES384());
     }
 
     /**

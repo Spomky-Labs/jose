@@ -133,16 +133,38 @@ class CheckerManagerTest extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }
 
+    /**
+     * @expectedException \Exception
+     * @expectedExceptionMessage The claim/header 'foo' is marked as critical but value is not set.
+     */
+    public function testCheckJWTWithMissingCriticalParameters()
+    {
+        $jwt = $this->getJWTManager()->createJWT();
+        $jwt->setProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
+        $jwt->setPayload([
+            'exp'=>time()+10000,
+            'iss'=>'ISS1',
+            'sub'=>'foo',
+            'aud'=>'My service',
+            'iat'=>time()-10000,
+            'nbf'=>time()-10000
+        ]);
+
+        $this->getCheckerManager()->checkJWT($jwt);
+    }
+
     public function testCheckValidJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
+        $jwt->setProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
         $jwt->setPayload([
                 'exp'=>time()+10000,
                 'iss'=>'ISS1',
                 'sub'=>'SUB2',
                 'aud'=>'My service',
                 'iat'=>time()-10000,
-                'nbf'=>time()-10000
+                'nbf'=>time()-10000,
+                'foo'=>'bar',
             ]);
 
         $this->getCheckerManager()->checkJWT($jwt);

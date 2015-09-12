@@ -19,30 +19,13 @@ use Jose\Operation\ContentEncryptionInterface;
 abstract class AESCBCHS implements ContentEncryptionInterface
 {
     /**
-     * @var null|\SpomkyLabs\Jose\Algorithm\ContentEncryption\AESInterface
-     */
-    private $aes_engine = null;
-
-    /**
-     *
-     */
-    public function __construct()
-    {
-        if (extension_loaded('openssl')) {
-            $this->aes_engine = new AESOpenSSL();
-        } else {
-            throw new \RuntimeException('Please install MCrypt extension or OpenSSL extension to use AES based (except AES-GCM based) algorithms');
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
         $k = substr($cek, strlen($cek) / 2);
 
-        $cyphertext = $this->aes_engine->encrypt($data, $k, $iv);
+        $cyphertext = AESOpenSSL::encrypt($data, $k, $iv);
 
         $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
@@ -67,7 +50,7 @@ abstract class AESCBCHS implements ContentEncryptionInterface
 
         $k = substr($cek, strlen($cek) / 2);
 
-        return $this->aes_engine->decrypt($data, $k, $iv);
+        return AESOpenSSL::decrypt($data, $k, $iv);
     }
 
     /**
