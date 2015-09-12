@@ -65,8 +65,10 @@ use SpomkyLabs\Jose\Payload\JWKConverter;
 use SpomkyLabs\Jose\Payload\JWKSetConverter;
 use SpomkyLabs\Jose\Payload\PayloadConverterManager;
 use SpomkyLabs\Jose\Signer;
+use SpomkyLabs\Test\Stub\IssuerChecker;
 use SpomkyLabs\Test\Stub\JWKManager;
 use SpomkyLabs\Test\Stub\JWKSetManager;
+use SpomkyLabs\Test\Stub\SubjectChecker;
 
 /**
  * Class TestCase.
@@ -128,7 +130,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
                         ->addChecker(new CriticalChecker())
                         ->addChecker(new ExpirationChecker())
                         ->addChecker(new NotBeforeChecker())
-                        ->addChecker(new IssuedAtChecker());
+                        ->addChecker(new IssuedAtChecker())
+                        ->addChecker(new IssuerChecker())
+                        ->addChecker(new SubjectChecker());
 
         return $checker_manager;
     }

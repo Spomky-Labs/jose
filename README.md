@@ -63,12 +63,6 @@ The preferred way to install this library is to rely on Composer:
 composer require spomky-labs/jose "dev-master"
 ```
 
-# Extend the library
-
-This library only contains the logic. You must extend classes (algorithms, compression, managers...) to define setters and getters.
-
-Look at [Extend classes](doc/Extend.md) for more information and examples.
-
 # How to use
 
 Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.

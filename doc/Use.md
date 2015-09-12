@@ -33,7 +33,7 @@ If you want to sign data, you must initialize:
 
 ### Create a JWS
 
-
+...
 
 ## How To Encrypt
 
@@ -49,7 +49,7 @@ If you want to encrypt data, you must initialize:
 
 ### Create a JWE
 
-
+...
 
 ## How To Load
 
@@ -67,3 +67,5 @@ If you want to load data, you must initialize:
 * [The loader itself](component/loader.md)
 
 ### Load JWS or JWE
+
+...
