@@ -8,6 +8,9 @@
     "authors": [
         {
             "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },{
+            "name": "All contributors",
             "homepage": "https://github.com/Spomky-Labs/jose/contributors"
         }
     ],
@@ -39,7 +42,7 @@
    },
     "extra": {
         "branch-alias": {
-            "dev-master": "0.1.x-dev"
+            "dev-master": "1.0.x-dev"
         }
     }
 }
