@@ -39,7 +39,7 @@ trait HasKeyChecker
                         return true;
                     }
 
-                    throw new \InvalidArgumentException('Unsupported key usage.');
+                    return false;
                 case 'encryption':
                 case 'decryption':
                     if ('enc' === $use) {
