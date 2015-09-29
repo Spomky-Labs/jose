@@ -33,7 +33,36 @@ If you want to sign data, you must initialize:
 
 ### Create a JWS
 
-...
+First, you must create a [signature instruction](object/signature_instruction.md) for each signature you want to create:
+
+```php
+use SpomkyLabs\Jose\SignatureInstruction;
+
+$instruction1 = new SignatureInstruction();
+$instruction1->setProtectedHeader(['alg'=>'HS512'])
+    ->setKey($my_first_key);
+$instruction2 = new SignatureInstruction();
+$instruction2->setProtectedHeader(['alg'=>'ES384'])
+    ->setUnprotectedHeader('foo'=>'bar')
+    ->setKey($my_second_key);
+```
+
+Then, you can sign your input:
+
+```php
+$input = 'The input to sign';
+$instructions = [$instruction1, $instruction2];
+
+$output = $signer->sign($input, $instructions);
+```
+
+The output is an array that contains two signatures.
+
+By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
+
+```php
+$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_SERIALIZATION);
+```
 
 ## How To Encrypt
 
