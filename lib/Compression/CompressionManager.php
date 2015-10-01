@@ -12,7 +12,6 @@
 namespace SpomkyLabs\Jose\Compression;
 
 use Jose\Compression\CompressionInterface;
-use Jose\Compression\CompressionManagerInterface;
 
 /**
  * Compression algorithm manager.
@@ -20,14 +19,12 @@ use Jose\Compression\CompressionManagerInterface;
 class CompressionManager implements CompressionManagerInterface
 {
     /**
-     * @var array
+     * @var \Jose\Compression\CompressionInterface[]
      */
     protected $compression_algorithms = [];
 
     /**
-     * @param CompressionInterface $compression_algorithm
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function addCompressionAlgorithm(CompressionInterface $compression_algorithm)
     {
@@ -37,9 +34,7 @@ class CompressionManager implements CompressionManagerInterface
     }
 
     /**
-     * @param string $name
-     *
-     * @return CompressionInterface|null
+     * {@inheritdoc}
      */
     public function getCompressionAlgorithm($name)
     {
