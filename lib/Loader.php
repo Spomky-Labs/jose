@@ -59,10 +59,10 @@ class Loader implements LoaderInterface
         $json = Converter::convert($input, JSONSerializationModes::JSON_SERIALIZATION, false);
         if (is_array($json)) {
             if (array_key_exists('signatures', $json)) {
-                return $this->loadSerializedJsonJWS($json);
+                return $this->loadSerializedJsonJWS($json, $input);
             }
             if (array_key_exists('recipients', $json)) {
-                return $this->loadSerializedJsonJWE($json);
+                return $this->loadSerializedJsonJWE($json, $input);
             }
         }
         throw new \InvalidArgumentException('Unable to load the input');
@@ -150,11 +150,12 @@ class Loader implements LoaderInterface
     }
 
     /**
-     * @param array $data
+     * @param array  $data
+     * @param string $input
      *
      * @return \Jose\JWSInterface|\Jose\JWSInterface[]
      */
-    protected function loadSerializedJsonJWS(array $data)
+    protected function loadSerializedJsonJWS(array $data, $input)
     {
         $encoded_payload = isset($data['payload']) ? $data['payload'] : '';
         $payload = Base64Url::decode($encoded_payload);
@@ -170,7 +171,9 @@ class Loader implements LoaderInterface
             }
             $unprotected_header = isset($signature['header']) ? $signature['header'] : [];
 
-            $jws[] = $this->createJWS($encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
+            $result = $this->createJWS($encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
+            $result->setInput($input);
+            $jws[] = $result;
         }
 
         return count($jws) > 1 ? $jws : current($jws);
@@ -281,11 +284,12 @@ class Loader implements LoaderInterface
     }
 
     /**
-     * @param array $data
+     * @param array  $data
+     * @param string $input
      *
      * @return \Jose\JWEInterface|\Jose\JWEInterface[]
      */
-    protected function loadSerializedJsonJWE(array $data)
+    protected function loadSerializedJsonJWE(array $data, $input)
     {
         $result = [];
         foreach ($data['recipients'] as $recipient) {
@@ -302,7 +306,8 @@ class Loader implements LoaderInterface
                 ->setTag(array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null)
                 ->setProtectedHeader($protected_header)
                 ->setEncodedProtectedHeader($encoded_protected_header)
-                ->setUnprotectedHeader(array_merge($unprotected_header, $header));
+                ->setUnprotectedHeader(array_merge($unprotected_header, $header))
+                ->setInput($input);
             $result[] = $jwe;
         }
 

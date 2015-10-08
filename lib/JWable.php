@@ -24,6 +24,11 @@ trait JWable
     /**
      * @var string
      */
+    protected $input = null;
+
+    /**
+     * @var string
+     */
     protected $encoded_payload = '';
 
     /**
@@ -47,6 +52,14 @@ trait JWable
     public function getEncodedProtectedHeader()
     {
         return $this->encoded_protected_header;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getInput()
+    {
+        return $this->input;
     }
 
     /**
@@ -78,6 +91,18 @@ trait JWable
     public function getPayload()
     {
         return $this->payload;
+    }
+
+    /**
+     * @param string $input
+     *
+     * @return self
+     */
+    public function setInput($input)
+    {
+        $this->input = $input;
+
+        return $this;
     }
 
     /**
