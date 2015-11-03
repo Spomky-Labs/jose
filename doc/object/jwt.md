@@ -41,3 +41,5 @@ Internally, the library uses the following methods. You should not use these met
 * `setEncodedProtectedHeader($header)`: Sets the protected header as displayed in the JWT representation
 * `getEncodedPayload()`: Returns the payload as displayed in the JWT representation
 * `setEncodedPayload($payload)`: Sets the payload as displayed in the JWT representation
+*  `getInput()`: Returns the input as passed to the `Loader` object
+*  `setInput($input)`: Sets the input
