@@ -56,13 +56,33 @@ $instructions = [$instruction1, $instruction2];
 $output = $signer->sign($input, $instructions);
 ```
 
-The output is an array that contains two signatures.
+### Output
+
+The output depends on the output format you set and the number of instructions. It could be:
+
+| Output Mode \ Number of instruction |   1    |   2+  |
+|-------------------------------------|--------|-------|
+| Compact JSON Serialization          | string | array |
+| Flattened JSON Serialization        | string | array |
+| JSON Serialization                  | string | string|
 
 By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
 
 ```php
 $output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_SERIALIZATION);
 ```
+
+### Detached payload
+
+In some cases, you will need to detached the payload. This library is able to perform this task for you.
+
+```php
+$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION, true, $detached_payload);
+```
+
+The fourth parameter is set to `true` to indicate that the payload is detached.
+The output now contains all signatures but no payload. The payload is set in the last parameter `$detached_payload`.
+Note that your payload is encoded in Base 64.
 
 ## How To Encrypt
 
@@ -78,7 +98,65 @@ If you want to encrypt data, you must initialize:
 
 ### Create a JWE
 
-...
+First, you must create an [encryption instruction](object/encryption_instruction.md) for each encryption you want to create:
+
+```php
+use SpomkyLabs\Jose\EncryptionInstruction;
+
+$instruction1 = new EncryptionInstruction();
+$instruction1->setRecipientKey($first_recipient_public_key)
+    ->setUnprotectedHeader([
+        'alg' => 'RSA-OAEP-256',
+    ]);
+
+$instruction2 = new EncryptionInstruction();
+$instruction2>setRecipientKey($second_recipient_public_key)
+   ->setSenderKey($my_private_key)
+   ->setUnprotectedHeader([
+        'alg' => 'ECDH-ES',
+        'foo' => 'bar',
+   ]);
+```
+
+Then, you can encrypt your input:
+
+```php
+$input = 'The input to encrypt';
+$instructions = [$instruction1, $instruction2];
+$shared_protected_header = [
+    'enc' => 'A256CBC-HS512',
+    'zip' => 'DEF'
+];
+$shared_unprotected_header = [];
+
+$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header);
+```
+
+### Output
+
+The output depends on the output format you set and the number of instructions. It could be:
+
+| Output Mode \ Number of instruction |   1    |   2+  |
+|-------------------------------------|--------|-------|
+| Compact JSON Serialization          | string | array |
+| Flattened JSON Serialization        | string | array |
+| JSON Serialization                  | string | string|
+
+By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
+
+```php
+$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header, JSONSerializationModes::JSON_SERIALIZATION);
+```
+
+### Additional Authenticated Data
+
+This library supports Additional Authenticated Data (AAD).
+
+Note that this data is not available when using Compact JSON Serialization mode.
+
+```php
+$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header, JSONSerializationModes::JSON_SERIALIZATION, 'foo,bar,baz');
+```
 
 ## How To Load
 
