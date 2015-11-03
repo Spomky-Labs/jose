@@ -1,7 +1,9 @@
 The JWK object
 ==============
 
-The JWK object represents a key. This object implements the interface `Jose\JWKInterface` and provides the following methods:
+The JWK object represents a key. Depending on the key properties, it can be used to sign, verify a signature, encrypt or decrypt.
+
+This object implements the interface `Jose\JWKInterface` and provides the following methods:
 * `getValues()`: all values
 * `setValues(array $values)`: set values of the key 
 * `getValue($key)`:  the value with key `$key`. Returns null if the value does not exist.
