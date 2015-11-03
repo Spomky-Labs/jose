@@ -59,8 +59,9 @@ You just have to create an instance of `SpomkyLabs\Jose\JWAManager` and add each
 <?php
 
 use SpomkyLabs\Jose\JWAManager;
+use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256CBCHS512;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
+use SpomkyLabs\Jose\Algorithm\ContentEncryption\PBES2HS512A256KW;
 
 $jwa_manager = new JWAManager();
 
