@@ -1,7 +1,7 @@
 The JWT object
 ==============
 
-The JWT object can be used as input and is the base of output objects after loading (see [JWS](jws.md) and [JWE)(jwe.md).
+The JWT object can be used as input and is the base of output objects after loading (see [JWS](jws.md) and [JWE](jwe.md).
 
 This object provides the following methods:
 
