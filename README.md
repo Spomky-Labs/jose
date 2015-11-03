@@ -26,6 +26,22 @@ This library aims to provide an implementation of:
 
 Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are partially implemented.
 
+# Important note
+
+This library provides all objects and components to perform signature, verification, encryption and decryption according to the RFCs listed above.
+
+Some of classes provided are abstract and you must implement the missing methods.
+In addition, you will have to instantiate, initialize and inject all objects and components to the signer, encrypter and loader services.
+
+You will be afraid of all of this and you will think that this library is very complicated to use. AND YOU ARE RIGHT!
+
+That is why we created to other projects to ease the use of this library:
+
+* [Jose Service](https://github.com/Spomky-Labs/jose-service): this project uses Pimple to provide only one service to rule them all.
+* [Jose Bundle](https://github.com/Spomky-Labs/JoseBundle): a Symfony 2.7+ bundle that provides easy to use services
+
+Finally, this library and all these projects are still in active development. Do not hesitate to send us your feedbacks!
+
 # Status of implementations
 
 [Please see this page](doc/Status.md).
