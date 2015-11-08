@@ -43,6 +43,7 @@ class KeyConverter
         }
         $values = self::loadKeyFromX509Resource($res);
         openssl_x509_free($res);
+
         return $values;
     }
 
@@ -68,6 +69,7 @@ class KeyConverter
                 $values['x5t'] = self::calculateX509Fingerprint($pem, 'sha1', false);
                 $values['x5t#256'] = self::calculateX509Fingerprint($pem, 'sha256', false);
             }
+
             return $values;
         }
         throw new \InvalidArgumentException('Unable to load the certificate');
