@@ -54,8 +54,13 @@ class KeyConverter
      */
     public static function loadKeyFromX509Resource($res)
     {
-        $sha1 = openssl_x509_fingerprint($res, 'sha1', false);
-        $sha256 = openssl_x509_fingerprint($res, 'sha256', false);
+        if (function_exists('openssl_x509_fingerprint')) {
+            $sha1 = openssl_x509_fingerprint($res, 'sha1', false);
+            $sha256 = openssl_x509_fingerprint($res, 'sha256', false);
+        } else {
+            $sha1 = self::x509_fingerprint($res, 'sha1', false);
+            $sha256 = self::x509_fingerprint($res, 'sha256', false);
+        }
         $key = openssl_get_publickey($res);
         openssl_x509_free($res);
 
@@ -284,5 +289,19 @@ class KeyConverter
         $pem = '-----BEGIN CERTIFICATE-----'.PHP_EOL.$pem.'-----END CERTIFICATE-----'.PHP_EOL;
 
         return $pem;
+    }
+
+    /**
+     * @param string $pem
+     * @param string $algorithm
+     * @param bool   $binary
+     *
+     * @return string
+     */
+    private static function x509_fingerprint($pem, $algorithm, $binary = false)
+    {
+        $pem = preg_replace('#-.*-|\r|\n#', '', $pem);
+        $bin = base64_decode($pem);
+        return hash($algorithm, $bin, $binary);
     }
 }
