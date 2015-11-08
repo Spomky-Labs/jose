@@ -31,18 +31,26 @@ class KeyConverter
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(sprintf('File "%s" does not exist.', $file));
         }
+        $content = file_get_contents($file);
         try {
-            $res = openssl_x509_read($file);
+            $res = openssl_x509_read($content);
         } catch (\Exception $e) {
-            $content = file_get_contents($file);
-            $pem = self::convertDerToPem($content);
-            $res = openssl_x509_read($pem);
+            $content = self::convertDerToPem($content);
+            $res = openssl_x509_read($content);
         }
         if (false === $res) {
             throw new \InvalidArgumentException('Unable to load the certificate');
-        } else {
-            return self::loadKeyFromX509Resource($res);
         }
+        $values = self::loadKeyFromX509Resource($res);
+        if (function_exists('openssl_x509_fingerprint')) {
+            $values['x5t'] = openssl_x509_fingerprint($res, 'sha1', false);
+            $values['x5t#256'] = openssl_x509_fingerprint($res, 'sha256', false);
+        } else {
+            $values['x5t'] = self::calculateX509Fingerprint($content, 'sha1', false);
+            $values['x5t#256'] = self::calculateX509Fingerprint($content, 'sha256', false);
+        }
+        openssl_x509_free($res);
+        return $values;
     }
 
     /**
@@ -54,24 +62,13 @@ class KeyConverter
      */
     public static function loadKeyFromX509Resource($res)
     {
-        if (function_exists('openssl_x509_fingerprint')) {
-            $sha1 = openssl_x509_fingerprint($res, 'sha1', false);
-            $sha256 = openssl_x509_fingerprint($res, 'sha256', false);
-        } else {
-            $sha1 = self::x509_fingerprint($res, 'sha1', false);
-            $sha256 = self::x509_fingerprint($res, 'sha256', false);
-        }
         $key = openssl_get_publickey($res);
-        openssl_x509_free($res);
 
         $details = openssl_pkey_get_details($key);
         if (isset($details['key'])) {
-            $data = self::loadKeyFromPEM($details['key']);
-            $data['x5t'] = $sha1;
-            $data['x5t#256'] = $sha256;
-
-            return $data;
+            return self::loadKeyFromPEM($details['key']);
         }
+        throw new \InvalidArgumentException('Unable to load the certificate');
     }
 
     /**
@@ -298,7 +295,7 @@ class KeyConverter
      *
      * @return string
      */
-    private static function x509_fingerprint($pem, $algorithm, $binary = false)
+    private static function calculateX509Fingerprint($pem, $algorithm, $binary = false)
     {
         $pem = preg_replace('#-.*-|\r|\n#', '', $pem);
         $bin = base64_decode($pem);
