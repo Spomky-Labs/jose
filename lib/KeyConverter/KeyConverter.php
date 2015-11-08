@@ -302,6 +302,7 @@ class KeyConverter
     {
         $pem = preg_replace('#-.*-|\r|\n#', '', $pem);
         $bin = base64_decode($pem);
+
         return hash($algorithm, $bin, $binary);
     }
 }
