@@ -20,7 +20,7 @@ use phpseclib\Crypt\RSA;
 class KeyConverter
 {
     /**
-     * @param string      $file
+     * @param string $file
      *
      * @throws \InvalidArgumentException
      *
@@ -40,13 +40,13 @@ class KeyConverter
         }
         if (false === $res) {
             throw new \InvalidArgumentException('Unable to load the certificate');
-        } else  {
+        } else {
             return self::loadKeyFromX509Resource($res);
         }
     }
 
     /**
-     * @param             $res
+     * @param   $res
      *
      * @throws \Exception
      *
@@ -64,6 +64,7 @@ class KeyConverter
             $data = self::loadKeyFromPEM($details['key']);
             $data['x5t'] = $sha1;
             $data['x5t#256'] = $sha256;
+
             return $data;
         }
     }
@@ -280,7 +281,8 @@ class KeyConverter
     private static function convertDerToPem($der_data)
     {
         $pem = chunk_split(base64_encode($der_data), 64, PHP_EOL);
-        $pem = "-----BEGIN CERTIFICATE-----".PHP_EOL.$pem."-----END CERTIFICATE-----".PHP_EOL;
+        $pem = '-----BEGIN CERTIFICATE-----'.PHP_EOL.$pem.'-----END CERTIFICATE-----'.PHP_EOL;
+
         return $pem;
     }
 }
