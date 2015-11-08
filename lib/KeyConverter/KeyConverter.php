@@ -15,10 +15,59 @@ use Base64Url\Base64Url;
 use phpseclib\Crypt\RSA;
 
 /**
- * This class will help you to load an EC key or a RSA key (private or public) and get values to create a JWK object.
+ * This class will help you to load an EC key or a RSA key/certificate (private or public) and get values to create a JWK object.
  */
 class KeyConverter
 {
+    /**
+     * @param string      $file
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return array
+     */
+    public static function loadKeyFromCertificate($file)
+    {
+        if (!file_exists($file)) {
+            throw new \InvalidArgumentException(sprintf('File "%s" does not exist.', $file));
+        }
+        try {
+            $res = openssl_x509_read($file);
+        } catch (\Exception $e) {
+            $content = file_get_contents($file);
+            $pem = self::convertDerToPem($content);
+            $res = openssl_x509_read($pem);
+        }
+        if (false === $res) {
+            throw new \InvalidArgumentException('Unable to load the certificate');
+        } else  {
+            return self::loadKeyFromX509Resource($res);
+        }
+    }
+
+    /**
+     * @param             $res
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public static function loadKeyFromX509Resource($res)
+    {
+        $sha1 = openssl_x509_fingerprint($res, 'sha1', false);
+        $sha256 = openssl_x509_fingerprint($res, 'sha256', false);
+        $key = openssl_get_publickey($res);
+        openssl_x509_free($res);
+
+        $details = openssl_pkey_get_details($key);
+        if (isset($details['key'])) {
+            $data = self::loadKeyFromPEM($details['key']);
+            $data['x5t'] = $sha1;
+            $data['x5t#256'] = $sha256;
+            return $data;
+        }
+    }
+
     /**
      * @param string      $file
      * @param null|string $password
@@ -31,7 +80,26 @@ class KeyConverter
     {
         $content = file_get_contents($file);
 
-        return self::loadKeyFromPEM($content, $password);
+        try {
+            return self::loadKeyFromPEM($content, $password);
+        } catch (\Exception $e) {
+            return self::loadKeyFromDER($content, $password);
+        }
+    }
+
+    /**
+     * @param string      $der
+     * @param null|string $password
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public static function loadKeyFromDER($der, $password = null)
+    {
+        $pem = self::convertDerToPem($der);
+
+        return self::loadKeyFromPEM($pem, $password);
     }
 
     /**
@@ -45,21 +113,7 @@ class KeyConverter
     public static function loadKeyFromPEM($pem, $password = null)
     {
         if (preg_match('#DEK-Info: (.+),(.+)#', $pem, $matches)) {
-            $iv = pack('H*', trim($matches[2]));
-            $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
-            $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
-            $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
-            $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
-
-            $decoded = openssl_decrypt($ciphertext, strtolower($matches[1]), $symkey, true, $iv);
-
-            $number = preg_match_all('#-{5}.*-{5}#', $pem, $result);
-            if (2 !== $number) {
-                throw new \InvalidArgumentException('Unable to load the key');
-            }
-            $pem = $result[0][0].PHP_EOL;
-            $pem .= chunk_split(base64_encode($decoded), 64);
-            $pem .= $result[0][1].PHP_EOL;
+            $pem = self::decodePEM($pem, $matches, $password);
         }
 
         $res = openssl_pkey_get_private($pem);
@@ -185,5 +239,48 @@ class KeyConverter
         } else {
             throw new \InvalidArgumentException('Unsupported key data');
         }
+    }
+
+    /**
+     * @param string      $pem
+     * @param array       $matches
+     * @param null|string $password
+     *
+     * @return string
+     */
+    private static function decodePem($pem, array $matches, $password = null)
+    {
+        if (null === $password) {
+            throw new \InvalidArgumentException('Password required for encrypted keys.');
+        }
+        $iv = pack('H*', trim($matches[2]));
+        $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
+        $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
+        $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
+        $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
+
+        $decoded = openssl_decrypt($ciphertext, strtolower($matches[1]), $symkey, true, $iv);
+
+        $number = preg_match_all('#-{5}.*-{5}#', $pem, $result);
+        if (2 !== $number) {
+            throw new \InvalidArgumentException('Unable to load the key');
+        }
+        $pem = $result[0][0].PHP_EOL;
+        $pem .= chunk_split(base64_encode($decoded), 64);
+        $pem .= $result[0][1].PHP_EOL;
+
+        return $pem;
+    }
+
+    /**
+     * @param string $der_data
+     *
+     * @return string
+     */
+    private static function convertDerToPem($der_data)
+    {
+        $pem = chunk_split(base64_encode($der_data), 64, PHP_EOL);
+        $pem = "-----BEGIN CERTIFICATE-----".PHP_EOL.$pem."-----END CERTIFICATE-----".PHP_EOL;
+        return $pem;
     }
 }
