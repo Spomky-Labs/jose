@@ -27,11 +27,11 @@ trait HasKeyChecker
     {
         $use = $key->getPublicKeyUse();
         $ops = $key->getKeyOperations();
-        if (is_null($use) && is_null($ops)) {
+        if (null === $use && null === $ops) {
             return true;
         }
 
-        if (!is_null($use)) {
+        if (null !== $use) {
             switch ($usage) {
                 case 'verification':
                 case 'signature':
@@ -94,6 +94,6 @@ trait HasKeyChecker
     {
         $alg = $key->getAlgorithm();
 
-        return is_null($alg) || $alg === $algorithm;
+        return null === $alg || $alg === $algorithm;
     }
 }

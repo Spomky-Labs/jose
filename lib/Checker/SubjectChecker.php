@@ -28,7 +28,7 @@ abstract class SubjectChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $sub = $jwt->getSubject();
-        if (!is_null($sub) && !$this->isSubjectValid($sub)) {
+        if (null !== $sub && !$this->isSubjectValid($sub)) {
             throw new \Exception('Invalid subject.');
         }
 

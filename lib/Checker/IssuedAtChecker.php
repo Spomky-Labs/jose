@@ -21,7 +21,7 @@ class IssuedAtChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $iat = $jwt->getIssuedAt();
-        if (!is_null($iat) && time() < $iat) {
+        if (null !== $iat && time() < $iat) {
             throw new \Exception('The JWT is issued in the futur.');
         }
 

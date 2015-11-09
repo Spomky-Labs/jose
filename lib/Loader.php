@@ -80,7 +80,7 @@ class Loader implements LoaderInterface
 
         $this->checkCompleteHeader($complete_header);
 
-        if (is_null($jwk_set)) {
+        if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
         }
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
@@ -95,7 +95,7 @@ class Loader implements LoaderInterface
             }
             $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
 
-            if (!is_null($cek)) {
+            if (null !== $cek) {
                 return $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
             }
         }
@@ -110,15 +110,15 @@ class Loader implements LoaderInterface
      */
     public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null, $detached_payload = null)
     {
-        if (!is_null($detached_payload) && !empty($jws->getPayload())) {
+        if (null !== $detached_payload && !empty($jws->getPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
         }
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
-        if (is_null($jwk_set)) {
+        if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
         }
 
-        $input = $jws->getEncodedProtectedHeader().'.'.(is_null($detached_payload) ? $jws->getEncodedPayload() : $detached_payload);
+        $input = $jws->getEncodedProtectedHeader().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 
         if (0 === count($jwk_set)) {
             return false;
@@ -219,7 +219,7 @@ class Loader implements LoaderInterface
     protected function getCompleteHeader($protected_header, $unprotected_header)
     {
         $complete_header = [];
-        if (!is_null($protected_header)) {
+        if (null !== $protected_header) {
             $tmp = json_decode(Base64Url::decode($protected_header), true);
             if (!is_array($tmp)) {
                 throw new \InvalidArgumentException('Invalid protected header');
@@ -242,7 +242,7 @@ class Loader implements LoaderInterface
     protected function getAlgorithm(array $header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $header)) {
-            if (is_null($key->getAlgorithm())) {
+            if (null === $key->getAlgorithm()) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
             } else {
                 $alg = $key->getAlgorithm();
@@ -332,11 +332,11 @@ class Loader implements LoaderInterface
             $jwe->getTag()
         );
 
-        if (is_null($payload)) {
+        if (null === $payload) {
             return false;
         }
 
-        if (!is_null($jwe->getZip())) {
+        if (null !== $jwe->getZip()) {
             $compression_method = $this->getCompressionMethod($jwe->getZip());
             $payload = $compression_method->uncompress($payload);
             if (!is_string($payload)) {
@@ -404,7 +404,7 @@ class Loader implements LoaderInterface
     protected function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
-        if (is_null($compression_method)) {
+        if (null === $compression_method) {
             throw new \RuntimeException(sprintf("Compression method '%s' not supported"), $method);
         }
 

@@ -112,7 +112,7 @@ class Signer implements SignerInterface
         $result = [
             'signature' => $jwt_signature,
         ];
-        if (!is_null($protected_header)) {
+        if (null !== $protected_header) {
             $result['protected'] = $jwt_protected_header;
         }
         if (!empty($unprotected_header)) {
@@ -131,7 +131,7 @@ class Signer implements SignerInterface
     protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $complete_header)) {
-            if (is_null($key->getAlgorithm())) {
+            if (null === $key->getAlgorithm()) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
             } else {
                 $alg = $key->getAlgorithm();
@@ -139,7 +139,7 @@ class Signer implements SignerInterface
         } else {
             $alg = $complete_header['alg'];
         }
-        if (!is_null($key->getAlgorithm()) && $key->getAlgorithm() !== $alg) {
+        if (null !== $key->getAlgorithm() && $key->getAlgorithm() !== $alg) {
             throw new \InvalidArgumentException("The algorithm '$alg' is allowed with this key.");
         }
 

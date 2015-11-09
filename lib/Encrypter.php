@@ -125,7 +125,7 @@ class Encrypter implements EncrypterInterface
 
         // We compute the initialization vector
         $iv = null;
-        if (!is_null($iv_size = $content_encryption_algorithm->getIVSize())) {
+        if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
             $iv = $this->createIV($iv_size);
         }
 
@@ -140,13 +140,13 @@ class Encrypter implements EncrypterInterface
         $jwt_ciphertext = Base64Url::encode($ciphertext);
 
         // JWT AAD
-        $jwt_aad = is_null($aad) ? null : Base64Url::encode($aad);
+        $jwt_aad = null === $aad ? null : Base64Url::encode($aad);
 
         // JWT Tag
-        $jwt_tag = is_null($tag) ? null : Base64Url::encode($tag);
+        $jwt_tag = null === $tag ? null : Base64Url::encode($tag);
 
         // JWT IV
-        $jwt_iv = is_null($iv) ? '' : Base64Url::encode($iv);
+        $jwt_iv = null === $iv ? '' : Base64Url::encode($iv);
 
         $values = [
             'ciphertext'  => $jwt_ciphertext,
@@ -198,14 +198,14 @@ class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->encryptKey($instruction->getRecipientKey(), $cek, $protected_header));
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            if (is_null($instruction->getSenderKey())) {
+            if (null === $instruction->getSenderKey()) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
             $additional_header_values = [];
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            if (is_null($instruction->getSenderKey())) {
+            if (null === $instruction->getSenderKey()) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
             $additional_header_values = [];
@@ -214,7 +214,7 @@ class Encrypter implements EncrypterInterface
         }
 
         $result = [];
-        if (!is_null($jwt_cek)) {
+        if (null !== $jwt_cek) {
             $result['encrypted_key'] = $jwt_cek;
         }
         if (!empty($recipient_header)) {
@@ -254,7 +254,7 @@ class Encrypter implements EncrypterInterface
             $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
 
             $temp = $this->getKeyManagementMode2($complete_header);
-            if (is_null($mode)) {
+            if (null === $mode) {
                 $mode = $temp;
             } else {
                 if (!$this->areKeyManagementModeAuthorized($mode, $temp)) {
@@ -357,7 +357,7 @@ class Encrypter implements EncrypterInterface
             }
 
             $temp = $key_encryption_algorithm->getCEK($instruction->getRecipientKey(), $complete_header);
-            if (is_null($cek)) {
+            if (null === $cek) {
                 $cek = $temp;
             } else {
                 if ($cek !== $temp) {
@@ -390,12 +390,12 @@ class Encrypter implements EncrypterInterface
                 throw new \RuntimeException('The key encryption algorithm is not an instance of KeyAgreementInterface');
             }
 
-            if (is_null($instruction->getSenderKey())) {
+            if (null === $instruction->getSenderKey()) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
             $additional_header_values = [];
             $temp = $key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values);
-            if (is_null($cek)) {
+            if (null === $cek) {
                 $cek = $temp;
             } else {
                 if ($cek !== $temp) {
@@ -413,7 +413,7 @@ class Encrypter implements EncrypterInterface
      */
     protected function compressPayload(&$payload, $method = null)
     {
-        if (!is_null($method)) {
+        if (null !== $method) {
             $compression_method = $this->getCompressionMethod($method);
             $payload = $compression_method->compress($payload);
             if (!is_string($payload)) {
@@ -459,7 +459,7 @@ class Encrypter implements EncrypterInterface
     protected function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
-        if (is_null($compression_method)) {
+        if (null === $compression_method) {
             throw new \RuntimeException(sprintf("Compression method '%s' not supported", $method));
         }
 
@@ -525,7 +525,7 @@ class Encrypter implements EncrypterInterface
             if (!array_key_exists('enc', $complete_header)) {
                 throw new \InvalidArgumentException("Parameters 'enc' is missing.");
             }
-            if (is_null($algorithm)) {
+            if (null === $algorithm) {
                 $algorithm = $complete_header['enc'];
             } else {
                 if ($algorithm !== $complete_header['enc']) {

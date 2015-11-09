@@ -73,7 +73,7 @@ class PayloadConverterManager implements PayloadConverterManagerInterface
         }
 
         $result = json_decode($content, true);
-        if (is_null($result) && json_encode(null) !== $content) {
+        if (null === $result && json_encode(null) !== $content) {
             return $content;
         }
 

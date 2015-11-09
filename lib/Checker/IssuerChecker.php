@@ -28,7 +28,7 @@ abstract class IssuerChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $iss = $jwt->getIssuer();
-        if (!is_null($iss) && !$this->isIssuerValid($iss)) {
+        if (null !== $iss && !$this->isIssuerValid($iss)) {
             throw new \Exception('Issuer not allowed.');
         }
 

@@ -61,7 +61,7 @@ class Converter
         //We verify there is only JWS or JWE
         $type = null;
         foreach ($inputs as $input) {
-            if (is_null($type)) {
+            if (null ===$type) {
                 $type = self::getType($input);
             } else {
                 $current = self::getType($input);
@@ -90,9 +90,9 @@ class Converter
         $payload = null;
         //We verify if all common information are identical
         foreach ($inputs as $input) {
-            if (is_null($payload) && array_key_exists('payload', $input)) {
+            if (null === $payload && array_key_exists('payload', $input)) {
                 $payload = $input['payload'];
-            } elseif (!is_null($payload) && array_key_exists('payload', $input)) {
+            } elseif (null !==$payload && array_key_exists('payload', $input)) {
                 if ($payload !== $input['payload']) {
                     throw new \InvalidArgumentException('Unable to merge: a payload is not identical with other inputs');
                 }
@@ -100,7 +100,7 @@ class Converter
         }
         //All good!
         $result = [];
-        if (!is_null($payload)) {
+        if (null !==$payload) {
             $result['payload'] = $payload;
         }
         $result['signatures'] = self::mergeSignatures($inputs);
@@ -143,9 +143,9 @@ class Converter
         }
         foreach ($inputs as $input) {
             foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
-                if (is_null($$key) && array_key_exists($key, $input)) {
+                if (null ===$$key && array_key_exists($key, $input)) {
                     $$key = $input[$key];
-                } elseif (!is_null($$key) && array_key_exists($key, $input)) {
+                } elseif (null !==$$key && array_key_exists($key, $input)) {
                     if ($$key !== $input[$key]) {
                         throw new \InvalidArgumentException('Unable to merge: parameter "%s" is not identical with other inputs');
                     }
@@ -155,7 +155,7 @@ class Converter
         //All good!
         $result = [];
         foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
-            if (!is_null($$key)) {
+            if (null !==$$key) {
                 $result[$key] = $$key;
             }
         }

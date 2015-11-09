@@ -43,7 +43,7 @@ class ECDHES implements KeyAgreementInterface
     public function getAgreementKey($encryption_key_length, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = [])
     {
         $this->checkKey($private_key, true);
-        if (is_null($public_key)) {
+        if (null === $public_key) {
             $public_key = $this->getPublicKey($complete_header);
         } else {
             $this->checkKey($public_key, false);
@@ -131,7 +131,7 @@ class ECDHES implements KeyAgreementInterface
         if ('EC' !== $key->getKeyType()) {
             throw new \InvalidArgumentException("The key type must be 'EC'");
         }
-        if (is_null($key->getValue('d')) && true === $is_private) {
+        if (null === $key->getValue('d') && true === $is_private) {
             throw new \InvalidArgumentException('The key must be private');
         }
     }

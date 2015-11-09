@@ -21,7 +21,7 @@ class ExpirationChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $exp = $jwt->getExpirationTime();
-        if (!is_null($exp) && time() > $exp) {
+        if (null !== $exp && time() > $exp) {
             throw new \Exception('The JWT has expired.');
         }
 
