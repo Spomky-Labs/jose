@@ -28,7 +28,7 @@ abstract class HMAC implements SignatureInterface
     {
         $this->checkKey($key);
 
-        return hex2bin(hash_hmac($this->getHashAlgorithm(), $input, Base64Url::decode($key->getValue('k'))));
+        return hash_hmac($this->getHashAlgorithm(), $input, Base64Url::decode($key->getValue('k')), true);
     }
 
     /**
