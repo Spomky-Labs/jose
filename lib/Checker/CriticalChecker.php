@@ -23,7 +23,7 @@ class CriticalChecker implements CheckerInterface
         $crit = $jwt->getCritical();
         if (null !== $crit) {
             foreach ($crit as $critical) {
-                if (null ===$jwt->getHeaderValue($critical) && null ===$jwt->getPayloadValue($critical)) {
+                if (null === $jwt->getHeaderValue($critical) && null === $jwt->getPayloadValue($critical)) {
                     throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $critical));
                 }
             }

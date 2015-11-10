@@ -38,7 +38,7 @@ class EncrypterTest extends TestCase
         $encrypted = $encrypter->encrypt(
             $this->getKeyToEncrypt(),
             [$instruction],
-            ['kid' => '123456789', 'use'=>'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],
             JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
@@ -300,7 +300,7 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK([
             'kty' => 'EC',
-            'use'=>'enc',
+            'use' => 'enc',
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
             'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
@@ -317,7 +317,7 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK([
             'kty' => 'EC',
-            'use'=>'enc',
+            'use' => 'enc',
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
             'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
@@ -337,7 +337,7 @@ class EncrypterTest extends TestCase
     {
         $key = new JWK([
             'kty' => 'RSA',
-            'use'=>'enc',
+            'use' => 'enc',
             'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
             'e'   => 'AQAB',
         ]);
@@ -351,11 +351,11 @@ class EncrypterTest extends TestCase
     protected function getECDHRecipientPublicKey()
     {
         $key = new JWK([
-            'kty' => 'EC',
-            'key_ops'=>['encrypt', 'decrypt'],
-            'crv' => 'P-256',
-            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
-            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'kty'     => 'EC',
+            'key_ops' => ['encrypt', 'decrypt'],
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
         ]);
 
         return $key;
@@ -367,12 +367,12 @@ class EncrypterTest extends TestCase
     protected function getECDHSenderPrivateKey()
     {
         $key = new JWK([
-            'kty' => 'EC',
-            'key_ops'=>['encrypt', 'decrypt'],
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
+            'kty'     => 'EC',
+            'key_ops' => ['encrypt', 'decrypt'],
+            'crv'     => 'P-256',
+            'x'       => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
+            'y'       => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
+            'd'       => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ]);
 
         return $key;
@@ -384,10 +384,10 @@ class EncrypterTest extends TestCase
     protected function getDirectKey()
     {
         $key = new JWK([
-            'kid' => 'DIR_1',
-            'key_ops'=>['encrypt', 'decrypt'],
-            'kty' => 'dir',
-            'dir' => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),
+            'kid'     => 'DIR_1',
+            'key_ops' => ['encrypt', 'decrypt'],
+            'kty'     => 'dir',
+            'dir'     => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),
         ]);
 
         return $key;
