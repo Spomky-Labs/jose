@@ -321,6 +321,8 @@ class ECKey extends Sequence
     private function getOID($curve)
     {
         switch ($curve) {
+            case 'P-192':
+                return '1.2.840.10045.3.1.1';
             case 'P-256':
                 return '1.2.840.10045.3.1.7';
             case 'P-384':
@@ -340,6 +342,8 @@ class ECKey extends Sequence
     private function getCurve($oid)
     {
         switch ($oid) {
+            case '1.2.840.10045.3.1.1':
+                return 'P-192';
             case '1.2.840.10045.3.1.7':
                 return 'P-256';
             case '1.3.132.0.34':

@@ -76,7 +76,13 @@ Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-L
 The preferred way to install this library is to rely on Composer:
 
 ```sh
-composer require spomky-labs/jose "dev-master"
+composer require spomky-labs/jose
+```
+
+By default, tests and documentation files are not included. If you want to test this project or read the documentation, please add the option `--prefer-source`.
+
+```sh
+composer require spomky-labs/jose --prefer-source
 ```
 
 # How to use
