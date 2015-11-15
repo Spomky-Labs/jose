@@ -22,16 +22,6 @@ use Jose\Operation\KeyEncryptionInterface;
 abstract class AESGCMKW implements KeyEncryptionInterface
 {
     /**
-     *
-     */
-    public function __construct()
-    {
-        if (!class_exists('\Crypto\Cipher')) {
-            throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
-        }
-    }
-
-    /**
      * @param JWKInterface $key
      * @param string       $cek
      * @param array        $header

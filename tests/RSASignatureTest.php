@@ -26,6 +26,7 @@ use SpomkyLabs\Jose\SignatureInstruction;
 
 /**
  * Class RSASignatureTest.
+ * @group RSA
  */
 class RSASignatureTest extends TestCase
 {

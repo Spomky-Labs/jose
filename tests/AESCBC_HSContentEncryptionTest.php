@@ -18,6 +18,7 @@ use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
 
 /**
  * Class AESCBC_HSContentEncryptionTest.
+ * @group AESCBC
  */
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
@@ -41,6 +42,21 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cyphertext, $cyphertext);
         $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $K, $iv, null, $header, $T));
         $this->assertEquals($expected_T, $T);
+    }
+
+    /**
+     */
+    public function testBadTag()
+    {
+        $header = Base64Url::encode(json_encode(['alg' => 'A128KW', 'enc' => 'A128CBC-HS256']));
+        $algorithm = new A128CBCHS256();
+
+        $K = $this->convertArrayToBinString([4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207]);
+        $iv = $this->convertArrayToBinString([3, 22, 60, 12, 43, 67, 104, 105, 108, 108, 105, 99, 111, 116, 104, 101]);
+        $cyphertext = $this->convertArrayToBinString([40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6, 75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143, 112, 56, 102]);
+        $T = $this->convertArrayToBinString([83, 73, 191, 98, 104, 205, 211, 128, 201, 189, 199, 133, 32, 38, 194]);
+
+        $this->assertNull($algorithm->decryptContent($cyphertext, $K, $iv, null, $header, $T));
     }
 
     /**

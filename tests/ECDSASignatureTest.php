@@ -192,4 +192,24 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($ecdsa->verify($key, $data, $signature));
     }
+
+    /**
+     *
+     */
+    public function testBadSignature()
+    {
+        $key = new JWK([
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+        ]);
+
+        $ecdsa = new ES256();
+
+        $data = 'eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ';
+        $signature = 'DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3';
+
+        $this->assertFalse($ecdsa->verify($key, $data, Base64Url::decode($signature)));
+    }
 }

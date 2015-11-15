@@ -17,8 +17,6 @@ use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\KeyConverter\ECKey;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 
 /**
  * Class ECDHESKeyAgreementTest.

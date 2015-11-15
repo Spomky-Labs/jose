@@ -20,16 +20,6 @@ use Jose\Operation\ContentEncryptionInterface;
 abstract class AESGCM implements ContentEncryptionInterface
 {
     /**
-     *
-     */
-    public function __construct()
-    {
-        if (!class_exists('\Crypto\Cipher')) {
-            throw new \RuntimeException("The PHP extension 'Crypto' is required to use AES GCM based algorithms");
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)

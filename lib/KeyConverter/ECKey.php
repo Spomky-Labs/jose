@@ -320,18 +320,13 @@ class ECKey extends Sequence
      */
     private function getOID($curve)
     {
-        switch ($curve) {
-            case 'P-192':
-                return '1.2.840.10045.3.1.1';
-            case 'P-256':
-                return '1.2.840.10045.3.1.7';
-            case 'P-384':
-                return '1.3.132.0.34';
-            case 'P-521':
-                return '1.3.132.0.35';
-            default:
-                throw new \InvalidArgumentException('Unsupported curve');
+        $curves = $this->getSupportedCurves();
+        $oid = array_key_exists($curve, $curves)?$curves[$curve]:null;
+        if (null === $oid) {
+            throw new \InvalidArgumentException('Unsupported curve');
         }
+
+        return $oid;
     }
 
     /**
@@ -341,17 +336,21 @@ class ECKey extends Sequence
      */
     private function getCurve($oid)
     {
-        switch ($oid) {
-            case '1.2.840.10045.3.1.1':
-                return 'P-192';
-            case '1.2.840.10045.3.1.7':
-                return 'P-256';
-            case '1.3.132.0.34':
-                return 'P-384';
-            case '1.3.132.0.35':
-                return 'P-521';
-            default:
-                throw new \InvalidArgumentException('Unsupported OID');
+        $curves = $this->getSupportedCurves();
+        $curve = array_search($oid, $curves, true);
+        if (false === $curve) {
+            throw new \InvalidArgumentException('Unsupported OID');
         }
+        return $curve;
+    }
+
+    private function getSupportedCurves()
+    {
+        return [
+            'P-192' => '1.2.840.10045.3.1.1',
+            'P-256' => '1.2.840.10045.3.1.7',
+            'P-384' => '1.3.132.0.34',
+            'P-521' => '1.3.132.0.35',
+        ];
     }
 }
