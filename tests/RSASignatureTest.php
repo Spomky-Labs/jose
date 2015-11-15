@@ -9,8 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\Algorithm\Signature\PS256;
@@ -23,6 +21,7 @@ use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 use SpomkyLabs\Jose\SignatureInstruction;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * Class RSASignatureTest.

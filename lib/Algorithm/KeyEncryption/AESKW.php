@@ -58,10 +58,18 @@ abstract class AESKW implements KeyEncryptionInterface
         if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
+        if ($this->getKeySize() !== strlen(Base64Url::decode($key->getValue('k')))) {
+            throw new \InvalidArgumentException('The key size is not valid');
+        }
     }
 
     /**
-     * @return mixed
+     * @return int
+     */
+    abstract protected function getKeySize();
+
+    /**
+     * @return \AESKW\A128KW|\AESKW\A192KW|\AESKW\A256KW
      */
     abstract protected function getWrapper();
 }

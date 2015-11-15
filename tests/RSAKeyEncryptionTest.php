@@ -9,13 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
 use SpomkyLabs\Jose\JWK;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * Class RSAKeyEncryptionTest.

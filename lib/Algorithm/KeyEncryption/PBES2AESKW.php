@@ -97,7 +97,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
      */
     protected function checkHeaderAdditionalParameters(array $header)
     {
-        if (!isset($header['p2s']) || !isset($header['p2c']) || empty($header['p2s']) || empty($header['p2c'])) {
+        if (!array_key_exists('p2s', $header) || !array_key_exists('p2c', $header) || empty($header['p2s']) || empty($header['p2c'])) {
             throw new \InvalidArgumentException("The header is not valid. 'p2s' or 'p2c' parameter is missing or invalid.");
         }
     }

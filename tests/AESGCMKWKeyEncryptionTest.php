@@ -9,8 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;

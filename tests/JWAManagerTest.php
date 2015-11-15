@@ -9,10 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use SpomkyLabs\Jose\Algorithm\Signature\ES256;
 use SpomkyLabs\Jose\Algorithm\Signature\ES384;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * Class JWAManagerTest.

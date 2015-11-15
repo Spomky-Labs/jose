@@ -9,13 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
 use SpomkyLabs\Jose\JWS;
 use SpomkyLabs\Jose\SignatureInstruction;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * @group Signer

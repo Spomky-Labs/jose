@@ -9,8 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 
 /**

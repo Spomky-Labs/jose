@@ -9,10 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use SpomkyLabs\Jose\KeyConverter\ECKey;
 use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use SpomkyLabs\Test\TestCase;
 
 class ECKeysTest extends TestCase
 {

@@ -21,7 +21,7 @@ use Jose\JWKInterface;
 class A256KW extends AESKW
 {
     /**
-     * @return Wrapper
+     * {@inheritdoc}
      */
     protected function getWrapper()
     {
@@ -29,21 +29,18 @@ class A256KW extends AESKW
     }
 
     /**
-     * @param JWKInterface $key
-     */
-    protected function checkKey(JWKInterface $key)
-    {
-        parent::checkKey($key);
-        if (32 !== strlen(Base64Url::decode($key->getValue('k')))) {
-            throw new \InvalidArgumentException('The key size is not valid');
-        }
-    }
-
-    /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {
         return 'A256KW';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getKeySize()
+    {
+        return 32;
     }
 }

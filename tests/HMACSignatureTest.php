@@ -9,8 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use SpomkyLabs\Jose\Algorithm\Signature\HS256;
 use SpomkyLabs\Jose\Algorithm\Signature\HS384;
 use SpomkyLabs\Jose\Algorithm\Signature\HS512;
@@ -37,6 +35,21 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $data = 'Je suis Charlie';
 
         $hmac->sign($key, $data);
+    }
+
+    /**
+     *
+     */
+    public function testSignatureHasBadBadLength()
+    {
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'foo',
+        ]);
+        $hmac = new HS256();
+        $data = 'Je suis Charlie';
+
+        $this->assertFalse($hmac->verify($key, $data, hex2bin('326eb338c465d3587f3349df0b96ba81')));
     }
 
     /**

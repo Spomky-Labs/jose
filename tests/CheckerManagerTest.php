@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * @group CheckerManager

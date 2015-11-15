@@ -9,12 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use SpomkyLabs\Jose\Algorithm\Signature\None;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Jose\SignatureInstruction;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * Class NoneSignatureTest.

@@ -9,8 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Base64Url\Base64Url;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128KW;
 use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
@@ -101,5 +99,26 @@ class AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($wrapped_cek, hex2bin('28C9F404C4B810F4CBCCB35CFB87F8263F5786E2D80ED326CBC7F0E71A99F43BFB988B9B7A02DD21'));
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The key size is not valid
+     */
+    public function testBadKeySize()
+    {
+        $header = [];
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => Base64Url::encode(hex2bin('000102030405060708090A0B0C0D0E0F')),
+        ]);
+
+        $cek = hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F');
+
+        $aeskw = new A256KW();
+
+        $wrapped_cek = $aeskw->encryptKey($key, $cek, $header);
+
+        $aeskw->decryptKey($key, $wrapped_cek, $header);
     }
 }

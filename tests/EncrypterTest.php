@@ -9,13 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
-
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\EncryptionInstruction;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
+use SpomkyLabs\Test\TestCase;
 
 /**
  * Class EncrypterTest.
@@ -84,6 +83,7 @@ class EncrypterTest extends TestCase
 
         $this->assertTrue($result);
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
+        $this->assertEquals($encrypted, $loaded->getInput());
         $this->assertInstanceOf('Jose\JWKInterface', $loaded->getPayload());
     }
 
