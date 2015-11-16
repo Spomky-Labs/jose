@@ -25,6 +25,7 @@ use SpomkyLabs\Test\TestCase;
 
 /**
  * Class RSASignatureTest.
+ *
  * @group RSA
  */
 class RSASignatureTest extends TestCase
