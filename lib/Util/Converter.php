@@ -286,10 +286,10 @@ class Converter
         $signatures = [];
         foreach ($input['signatures'] as $signature) {
             if (!array_key_exists('protected', $signature)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'protected' parameter is missing");
+                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialization: 'protected' parameter is missing");
             }
             if (array_key_exists('header', $signature)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'header' parameter cannot be kept");
+                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialization: 'header' parameter cannot be kept");
             }
             $temp = [
                 $signature['protected'],
@@ -315,14 +315,14 @@ class Converter
         $recipients = [];
         foreach ($input['recipients'] as $recipient) {
             if (array_key_exists('header', $recipient)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'header' parameter cannot be kept");
+                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialization: 'header' parameter cannot be kept");
             }
             if (!array_key_exists('protected', $input)) {
-                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialisation: 'protected' parameter is missing");
+                throw new \InvalidArgumentException("Cannot convert into Compact Json Serialization: 'protected' parameter is missing");
             }
             foreach (['unprotected', 'aad'] as $key) {
                 if (array_key_exists($key, $input)) {
-                    throw new \InvalidArgumentException(sprintf("Cannot convert into Compact Json Serialisation: '%s' parameter cannot be kept", $key));
+                    throw new \InvalidArgumentException(sprintf("Cannot convert into Compact Json Serialization: '%s' parameter cannot be kept", $key));
                 }
             }
             $temp = [
