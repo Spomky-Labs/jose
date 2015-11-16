@@ -18,6 +18,7 @@ use SpomkyLabs\Jose\JWK;
 
 /**
  * Class ECDHESKeyAgreementTest.
+ *
  * @group ECDHES
  */
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase

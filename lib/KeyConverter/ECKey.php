@@ -321,7 +321,7 @@ class ECKey extends Sequence
     private function getOID($curve)
     {
         $curves = $this->getSupportedCurves();
-        $oid = array_key_exists($curve, $curves)?$curves[$curve]:null;
+        $oid = array_key_exists($curve, $curves) ? $curves[$curve] : null;
         if (null === $oid) {
             throw new \InvalidArgumentException('Unsupported curve');
         }
@@ -341,6 +341,7 @@ class ECKey extends Sequence
         if (false === $curve) {
             throw new \InvalidArgumentException('Unsupported OID');
         }
+
         return $curve;
     }
 
