@@ -456,7 +456,7 @@ class Encrypter implements EncrypterInterface
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
         if (null === $compression_method) {
-            throw new \RuntimeException(sprintf("Compression method '%s' not supported", $method));
+            throw new \RuntimeException(sprintf('Compression method "%s" not supported', $method));
         }
 
         return $compression_method;
@@ -489,7 +489,7 @@ class Encrypter implements EncrypterInterface
     protected function getKeyEncryptionAlgorithm($complete_header)
     {
         if (!array_key_exists('alg', $complete_header)) {
-            throw new \RuntimeException("Parameter 'alg' is missing.");
+            throw new \InvalidArgumentException('Parameter "alg" is missing.');
         }
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         foreach ([
@@ -502,7 +502,7 @@ class Encrypter implements EncrypterInterface
                 return $key_encryption_algorithm;
             }
         }
-        throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or not a key encryption algorithm instance.", $complete_header['alg']));
+        throw new \RuntimeException(sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_header['alg']));
     }
 
     /**
@@ -519,20 +519,20 @@ class Encrypter implements EncrypterInterface
             $recipient_header = $instruction->getRecipientUnprotectedHeader();
             $complete_header = array_merge($protected_header, $unprotected_header, $recipient_header);
             if (!array_key_exists('enc', $complete_header)) {
-                throw new \InvalidArgumentException("Parameters 'enc' is missing.");
+                throw new \InvalidArgumentException('Parameter "enc" is missing.');
             }
             if (null === $algorithm) {
                 $algorithm = $complete_header['enc'];
             } else {
                 if ($algorithm !== $complete_header['enc']) {
-                    throw new \InvalidArgumentException("Foreign 'enc' parameter forbidden.");
+                    throw new \InvalidArgumentException('Foreign "enc" parameter forbidden.');
                 }
             }
         }
 
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
         if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-            throw new \RuntimeException(sprintf("The algorithm '%s' does not implement ContentEncryptionInterface.", $algorithm));
+            throw new \RuntimeException(sprintf('The algorithm "%s" does not implement ContentEncryptionInterface.', $algorithm));
         }
 
         return $content_encryption_algorithm;

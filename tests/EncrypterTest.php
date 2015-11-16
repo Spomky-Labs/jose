@@ -97,6 +97,79 @@ class EncrypterTest extends TestCase
     }
 
     /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Compression method "FIP" not supported
+     */
+    public function testCompressionAlgorithmNotSupported()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypter->encrypt(
+            'FOO',
+            [$instruction],
+            ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'FIP'],
+            [],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz'
+        );
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     */
+    public function testMultipleInstructionsNotAllowedWithCompactSerialization()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction1 = new EncryptionInstruction();
+        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
+        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction1->setRecipientUnprotectedHeader(['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+
+        $instruction2 = new EncryptionInstruction();
+        $instruction2->setRecipientKey($this->getRSARecipientKey());
+        $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
+
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction1, $instruction2],
+            ['enc' => 'A256CBC-HS512'],
+            [],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     */
+    public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction1 = new EncryptionInstruction();
+        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
+        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction1->setRecipientUnprotectedHeader(['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+
+        $instruction2 = new EncryptionInstruction();
+        $instruction2->setRecipientKey($this->getRSARecipientKey());
+        $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
+
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction1, $instruction2],
+            ['enc' => 'A256CBC-HS512'],
+            [],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Key cannot be used to encrypt
      */
@@ -168,6 +241,62 @@ class EncrypterTest extends TestCase
     }
 
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Parameter "alg" is missing.
+     */
+    public function testAlgParameterIsMissing()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Parameter "enc" is missing.
+     */
+    public function testEncParameterIsMissing()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The key encryption algorithm "A128CBC-HS256" is not supported or not a key encryption algorithm instance.
+     */
+    public function testNotAKeyEncryptionAlgorithm()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'A128CBC-HS256', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The algorithm "RSA-OAEP-256" does not implement ContentEncryptionInterface.
+     */
+    public function testNotAContentEncryptionAlgorithm()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'enc' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+    }
+
+    /**
      *
      */
     public function testEncryptAndLoadCompactWithDirectKeyEncryption()
@@ -222,6 +351,45 @@ class EncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals(['user_id' => '1234', 'exp' => 3600], $loaded->getPayload());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
+     */
+    public function testEncryptWithAgreementAlgorithm()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey());
+
+        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
+     */
+    public function testEncryptWithAgreementKeyWrapAlgorithm()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getECDHRecipientPublicKey());
+
+        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'], []);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No instruction
+     */
+    public function testNoInstruction()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'], []);
     }
 
     /**
@@ -447,12 +615,12 @@ class EncrypterTest extends TestCase
     protected function getSigningKey()
     {
         $key = new JWK([
-            'kty' => 'EC',
+            'kty'     => 'EC',
             'key_ops' => ['sign', 'verify'],
-            'crv' => 'P-256',
-            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
-            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
-            'd'   => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd'       => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ]);
 
         return $key;
