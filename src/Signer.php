@@ -101,10 +101,6 @@ class Signer implements SignerInterface
             throw new \InvalidArgumentException('Key cannot be used to sign');
         }
 
-        if (!$this->checkKeyAlgorithm($instruction->getKey(), $signature_algorithm->getAlgorithmName())) {
-            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $signature_algorithm->getAlgorithmName()));
-        }
-
         $signature = $signature_algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
 
         $jwt_signature = Base64Url::encode($signature);
@@ -131,21 +127,15 @@ class Signer implements SignerInterface
     protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $complete_header)) {
-            if (null === $key->getAlgorithm()) {
-                throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
-            } else {
-                $alg = $key->getAlgorithm();
-            }
-        } else {
-            $alg = $complete_header['alg'];
+            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
         }
-        if (null !== $key->getAlgorithm() && $key->getAlgorithm() !== $alg) {
-            throw new \InvalidArgumentException("The algorithm '$alg' is allowed with this key.");
+        if (null !== $key->getAlgorithm() && $key->getAlgorithm() !== $complete_header['alg']) {
+            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg']));
         }
 
-        $signature_algorithm = $this->getJWAManager()->getAlgorithm($alg);
+        $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         if (!$signature_algorithm instanceof SignatureInterface) {
-            throw new \InvalidArgumentException("The algorithm '$alg' is not supported.");
+            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));
         }
 
         return $signature_algorithm;
