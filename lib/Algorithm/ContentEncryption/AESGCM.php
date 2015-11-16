@@ -32,7 +32,7 @@ abstract class AESGCM implements ContentEncryptionInterface
 
         $cipher->setAAD($calculated_aad);
         $cyphertext = $cipher->encrypt($data, $cek, $iv);
-        $tag = $cipher->getTag(16);
+        $tag = $cipher->getTag();
 
         return $cyphertext;
     }

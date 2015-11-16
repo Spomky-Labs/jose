@@ -38,7 +38,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->getValue('k')), $iv);
 
         $header['iv'] = Base64Url::encode($iv);
-        $header['tag'] = Base64Url::encode($cipher->getTag(16));
+        $header['tag'] = Base64Url::encode($cipher->getTag());
 
         return $encryted_cek;
     }
