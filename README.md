@@ -56,14 +56,11 @@ This library needs at least:
 * ![PHP 5.5.9+](https://img.shields.io/badge/PHP-5.5.9%2B-ff69b4.svg).
 
 Please consider the following optional requirements:
-* AES-GCM based algorithms (AxxxGCM and AxxxGCMKW): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (not yet available on `PHP 7` and `HHVM`).
+* AES-GCM based algorithms (AxxxGCM and AxxxGCMKW): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`).
 
 # Continuous Integration
 
-It has been successfully tested using `PHP 5.5.9` and `PHP 5.6` with all algorithms.
-
-Some tests on `PHP 7` and `HHVM` were skipped because [PHP Crypto](https://github.com/bukka/php-crypto) is not yet supported.
-At the moment, you will not be able to use GCM algorithms on these platforms.
+It has been successfully tested using `PHP 5.5.9`, `PHP 5.6`, `PHP 7` and `HHVM` with all algorithms.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
