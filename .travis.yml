@@ -9,7 +9,7 @@ php:
     - hhvm
 
 before_script:
-    - pecl install crypto-0.2.1
+    - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then pecl install crypto-0.2.1; fi;'
     - composer install --no-interaction
     - mkdir -p build/logs
 
