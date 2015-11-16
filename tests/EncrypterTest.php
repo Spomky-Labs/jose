@@ -140,7 +140,6 @@ class EncrypterTest extends TestCase
             ['enc' => 'A256CBC-HS512'],
             [],
             JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
-
     }
 
     /**
@@ -166,7 +165,6 @@ class EncrypterTest extends TestCase
             ['enc' => 'A256CBC-HS512'],
             [],
             JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
-
     }
 
     /**
@@ -462,7 +460,6 @@ class EncrypterTest extends TestCase
         }
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
-
         $instruction = new EncryptionInstruction();
         $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
             ->setSenderKey($this->getECDHSenderPrivateKey());

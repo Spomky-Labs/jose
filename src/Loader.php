@@ -211,29 +211,6 @@ class Loader implements LoaderInterface
     }
 
     /**
-     * @param $protected_header
-     * @param $unprotected_header
-     *
-     * @return array
-     */
-    protected function getCompleteHeader($protected_header, $unprotected_header)
-    {
-        $complete_header = [];
-        if (null !== $protected_header) {
-            $tmp = json_decode(Base64Url::decode($protected_header), true);
-            if (!is_array($tmp)) {
-                throw new \InvalidArgumentException('Invalid protected header');
-            }
-            $complete_header = array_merge($complete_header, $tmp);
-        }
-        if (is_array($unprotected_header)) {
-            $complete_header = array_merge($complete_header, $unprotected_header);
-        }
-
-        return $complete_header;
-    }
-
-    /**
      * @param array              $header
      * @param \Jose\JWKInterface $key
      *
