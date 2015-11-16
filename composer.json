@@ -16,7 +16,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\Jose\\":  "lib/"
+            "SpomkyLabs\\Jose\\":  "src/"
         }
     },
     "autoload-dev": {
