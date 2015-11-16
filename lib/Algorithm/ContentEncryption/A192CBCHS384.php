@@ -17,7 +17,7 @@ namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 class A192CBCHS384 extends AESCBCHS
 {
     /**
-     * @return string
+     * {@inheritdoc}
      */
     protected function getHashAlgorithm()
     {
@@ -25,15 +25,15 @@ class A192CBCHS384 extends AESCBCHS
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
-    protected function getKeySize()
+    public function getCEKSize()
     {
         return 384;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

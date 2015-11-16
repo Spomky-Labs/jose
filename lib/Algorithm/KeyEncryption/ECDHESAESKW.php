@@ -20,14 +20,7 @@ use Jose\Operation\KeyAgreementWrappingInterface;
 abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
 {
     /**
-     * @param \Jose\JWKInterface $sender_key
-     * @param \Jose\JWKInterface $receiver_key
-     * @param string             $cek
-     * @param int                $encryption_key_length
-     * @param array              $complete_header
-     * @param array              $additional_header_values
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function wrapAgreementKey(JWKInterface $sender_key, JWKInterface $receiver_key, $cek, $encryption_key_length, array $complete_header, array &$additional_header_values)
     {
@@ -40,12 +33,7 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
     }
 
     /**
-     * @param \Jose\JWKInterface $receiver_key
-     * @param string             $encrypted_cek
-     * @param int                $encryption_key_length
-     * @param array              $complete_header
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function unwrapAgreementKey(JWKInterface $receiver_key, $encrypted_cek, $encryption_key_length, array $complete_header)
     {
@@ -58,7 +46,7 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
     }
 
     /**
-     * @return mixed
+     * @return \AESKW\A128KW|\AESKW\A192KW|\AESKW\A256KW
      */
     abstract protected function getWrapper();
 }

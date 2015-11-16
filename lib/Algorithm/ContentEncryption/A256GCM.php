@@ -17,7 +17,7 @@ namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
 class A256GCM extends AESGCM
 {
     /**
-     * @return int
+     * {@inheritdoc}
      */
     protected function getKeySize()
     {
@@ -25,7 +25,7 @@ class A256GCM extends AESGCM
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

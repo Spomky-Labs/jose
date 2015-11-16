@@ -22,6 +22,23 @@ use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 class CertificateTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage File "file:///foo/bar" does not exist.
+     */
+    public function testFileNotFound()
+    {
+        KeyConverter::loadKeyFromCertificate('file:///foo/bar');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testFileNotValid()
+    {
+        KeyConverter::loadKeyFromCertificate('file://'.__DIR__.__FILE__);
+    }
+
+    /**
      * @dataProvider dataLoadCertificate
      */
     public function testLoadCertificate($file, array $expected_values)

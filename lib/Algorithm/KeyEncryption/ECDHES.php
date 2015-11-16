@@ -95,7 +95,7 @@ class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

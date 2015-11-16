@@ -84,12 +84,12 @@ abstract class RSA implements KeyEncryptionInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     abstract protected function getEncryptionMode();
 
     /**
-     * @return mixed
+     * @return string
      */
     abstract protected function getHashAlgorithm();
 }

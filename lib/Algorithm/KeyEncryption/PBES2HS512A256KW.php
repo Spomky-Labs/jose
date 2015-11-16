@@ -19,7 +19,7 @@ use AESKW\A256KW as Wrapper;
 class PBES2HS512A256KW extends PBES2AESKW
 {
     /**
-     * @return Wrapper
+     * {@inheritdoc}
      */
     protected function getWrapper()
     {
@@ -27,7 +27,7 @@ class PBES2HS512A256KW extends PBES2AESKW
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     protected function getHashAlgorithm()
     {
@@ -35,15 +35,15 @@ class PBES2HS512A256KW extends PBES2AESKW
     }
 
     /**
-     * @return float
+     * {@inheritdoc}
      */
     protected function getKeySize()
     {
-        return 256 / 8;
+        return 32;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

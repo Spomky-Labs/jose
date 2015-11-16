@@ -64,10 +64,15 @@ abstract class AESGCM implements ContentEncryptionInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     public function getCEKSize()
     {
         return $this->getKeySize();
     }
+
+    /**
+     * @return int
+     */
+    abstract protected function getKeySize();
 }

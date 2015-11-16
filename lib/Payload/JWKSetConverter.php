@@ -65,7 +65,7 @@ class JWKSetConverter implements PayloadConverterInterface
     {
         $jwk = json_decode($content, true);
         if (!is_array($jwk) || !array_key_exists('keys', $jwk)) {
-            throw new \Exception('The content type claims content is a JWKSet, but cannot be converted into JWKSet');
+            throw new \InvalidArgumentException('The content type claims content is a JWKSet, but cannot be converted into JWKSet');
         }
 
         return $this->jwkset_manager->createJWKSet($jwk);

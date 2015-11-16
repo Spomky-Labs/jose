@@ -19,7 +19,7 @@ use AESKW\A128KW as Wrapper;
 class ECDHESA128KW extends ECDHESAESKW
 {
     /**
-     * @return Wrapper
+     * {@inheritdoc}
      */
     protected function getWrapper()
     {
@@ -27,7 +27,7 @@ class ECDHESA128KW extends ECDHESAESKW
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

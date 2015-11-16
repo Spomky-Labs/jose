@@ -78,19 +78,20 @@ class KeyConverter
     /**
      * @param string      $file
      * @param null|string $password
+     * @param bool        $is_DER
      *
      * @throws \Exception
      *
      * @return array
      */
-    public static function loadKeyFromFile($file, $password = null)
+    public static function loadKeyFromFile($file, $password = null, $is_DER = false)
     {
         $content = file_get_contents($file);
 
-        try {
-            return self::loadKeyFromPEM($content, $password);
-        } catch (\Exception $e) {
+        if (true === $is_DER) {
             return self::loadKeyFromDER($content, $password);
+        } else {
+            return self::loadKeyFromPEM($content, $password);
         }
     }
 

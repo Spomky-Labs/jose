@@ -104,23 +104,10 @@ abstract class AESCBCHS implements ContentEncryptionInterface
     abstract protected function getHashAlgorithm();
 
     /**
-     * @return mixed
-     */
-    abstract protected function getKeySize();
-
-    /**
-     * @return mixed
+     * @return int
      */
     public function getIVSize()
     {
         return 128;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getCEKSize()
-    {
-        return $this->getKeySize();
     }
 }

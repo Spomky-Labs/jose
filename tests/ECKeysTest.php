@@ -13,8 +13,21 @@ use SpomkyLabs\Jose\KeyConverter\ECKey;
 use SpomkyLabs\Jose\KeyConverter\KeyConverter;
 use SpomkyLabs\Test\TestCase;
 
+/**
+ * @group ECKeys
+ */
 class ECKeysTest extends TestCase
 {
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unsupported key type
+     */
+    public function testKeyTypeNotSupported()
+    {
+        $file = 'file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'DSA'.DIRECTORY_SEPARATOR.'DSA.key';
+        KeyConverter::loadKeyFromFile($file);
+    }
+
     /**
      */
     public function testLoadPublicEC256Key()
@@ -65,6 +78,15 @@ class ECKeysTest extends TestCase
             'x'   => 'vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U',
             'y'   => 'oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE',
         ]);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Password required for encrypted keys.
+     */
+    public function testLoadEncryptedPrivateEC256KeyWithoutPassword()
+    {
+        KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.encrypted.key');
     }
 
     /**

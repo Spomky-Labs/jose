@@ -19,7 +19,7 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 class RSA15 extends RSA
 {
     /**
-     * @return int
+     * {@inheritdoc}
      */
     protected function getEncryptionMode()
     {
@@ -27,6 +27,7 @@ class RSA15 extends RSA
     }
 
     /**
+     * {@inheritdoc}
      * @codeCoverageIgnore
      */
     protected function getHashAlgorithm()
@@ -34,7 +35,7 @@ class RSA15 extends RSA
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

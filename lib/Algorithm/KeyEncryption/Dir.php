@@ -30,7 +30,7 @@ class Dir implements DirectEncryptionInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

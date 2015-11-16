@@ -19,7 +19,7 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 class RSAOAEP extends RSA
 {
     /**
-     * @return int
+     * {@inheritdoc}
      */
     protected function getEncryptionMode()
     {
@@ -27,7 +27,7 @@ class RSAOAEP extends RSA
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     protected function getHashAlgorithm()
     {
@@ -35,7 +35,7 @@ class RSAOAEP extends RSA
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

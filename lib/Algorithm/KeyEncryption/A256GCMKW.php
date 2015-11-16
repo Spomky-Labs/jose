@@ -17,7 +17,7 @@ namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
 class A256GCMKW extends AESGCMKW
 {
     /**
-     * @return int
+     * {@inheritdoc}
      */
     protected function getKeySize()
     {
@@ -25,7 +25,7 @@ class A256GCMKW extends AESGCMKW
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getAlgorithmName()
     {

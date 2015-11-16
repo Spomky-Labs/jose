@@ -85,7 +85,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     }
 
     /**
-     * @return mixed
+     * @return int
      */
     abstract protected function getKeySize();
 }

@@ -22,11 +22,7 @@ use PBKDF2\PBKDF2;
 abstract class PBES2AESKW implements KeyEncryptionInterface
 {
     /**
-     * @param JWKInterface $key
-     * @param string       $cek
-     * @param array        $header
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
@@ -49,11 +45,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     }
 
     /**
-     * @param JWKInterface $key
-     * @param string       $encryted_cek
-     * @param array        $header
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
     {
@@ -103,17 +95,17 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     }
 
     /**
-     * @return mixed
+     * @return \AESKW\A128KW|\AESKW\A192KW|\AESKW\A256KW
      */
     abstract protected function getWrapper();
 
     /**
-     * @return mixed
+     * @return string
      */
     abstract protected function getHashAlgorithm();
 
     /**
-     * @return mixed
+     * @return int
      */
     abstract protected function getKeySize();
 }
