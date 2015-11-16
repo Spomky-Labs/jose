@@ -12,7 +12,6 @@
 use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
-use SpomkyLabs\Jose\JWS;
 use SpomkyLabs\Jose\SignatureInstruction;
 use SpomkyLabs\Test\TestCase;
 

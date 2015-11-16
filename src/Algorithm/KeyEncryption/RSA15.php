@@ -28,6 +28,7 @@ class RSA15 extends RSA
 
     /**
      * {@inheritdoc}
+     * 
      * @codeCoverageIgnore
      */
     protected function getHashAlgorithm()
