@@ -14,6 +14,7 @@ use Jose\JSONSerializationModes;
 use SpomkyLabs\Jose\EncryptionInstruction;
 use SpomkyLabs\Jose\JWK;
 use SpomkyLabs\Jose\JWKSet;
+use SpomkyLabs\Jose\JWT;
 use SpomkyLabs\Test\TestCase;
 
 /**
@@ -23,6 +24,43 @@ use SpomkyLabs\Test\TestCase;
  */
 class EncrypterTest extends TestCase
 {
+    /**
+     *
+     */
+    public function testEncryptWithJWTInput()
+    {
+        $encrypter = $this->getEncrypter();
+        $loader = $this->getLoader();
+
+        $input = new JWT();
+        $input->setPayload('FOO');
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKey());
+
+        $encrypted = $encrypter->encrypt(
+            $input,
+            [$instruction],
+            ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            [],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz'
+        );
+
+        $loaded = $loader->load($encrypted);
+
+        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
+        $this->assertEquals('RSA-OAEP-256', $loaded->getAlgorithm());
+        $this->assertEquals('A256CBC-HS512', $loaded->getEncryptionAlgorithm());
+        $this->assertEquals('DEF', $loaded->getZip());
+        $this->assertNull($loaded->getPayload());
+
+        $result = $loader->decrypt($loaded);
+
+        $this->assertTrue($result);
+        $this->assertEquals('FOO', $loaded->getPayload());
+    }
+
     /**
      *
      */
@@ -56,6 +94,48 @@ class EncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
         $this->assertInstanceOf('Jose\JWKInterface', $loaded->getPayload());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Key cannot be used to encrypt
+     */
+    public function testOperationNotAllowedForTheKey()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getSigningKey());
+
+        $encrypter->encrypt(
+            'FOO',
+            [$instruction],
+            ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            [],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz'
+        );
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Key is only allowed for algorithm "RSA-OAEP-256".
+     */
+    public function testAlgorithmNotAllowedForTheKey()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction = new EncryptionInstruction();
+        $instruction->setRecipientKey($this->getRSARecipientKeyWithAlgorithm());
+
+        $encrypter->encrypt(
+            'FOO',
+            [$instruction],
+            ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            [],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            'foo,bar,baz'
+        );
     }
 
     /**
@@ -340,6 +420,39 @@ class EncrypterTest extends TestCase
             'use' => 'enc',
             'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
             'e'   => 'AQAB',
+        ]);
+
+        return $key;
+    }
+
+    /**
+     * @return JWK
+     */
+    protected function getRSARecipientKeyWithAlgorithm()
+    {
+        $key = new JWK([
+            'kty' => 'RSA',
+            'use' => 'enc',
+            'alg' => 'RSA-OAEP',
+            'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+            'e'   => 'AQAB',
+        ]);
+
+        return $key;
+    }
+
+    /**
+     * @return JWK
+     */
+    protected function getSigningKey()
+    {
+        $key = new JWK([
+            'kty' => 'EC',
+            'key_ops' => ['sign', 'verify'],
+            'crv' => 'P-256',
+            'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd'   => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ]);
 
         return $key;

@@ -53,18 +53,14 @@ class Encrypter implements EncrypterInterface
     /**
      * @param int $length
      *
-     * @throws \Exception
-     *
      * @return string
      */
     private function generateRandomString($length)
     {
         if (function_exists('random_bytes')) {
             return random_bytes($length);
-        } elseif (function_exists('openssl_random_pseudo_bytes')) {
-            return openssl_random_pseudo_bytes($length);
         } else {
-            throw new \Exception('Unable to create a random string');
+            return openssl_random_pseudo_bytes($length);
         }
     }
 
