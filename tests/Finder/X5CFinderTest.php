@@ -20,9 +20,8 @@ class X5CFinderTest extends \PHPUnit_Framework_TestCase
     {
         $finder = new X5CFinder();
         $result = $finder->findJWK([
-            "x5c" =>
-                [
-                    "MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBBQUAMGIxCzAJB
+            'x5c' => [
+                    'MIIDQjCCAiqgAwIBAgIGATz/FuLiMA0GCSqGSIb3DQEBBQUAMGIxCzAJB
                      gNVBAYTAlVTMQswCQYDVQQIEwJDTzEPMA0GA1UEBxMGRGVudmVyMRwwGgYD
                      VQQKExNQaW5nIElkZW50aXR5IENvcnAuMRcwFQYDVQQDEw5CcmlhbiBDYW1
                      wYmVsbDAeFw0xMzAyMjEyMzI5MTVaFw0xODA4MTQyMjI5MTVaMGIxCzAJBg
@@ -40,17 +39,17 @@ class X5CFinderTest extends \PHPUnit_Framework_TestCase
                      zFo+Owb1zxtp3PehFdfQJ610CDLEaS9V9Rqp17hCyybEpOGVwe8fnk+fbEL
                      2Bo3UPGrpsHzUoaGpDftmWssZkhpBJKVMJyf/RuP2SmmaIzmnw9JiSlYhzo
                      4tpzd5rFXhjRbg4zW9C+2qok+2+qDM1iJ684gPHMIY8aLWrdgQTxkumGmTq
-                     gawR+N5MDtdPTEQ0XfIBc2cJEUyMTY5MPvACWpkA6SdS4xSvdXK3IVfOWA=="
+                     gawR+N5MDtdPTEQ0XfIBc2cJEUyMTY5MPvACWpkA6SdS4xSvdXK3IVfOWA==',
                 ],
             ]
         );
 
         $this->assertEquals([
             'kty'     => 'RSA',
-            "n"       => "vrjOfz9Ccdgx5nQudyhdoR17V-IubWMeOZCwX_jj0hgAsz2J_pqYW08PLbK_PdiVGKPrqzmDIsLI7sA25VEnHU1uCLNwBuUiCO11_-7dYbsr4iJmG0Qu2j8DsVyT1azpJC_NG84Ty5KKthuCaPod7iI7w0LK9orSMhBEwwZDCxTWq4aYWAchc8t-emd9qOvWtVMDC2BXksRngh6X5bUYLy6AyHKvj-nUy1wgzjYQDwHMTplCoLtU-o-8SNnZ1tmRoGE9uJkBLdh5gFENabWnU5m1ZqZPdwS-qo-meMvVfJb6jJVWRpl2SUtCnYG2C32qvbWbjZ_jBPD5eunqsIo1vQ",
-            "e"       => "AQAB",
-            "x5t"     => "4pNenEBLv0JpLIdugWxQkOsZcK0",
-            "x5t#256" => "pJm2BBpkB8y7tCqrWM0X37WOmQTO8zQw-VpxVgBb21I",
+            'n'       => 'vrjOfz9Ccdgx5nQudyhdoR17V-IubWMeOZCwX_jj0hgAsz2J_pqYW08PLbK_PdiVGKPrqzmDIsLI7sA25VEnHU1uCLNwBuUiCO11_-7dYbsr4iJmG0Qu2j8DsVyT1azpJC_NG84Ty5KKthuCaPod7iI7w0LK9orSMhBEwwZDCxTWq4aYWAchc8t-emd9qOvWtVMDC2BXksRngh6X5bUYLy6AyHKvj-nUy1wgzjYQDwHMTplCoLtU-o-8SNnZ1tmRoGE9uJkBLdh5gFENabWnU5m1ZqZPdwS-qo-meMvVfJb6jJVWRpl2SUtCnYG2C32qvbWbjZ_jBPD5eunqsIo1vQ',
+            'e'       => 'AQAB',
+            'x5t'     => '4pNenEBLv0JpLIdugWxQkOsZcK0',
+            'x5t#256' => 'pJm2BBpkB8y7tCqrWM0X37WOmQTO8zQw-VpxVgBb21I',
         ], $result);
     }
 
@@ -58,8 +57,7 @@ class X5CFinderTest extends \PHPUnit_Framework_TestCase
     {
         $finder = new X5CFinder();
         $result = $finder->findJWK([
-            "x5c" =>
-                [
+            'x5c' => [
                     'MIIEqzCCA5OgAwIBAgIDAOTBMA0GCSqGSIb3DQEBCwUAMEcxCzAJBgNVBAYTAlVT
                      MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMSAwHgYDVQQDExdSYXBpZFNTTCBTSEEy
                      NTYgQ0EgLSBHMzAeFw0xNDEyMDMwMjEyMDlaFw0xNjExMTYxOTI5MjNaMIGQMRMw
@@ -132,10 +130,10 @@ class X5CFinderTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals([
             'kty'     => 'RSA',
-            "n"       => "vAQtpDsGC_pVXUUaJdyVo3Py3ocozUzZqpXHmZ2RoWYuSOU9COtI1nx4euD5eSEPCVosSSZUPS-zMJUAZpAwnI47Tnx6XIQ1j2PibP6HEVvyNCa7V2Pm-Mek31DcOCweyqndV1XGzFuy5U3bosCu5RgzPIkEfa70b2Dss1yCKtBswXkfwVwZ4y109mjQqopvSxTRW-gyFCgILK1vit3MblUY8d2hyurcY0Y9Ltb90VrR9RmE2SkU2x5Na24PGn-ZwFg5RYV68JaWRH9eYWyyMhv1GRpZ1kedmARnzKM3C81GtXw82A5CK8eeLsRFLX_-Igue-Es0dn4Kk7lJta51Xw",
-            "e"       => "AQAB",
-            "x5t"     => "W5um-UKlTZcSB84X3INJcDnY4ME",
-            "x5t#256" => "UJMIANU7ytKwE1JCKh5IXlzIt3QIF6LDBe5RMXMZDfs",
+            'n'       => 'vAQtpDsGC_pVXUUaJdyVo3Py3ocozUzZqpXHmZ2RoWYuSOU9COtI1nx4euD5eSEPCVosSSZUPS-zMJUAZpAwnI47Tnx6XIQ1j2PibP6HEVvyNCa7V2Pm-Mek31DcOCweyqndV1XGzFuy5U3bosCu5RgzPIkEfa70b2Dss1yCKtBswXkfwVwZ4y109mjQqopvSxTRW-gyFCgILK1vit3MblUY8d2hyurcY0Y9Ltb90VrR9RmE2SkU2x5Na24PGn-ZwFg5RYV68JaWRH9eYWyyMhv1GRpZ1kedmARnzKM3C81GtXw82A5CK8eeLsRFLX_-Igue-Es0dn4Kk7lJta51Xw',
+            'e'       => 'AQAB',
+            'x5t'     => 'W5um-UKlTZcSB84X3INJcDnY4ME',
+            'x5t#256' => 'UJMIANU7ytKwE1JCKh5IXlzIt3QIF6LDBe5RMXMZDfs',
         ], $result);
     }
 }
