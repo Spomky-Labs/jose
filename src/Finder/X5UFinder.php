@@ -11,7 +11,7 @@
 
 namespace Jose\Finder;
 
-use Base64Url\Base64Url;
+use Jose\KeyConverter\KeyConverter;
 
 /**
  */
@@ -38,7 +38,7 @@ class X5UFinder implements JWKSetFinderInterface
 
         $jwk_set = ['keys'];
         foreach ($content as $kid => $cert) {
-            $jwk = $this->convertX5CToJWK($cert);
+            $jwk = KeyConverter::loadKeyFromCertificate($cert);
             if (null === $jwk) {
                 break;
             }
@@ -46,29 +46,6 @@ class X5UFinder implements JWKSetFinderInterface
         }
 
         return $jwk_set;
-    }
-
-    /**
-     * @param string $x5c
-     *
-     * @return array|null
-     */
-    protected function convertX5CToJWK($x5c)
-    {
-        if (false === $res = openssl_pkey_get_public($x5c)) {
-            return;
-        }
-
-        $details = openssl_pkey_get_details($res);
-        if (!is_array($details) || !array_key_exists('rsa', $details)) {
-            return;
-        }
-        $values = [];
-        foreach ($details['rsa'] as $key => $value) {
-            $values[$key] = Base64Url::encode($value);
-        }
-
-        return $values;
     }
 
     /**

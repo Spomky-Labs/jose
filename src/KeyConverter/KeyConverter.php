@@ -26,17 +26,30 @@ class KeyConverter
      *
      * @return array
      */
-    public static function loadKeyFromCertificate($file)
+    public static function loadKeyFromCertificateFile($file)
     {
         if (!file_exists($file)) {
             throw new \InvalidArgumentException(sprintf('File "%s" does not exist.', $file));
         }
         $content = file_get_contents($file);
+
+        return self::loadKeyFromCertificate($content);
+    }
+
+    /**
+     * @param string $file
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return array
+     */
+    public static function loadKeyFromCertificate($certificate)
+    {
         try {
-            $res = openssl_x509_read($content);
+            $res = openssl_x509_read($certificate);
         } catch (\Exception $e) {
-            $content = self::convertDerToPem($content);
-            $res = openssl_x509_read($content);
+            $certificate = self::convertDerToPem($certificate);
+            $res = openssl_x509_read($certificate);
         }
         if (false === $res) {
             throw new \InvalidArgumentException('Unable to load the certificate');
@@ -62,12 +75,12 @@ class KeyConverter
         if (isset($details['key'])) {
             $values = self::loadKeyFromPEM($details['key']);
             if (function_exists('openssl_x509_fingerprint')) {
-                $values['x5t'] = openssl_x509_fingerprint($res, 'sha1', false);
-                $values['x5t#256'] = openssl_x509_fingerprint($res, 'sha256', false);
+                $values['x5t'] = Base64Url::encode(openssl_x509_fingerprint($res, 'sha1', true));
+                $values['x5t#256'] = Base64Url::encode(openssl_x509_fingerprint($res, 'sha256', true));
             } else {
                 openssl_x509_export($res, $pem);
-                $values['x5t'] = self::calculateX509Fingerprint($pem, 'sha1', false);
-                $values['x5t#256'] = self::calculateX509Fingerprint($pem, 'sha256', false);
+                $values['x5t'] = Base64Url::encode(self::calculateX509Fingerprint($pem, 'sha1', true));
+                $values['x5t#256'] = Base64Url::encode(self::calculateX509Fingerprint($pem, 'sha256', true));
             }
 
             return $values;

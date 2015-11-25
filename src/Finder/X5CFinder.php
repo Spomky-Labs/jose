@@ -11,7 +11,7 @@
 
 namespace Jose\Finder;
 
-use Base64Url\Base64Url;
+use Jose\KeyConverter\KeyConverter;
 
 /**
  */
@@ -39,7 +39,7 @@ class X5CFinder implements JWKFinderInterface
      */
     protected function loadX5CCertificateChain(array $chain)
     {
-        $certificate = reset($chain);
+        $certificate = null;
         $last_issuer = null;
         $last_subject = null;
         foreach ($chain as $cert) {
@@ -51,6 +51,7 @@ class X5CFinder implements JWKFinderInterface
                 break;
             }
             $parsed = openssl_x509_parse($x509);
+            openssl_x509_free($x509);
             if (false === $parsed) {
                 $last_issuer = null;
                 $last_subject = null;
@@ -61,7 +62,7 @@ class X5CFinder implements JWKFinderInterface
                 $last_issuer = $parsed['issuer'];
                 $certificate = $current_cert;
             } else {
-                if (implode('', $last_issuer) === implode('', $parsed['subject'])) {
+                if (json_encode($last_issuer) === json_encode($parsed['subject'])) {
                     $last_subject = $parsed['subject'];
                     $last_issuer = $parsed['issuer'];
                 } else {
@@ -71,36 +72,10 @@ class X5CFinder implements JWKFinderInterface
                 }
             }
         }
-        if (null === $last_issuer || implode('', $last_issuer) !== implode('', $last_subject)) {
+        if (null === $last_issuer || json_encode($last_issuer) !== json_encode($last_subject)) {
             return;
         }
 
-        return $this->converX5CToJWK($certificate);
-    }
-
-    /**
-     * @param $x5c
-     *
-     * @return array|null
-     */
-    protected function converX5CToJWK($x5c)
-    {
-        if (false === $res = openssl_pkey_get_public($x5c)) {
-            return;
-        }
-
-        $details = openssl_pkey_get_details($res);
-        if (!is_array($details) || !array_key_exists('rsa', $details)) {
-            return;
-        }
-        $values = [
-            'x5t' =>Base64Url::encode(openssl_x509_fingerprint($x5c, 'sha1', true)),
-            'x5t#256' =>Base64Url::encode(openssl_x509_fingerprint($x5c, 'sha256', true)),
-        ];
-        foreach ($details['rsa'] as $key => $value) {
-            $values[$key] = Base64Url::encode($value);
-        }
-
-        return $values;
+        return KeyConverter::loadKeyFromCertificate($certificate);
     }
 }
