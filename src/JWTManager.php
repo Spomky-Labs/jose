@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWTManagerInterface;
-
 /**
  * Class representing a JSON Web Signature.
  */

@@ -11,9 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWAInterface;
-use Jose\JWAManagerInterface;
-
 /**
  * Class JWAManager.
  */

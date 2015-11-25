@@ -11,8 +11,6 @@
 
 namespace Jose\Compression;
 
-use Jose\Compression\CompressionInterface;
-
 /**
  * This class implements the compression algorithm DEF (defalte)
  * This compression algorithm is part of the specification.

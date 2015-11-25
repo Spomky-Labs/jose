@@ -12,9 +12,9 @@
 namespace Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
+use Jose\KeyConverter\KeyConverter;
 use Jose\Operation\KeyEncryptionInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
-use Jose\KeyConverter\KeyConverter;
 
 /**
  * Class RSA.
@@ -35,6 +35,7 @@ abstract class RSA implements KeyEncryptionInterface
             if (false === $encrypted) {
                 return;
             }
+
             return $encrypted;
         } catch (\Exception $e) {
             //We catch the exception to return null.
@@ -56,6 +57,7 @@ abstract class RSA implements KeyEncryptionInterface
             if (false === $decrypted) {
                 return;
             }
+
             return $decrypted;
         } catch (\Exception $e) {
             //We catch the exception to return null.

@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWEInterface;
-
 /**
  * Class JWE.
  */

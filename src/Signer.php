@@ -12,16 +12,11 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
-use Jose\JSONSerializationModes;
-use Jose\JWKInterface;
-use Jose\JWTInterface;
-use Jose\Operation\SignatureInterface;
-use Jose\SignatureInstructionInterface;
-use Jose\SignerInterface;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Operation\SignatureInterface;
 use Jose\Util\Converter;
 
 /**

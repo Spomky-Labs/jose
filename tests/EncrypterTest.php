@@ -10,8 +10,8 @@
  */
 
 use Base64Url\Base64Url;
-use Jose\JSONSerializationModes;
 use Jose\EncryptionInstruction;
+use Jose\JSONSerializationModes;
 use Jose\JWK;
 use Jose\JWKSet;
 use Jose\JWT;

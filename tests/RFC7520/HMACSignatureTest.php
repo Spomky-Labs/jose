@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\JSONSerializationModes;
 use Jose\Algorithm\Signature\HS256;
+use Jose\JSONSerializationModes;
 use Jose\JWK;
 use Jose\Util\Converter;
 

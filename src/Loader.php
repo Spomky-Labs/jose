@@ -12,12 +12,6 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
-use Jose\Operation\ContentEncryptionInterface;
-use Jose\Operation\DirectEncryptionInterface;
-use Jose\Operation\KeyAgreementInterface;
-use Jose\Operation\KeyAgreementWrappingInterface;
-use Jose\Operation\KeyEncryptionInterface;
-use Jose\Operation\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
@@ -26,6 +20,12 @@ use Jose\Behaviour\HasJWKSetManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Operation\ContentEncryptionInterface;
+use Jose\Operation\DirectEncryptionInterface;
+use Jose\Operation\KeyAgreementInterface;
+use Jose\Operation\KeyAgreementWrappingInterface;
+use Jose\Operation\KeyEncryptionInterface;
+use Jose\Operation\SignatureInterface;
 use Jose\Util\Converter;
 
 /**
@@ -93,8 +93,7 @@ class Loader implements LoaderInterface
                         return true;
                     }
                 }
-            } catch( \InvalidArgumentException $e )
-            {
+            } catch (\InvalidArgumentException $e) {
                 //We do nothing, we continue with other keys
             }
         }
@@ -134,8 +133,7 @@ class Loader implements LoaderInterface
                 if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
                     return true;
                 }
-            } catch( \InvalidArgumentException $e )
-            {
+            } catch (\InvalidArgumentException $e) {
                 //We do nothing, we continue with other keys
             }
         }

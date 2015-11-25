@@ -12,22 +12,16 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
-use Jose\EncrypterInterface;
-use Jose\EncryptionInstructionInterface;
-use Jose\JSONSerializationModes;
-use Jose\JWKInterface;
-use Jose\JWKSetInterface;
-use Jose\JWTInterface;
-use Jose\Operation\ContentEncryptionInterface;
-use Jose\Operation\DirectEncryptionInterface;
-use Jose\Operation\KeyAgreementInterface;
-use Jose\Operation\KeyAgreementWrappingInterface;
-use Jose\Operation\KeyEncryptionInterface;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Operation\ContentEncryptionInterface;
+use Jose\Operation\DirectEncryptionInterface;
+use Jose\Operation\KeyAgreementInterface;
+use Jose\Operation\KeyAgreementWrappingInterface;
+use Jose\Operation\KeyEncryptionInterface;
 use Jose\Util\Converter;
 
 /**
