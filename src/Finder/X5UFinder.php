@@ -33,7 +33,7 @@ class X5UFinder implements JWKSetFinderInterface
 
         $content = json_decode($content, true);
         if (!is_array($content)) {
-            return false;
+            return;
         }
 
         $jwk_set = ['keys'];
@@ -42,7 +42,7 @@ class X5UFinder implements JWKSetFinderInterface
             if (null === $jwk) {
                 break;
             }
-            $jwk_set['keys'] = $jwk;
+            $jwk_set['keys'][] = $jwk;
         }
 
         return $jwk_set;
@@ -51,7 +51,7 @@ class X5UFinder implements JWKSetFinderInterface
     /**
      * @param string $x5c
      *
-     * @return \Jose\JWKInterface|null
+     * @return array|null
      */
     protected function convertX5CToJWK($x5c)
     {
@@ -68,7 +68,7 @@ class X5UFinder implements JWKSetFinderInterface
             $values[$key] = Base64Url::encode($value);
         }
 
-        return $this->getJWKManager()->createJWK($values);
+        return $values;
     }
 
     /**

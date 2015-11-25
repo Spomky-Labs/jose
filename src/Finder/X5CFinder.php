@@ -93,7 +93,10 @@ class X5CFinder implements JWKFinderInterface
         if (!is_array($details) || !array_key_exists('rsa', $details)) {
             return;
         }
-        $values = [];
+        $values = [
+            'x5t' =>Base64Url::encode(openssl_x509_fingerprint($x5c, 'sha1', true)),
+            'x5t#256' =>Base64Url::encode(openssl_x509_fingerprint($x5c, 'sha256', true)),
+        ];
         foreach ($details['rsa'] as $key => $value) {
             $values[$key] = Base64Url::encode($value);
         }
