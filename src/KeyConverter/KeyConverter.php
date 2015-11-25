@@ -37,7 +37,7 @@ class KeyConverter
     }
 
     /**
-     * @param string $file
+     * @param string $certificate
      *
      * @throws \InvalidArgumentException
      *

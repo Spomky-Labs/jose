@@ -42,6 +42,9 @@ class X5UFinder implements JWKSetFinderInterface
             if (null === $jwk) {
                 break;
             }
+            if (is_string($kid)) {
+                $jwk['kid'] = $kid;
+            }
             $jwk_set['keys'][] = $jwk;
         }
 

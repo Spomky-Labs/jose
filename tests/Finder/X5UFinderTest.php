@@ -26,6 +26,8 @@ class X5UFinderTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($result));
         $this->assertArrayHasKey('keys', $result);
         $this->assertEquals(2, count($result['keys']));
+        $this->assertArrayHasKey('kid', $result['keys'][0]);
+        $this->assertArrayHasKey('kid', $result['keys'][1]);
         $this->assertArrayHasKey('kty', $result['keys'][0]);
         $this->assertArrayHasKey('kty', $result['keys'][1]);
         $this->assertArrayHasKey('e', $result['keys'][0]);
