@@ -136,4 +136,59 @@ class X5CFinderTest extends \PHPUnit_Framework_TestCase
             'x5t#256' => 'UJMIANU7ytKwE1JCKh5IXlzIt3QIF6LDBe5RMXMZDfs',
         ], $result);
     }
+
+    public function testWithIncompleteChain()
+    {
+        $finder = new X5CFinder();
+        $result = $finder->findJWK([
+            'x5c' => [
+                    'MIIEqzCCA5OgAwIBAgIDAOTBMA0GCSqGSIb3DQEBCwUAMEcxCzAJBgNVBAYTAlVT
+                     MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMSAwHgYDVQQDExdSYXBpZFNTTCBTSEEy
+                     NTYgQ0EgLSBHMzAeFw0xNDEyMDMwMjEyMDlaFw0xNjExMTYxOTI5MjNaMIGQMRMw
+                     EQYDVQQLEwpHVDExMjEwNDA1MTEwLwYDVQQLEyhTZWUgd3d3LnJhcGlkc3NsLmNv
+                     bS9yZXNvdXJjZXMvY3BzIChjKTE0MS8wLQYDVQQLEyZEb21haW4gQ29udHJvbCBW
+                     YWxpZGF0ZWQgLSBSYXBpZFNTTChSKTEVMBMGA1UEAwwMKi5waHBuZXQub3JnMIIB
+                     IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvAQtpDsGC/pVXUUaJdyVo3Py
+                     3ocozUzZqpXHmZ2RoWYuSOU9COtI1nx4euD5eSEPCVosSSZUPS+zMJUAZpAwnI47
+                     Tnx6XIQ1j2PibP6HEVvyNCa7V2Pm+Mek31DcOCweyqndV1XGzFuy5U3bosCu5Rgz
+                     PIkEfa70b2Dss1yCKtBswXkfwVwZ4y109mjQqopvSxTRW+gyFCgILK1vit3MblUY
+                     8d2hyurcY0Y9Ltb90VrR9RmE2SkU2x5Na24PGn+ZwFg5RYV68JaWRH9eYWyyMhv1
+                     GRpZ1kedmARnzKM3C81GtXw82A5CK8eeLsRFLX/+Igue+Es0dn4Kk7lJta51XwID
+                     AQABo4IBVDCCAVAwHwYDVR0jBBgwFoAUw5zz/NNGCDS7zkZ/oHxb8+IIy1kwVwYI
+                     KwYBBQUHAQEESzBJMB8GCCsGAQUFBzABhhNodHRwOi8vZ3Yuc3ltY2QuY29tMCYG
+                     CCsGAQUFBzAChhpodHRwOi8vZ3Yuc3ltY2IuY29tL2d2LmNydDAOBgNVHQ8BAf8E
+                     BAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwEGCCsGAQUFBwMCMCMGA1UdEQQcMBqC
+                     DCoucGhwbmV0Lm9yZ4IKcGhwbmV0Lm9yZzArBgNVHR8EJDAiMCCgHqAchhpodHRw
+                     Oi8vZ3Yuc3ltY2IuY29tL2d2LmNybDAMBgNVHRMBAf8EAjAAMEUGA1UdIAQ+MDww
+                     OgYKYIZIAYb4RQEHNjAsMCoGCCsGAQUFBwIBFh5odHRwczovL3d3dy5yYXBpZHNz
+                     bC5jb20vbGVnYWwwDQYJKoZIhvcNAQELBQADggEBAJWvtD50H86gflawq05fEUUM
+                     sr7LD1kEP2lbnJ7FRb0fmC4wtsUnq5hxrAjxyu7vpHXSJ3rp8bI2MUm1aFZBQKcx
+                     HpgsIfaKrFwU5YD93Wx95K3ldwYKx2aayy1A9jDXedwGNlRdR+oJNCO6WOxvVcej
+                     4RhAPgIKSrqVtdY+Vvz7zWtkQr7vHFvMgJDohxz+BNbqVNKOOyAyYtRsgMtBEBVe
+                     LLLZG0yqS0DuinEEZTQSyRwa+sFERVjRa1BEP43+D8ZMgvQaI5V/xX+SztSXSPLw
+                     n9ZQw8YJcxPiePguPy0BiqY1hUfv6S7Wlgeo7DcKKM6+7thJi+26IRYVUqK5XXM=',
+                    'MIIDVDCCAjygAwIBAgIDAjRWMA0GCSqGSIb3DQEBBQUAMEIxCzAJBgNVBAYTAlVT
+                     MRYwFAYDVQQKEw1HZW9UcnVzdCBJbmMuMRswGQYDVQQDExJHZW9UcnVzdCBHbG9i
+                     YWwgQ0EwHhcNMDIwNTIxMDQwMDAwWhcNMjIwNTIxMDQwMDAwWjBCMQswCQYDVQQG
+                     EwJVUzEWMBQGA1UEChMNR2VvVHJ1c3QgSW5jLjEbMBkGA1UEAxMSR2VvVHJ1c3Qg
+                     R2xvYmFsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2swYYzD9
+                     9BcjGlZ+W988bDjkcbd4kdS8odhM+KhDtgPpTSEHCIjaWC9mOSm9BXiLnTjoBbdq
+                     fnGk5sRgprDvgOSJKA+eJdbtg/OtppHHmMlCGDUUna2YRpIuT8rxh0PBFpVXLVDv
+                     iS2Aelet8u5fa9IAjbkU+BQVNdnARqN7csiRv8lVK83Qlz6cJmTM386DGXHKTubU
+                     1XupGc1V3sjs0l44U+VcT4wt/lAjNvxm5suOpDkZALeVAjmRCw7+OC7RHQWa9k0+
+                     bw8HHa8sHo9gOeL6NlMTOdReJivbPagUvTLrGAMoUgRx5aszPeE4uwc2hGKceeoW
+                     MPRfwCvocWvk+QIDAQABo1MwUTAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTA
+                     ephojYn7qwVkDBF9qn1luMrMTjAfBgNVHSMEGDAWgBTAephojYn7qwVkDBF9qn1l
+                     uMrMTjANBgkqhkiG9w0BAQUFAAOCAQEANeMpauUvXVSOKVCUn5kaFOSPeCpilKIn
+                     Z57QzxpeR+nBsqTP3UEaBU6bS+5Kb1VSsyShNwrrZHYqLizz/Tt1kL/6cdjHPTfS
+                     tQWVYrmm3ok9Nns4d0iXrKYgjy6myQzCsplFAMfOEVEiIuCl6rYVSAlk6l5PdPcF
+                     PseKUgzbFbS9bZvlxrFUaKnjaZC2mqUPuLk/IH2uSrW4nOQdtqvmlKXBx4Ot2/Un
+                     hw4EbNX/3aBd7YdStysVAq45pmp06drE57xNNB6pXE0zX5IJL4hmXXeXxx12E6nV
+                     5fEWCRE11azbJHFwLJhWC9kXtNHjUStedejV0NxPNO3CBWaAocvmMw==',
+                ],
+            ]
+        );
+
+        $this->assertNull($result);
+    }
 }
