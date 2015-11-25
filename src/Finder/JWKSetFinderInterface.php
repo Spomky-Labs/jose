@@ -19,7 +19,7 @@ interface JWKSetFinderInterface
     /**
      * @param array $header
      *
-     * @return \Jose\JWKSetInterface|array|null
+     * @return array|null
      */
     public function findJWKSet(array $header);
 }

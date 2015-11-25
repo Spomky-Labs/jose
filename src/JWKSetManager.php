@@ -43,14 +43,7 @@ class JWKSetManager implements JWKSetManagerInterface
     {
         foreach ($this->finders as $finder) {
             $result = $finder->findJWKSet($header);
-            if ($result instanceof JWKSetInterface) {
-                return $result;
-            } elseif ($result instanceof JWKInterface) {
-                $keyset = $this->createJWKSet();
-                $keyset->addKey($result);
-
-                return $keyset;
-            } elseif (is_array($result)) {
+            if (is_array($result)) {
                 return $this->createJWKSet($result);
             }
         }

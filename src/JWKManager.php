@@ -39,9 +39,7 @@ class JWKManager implements JWKManagerInterface
     {
         foreach ($this->finders as $finder) {
             $result = $finder->findJWK($header);
-            if ($result instanceof JWKInterface) {
-                return $result;
-            } elseif (is_array($result)) {
+            if (is_array($result)) {
                 return $this->createJWK($result);
             }
         }
