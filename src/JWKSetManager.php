@@ -11,13 +11,9 @@
 
 namespace Jose;
 
-use Base64Url\Base64Url;
-use Jose\Finder\JWKSetFinderInterface;
-use Jose\JWKInterface;
-use Jose\JWKSetInterface;
-use Jose\JWKSetManager as Base;
-use Jose\JWKSetManagerInterface;
 use Jose\Behaviour\HasJWKManager;
+
+use Jose\Finder\JWKSetFinderInterface;
 
 /**
  */
@@ -45,7 +41,7 @@ class JWKSetManager implements JWKSetManagerInterface
      */
     public function findJWKSet(array $header)
     {
-        foreach( $this->finders as $finder) {
+        foreach ($this->finders as $finder) {
             $result = $finder->findJWKSet($header);
             if ($result instanceof JWKSetInterface) {
                 return $result;

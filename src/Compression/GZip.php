@@ -11,8 +11,6 @@
 
 namespace Jose\Compression;
 
-use Jose\Compression\CompressionInterface;
-
 /**
  * This class implements the compression algorithm GZ (GZip).
  * This compression algorithm is not part of the specification.

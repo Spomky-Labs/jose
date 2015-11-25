@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWKInterface;
-
 /**
  * Class JWK.
  */

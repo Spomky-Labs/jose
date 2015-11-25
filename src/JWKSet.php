@@ -11,9 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWKInterface;
-use Jose\JWKSetInterface;
-
 /**
  * Class JWKSet.
  */

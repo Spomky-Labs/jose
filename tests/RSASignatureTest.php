@@ -10,13 +10,13 @@
  */
 
 use Base64Url\Base64Url;
-use Jose\JSONSerializationModes;
 use Jose\Algorithm\Signature\PS256;
 use Jose\Algorithm\Signature\PS384;
 use Jose\Algorithm\Signature\PS512;
 use Jose\Algorithm\Signature\RS256;
 use Jose\Algorithm\Signature\RS384;
 use Jose\Algorithm\Signature\RS512;
+use Jose\JSONSerializationModes;
 use Jose\JWK;
 use Jose\JWT;
 use Jose\KeyConverter\KeyConverter;

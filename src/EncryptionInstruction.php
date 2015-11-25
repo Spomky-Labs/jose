@@ -11,9 +11,6 @@
 
 namespace Jose;
 
-use Jose\EncryptionInstructionInterface;
-use Jose\JWKInterface;
-
 /**
  * Class EncryptionInstruction.
  */

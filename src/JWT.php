@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWTInterface;
-
 /**
  * Class JWT.
  */

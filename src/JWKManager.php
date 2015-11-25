@@ -11,7 +11,6 @@
 
 namespace Jose;
 
-use Base64Url\Base64Url;
 use Jose\Finder\JWKFinderInterface;
 
 /**
@@ -38,7 +37,7 @@ class JWKManager implements JWKManagerInterface
      */
     public function findJWK(array $header)
     {
-        foreach( $this->finders as $finder) {
+        foreach ($this->finders as $finder) {
             $result = $finder->findJWK($header);
             if ($result instanceof JWKInterface) {
                 return $result;

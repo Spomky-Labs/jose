@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\JWSInterface;
-
 /**
  * Class JWS.
  */

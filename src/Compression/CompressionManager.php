@@ -11,8 +11,6 @@
 
 namespace Jose\Compression;
 
-use Jose\Compression\CompressionInterface;
-
 /**
  * Compression algorithm manager.
  */
