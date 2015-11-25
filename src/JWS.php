@@ -16,8 +16,6 @@ namespace Jose;
  */
 class JWS extends JWT implements JWSInterface
 {
-    use JWable;
-
     /**
      * @var string|null
      */

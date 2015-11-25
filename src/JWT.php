@@ -16,7 +16,163 @@ namespace Jose;
  */
 class JWT implements JWTInterface
 {
-    use JWable;
+    /**
+     * @var string
+     */
+    protected $encoded_protected_header = '';
+
+    /**
+     * @var string
+     */
+    protected $input = null;
+
+    /**
+     * @var string
+     */
+    protected $encoded_payload = '';
+
+    /**
+     * @var array
+     */
+    protected $protected_headers = [];
+
+    /**
+     * @var array
+     */
+    protected $unprotected_headers = [];
+
+    /**
+     * @var null
+     */
+    protected $payload = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEncodedProtectedHeader()
+    {
+        return $this->encoded_protected_header;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getInput()
+    {
+        return $this->input;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEncodedPayload()
+    {
+        return $this->encoded_payload;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProtectedHeader()
+    {
+        return $this->protected_headers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUnprotectedHeader()
+    {
+        return $this->unprotected_headers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPayload()
+    {
+        return $this->payload;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setInput($input)
+    {
+        $this->input = $input;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEncodedProtectedHeader($encoded_protected_header)
+    {
+        $this->encoded_protected_header = $encoded_protected_header;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setEncodedPayload($encoded_payload)
+    {
+        $this->encoded_payload = $encoded_payload;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProtectedHeader(array $values)
+    {
+        $this->protected_headers = $values;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUnprotectedHeader(array $values)
+    {
+        $this->unprotected_headers = $values;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setProtectedHeaderValue($key, $value)
+    {
+        $this->protected_headers[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUnprotectedHeaderValue($key, $value)
+    {
+        $this->unprotected_headers[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setPayload($payload)
+    {
+        $this->payload = $payload;
+
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
