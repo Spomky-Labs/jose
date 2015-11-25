@@ -10,11 +10,11 @@
  */
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHES;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
-use SpomkyLabs\Jose\JWK;
+use Jose\Algorithm\KeyEncryption\ECDHES;
+use Jose\Algorithm\KeyEncryption\ECDHESA128KW;
+use Jose\Algorithm\KeyEncryption\ECDHESA192KW;
+use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
+use Jose\JWK;
 
 /**
  * Class ECDHESKeyAgreementTest.

@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Util;
+namespace Jose\Util;
 
 /**
  * Class ConcatKDF.

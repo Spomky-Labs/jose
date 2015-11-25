@@ -9,7 +9,7 @@ To use our `Signer` object, you need to inject:
 * a [Payload Converter Manager](payload_converter_manager.md).
 
 ```php
-use SpomkyLabs\Jose\Signer;
+use Jose\Signer;
 
 $signer = new Signer();
 $signer->setJWTManager($my_jwt_manager)

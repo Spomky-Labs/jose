@@ -9,7 +9,7 @@ If the algorithm you will use to encrypt requires the sender private key (e.g. E
 Your encryption instruction will be passed to the `Encrypter` object.
 
 ```php
-use SpomkyLabs\Jose\EncryptionInstruction;
+use Jose\EncryptionInstruction;
 
 $instruction  = new EncryptionInstruction();
 $instruction->setRecipientKey($recipient_public_key)

@@ -9,24 +9,33 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
-use Jose\JWS as Base;
+use Jose\JWSInterface;
 
 /**
  * Class JWS.
  */
-class JWS extends Base
+class JWS extends JWT implements JWSInterface
 {
     use JWable;
 
+    /**
+     * @var string|null
+     */
     protected $signature;
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSignature()
     {
         return $this->signature;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setSignature($signature)
     {
         $this->signature = $signature;

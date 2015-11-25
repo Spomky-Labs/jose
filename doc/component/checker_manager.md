@@ -20,14 +20,14 @@ This library provides the following checkers:
 
 # The manager
 
-You just have to create an instance of `SpomkyLabs\Jose\Checker\CheckerManager` and add each checker you want to use.
+You just have to create an instance of `Jose\Checker\CheckerManager` and add each checker you want to use.
 
 ```php
 <?php
 
-use SpomkyLabs\Jose\Checker\CheckerManager;
-use SpomkyLabs\Jose\CheckerManager\AudienceChecker;
-use SpomkyLabs\Jose\CheckerManager\ExpirationChecker;
+use Jose\Checker\CheckerManager;
+use Jose\CheckerManager\AudienceChecker;
+use Jose\CheckerManager\ExpirationChecker;
 
 $checker_manager = new CheckerManager();
 
@@ -47,7 +47,7 @@ $checker_manager->checkJWT($jwt);
 # Create my own checker
 
 If you need to verify a custom claim, you can create your own checker and add it to the manager.
-Your checker must implements `SpomkyLabs\Jose\Checker\CheckerInterface`.
+Your checker must implements `Jose\Checker\CheckerInterface`.
 
 Hereafter an example. Our animal checker will verify if the protected header contains the key `animal`.
 If this key exists, it verifies the animal is in the provided list.
@@ -55,7 +55,7 @@ If this key exists, it verifies the animal is in the provided list.
 ```php
 <?php
 
-use SpomkyLabs\Jose\Checker\CheckerInterface;
+use Jose\Checker\CheckerInterface;
 
 class AnimalChecker implements CheckerInterface
 {

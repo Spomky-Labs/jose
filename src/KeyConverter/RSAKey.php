@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\KeyConverter;
+namespace Jose\KeyConverter;
 
 use Base64Url\Base64Url;
 use FG\ASN1\Universal\BitString;
@@ -31,6 +31,8 @@ class RSAKey extends Sequence
     private $dp;
     private $dq;
     private $qi;
+    private $use;
+    private $key_ops;
 
     /**
      * @param \Jose\JWKInterface|string|array $data
@@ -97,14 +99,16 @@ class RSAKey extends Sequence
 
         $this->n = $jwk['n'];
         $this->e = $jwk['e'];
+        $this->use = isset($jwk['use']) ? $jwk['use'] : null;
+        $this->key_ops = isset($jwk['key_ops']) ? $jwk['key_ops'] : null;
         if (array_key_exists('p', $jwk)) {
             $this->private = true;
             $this->p = $jwk['p'];
             $this->d = $jwk['d'];
             $this->q = $jwk['q'];
-            $this->dp = $jwk['dp'];
-            $this->dq = $jwk['dq'];
-            $this->qi = $jwk['qi'];
+            $this->dp = isset($jwk['dp']) ? $jwk['dp'] : Base64Url::encode(0);
+            $this->dq = isset($jwk['dq']) ? $jwk['dq'] : Base64Url::encode(0);
+            $this->qi = isset($jwk['qi']) ? $jwk['qi'] : Base64Url::encode(0);
             $this->initPrivateKey();
         } else {
             $this->private = false;
@@ -188,9 +192,9 @@ class RSAKey extends Sequence
     }
 
     /**
-     * @param \SpomkyLabs\Jose\KeyConverter\RSAKey $private
+     * @param \Jose\KeyConverter\RSAKey $private
      *
-     * @return \SpomkyLabs\Jose\KeyConverter\RSAKey
+     * @return \Jose\KeyConverter\RSAKey
      */
     public static function toPublic(RSAKey $private)
     {
@@ -220,6 +224,12 @@ class RSAKey extends Sequence
             'n'   => $this->n,
             'e'   => $this->e,
         ];
+        if (null !== $this->use) {
+            $values['use'] = $this->use;
+        }
+        if (null !== $this->key_ops) {
+            $values['key_ops'] = $this->key_ops;
+        }
         if (true === $this->private) {
             $values['p'] = $this->p;
             $values['d'] = $this->d;

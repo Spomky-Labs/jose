@@ -6,7 +6,7 @@ The JWT manager does nothing really complicated: it creates [JWT](../object/jwt.
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWTManager;
+use Jose\JWTManager;
 
 $jwt_manager = new JWTManager();
 ```
@@ -36,7 +36,7 @@ If you need to, you can override some methods and create your own objects.
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWTManager;
+use Jose\JWTManager;
 
 class MyCustomJWTManager extends JWTManager
 {

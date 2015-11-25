@@ -10,10 +10,10 @@
  */
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
-use SpomkyLabs\Jose\JWK;
+use Jose\Algorithm\KeyEncryption\A128GCMKW;
+use Jose\Algorithm\KeyEncryption\A192GCMKW;
+use Jose\Algorithm\KeyEncryption\A256GCMKW;
+use Jose\JWK;
 
 /**
  * @group AESGCMKW

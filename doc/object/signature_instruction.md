@@ -8,7 +8,7 @@ This object will contain the private key and headers (protected or unprotected h
 Your instruction will be passed to the `Signer` object.
 
 ```php
-use SpomkyLabs\Jose\SignatureInstruction;
+use Jose\SignatureInstruction;
 
 $instruction  = new SignatureInstruction();
 $instruction->setKey($my_private_key)

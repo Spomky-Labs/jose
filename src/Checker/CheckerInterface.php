@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -19,8 +19,6 @@ interface CheckerInterface
      * @param \Jose\JWTInterface $jwt
      *
      * @throws \Exception If verification failed
-     *
-     * @return self
      */
     public function checkJWT(JWTInterface $jwt);
 }

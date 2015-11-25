@@ -51,7 +51,7 @@ JSONSerializationModes::JSON_COMPACT_SERIALIZATION; // Compact Serialization
 This library also provides a converter to help you to convert any output (signature or encryption) from a mode to another.
 
 ```php
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Util\Converter;
 
 $compact = 'eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk';
 $flattened = Converter::convert($compact, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);

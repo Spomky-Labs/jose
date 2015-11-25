@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -31,7 +31,5 @@ abstract class IssuerChecker implements CheckerInterface
         if (null !== $iss && !$this->isIssuerValid($iss)) {
             throw new \Exception('Issuer not allowed.');
         }
-
-        return $this;
     }
 }

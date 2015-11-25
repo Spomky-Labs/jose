@@ -12,7 +12,7 @@ If you do not have any particular need, you can use the provided class directly:
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWKSetManager;
+use Jose\JWKSetManager;
 
 $jwkset_manager = new JWKSetManager();
 ```
@@ -23,7 +23,7 @@ You can override some methods to allow your key sets to be automatically found d
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWKSetManager;
+use Jose\JWKSetManager;
 
 class MyKeyManager extends JWKSetManager
 {

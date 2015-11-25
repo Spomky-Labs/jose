@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -24,7 +24,5 @@ class NotBeforeChecker implements CheckerInterface
         if (null !== $nbf && time() < $nbf) {
             throw new \Exception('Can not use this JWT yet.');
         }
-
-        return $this;
     }
 }

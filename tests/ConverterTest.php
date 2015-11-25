@@ -10,7 +10,7 @@
  */
 
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Util\Converter;
 
 /**
  * @group Converter

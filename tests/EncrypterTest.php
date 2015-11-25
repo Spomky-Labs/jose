@@ -11,11 +11,11 @@
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\EncryptionInstruction;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
-use SpomkyLabs\Jose\JWT;
-use SpomkyLabs\Test\TestCase;
+use Jose\EncryptionInstruction;
+use Jose\JWK;
+use Jose\JWKSet;
+use Jose\JWT;
+use Jose\Test\TestCase;
 
 /**
  * Class EncrypterTest.

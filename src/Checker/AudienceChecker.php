@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -31,10 +31,18 @@ class AudienceChecker implements CheckerInterface
     public function checkJWT(JWTInterface $jwt)
     {
         $aud = $jwt->getAudience();
-        if (null !== $aud && $this->audience !== $aud) {
-            throw new \Exception('Bad audience.');
+        if (null === $aud) {
+            return;
         }
 
-        return $this;
+        if (is_string($aud) && $this->audience == $aud) {
+            return;
+        }
+
+        if (is_array($aud) && in_array($this->audience, $aud, true)) {
+            return;
+        }
+
+        throw new \Exception('Bad audience.');
     }
 }

@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -24,7 +24,5 @@ class ExpirationChecker implements CheckerInterface
         if (null !== $exp && time() > $exp) {
             throw new \Exception('The JWT has expired.');
         }
-
-        return $this;
     }
 }

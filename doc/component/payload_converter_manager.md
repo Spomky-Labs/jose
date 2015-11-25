@@ -72,14 +72,14 @@ class User
 ### Our converter
 
 We will create a converter that accepts `User` class. This converter will add content type header (`cty`) to `acme-user+json`.
-This converter must implements `SpomkyLabs\Jose\Payload\PayloadConverterInterface`.
+This converter must implements `Jose\Payload\PayloadConverterInterface`.
 
 ```php
 <?php
 
 namespace Acme;
 
-use SpomkyLabs\Jose\Payload\PayloadConverterInterface;
+use Jose\Payload\PayloadConverterInterface;
 
 class UserConverter implements PayloadConverterInterface
 {
@@ -134,12 +134,12 @@ class UserConverter implements PayloadConverterInterface
 
 # The converter manager
 
-This library provides a converter manager: `SpomkyLabs\Jose\Payload\PayloadConverterManager`.
+This library provides a converter manager: `Jose\Payload\PayloadConverterManager`.
 
 ```php
 <?php 
 
-use SpomkyLabs\Jose\Payload\PayloadConverterManager;
+use Jose\Payload\PayloadConverterManager;
 
 
 $converter_manager = new PayloadConverterManager();

@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
+use Jose\JWK;
+use Jose\JWKSet;
 
 /**
  * Class JWKTest.

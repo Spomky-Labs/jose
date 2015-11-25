@@ -9,11 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\Signature;
+namespace Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
 use Jose\Operation\SignatureInterface;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\KeyConverter;
 
 /**
  * Class RSA.

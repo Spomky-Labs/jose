@@ -11,17 +11,17 @@
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\Algorithm\Signature\PS256;
-use SpomkyLabs\Jose\Algorithm\Signature\PS384;
-use SpomkyLabs\Jose\Algorithm\Signature\PS512;
-use SpomkyLabs\Jose\Algorithm\Signature\RS256;
-use SpomkyLabs\Jose\Algorithm\Signature\RS384;
-use SpomkyLabs\Jose\Algorithm\Signature\RS512;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWT;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
-use SpomkyLabs\Jose\SignatureInstruction;
-use SpomkyLabs\Test\TestCase;
+use Jose\Algorithm\Signature\PS256;
+use Jose\Algorithm\Signature\PS384;
+use Jose\Algorithm\Signature\PS512;
+use Jose\Algorithm\Signature\RS256;
+use Jose\Algorithm\Signature\RS384;
+use Jose\Algorithm\Signature\RS512;
+use Jose\JWK;
+use Jose\JWT;
+use Jose\KeyConverter\KeyConverter;
+use Jose\SignatureInstruction;
+use Jose\Test\TestCase;
 
 /**
  * Class RSASignatureTest.

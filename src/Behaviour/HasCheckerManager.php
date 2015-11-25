@@ -9,19 +9,19 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Behaviour;
+namespace Jose\Behaviour;
 
-use SpomkyLabs\Jose\Checker\CheckerManagerInterface;
+use Jose\Checker\CheckerManagerInterface;
 
 trait HasCheckerManager
 {
     /**
-     * @var \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     * @var \Jose\Checker\CheckerManagerInterface
      */
     private $checker_manager;
 
     /**
-     * @param \SpomkyLabs\Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
      *
      * @return self
      */
@@ -33,7 +33,7 @@ trait HasCheckerManager
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     * @return \Jose\Checker\CheckerManagerInterface
      */
     protected function getCheckerManager()
     {

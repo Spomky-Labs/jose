@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -31,7 +31,5 @@ abstract class SubjectChecker implements CheckerInterface
         if (null !== $sub && !$this->isSubjectValid($sub)) {
             throw new \Exception('Invalid subject.');
         }
-
-        return $this;
     }
 }

@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\KeyConverter;
 
 /**
  * These tests will try to load certificates from PEM and DER files.

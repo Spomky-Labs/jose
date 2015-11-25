@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\JWE;
+use Jose\JWE;
 
 /**
  * Class JWETest.

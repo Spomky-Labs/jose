@@ -9,19 +9,19 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Behaviour;
+namespace Jose\Behaviour;
 
-use SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface;
+use Jose\Payload\PayloadConverterManagerInterface;
 
 trait HasPayloadConverter
 {
     /**
-     * @var \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     * @var \Jose\Payload\PayloadConverterManagerInterface
      */
     private $payload_converter;
 
     /**
-     * @param \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface $payload_converter
+     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter
      *
      * @return self
      */
@@ -33,7 +33,7 @@ trait HasPayloadConverter
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     * @return \Jose\Payload\PayloadConverterManagerInterface
      */
     public function getPayloadConverter()
     {

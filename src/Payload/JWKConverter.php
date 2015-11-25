@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Payload;
+namespace Jose\Payload;
 
 use Jose\JWKInterface;
 use Jose\JWKManagerInterface;

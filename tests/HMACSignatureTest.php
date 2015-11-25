@@ -9,10 +9,10 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\Algorithm\Signature\HS256;
-use SpomkyLabs\Jose\Algorithm\Signature\HS384;
-use SpomkyLabs\Jose\Algorithm\Signature\HS512;
-use SpomkyLabs\Jose\JWK;
+use Jose\Algorithm\Signature\HS256;
+use Jose\Algorithm\Signature\HS384;
+use Jose\Algorithm\Signature\HS512;
+use Jose\JWK;
 
 /**
  * Class HMACSignatureTest.

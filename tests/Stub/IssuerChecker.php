@@ -9,9 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test\Stub;
+namespace Jose\Test\Stub;
 
-use SpomkyLabs\Jose\Checker\IssuerChecker as Base;
+use Jose\Checker\IssuerChecker as Base;
 
 /**
  */

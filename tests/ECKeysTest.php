@@ -9,9 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\KeyConverter\ECKey;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
-use SpomkyLabs\Test\TestCase;
+use Jose\KeyConverter\ECKey;
+use Jose\KeyConverter\KeyConverter;
+use Jose\Test\TestCase;
 
 /**
  * @group ECKeys

@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
@@ -18,11 +18,11 @@ use Jose\JWTInterface;
 use Jose\Operation\SignatureInterface;
 use Jose\SignatureInstructionInterface;
 use Jose\SignerInterface;
-use SpomkyLabs\Jose\Behaviour\HasJWAManager;
-use SpomkyLabs\Jose\Behaviour\HasJWTManager;
-use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
-use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Behaviour\HasJWAManager;
+use Jose\Behaviour\HasJWTManager;
+use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasPayloadConverter;
+use Jose\Util\Converter;
 
 /**
  */

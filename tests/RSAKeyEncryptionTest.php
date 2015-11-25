@@ -10,11 +10,11 @@
  */
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Test\TestCase;
+use Jose\Algorithm\KeyEncryption\RSA15;
+use Jose\Algorithm\KeyEncryption\RSAOAEP;
+use Jose\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\JWK;
+use Jose\Test\TestCase;
 
 /**
  * Class RSAKeyEncryptionTest.

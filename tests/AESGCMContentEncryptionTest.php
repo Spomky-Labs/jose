@@ -10,9 +10,9 @@
  */
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;
+use Jose\Algorithm\ContentEncryption\A128GCM;
+use Jose\Algorithm\ContentEncryption\A192GCM;
+use Jose\Algorithm\ContentEncryption\A256GCM;
 
 /**
  * Class AESGCMContentEncryptionTest.

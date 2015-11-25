@@ -9,13 +9,13 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test\RFC7520;
+namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\Algorithm\Signature\HS256;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Algorithm\Signature\HS256;
+use Jose\JWK;
+use Jose\Util\Converter;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.4

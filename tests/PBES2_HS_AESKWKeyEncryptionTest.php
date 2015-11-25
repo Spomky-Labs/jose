@@ -10,10 +10,10 @@
  */
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
-use SpomkyLabs\Jose\JWK;
+use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
+use Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
+use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
+use Jose\JWK;
 
 /**
  * Class PBES2_HS_AESKWKeyEncryptionTest.

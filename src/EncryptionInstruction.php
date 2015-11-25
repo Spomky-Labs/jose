@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Jose\EncryptionInstructionInterface;
 use Jose\JWKInterface;

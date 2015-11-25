@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Compression;
+namespace Jose\Compression;
 
 use Jose\Compression\CompressionInterface;
 

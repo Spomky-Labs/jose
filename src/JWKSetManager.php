@@ -9,16 +9,56 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
+use Base64Url\Base64Url;
+use Jose\Finder\JWKSetFinderInterface;
+use Jose\JWKInterface;
+use Jose\JWKSetInterface;
 use Jose\JWKSetManager as Base;
-use SpomkyLabs\Jose\Behaviour\HasJWKManager;
+use Jose\JWKSetManagerInterface;
+use Jose\Behaviour\HasJWKManager;
 
 /**
  */
-class JWKSetManager extends Base
+class JWKSetManager implements JWKSetManagerInterface
 {
     use HasJWKManager;
+
+    /**
+     * @var \Jose\Finder\JWKSetFinderInterface[]
+     */
+    private $finders = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addJWKSetFinder(JWKSetFinderInterface $finder)
+    {
+        $this->finders[] = $finder;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findJWKSet(array $header)
+    {
+        foreach( $this->finders as $finder) {
+            $result = $finder->findJWKSet($header);
+            if ($result instanceof JWKSetInterface) {
+                return $result;
+            } elseif ($result instanceof JWKInterface) {
+                $keyset = $this->createJWKSet();
+                $keyset->addKey($result);
+
+                return $keyset;
+            } elseif (is_array($result)) {
+                return $this->createJWKSet($result);
+            }
+        }
+    }
 
     /**
      * {@inheritdoc}

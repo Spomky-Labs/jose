@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\AESOpenSSL;
+use Jose\Algorithm\ContentEncryption\AESOpenSSL;
 
 class AESEnginesTest extends \PHPUnit_Framework_TestCase
 {

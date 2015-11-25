@@ -16,29 +16,31 @@
     ],
     "autoload": {
         "psr-4": {
-            "SpomkyLabs\\Jose\\":  "src/"
+            "Jose\\":  "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SpomkyLabs\\Test\\":  "tests/"
+            "Jose\\Test\\":  "tests/"
         }
     },
     "require": {
         "php": ">=5.5.9",
         "lib-openssl": "*",
-        "spomky-labs/jose-interface": "~2.3.0",
+        "spomky-labs/base64url": "~1.0.0",
         "spomky-labs/pbkdf2": "~1.0",
-        "mdanter/ecc": "0.3",
         "spomky-labs/aes-key-wrap": "~2.0",
+        "mdanter/ecc": "0.3",
         "phpseclib/phpseclib": "~2.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6"
+        "satooshi/php-coveralls": "~0.6",
+        "ext-curl": "*"
     },
    "suggest":{
-        "ext-crypto":"Required to use AES GCM based algorithms."
+        "ext-crypto": "Required to use AES GCM based algorithms.",
+        "ext-curl": "Required to retrieve keys from URL."
    },
     "extra": {
         "branch-alias": {

@@ -9,19 +9,91 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
-use Jose\JWK as Base;
+use Jose\JWKInterface;
 
 /**
  * Class JWK.
  */
-class JWK extends Base
+class JWK implements JWKInterface
 {
     /**
      * @var array
      */
     protected $values = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeyType()
+    {
+        return $this->getValue('kty');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getPublicKeyUse()
+    {
+        return $this->getValue('use');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeyOperations()
+    {
+        return $this->getValue('key_ops');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAlgorithm()
+    {
+        return $this->getValue('alg');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeyID()
+    {
+        return $this->getValue('kid');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getX509Url()
+    {
+        return $this->getValue('x5u');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getX509CertificateChain()
+    {
+        return $this->getValue('x5c');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getX509CertificateSha1Thumbprint()
+    {
+        return $this->getValue('x5t');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getX509CertificateSha256Thumbprint()
+    {
+        return $this->getValue('x5t#256');
+    }
 
     /**
      * @param array $values
@@ -32,7 +104,7 @@ class JWK extends Base
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function jsonSerialize()
     {
@@ -40,9 +112,7 @@ class JWK extends Base
     }
 
     /**
-     * @param string $key
-     *
-     * @return mixed|null
+     * {@inheritdoc}
      */
     public function getValue($key)
     {

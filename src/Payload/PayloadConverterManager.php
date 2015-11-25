@@ -9,17 +9,17 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Payload;
+namespace Jose\Payload;
 
 class PayloadConverterManager implements PayloadConverterManagerInterface
 {
     /**
-     * @var \SpomkyLabs\Jose\Payload\PayloadConverterInterface[]
+     * @var \Jose\Payload\PayloadConverterInterface[]
      */
     private $converters = [];
 
     /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterInterface[]
+     * @return \Jose\Payload\PayloadConverterInterface[]
      */
     private function getConverters()
     {

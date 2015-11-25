@@ -9,14 +9,14 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
 class CheckerManager implements CheckerManagerInterface
 {
     /**
-     * @var \SpomkyLabs\Jose\Checker\CheckerInterface[]
+     * @var \Jose\Checker\CheckerInterface[]
      */
     private $checkers = [];
 
@@ -43,7 +43,7 @@ class CheckerManager implements CheckerManagerInterface
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Checker\CheckerInterface[]
+     * @return \Jose\Checker\CheckerInterface[]
      */
     private function getCheckers()
     {

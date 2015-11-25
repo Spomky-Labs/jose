@@ -13,7 +13,7 @@ If you do not have any particular need, you can use the provided class directly:
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWKManager;
+use Jose\JWKManager;
 
 $jwk_manager = new JWKManager();
 ```
@@ -24,7 +24,7 @@ You can override some methods to allow your key to be automatically found during
 ```php
 <?php
 
-use SpomkyLabs\Jose\JWKManager;
+use Jose\JWKManager;
 
 class MyKeyManager extends JWKManager
 {

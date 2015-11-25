@@ -10,10 +10,10 @@
  */
 
 use Jose\JSONSerializationModes;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\JWKSet;
-use SpomkyLabs\Jose\SignatureInstruction;
-use SpomkyLabs\Test\TestCase;
+use Jose\JWK;
+use Jose\JWKSet;
+use Jose\SignatureInstruction;
+use Jose\Test\TestCase;
 
 /**
  * @group Loader

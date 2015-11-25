@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Base64Url\Base64Url;
 use Jose\EncrypterInterface;
@@ -23,12 +23,12 @@ use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
-use SpomkyLabs\Jose\Behaviour\HasCompressionManager;
-use SpomkyLabs\Jose\Behaviour\HasJWAManager;
-use SpomkyLabs\Jose\Behaviour\HasJWTManager;
-use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
-use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Behaviour\HasCompressionManager;
+use Jose\Behaviour\HasJWAManager;
+use Jose\Behaviour\HasJWTManager;
+use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasPayloadConverter;
+use Jose\Util\Converter;
 
 /**
  */

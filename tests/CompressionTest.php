@@ -9,10 +9,10 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use SpomkyLabs\Jose\Compression\CompressionManager;
-use SpomkyLabs\Jose\Compression\Deflate;
-use SpomkyLabs\Jose\Compression\GZip;
-use SpomkyLabs\Jose\Compression\ZLib;
+use Jose\Compression\CompressionManager;
+use Jose\Compression\Deflate;
+use Jose\Compression\GZip;
+use Jose\Compression\ZLib;
 
 /**
  * Class CompressionTest.

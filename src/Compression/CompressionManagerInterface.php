@@ -9,15 +9,24 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Compression;
+namespace Jose\Compression;
 
-use Jose\Compression\CompressionInterface;
-use Jose\Compression\CompressionManagerInterface as Base;
-
-interface CompressionManagerInterface extends Base
+/**
+ * This interface is used to manage all compression methods.
+ */
+interface CompressionManagerInterface
 {
     /**
-     * @param CompressionInterface $compression_algorithm
+     * This method will try to find a CompressionInterface object able to support the compression method.
+     *
+     * @param string $name The name of the compression method
+     *
+     * @return \Jose\Compression\CompressionInterface|null If the compression handler is supported, return CompressionInterface object, else null
+     */
+    public function getCompressionAlgorithm($name);
+
+    /**
+     * @param \Jose\Compression\CompressionInterface $compression_algorithm
      *
      * @return self
      */

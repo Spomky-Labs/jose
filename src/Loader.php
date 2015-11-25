@@ -9,32 +9,24 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Base64Url\Base64Url;
-use Jose\JSONSerializationModes;
-use Jose\JWAInterface;
-use Jose\JWEInterface;
-use Jose\JWKInterface;
-use Jose\JWKSetInterface;
-use Jose\JWSInterface;
-use Jose\JWTInterface;
-use Jose\LoaderInterface;
 use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\SignatureInterface;
-use SpomkyLabs\Jose\Behaviour\HasCheckerManager;
-use SpomkyLabs\Jose\Behaviour\HasCompressionManager;
-use SpomkyLabs\Jose\Behaviour\HasJWAManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKManager;
-use SpomkyLabs\Jose\Behaviour\HasJWKSetManager;
-use SpomkyLabs\Jose\Behaviour\HasJWTManager;
-use SpomkyLabs\Jose\Behaviour\HasKeyChecker;
-use SpomkyLabs\Jose\Behaviour\HasPayloadConverter;
-use SpomkyLabs\Jose\Util\Converter;
+use Jose\Behaviour\HasCheckerManager;
+use Jose\Behaviour\HasCompressionManager;
+use Jose\Behaviour\HasJWAManager;
+use Jose\Behaviour\HasJWKManager;
+use Jose\Behaviour\HasJWKSetManager;
+use Jose\Behaviour\HasJWTManager;
+use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasPayloadConverter;
+use Jose\Util\Converter;
 
 /**
  * Class able to load JWS or JWE.
@@ -93,10 +85,17 @@ class Loader implements LoaderInterface
             if (!$this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName())) {
                 continue;
             }
-            $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
+            try {
+                $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
 
-            if (null !== $cek) {
-                return $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
+                if (null !== $cek) {
+                    if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm)) {
+                        return true;
+                    }
+                }
+            } catch( \InvalidArgumentException $e )
+            {
+                //We do nothing, we continue with other keys
             }
         }
 
@@ -131,8 +130,13 @@ class Loader implements LoaderInterface
             if (!$this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName())) {
                 continue;
             }
-            if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
-                return true;
+            try {
+                if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
+                    return true;
+                }
+            } catch( \InvalidArgumentException $e )
+            {
+                //We do nothing, we continue with other keys
             }
         }
 
@@ -391,18 +395,18 @@ class Loader implements LoaderInterface
     protected function getKeysFromCompleteHeader(array $header)
     {
         $keys = $this->getJWKSetManager()->createJWKSet();
-        $jwk = $this->getJWKManager()->findByHeader($header);
+        $jwk = $this->getJWKManager()->findJWK($header);
         if ($jwk instanceof JWKInterface) {
             $keys->addKey($jwk);
         }
-        $jwkset = $this->getJWKSetManager()->findByHeader($header);
+        $jwkset = $this->getJWKSetManager()->findJWKSet($header);
         if ($jwkset instanceof JWKSetInterface) {
             foreach ($jwkset as $key) {
                 $keys->addKey($key);
             }
-        } elseif ($jwkset instanceof JWKInterface) {
+        }/* elseif ($jwkset instanceof JWKInterface) {
             $keys->addKey($jwkset);
-        }
+        }*/
 
         return $keys;
     }

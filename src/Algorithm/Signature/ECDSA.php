@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\Signature;
+namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;

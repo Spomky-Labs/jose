@@ -9,15 +9,15 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Message\MessageFactory;
-use SpomkyLabs\Jose\JWK;
-use SpomkyLabs\Jose\Util\ConcatKDF;
+use Jose\JWK;
+use Jose\Util\ConcatKDF;
 
 /**
  * Class ECDHES.

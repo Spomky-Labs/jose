@@ -9,14 +9,14 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
 interface CheckerManagerInterface
 {
     /**
-     * @param \SpomkyLabs\Jose\Checker\CheckerInterface $checker
+     * @param \Jose\Checker\CheckerInterface $checker
      *
      * @return self
      */

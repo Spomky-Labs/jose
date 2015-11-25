@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -28,7 +28,5 @@ class CriticalChecker implements CheckerInterface
                 }
             }
         }
-
-        return $this;
     }
 }

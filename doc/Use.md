@@ -36,7 +36,7 @@ If you want to sign data, you must initialize:
 First, you must create a [signature instruction](object/signature_instruction.md) for each signature you want to create:
 
 ```php
-use SpomkyLabs\Jose\SignatureInstruction;
+use Jose\SignatureInstruction;
 
 $instruction1 = new SignatureInstruction();
 $instruction1->setProtectedHeader(['alg'=>'HS512'])
@@ -60,11 +60,11 @@ $output = $signer->sign($input, $instructions);
 
 The output depends on the output format you set and the number of instructions. It could be:
 
-| Output Mode \ Number of instruction |   1    |   2+  |
-|-------------------------------------|--------|-------|
-| Compact JSON Serialization          | string | array |
-| Flattened JSON Serialization        | string | array |
-| JSON Serialization                  | string | string|
+| Output Mode \ Number of instruction |   1    |       2+        |
+|-------------------------------------|--------|-----------------|
+| Compact JSON Serialization          | string | not authorized  |
+| Flattened JSON Serialization        | string | not authorized  |
+| JSON Serialization                  | string | array or string |
 
 By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
 
@@ -101,7 +101,7 @@ If you want to encrypt data, you must initialize:
 First, you must create an [encryption instruction](object/encryption_instruction.md) for each encryption you want to create:
 
 ```php
-use SpomkyLabs\Jose\EncryptionInstruction;
+use Jose\EncryptionInstruction;
 
 $instruction1 = new EncryptionInstruction();
 $instruction1->setRecipientKey($first_recipient_public_key)
@@ -136,11 +136,11 @@ $output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $
 
 The output depends on the output format you set and the number of instructions. It could be:
 
-| Output Mode \ Number of instruction |   1    |   2+  |
-|-------------------------------------|--------|-------|
-| Compact JSON Serialization          | string | array |
-| Flattened JSON Serialization        | string | array |
-| JSON Serialization                  | string | string|
+| Output Mode \ Number of instruction |   1    |       2+        |
+|-------------------------------------|--------|-----------------|
+| Compact JSON Serialization          | string | not authorized  |
+| Flattened JSON Serialization        | string | not authorized  |
+| JSON Serialization                  | string | array or string |
 
 By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
 

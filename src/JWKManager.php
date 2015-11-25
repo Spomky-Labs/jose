@@ -9,14 +9,45 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
-use Jose\JWKManager as Base;
+use Base64Url\Base64Url;
+use Jose\Finder\JWKFinderInterface;
 
 /**
  */
-class JWKManager extends Base
+class JWKManager implements JWKManagerInterface
 {
+    /**
+     * @var \Jose\Finder\JWKFinderInterface[]
+     */
+    private $finders = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addJWKFinder(JWKFinderInterface $finder)
+    {
+        $this->finders[] = $finder;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findJWK(array $header)
+    {
+        foreach( $this->finders as $finder) {
+            $result = $finder->findJWK($header);
+            if ($result instanceof JWKInterface) {
+                return $result;
+            } elseif (is_array($result)) {
+                return $this->createJWK($result);
+            }
+        }
+    }
+
     /**
      * {@inheritdoc}
      */

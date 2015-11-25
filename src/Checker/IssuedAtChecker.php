@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Checker;
+namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
@@ -24,7 +24,5 @@ class IssuedAtChecker implements CheckerInterface
         if (null !== $iat && time() < $iat) {
             throw new \Exception('The JWT is issued in the futur.');
         }
-
-        return $this;
     }
 }

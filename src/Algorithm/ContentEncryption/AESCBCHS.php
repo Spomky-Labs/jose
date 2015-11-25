@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\ContentEncryption;
+namespace Jose\Algorithm\ContentEncryption;
 
 use Jose\Operation\ContentEncryptionInterface;
 

@@ -9,11 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test\RFC7520;
+namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use SpomkyLabs\Jose\Algorithm\Signature\ES512;
-use SpomkyLabs\Jose\JWK;
+use Jose\Algorithm\Signature\ES512;
+use Jose\JWK;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.3

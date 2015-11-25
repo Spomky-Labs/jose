@@ -9,23 +9,28 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Jose\JWKInterface;
-use Jose\JWKSet as Base;
+use Jose\JWKSetInterface;
 
 /**
  * Class JWKSet.
  */
-class JWKSet extends Base
+class JWKSet implements JWKSetInterface
 {
+    /**
+     * @var int
+     */
+    private $position = 0;
+
     /**
      * @var array
      */
     protected $keys = [];
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getKeys()
     {
@@ -33,11 +38,7 @@ class JWKSet extends Base
     }
 
     /**
-     * Set keys in the Key.
-     *
-     * @param \Jose\JWKInterface $key A JWKInterface objects
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function addKey(JWKInterface $key)
     {
@@ -47,9 +48,7 @@ class JWKSet extends Base
     }
 
     /**
-     * @param string $key
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function removeKey($key)
     {
@@ -58,5 +57,97 @@ class JWKSet extends Base
         }
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return ['keys' => array_values($this->getKeys())];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function count($mode = COUNT_NORMAL)
+    {
+        return count($this->getKeys(), $mode);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        $keys = $this->getKeys();
+
+        return isset($keys[$offset]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        $keys = $this->getKeys();
+
+        return isset($keys[$offset]) ? $keys[$offset] : null;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $key)
+    {
+        $this->addKey($key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        $this->removeKey($offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function current()
+    {
+        return $this->offsetGet($this->position);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function key()
+    {
+        return $this->position;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function next()
+    {
+        $this->position++;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rewind()
+    {
+        $this->position = 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function valid()
+    {
+        return $this->current() instanceof JWKInterface;
     }
 }

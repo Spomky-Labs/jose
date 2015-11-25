@@ -9,14 +9,14 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
-use Jose\JWE as Base;
+use Jose\JWEInterface;
 
 /**
  * Class JWE.
  */
-class JWE extends Base
+class JWE extends JWT implements JWEInterface
 {
     use JWable;
 
@@ -44,6 +44,22 @@ class JWE extends Base
      * @var string|null
      */
     private $tag;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEncryptionAlgorithm()
+    {
+        return $this->getHeaderValue('enc');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getZip()
+    {
+        return $this->getHeaderValue('zip');
+    }
 
     /**
      * {@inheritdoc}

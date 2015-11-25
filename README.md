@@ -62,8 +62,7 @@ Please consider the following optional requirements:
 
 It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` with all algorithms.
 
-Some tests on `HHVM` were skipped because [PHP Crypto](https://github.com/bukka/php-crypto) is not yet supported.
-At the moment, you will not be able to use GCM algorithms on this platform.
+Some tests on `HHVM` were skipped because PECL is not supported on Travis-CI with `HHVM`. Anyway, this library should work fine.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 

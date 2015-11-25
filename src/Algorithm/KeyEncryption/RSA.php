@@ -9,12 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+namespace Jose\Algorithm\KeyEncryption;
 
 use Jose\JWKInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
-use SpomkyLabs\Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\KeyConverter;
 
 /**
  * Class RSA.
@@ -31,7 +31,11 @@ abstract class RSA implements KeyEncryptionInterface
         $rsa = $this->getRsaObject($values);
 
         try {
-            return $rsa->encrypt($cek);
+            $encrypted = @$rsa->encrypt($cek);
+            if (false === $encrypted) {
+                return;
+            }
+            return $encrypted;
         } catch (\Exception $e) {
             //We catch the exception to return null.
             return;
@@ -48,7 +52,11 @@ abstract class RSA implements KeyEncryptionInterface
         $rsa = $this->getRsaObject($values);
 
         try {
-            return $rsa->decrypt($encrypted_key);
+            $decrypted = @$rsa->decrypt($encrypted_key);
+            if (false === $decrypted) {
+                return;
+            }
+            return $decrypted;
         } catch (\Exception $e) {
             //We catch the exception to return null.
             return;

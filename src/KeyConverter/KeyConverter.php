@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\KeyConverter;
+namespace Jose\KeyConverter;
 
 use Base64Url\Base64Url;
 use phpseclib\Crypt\RSA;

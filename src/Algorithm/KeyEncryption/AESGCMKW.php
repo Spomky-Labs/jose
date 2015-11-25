@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Algorithm\KeyEncryption;
+namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Crypto\Cipher;

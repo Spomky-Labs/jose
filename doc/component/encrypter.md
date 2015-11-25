@@ -10,7 +10,7 @@ To use our `Encrypter` object, you need to inject:
 * a [Payload Converter Manager](payload_converter_manager.md).
 
 ```php
-use SpomkyLabs\Jose\Encrypter;
+use Jose\Encrypter;
 
 $encrypter = new Encrypter();
 $encrypter->setJWTManager($my_jwt_manager)

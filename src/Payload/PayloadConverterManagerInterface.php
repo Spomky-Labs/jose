@@ -9,12 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose\Payload;
+namespace Jose\Payload;
 
 interface PayloadConverterManagerInterface
 {
     /**
-     * @param \SpomkyLabs\Jose\Payload\PayloadConverterInterface $converter
+     * @param \Jose\Payload\PayloadConverterInterface $converter
      *
      * @return self
      */

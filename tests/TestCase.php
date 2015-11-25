@@ -9,66 +9,73 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Test;
+namespace Jose\Test;
 
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128CBCHS256;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A128GCM;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192CBCHS384;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A192GCM;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256CBCHS512;
-use SpomkyLabs\Jose\Algorithm\ContentEncryption\A256GCM;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128GCMKW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192GCMKW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256GCMKW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\A256KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\Dir;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHES;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\ECDHESA256KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSA15;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP;
-use SpomkyLabs\Jose\Algorithm\KeyEncryption\RSAOAEP256;
-use SpomkyLabs\Jose\Algorithm\Signature\ES256;
-use SpomkyLabs\Jose\Algorithm\Signature\ES384;
-use SpomkyLabs\Jose\Algorithm\Signature\ES512;
-use SpomkyLabs\Jose\Algorithm\Signature\HS256;
-use SpomkyLabs\Jose\Algorithm\Signature\HS384;
-use SpomkyLabs\Jose\Algorithm\Signature\HS512;
-use SpomkyLabs\Jose\Algorithm\Signature\None;
-use SpomkyLabs\Jose\Algorithm\Signature\PS256;
-use SpomkyLabs\Jose\Algorithm\Signature\PS384;
-use SpomkyLabs\Jose\Algorithm\Signature\PS512;
-use SpomkyLabs\Jose\Algorithm\Signature\RS256;
-use SpomkyLabs\Jose\Algorithm\Signature\RS384;
-use SpomkyLabs\Jose\Algorithm\Signature\RS512;
-use SpomkyLabs\Jose\Checker\AudienceChecker;
-use SpomkyLabs\Jose\Checker\CheckerManager;
-use SpomkyLabs\Jose\Checker\CriticalChecker;
-use SpomkyLabs\Jose\Checker\ExpirationChecker;
-use SpomkyLabs\Jose\Checker\IssuedAtChecker;
-use SpomkyLabs\Jose\Checker\NotBeforeChecker;
-use SpomkyLabs\Jose\Compression\CompressionManager;
-use SpomkyLabs\Jose\Compression\Deflate;
-use SpomkyLabs\Jose\Compression\GZip;
-use SpomkyLabs\Jose\Compression\ZLib;
-use SpomkyLabs\Jose\Encrypter;
-use SpomkyLabs\Jose\JWAManager;
-use SpomkyLabs\Jose\JWTManager;
-use SpomkyLabs\Jose\Loader;
-use SpomkyLabs\Jose\Payload\JWKConverter;
-use SpomkyLabs\Jose\Payload\JWKSetConverter;
-use SpomkyLabs\Jose\Payload\PayloadConverterManager;
-use SpomkyLabs\Jose\Signer;
-use SpomkyLabs\Test\Stub\IssuerChecker;
-use SpomkyLabs\Test\Stub\JWKManager;
-use SpomkyLabs\Test\Stub\JWKSetManager;
-use SpomkyLabs\Test\Stub\SubjectChecker;
+use Jose\Algorithm\ContentEncryption\A128CBCHS256;
+use Jose\Algorithm\ContentEncryption\A128GCM;
+use Jose\Algorithm\ContentEncryption\A192CBCHS384;
+use Jose\Algorithm\ContentEncryption\A192GCM;
+use Jose\Algorithm\ContentEncryption\A256CBCHS512;
+use Jose\Algorithm\ContentEncryption\A256GCM;
+use Jose\Algorithm\KeyEncryption\A128GCMKW;
+use Jose\Algorithm\KeyEncryption\A128KW;
+use Jose\Algorithm\KeyEncryption\A192GCMKW;
+use Jose\Algorithm\KeyEncryption\A192KW;
+use Jose\Algorithm\KeyEncryption\A256GCMKW;
+use Jose\Algorithm\KeyEncryption\A256KW;
+use Jose\Algorithm\KeyEncryption\Dir;
+use Jose\Algorithm\KeyEncryption\ECDHES;
+use Jose\Algorithm\KeyEncryption\ECDHESA128KW;
+use Jose\Algorithm\KeyEncryption\ECDHESA192KW;
+use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
+use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
+use Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
+use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
+use Jose\Algorithm\KeyEncryption\RSA15;
+use Jose\Algorithm\KeyEncryption\RSAOAEP;
+use Jose\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\Algorithm\Signature\ES256;
+use Jose\Algorithm\Signature\ES384;
+use Jose\Algorithm\Signature\ES512;
+use Jose\Algorithm\Signature\HS256;
+use Jose\Algorithm\Signature\HS384;
+use Jose\Algorithm\Signature\HS512;
+use Jose\Algorithm\Signature\None;
+use Jose\Algorithm\Signature\PS256;
+use Jose\Algorithm\Signature\PS384;
+use Jose\Algorithm\Signature\PS512;
+use Jose\Algorithm\Signature\RS256;
+use Jose\Algorithm\Signature\RS384;
+use Jose\Algorithm\Signature\RS512;
+use Jose\Checker\AudienceChecker;
+use Jose\Checker\CheckerManager;
+use Jose\Checker\CriticalChecker;
+use Jose\Checker\ExpirationChecker;
+use Jose\Checker\IssuedAtChecker;
+use Jose\Checker\NotBeforeChecker;
+use Jose\Compression\CompressionManager;
+use Jose\Compression\Deflate;
+use Jose\Compression\GZip;
+use Jose\Compression\ZLib;
+use Jose\Encrypter;
+use Jose\Finder\JWKFinder;
+use Jose\Finder\JWUFinder;
+use Jose\Finder\X5CFinder;
+use Jose\Finder\X5UFinder;
+use Jose\JWAManager;
+use Jose\JWKManager;
+use Jose\JWKSetManager;
+use Jose\JWTManager;
+use Jose\Loader;
+use Jose\Payload\JWKConverter;
+use Jose\Payload\JWKSetConverter;
+use Jose\Payload\PayloadConverterManager;
+use Jose\Signer;
+use Jose\Test\Stub\AlgorithmFinder;
+use Jose\Test\Stub\APVFinder;
+use Jose\Test\Stub\IssuerChecker;
+use Jose\Test\Stub\KIDFinder;
+use Jose\Test\Stub\SubjectChecker;
 
 /**
  * Class TestCase.
@@ -120,7 +127,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Checker\CheckerManagerInterface
+     * @return \Jose\Checker\CheckerManagerInterface
      */
     protected function getCheckerManager()
     {
@@ -138,7 +145,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Payload\PayloadConverterManagerInterface
+     * @return \Jose\Payload\PayloadConverterManagerInterface
      */
     protected function getPayloadConverterManager()
     {
@@ -150,7 +157,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \SpomkyLabs\Jose\JWTManager
+     * @return \Jose\JWTManager
      */
     protected function getJWTManager()
     {
@@ -160,7 +167,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \SpomkyLabs\Jose\Compression\CompressionManager
+     * @return \Jose\Compression\CompressionManager
      */
     protected function getCompressionManager()
     {
@@ -173,28 +180,35 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \SpomkyLabs\Test\Stub\JWKManager
+     * @return \Jose\JWKManager
      */
     protected function getJWKManager()
     {
         $key_manager = new JWKManager();
+        $key_manager->addJWKFinder(new JWKFinder())
+            ->addJWKFinder(new X5CFinder())
+            ->addJWKFinder(new APVFinder())
+            ->addJWKFinder(new KIDFinder());
 
         return $key_manager;
     }
 
     /**
-     * @return \SpomkyLabs\Test\Stub\JWKSetManager
+     * @return \Jose\JWKSetManager
      */
     protected function getJWKSetManager()
     {
         $keyset_manager = new JWKSetManager();
-        $keyset_manager->setJWKManager($this->getJWKManager());
+        $keyset_manager->addJWKSetFinder(new JWUFinder())
+            ->addJWKSetFinder(new X5UFinder())
+            ->addJWKSetFinder(new AlgorithmFinder())
+            ->setJWKManager($this->getJWKManager());
 
         return $keyset_manager;
     }
 
     /**
-     * @return \SpomkyLabs\Jose\JWAManager
+     * @return \Jose\JWAManager
      */
     protected function getJWAManager()
     {

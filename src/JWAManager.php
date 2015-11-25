@@ -9,20 +9,28 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace SpomkyLabs\Jose;
+namespace Jose;
 
 use Jose\JWAInterface;
-use Jose\JWAManager as Base;
+use Jose\JWAManagerInterface;
 
 /**
  * Class JWAManager.
  */
-class JWAManager extends Base
+class JWAManager implements JWAManagerInterface
 {
     /**
      * @var array
      */
     protected $algorithms = [];
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isAlgorithmSupported($algorithm)
+    {
+        return null !== $this->getAlgorithm($algorithm);
+    }
 
     /**
      * {@inheritdoc}
