@@ -61,7 +61,7 @@ class KeyConverter
     }
 
     /**
-     * @param   $res
+     * @param resource $res
      *
      * @throws \Exception
      *
@@ -241,7 +241,7 @@ class KeyConverter
     /**
      * @param $key
      *
-     * @return mixed
+     * @return string
      */
     private static function getElement($key)
     {
@@ -264,7 +264,7 @@ class KeyConverter
 
     /**
      * @param string      $pem
-     * @param array       $matches
+     * @param string[]    $matches
      * @param null|string $password
      *
      * @return string
