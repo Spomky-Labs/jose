@@ -50,6 +50,7 @@ class RSAKey extends Sequence
         } else {
             throw new \InvalidArgumentException('Unsupported input');
         }
+        $this->private = null !== $this->d;
     }
 
     /**
