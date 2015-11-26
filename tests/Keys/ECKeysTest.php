@@ -60,7 +60,7 @@ class ECKeysTest extends TestCase
             'x'   => 'vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U',
             'y'   => 'oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE',
         ]);
-        
+
         $ec_key = new ECKey($details);
 
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $pem), $ec_key->toPEM());
