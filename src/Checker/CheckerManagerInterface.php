@@ -17,8 +17,6 @@ interface CheckerManagerInterface
 {
     /**
      * @param \Jose\Checker\CheckerInterface $checker
-     *
-     * @return self
      */
     public function addChecker(CheckerInterface $checker);
 
@@ -26,8 +24,6 @@ interface CheckerManagerInterface
      * @param \Jose\JWTInterface $jwt
      *
      * @throws \Exception If verification failed
-     *
-     * @return self
      */
     public function checkJWT(JWTInterface $jwt);
 }

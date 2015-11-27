@@ -20,8 +20,6 @@ interface JWKSetManagerInterface
 {
     /**
      * @param \Jose\Finder\JWKSetFinderInterface $finder
-     *
-     * @return self
      */
     public function addJWKSetFinder(JWKSetFinderInterface $finder);
 

@@ -27,8 +27,6 @@ interface CompressionManagerInterface
 
     /**
      * @param \Jose\Compression\CompressionInterface $compression_algorithm
-     *
-     * @return self
      */
     public function addCompressionAlgorithm(CompressionInterface $compression_algorithm);
 }

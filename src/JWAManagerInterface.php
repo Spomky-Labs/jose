@@ -36,4 +36,16 @@ interface JWAManagerInterface
      * @return string[] Returns the list of names of supported algorithms
      */
     public function listAlgorithms();
+
+    /**
+     * @param \Jose\JWAInterface $algorithm
+     */
+    public function addAlgorithm(JWAInterface $algorithm);
+
+    /**
+     * @param string $algorithm
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function removeAlgorithm($algorithm);
 }

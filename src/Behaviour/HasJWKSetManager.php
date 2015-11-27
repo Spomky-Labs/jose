@@ -22,14 +22,10 @@ trait HasJWKSetManager
 
     /**
      * @param \Jose\JWKSetManagerInterface $jwkset_manager
-     *
-     * @return self
      */
     private function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
     {
         $this->jwkset_manager = $jwkset_manager;
-
-        return $this;
     }
 
     /**

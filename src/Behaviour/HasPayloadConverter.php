@@ -22,14 +22,10 @@ trait HasPayloadConverter
 
     /**
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter
-     *
-     * @return self
      */
     private function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
     {
         $this->payload_converter = $payload_converter;
-
-        return $this;
     }
 
     /**

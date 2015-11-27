@@ -22,14 +22,10 @@ trait HasCheckerManager
 
     /**
      * @param \Jose\Checker\CheckerManagerInterface $checker_manager
-     *
-     * @return self
      */
     private function setCheckerManager(CheckerManagerInterface $checker_manager)
     {
         $this->checker_manager = $checker_manager;
-
-        return $this;
     }
 
     /**

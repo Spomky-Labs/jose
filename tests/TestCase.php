@@ -188,10 +188,10 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getJWKManager()
     {
         $key_manager = new JWKManager();
-        $key_manager->addJWKFinder(new JWKFinder())
-            ->addJWKFinder(new X5CFinder())
-            ->addJWKFinder(new APVFinder())
-            ->addJWKFinder(new KIDFinder());
+        $key_manager->addJWKFinder(new JWKFinder());
+        $key_manager->addJWKFinder(new X5CFinder());
+        $key_manager->addJWKFinder(new APVFinder());
+        $key_manager->addJWKFinder(new KIDFinder());
 
         return $key_manager;
     }
@@ -204,9 +204,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         $keyset_manager = new JWKSetManager(
             $this->getJWKManager()
         );
-        $keyset_manager->addJWKSetFinder(new JKUFinder())
-            ->addJWKSetFinder(new X5UFinder())
-            ->addJWKSetFinder(new AlgorithmFinder());
+        $keyset_manager->addJWKSetFinder(new JKUFinder());
+        $keyset_manager->addJWKSetFinder(new X5UFinder());
+        $keyset_manager->addJWKSetFinder(new AlgorithmFinder());
 
         return $keyset_manager;
     }
@@ -217,46 +217,46 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getJWAManager()
     {
         $key_manager = new JWAManager();
-        $key_manager->addAlgorithm(new HS256())
-                    ->addAlgorithm(new HS384())
-                    ->addAlgorithm(new HS512())
-                    ->addAlgorithm(new RS256())
-                    ->addAlgorithm(new RS384())
-                    ->addAlgorithm(new RS512())
-                    ->addAlgorithm(new PS256())
-                    ->addAlgorithm(new PS384())
-                    ->addAlgorithm(new PS512())
-                    ->addAlgorithm(new None())
-                    ->addAlgorithm(new ES256())
-                    ->addAlgorithm(new ES384())
-                    ->addAlgorithm(new ES512())
+        $key_manager->addAlgorithm(new HS256());
+        $key_manager->addAlgorithm(new HS384());
+        $key_manager->addAlgorithm(new HS512());
+        $key_manager->addAlgorithm(new RS256());
+        $key_manager->addAlgorithm(new RS384());
+        $key_manager->addAlgorithm(new RS512());
+        $key_manager->addAlgorithm(new PS256());
+        $key_manager->addAlgorithm(new PS384());
+        $key_manager->addAlgorithm(new PS512());
+        $key_manager->addAlgorithm(new None());
+        $key_manager->addAlgorithm(new ES256());
+        $key_manager->addAlgorithm(new ES384());
+        $key_manager->addAlgorithm(new ES512());
 
-                    ->addAlgorithm(new A128CBCHS256())
-                    ->addAlgorithm(new A192CBCHS384())
-                    ->addAlgorithm(new A256CBCHS512())
+        $key_manager->addAlgorithm(new A128CBCHS256());
+        $key_manager->addAlgorithm(new A192CBCHS384());
+        $key_manager->addAlgorithm(new A256CBCHS512());
 
-                    ->addAlgorithm(new A128KW())
-                    ->addAlgorithm(new A192KW())
-                    ->addAlgorithm(new A256KW())
-                    ->addAlgorithm(new Dir())
-                    ->addAlgorithm(new ECDHES())
-                    ->addAlgorithm(new ECDHESA128KW())
-                    ->addAlgorithm(new ECDHESA192KW())
-                    ->addAlgorithm(new ECDHESA256KW())
-                    ->addAlgorithm(new PBES2HS256A128KW())
-                    ->addAlgorithm(new PBES2HS384A192KW())
-                    ->addAlgorithm(new PBES2HS512A256KW())
-                    ->addAlgorithm(new RSA15())
-                    ->addAlgorithm(new RSAOAEP())
-                    ->addAlgorithm(new RSAOAEP256());
+        $key_manager->addAlgorithm(new A128KW());
+        $key_manager->addAlgorithm(new A192KW());
+        $key_manager->addAlgorithm(new A256KW());
+        $key_manager->addAlgorithm(new Dir());
+        $key_manager->addAlgorithm(new ECDHES());
+        $key_manager->addAlgorithm(new ECDHESA128KW());
+        $key_manager->addAlgorithm(new ECDHESA192KW());
+        $key_manager->addAlgorithm(new ECDHESA256KW());
+        $key_manager->addAlgorithm(new PBES2HS256A128KW());
+        $key_manager->addAlgorithm(new PBES2HS384A192KW());
+        $key_manager->addAlgorithm(new PBES2HS512A256KW());
+        $key_manager->addAlgorithm(new RSA15());
+        $key_manager->addAlgorithm(new RSAOAEP());
+        $key_manager->addAlgorithm(new RSAOAEP256());
 
         if ($this->isCryptoExtensionAvailable()) {
-            $key_manager->addAlgorithm(new A128GCM())
-                        ->addAlgorithm(new A192GCM())
-                        ->addAlgorithm(new A256GCM())
-                        ->addAlgorithm(new A128GCMKW())
-                        ->addAlgorithm(new A192GCMKW())
-                        ->addAlgorithm(new A256GCMKW());
+            $key_manager->addAlgorithm(new A128GCM());
+            $key_manager->addAlgorithm(new A192GCM());
+            $key_manager->addAlgorithm(new A256GCM());
+            $key_manager->addAlgorithm(new A128GCMKW());
+            $key_manager->addAlgorithm(new A192GCMKW());
+            $key_manager->addAlgorithm(new A256GCMKW());
         }
 
         return $key_manager;

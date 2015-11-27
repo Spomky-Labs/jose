@@ -24,17 +24,13 @@ interface JWKSetInterface extends \Countable, \ArrayAccess, \Iterator, \JsonSeri
      * Add key in the key set.
      *
      * @param \Jose\JWKInterface A key to store in the key set
-     *
-     * @return self
      */
     public function addKey(JWKInterface $key);
 
     /**
      * Remove key from the key set.
      *
-     * @param int Key to remove from the key set
-     *
-     * @return self
+     * @param int $key Key to remove from the key set
      */
     public function removeKey($key);
 }

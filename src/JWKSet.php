@@ -40,8 +40,6 @@ final class JWKSet implements JWKSetInterface
     public function addKey(JWKInterface $key)
     {
         $this->keys[] = $key;
-
-        return $this;
     }
 
     /**
@@ -52,8 +50,6 @@ final class JWKSet implements JWKSetInterface
         if (isset($this->keys[$key])) {
             unset($this->keys[$key]);
         }
-
-        return $this;
     }
 
     /**

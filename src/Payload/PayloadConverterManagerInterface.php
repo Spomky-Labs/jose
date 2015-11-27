@@ -15,8 +15,6 @@ interface PayloadConverterManagerInterface
 {
     /**
      * @param \Jose\Payload\PayloadConverterInterface $converter
-     *
-     * @return self
      */
     public function addConverter(PayloadConverterInterface $converter);
 

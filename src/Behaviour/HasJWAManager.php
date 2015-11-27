@@ -22,14 +22,10 @@ trait HasJWAManager
 
     /**
      * @param \Jose\JWAManagerInterface $jwa_manager
-     *
-     * @return self
      */
     private function setJWAManager(JWAManagerInterface $jwa_manager)
     {
         $this->jwa_manager = $jwa_manager;
-
-        return $this;
     }
 
     /**

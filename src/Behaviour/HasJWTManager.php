@@ -22,14 +22,10 @@ trait HasJWTManager
 
     /**
      * @param \Jose\JWTManagerInterface $jwt_manager
-     *
-     * @return self
      */
     private function setJWTManager(JWTManagerInterface $jwt_manager)
     {
         $this->jwt_manager = $jwt_manager;
-
-        return $this;
     }
 
     /**

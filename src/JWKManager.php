@@ -28,8 +28,6 @@ final class JWKManager implements JWKManagerInterface
     public function addJWKFinder(JWKFinderInterface $finder)
     {
         $this->finders[] = $finder;
-
-        return $this;
     }
 
     /**

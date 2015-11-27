@@ -22,14 +22,10 @@ trait HasCompressionManager
 
     /**
      * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     *
-     * @return self
      */
     private function setCompressionManager(CompressionManagerInterface $compression_manager)
     {
         $this->compression_manager = $compression_manager;
-
-        return $this;
     }
 
     /**

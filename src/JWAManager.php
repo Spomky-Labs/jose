@@ -54,23 +54,17 @@ final class JWAManager implements JWAManagerInterface
     }
 
     /**
-     * @param JWAInterface $algorithm
-     *
-     * @return self
+     * {@inheritdoc}
      */
     public function addAlgorithm(JWAInterface $algorithm)
     {
         if (!$this->isAlgorithmSupported($algorithm->getAlgorithmName())) {
             $this->algorithms[$algorithm->getAlgorithmName()] = $algorithm;
         }
-
-        return $this;
     }
 
     /**
-     * @param string $algorithm
-     *
-     * @return self
+     * [@inheritdoc}
      */
     public function removeAlgorithm($algorithm)
     {
@@ -84,7 +78,5 @@ final class JWAManager implements JWAManagerInterface
         if (array_key_exists($name, $this->algorithms)) {
             unset($this->algorithms[$name]);
         }
-
-        return $this;
     }
 }

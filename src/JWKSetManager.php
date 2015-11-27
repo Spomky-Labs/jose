@@ -41,8 +41,6 @@ final class JWKSetManager implements JWKSetManagerInterface
     public function addJWKSetFinder(JWKSetFinderInterface $finder)
     {
         $this->finders[] = $finder;
-
-        return $this;
     }
 
     /**
