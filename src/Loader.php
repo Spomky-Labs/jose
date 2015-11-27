@@ -20,12 +20,15 @@ use Jose\Behaviour\HasJWKSetManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Checker\CheckerManagerInterface;
+use Jose\Compression\CompressionManagerInterface;
 use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
 use Jose\Operation\SignatureInterface;
+use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
 /**
@@ -42,6 +45,35 @@ class Loader implements LoaderInterface
     use HasCheckerManager;
     use HasPayloadConverter;
     use HasCompressionManager;
+
+    /**
+     * Loader constructor.
+     *
+     * @param \Jose\JWTManagerInterface                      $jwt_manager
+     * @param \Jose\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\JWKManagerInterface                      $jwk_manager
+     * @param \Jose\JWKSetManagerInterface                   $jwkset_manager
+     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
+     * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
+     * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
+     */
+    public function __construct(
+        JWTManagerInterface $jwt_manager,
+        JWAManagerInterface $jwa_manager,
+        JWKManagerInterface $jwk_manager,
+        JWKSetManagerInterface $jwkset_manager,
+        PayloadConverterManagerInterface $payload_converter_manager,
+        CompressionManagerInterface $compression_manager,
+        CheckerManagerInterface $checker_manager)
+    {
+        $this->setJWTManager($jwt_manager);
+        $this->setJWAManager($jwa_manager);
+        $this->setJWKManager($jwk_manager);
+        $this->setJWKSetManager($jwkset_manager);
+        $this->setPayloadConverter($payload_converter_manager);
+        $this->setCompressionManager($compression_manager);
+        $this->setCheckerManager($checker_manager);
+    }
 
     /**
      * {@inheritdoc}

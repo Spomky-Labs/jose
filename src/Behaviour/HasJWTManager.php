@@ -25,7 +25,7 @@ trait HasJWTManager
      *
      * @return self
      */
-    public function setJWTManager(JWTManagerInterface $jwt_manager)
+    private function setJWTManager(JWTManagerInterface $jwt_manager)
     {
         $this->jwt_manager = $jwt_manager;
 
@@ -35,7 +35,7 @@ trait HasJWTManager
     /**
      * @return \Jose\JWTManagerInterface
      */
-    public function getJWTManager()
+    private function getJWTManager()
     {
         return $this->jwt_manager;
     }

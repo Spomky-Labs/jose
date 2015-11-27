@@ -237,8 +237,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);
@@ -269,9 +268,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key)
-            ->setProtectedHeader([
+        $instruction = new SignatureInstruction($key, [
                 'alg' => 'RS256',
                 'jwk' => [
                     'kty' => 'RSA',
@@ -319,8 +316,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);
@@ -360,8 +356,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);
@@ -404,8 +399,7 @@ class RSASignatureTest extends TestCase
                 'qi'      => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);
@@ -444,8 +438,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);
@@ -484,8 +477,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($key);
+        $instruction = new SignatureInstruction($key);
 
         $signer = $this->getSigner();
         $signature = $signer->sign($input, [$instruction]);

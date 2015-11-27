@@ -25,7 +25,7 @@ trait HasJWAManager
      *
      * @return self
      */
-    public function setJWAManager(JWAManagerInterface $jwa_manager)
+    private function setJWAManager(JWAManagerInterface $jwa_manager)
     {
         $this->jwa_manager = $jwa_manager;
 
@@ -35,7 +35,7 @@ trait HasJWAManager
     /**
      * @return \Jose\JWAManagerInterface
      */
-    public function getJWAManager()
+    private function getJWAManager()
     {
         return $this->jwa_manager;
     }

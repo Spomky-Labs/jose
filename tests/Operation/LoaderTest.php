@@ -29,9 +29,7 @@ class LoaderTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-            ->setProtectedHeader(['cty' => 'jwk+json', 'alg'   => 'HS512']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['cty' => 'jwk+json', 'alg'   => 'HS512']);
 
         $signature = $signer->sign('Foo, Bar', [$instruction1], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
         $this->assertTrue(is_string($signature));
@@ -48,9 +46,7 @@ class LoaderTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-            ->setProtectedHeader(['cty' => 'jwkset+json', 'alg'   => 'HS512']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['cty' => 'jwkset+json', 'alg'   => 'HS512']);
 
         $signature = $signer->sign('Foo, Bar', [$instruction1], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
         $this->assertTrue(is_string($signature));

@@ -17,11 +17,13 @@ use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Compression\CompressionManagerInterface;
 use Jose\Operation\ContentEncryptionInterface;
 use Jose\Operation\DirectEncryptionInterface;
 use Jose\Operation\KeyAgreementInterface;
 use Jose\Operation\KeyAgreementWrappingInterface;
 use Jose\Operation\KeyEncryptionInterface;
+use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
 /**
@@ -33,6 +35,26 @@ class Encrypter implements EncrypterInterface
     use HasJWTManager;
     use HasPayloadConverter;
     use HasCompressionManager;
+
+    /**
+     * Encrypter constructor.
+     *
+     * @param \Jose\JWTManagerInterface                      $jwt_manager
+     * @param \Jose\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
+     * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
+     */
+    public function __construct(
+        JWTManagerInterface $jwt_manager,
+        JWAManagerInterface $jwa_manager,
+        PayloadConverterManagerInterface $payload_converter_manager,
+        CompressionManagerInterface $compression_manager)
+    {
+        $this->setJWTManager($jwt_manager);
+        $this->setJWAManager($jwa_manager);
+        $this->setPayloadConverter($payload_converter_manager);
+        $this->setCompressionManager($compression_manager);
+    }
 
     protected function createCEK($size)
     {

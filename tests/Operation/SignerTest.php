@@ -68,9 +68,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($this->getKey1())
-                    ->setProtectedHeader([]);
+        $instruction = new SignatureInstruction($this->getKey1());
 
         $signer->sign($input, [$instruction]);
     }
@@ -85,9 +83,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($this->getKey1())
-                    ->setProtectedHeader(['alg' => 'foo']);
+        $instruction = new SignatureInstruction($this->getKey1(), ['alg' => 'foo']);
 
         $signer->sign($input, [$instruction]);
     }
@@ -102,9 +98,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($this->getKey1())
-                    ->setProtectedHeader(['alg' => 'HS512']);
+        $instruction = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
 
         $signer->sign($input, [$instruction], 'foo_serialization');
     }
@@ -119,13 +113,9 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg' => 'HS512']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign($input, [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
 
@@ -155,13 +145,9 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg' => 'HS512']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signer->sign('FOO', [$instruction1, $instruction2], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
@@ -174,13 +160,9 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg' => 'HS512']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signer->sign('FOO', [$instruction1, $instruction2], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
     }
@@ -193,9 +175,7 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($this->getKey4())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction = new SignatureInstruction($this->getKey4(), ['alg' => 'RS512']);
 
         $signer->sign('FOO', [$instruction], JSONSerializationModes::JSON_SERIALIZATION);
     }
@@ -208,9 +188,7 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
 
-        $instruction = new SignatureInstruction();
-        $instruction->setKey($this->getKey4())
-                     ->setProtectedHeader(['alg' => 'PS512']);
+        $instruction = new SignatureInstruction($this->getKey4(), ['alg' => 'PS512']);
 
         $signer->sign('FOO', [$instruction], JSONSerializationModes::JSON_SERIALIZATION);
     }
@@ -223,10 +201,7 @@ class SignerTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg'   => 'HS512'])
-                     ->setUnprotectedHeader(['foo' => 'bar']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
 
         $signatures = $signer->sign(['baz', 'ban'], [$instruction1], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
@@ -250,14 +225,9 @@ class SignerTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg'   => 'HS512'])
-                     ->setUnprotectedHeader(['foo' => 'bar']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
         $this->assertTrue(is_string($signatures));
@@ -348,14 +318,9 @@ class SignerTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($this->getKey1())
-                     ->setProtectedHeader(['alg'   => 'HS512'])
-                     ->setUnprotectedHeader(['foo' => 'bar']);
+        $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
 
-        $instruction2 = new SignatureInstruction();
-        $instruction2->setKey($this->getKey2())
-                     ->setProtectedHeader(['alg' => 'RS512']);
+        $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign($this->getKeyset(), [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
         $this->assertTrue(is_string($signatures));

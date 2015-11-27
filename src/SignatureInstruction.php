@@ -17,7 +17,7 @@ namespace Jose;
 class SignatureInstruction implements SignatureInstructionInterface
 {
     /**
-     * @var null|\Jose\JWKInterface
+     * @var \Jose\JWKInterface
      */
     protected $key = null;
     /**
@@ -30,15 +30,17 @@ class SignatureInstruction implements SignatureInstructionInterface
     protected $unprotected_header = [];
 
     /**
-     * @param JWKInterface $key
+     * SignatureInstruction constructor.
      *
-     * @return self
+     * @param \Jose\JWKInterface $key
+     * @param array              $protected_header
+     * @param array              $unprotected_header
      */
-    public function setKey(JWKInterface $key)
+    public function __construct(JWKInterface $key, array $protected_header = [], array $unprotected_header = [])
     {
         $this->key = $key;
-
-        return $this;
+        $this->protected_header = $protected_header;
+        $this->unprotected_header = $unprotected_header;
     }
 
     /**
@@ -50,35 +52,11 @@ class SignatureInstruction implements SignatureInstructionInterface
     }
 
     /**
-     * @param array $protected_header
-     *
-     * @return self
-     */
-    public function setProtectedHeader(array $protected_header)
-    {
-        $this->protected_header = $protected_header;
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getProtectedHeader()
     {
         return $this->protected_header;
-    }
-
-    /**
-     * @param array $unprotected_header
-     *
-     * @return self
-     */
-    public function setUnprotectedHeader(array $unprotected_header)
-    {
-        $this->unprotected_header = $unprotected_header;
-
-        return $this;
     }
 
     /**

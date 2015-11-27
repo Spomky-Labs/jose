@@ -87,14 +87,15 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getLoader()
     {
-        $loader = new Loader();
-        $loader->setCompressionManager($this->getCompressionManager())
-               ->setJWTManager($this->getJWTManager())
-               ->setJWKManager($this->getJWKManager())
-               ->setJWKSetManager($this->getJWKSetManager())
-               ->setJWAManager($this->getJWAManager())
-               ->setCheckerManager($this->getCheckerManager())
-               ->setPayloadConverter($this->getPayloadConverterManager());
+        $loader = new Loader(
+            $this->getJWTManager(),
+            $this->getJWAManager(),
+            $this->getJWKManager(),
+            $this->getJWKSetManager(),
+            $this->getPayloadConverterManager(),
+            $this->getCompressionManager(),
+            $this->getCheckerManager()
+        );
 
         return $loader;
     }
@@ -104,10 +105,11 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getSigner()
     {
-        $signer = new Signer();
-        $signer->setJWTManager($this->getJWTManager())
-               ->setJWAManager($this->getJWAManager())
-               ->setPayloadConverter($this->getPayloadConverterManager());
+        $signer = new Signer(
+            $this->getJWTManager(),
+            $this->getJWAManager(),
+            $this->getPayloadConverterManager()
+        );
 
         return $signer;
     }
@@ -117,11 +119,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getEncrypter()
     {
-        $encrypter = new Encrypter();
-        $encrypter->setCompressionManager($this->getCompressionManager())
-                  ->setJWTManager($this->getJWTManager())
-                  ->setJWAManager($this->getJWAManager())
-                  ->setPayloadConverter($this->getPayloadConverterManager());
+        $encrypter = new Encrypter(
+            $this->getJWTManager(),
+            $this->getJWAManager(),
+            $this->getPayloadConverterManager(),
+            $this->getCompressionManager()
+        );
 
         return $encrypter;
     }
@@ -198,11 +201,12 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getJWKSetManager()
     {
-        $keyset_manager = new JWKSetManager();
+        $keyset_manager = new JWKSetManager(
+            $this->getJWKManager()
+        );
         $keyset_manager->addJWKSetFinder(new JKUFinder())
             ->addJWKSetFinder(new X5UFinder())
-            ->addJWKSetFinder(new AlgorithmFinder())
-            ->setJWKManager($this->getJWKManager());
+            ->addJWKSetFinder(new AlgorithmFinder());
 
         return $keyset_manager;
     }

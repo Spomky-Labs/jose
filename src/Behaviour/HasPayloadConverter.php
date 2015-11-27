@@ -25,7 +25,7 @@ trait HasPayloadConverter
      *
      * @return self
      */
-    public function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
+    private function setPayloadConverter(PayloadConverterManagerInterface $payload_converter)
     {
         $this->payload_converter = $payload_converter;
 
@@ -35,7 +35,7 @@ trait HasPayloadConverter
     /**
      * @return \Jose\Payload\PayloadConverterManagerInterface
      */
-    public function getPayloadConverter()
+    private function getPayloadConverter()
     {
         return $this->payload_converter;
     }

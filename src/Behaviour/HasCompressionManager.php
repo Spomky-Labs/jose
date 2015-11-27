@@ -25,7 +25,7 @@ trait HasCompressionManager
      *
      * @return self
      */
-    public function setCompressionManager(CompressionManagerInterface $compression_manager)
+    private function setCompressionManager(CompressionManagerInterface $compression_manager)
     {
         $this->compression_manager = $compression_manager;
 
@@ -35,7 +35,7 @@ trait HasCompressionManager
     /**
      * @return \Jose\Compression\CompressionManagerInterface
      */
-    public function getCompressionManager()
+    private function getCompressionManager()
     {
         return $this->compression_manager;
     }

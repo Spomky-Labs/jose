@@ -69,9 +69,7 @@ class NoneSignatureTest extends TestCase
             'kty' => 'none',
         ]);
 
-        $instruction1 = new SignatureInstruction();
-        $instruction1->setKey($jwk)
-                     ->setProtectedHeader(['alg' => 'none']);
+        $instruction1 = new SignatureInstruction($jwk, ['alg' => 'none']);
 
         $signer = $this->getSigner();
         $loader = $this->getLoader();

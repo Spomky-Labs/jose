@@ -21,6 +21,16 @@ class JWKSetManager implements JWKSetManagerInterface
     use HasJWKManager;
 
     /**
+     * JWKSetManager constructor.
+     *
+     * @param \Jose\JWKManagerInterface $jwk_manager
+     */
+    public function __construct(JWKManagerInterface $jwk_manager)
+    {
+        $this->setJWKManager($jwk_manager);
+    }
+
+    /**
      * @var \Jose\Finder\JWKSetFinderInterface[]
      */
     private $finders = [];

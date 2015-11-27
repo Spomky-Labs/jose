@@ -23,7 +23,7 @@ trait HasKeyChecker
      *
      * @return bool
      */
-    protected function checkKeyUsage(JWKInterface $key, $usage)
+    private function checkKeyUsage(JWKInterface $key, $usage)
     {
         $use = $key->getPublicKeyUse();
         $ops = $key->getKeyOperations();
@@ -90,7 +90,7 @@ trait HasKeyChecker
      *
      * @return bool
      */
-    protected function checkKeyAlgorithm(JWKInterface $key, $algorithm)
+    private function checkKeyAlgorithm(JWKInterface $key, $algorithm)
     {
         $alg = $key->getAlgorithm();
 

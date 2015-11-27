@@ -17,6 +17,7 @@ use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Operation\SignatureInterface;
+use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
 /**
@@ -27,6 +28,24 @@ class Signer implements SignerInterface
     use HasJWAManager;
     use HasJWTManager;
     use HasPayloadConverter;
+
+    /**
+     * Signer constructor.
+     *
+     * @param \Jose\JWTManagerInterface                      $jwt_manager
+     * @param \Jose\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
+     */
+    public function __construct(
+        JWTManagerInterface $jwt_manager,
+        JWAManagerInterface $jwa_manager,
+        PayloadConverterManagerInterface $payload_converter_manager
+    )
+    {
+        $this->setJWTManager($jwt_manager);
+        $this->setJWAManager($jwa_manager);
+        $this->setPayloadConverter($payload_converter_manager);
+    }
 
     /**
      * @param $input

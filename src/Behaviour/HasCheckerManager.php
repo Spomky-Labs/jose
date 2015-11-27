@@ -25,7 +25,7 @@ trait HasCheckerManager
      *
      * @return self
      */
-    public function setCheckerManager(CheckerManagerInterface $checker_manager)
+    private function setCheckerManager(CheckerManagerInterface $checker_manager)
     {
         $this->checker_manager = $checker_manager;
 
@@ -35,7 +35,7 @@ trait HasCheckerManager
     /**
      * @return \Jose\Checker\CheckerManagerInterface
      */
-    protected function getCheckerManager()
+    private function getCheckerManager()
     {
         return $this->checker_manager;
     }

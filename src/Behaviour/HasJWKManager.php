@@ -25,7 +25,7 @@ trait HasJWKManager
      *
      * @return self
      */
-    public function setJWKManager(JWKManagerInterface $jwk_manager)
+    private function setJWKManager(JWKManagerInterface $jwk_manager)
     {
         $this->jwk_manager = $jwk_manager;
 
@@ -35,7 +35,7 @@ trait HasJWKManager
     /**
      * @return \Jose\JWKManagerInterface
      */
-    public function getJWKManager()
+    private function getJWKManager()
     {
         return $this->jwk_manager;
     }
