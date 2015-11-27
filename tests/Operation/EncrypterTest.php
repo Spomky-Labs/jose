@@ -35,8 +35,7 @@ class EncrypterTest extends TestCase
         $input = new JWT();
         $input = $input->withPayload('FOO');
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypted = $encrypter->encrypt(
             $input,
@@ -69,8 +68,7 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypted = $encrypter->encrypt(
             $this->getKeyToEncrypt(),
@@ -104,8 +102,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypter->encrypt(
             'FOO',
@@ -125,14 +122,17 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction1 = new EncryptionInstruction();
-        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
-        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
-        $instruction1->setRecipientUnprotectedHeader(['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+        $instruction1 = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey(),
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
+        );
 
-        $instruction2 = new EncryptionInstruction();
-        $instruction2->setRecipientKey($this->getRSARecipientKey());
-        $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
+        $instruction2 = new EncryptionInstruction(
+            $this->getRSARecipientKey(),
+            null,
+            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
+        );
 
         $encrypter->encrypt(
             'Je suis Charlie',
@@ -150,14 +150,16 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction1 = new EncryptionInstruction();
-        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
-        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
-        $instruction1->setRecipientUnprotectedHeader(['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+        $instruction1 = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey(),
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
 
-        $instruction2 = new EncryptionInstruction();
-        $instruction2->setRecipientKey($this->getRSARecipientKey());
-        $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
+        $instruction2 = new EncryptionInstruction(
+            $this->getRSARecipientKey(),
+            null,
+            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
+        );
 
         $encrypter->encrypt(
             'Je suis Charlie',
@@ -175,8 +177,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getSigningKey());
+        $instruction = new EncryptionInstruction($this->getSigningKey());
 
         $encrypter->encrypt(
             'FOO',
@@ -196,8 +197,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKeyWithAlgorithm());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKeyWithAlgorithm());
 
         $encrypter->encrypt(
             'FOO',
@@ -217,8 +217,7 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
@@ -246,8 +245,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
     }
@@ -260,8 +258,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
     }
@@ -274,8 +271,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'A128CBC-HS256', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
     }
@@ -288,8 +284,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getRSARecipientKey());
+        $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'enc' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
     }
@@ -302,8 +297,7 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getDirectKey());
+        $instruction = new EncryptionInstruction($this->getDirectKey());
 
         $encrypted = $encrypter->encrypt($this->getKeySetToEncrypt(), [$instruction], ['kid' => 'DIR_1', 'enc' => 'A192CBC-HS384', 'alg' => 'dir'], []);
 
@@ -330,9 +324,10 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
-                    ->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey()
+        );
 
         $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
 
@@ -359,8 +354,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey());
+        $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
 
         $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
     }
@@ -373,8 +367,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey());
+        $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
 
         $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'], []);
     }
@@ -398,9 +391,10 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
-                    ->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey()
+        );
 
         $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'], []);
 
@@ -427,9 +421,10 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
-                    ->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey()
+        );
 
         $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
 
@@ -460,9 +455,10 @@ class EncrypterTest extends TestCase
         }
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
-        $instruction = new EncryptionInstruction();
-        $instruction->setRecipientKey($this->getECDHRecipientPublicKey())
-            ->setSenderKey($this->getECDHSenderPrivateKey());
+        $instruction = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey()
+        );
 
         $encrypted = $encrypter->encrypt(
             'Je suis Charlie',
@@ -495,14 +491,17 @@ class EncrypterTest extends TestCase
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
 
-        $instruction1 = new EncryptionInstruction();
-        $instruction1->setRecipientKey($this->getECDHRecipientPublicKey());
-        $instruction1->setSenderKey($this->getECDHSenderPrivateKey());
-        $instruction1->setRecipientUnprotectedHeader(['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+        $instruction1 = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey(),
+            $this->getECDHSenderPrivateKey(),
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
+        );
 
-        $instruction2 = new EncryptionInstruction();
-        $instruction2->setRecipientKey($this->getRSARecipientKey());
-        $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
+        $instruction2 = new EncryptionInstruction(
+            $this->getRSARecipientKey(),
+            null,
+            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
+        );
 
         $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction1, $instruction2], ['enc' => 'A256CBC-HS512'], [], JSONSerializationModes::JSON_SERIALIZATION);
 
