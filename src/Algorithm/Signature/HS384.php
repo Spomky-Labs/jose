@@ -18,7 +18,7 @@ namespace Jose\Algorithm\Signature;
 /**
  * Class HS384.
  */
-class HS384 extends HMAC
+final class HS384 extends HMAC
 {
     /**
      * @return string

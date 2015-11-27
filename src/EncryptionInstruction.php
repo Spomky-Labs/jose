@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class EncryptionInstruction.
  */
-class EncryptionInstruction implements EncryptionInstructionInterface
+final class EncryptionInstruction implements EncryptionInstructionInterface
 {
     /**
      * @var array

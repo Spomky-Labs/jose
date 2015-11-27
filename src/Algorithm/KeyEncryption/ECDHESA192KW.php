@@ -16,7 +16,7 @@ use AESKW\A192KW as Wrapper;
 /**
  * Class ECDHESA192KW.
  */
-class ECDHESA192KW extends ECDHESAESKW
+final class ECDHESA192KW extends ECDHESAESKW
 {
     /**
      * {@inheritdoc}

@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class SignatureInstruction.
  */
-class SignatureInstruction implements SignatureInstructionInterface
+final class SignatureInstruction implements SignatureInstructionInterface
 {
     /**
      * @var \Jose\JWKInterface

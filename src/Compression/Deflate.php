@@ -15,7 +15,7 @@ namespace Jose\Compression;
  * This class implements the compression algorithm DEF (defalte)
  * This compression algorithm is part of the specification.
  */
-class Deflate implements CompressionInterface
+final class Deflate implements CompressionInterface
 {
     /**
      * @var int

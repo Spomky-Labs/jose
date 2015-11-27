@@ -15,7 +15,7 @@ use Jose\KeyConverter\KeyConverter;
 
 /**
  */
-class X5CFinder implements JWKFinderInterface
+final class X5CFinder implements JWKFinderInterface
 {
     /**
      * {@inheritdoc}

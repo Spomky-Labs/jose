@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
-class CriticalChecker implements CheckerInterface
+final class CriticalChecker implements CheckerInterface
 {
     /**
      * {@inheritdoc}

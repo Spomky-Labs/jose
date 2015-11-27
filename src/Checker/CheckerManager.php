@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\JWTInterface;
 
-class CheckerManager implements CheckerManagerInterface
+final class CheckerManager implements CheckerManagerInterface
 {
     /**
      * @var \Jose\Checker\CheckerInterface[]

@@ -17,7 +17,7 @@ use phpseclib\Crypt\RSA;
 /**
  * This class will help you to load an EC key or a RSA key/certificate (private or public) and get values to create a JWK object.
  */
-class KeyConverter
+final class KeyConverter
 {
     /**
      * @param string $file

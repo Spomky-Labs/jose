@@ -14,7 +14,7 @@ namespace Jose\Compression;
 /**
  * Compression algorithm manager.
  */
-class CompressionManager implements CompressionManagerInterface
+final class CompressionManager implements CompressionManagerInterface
 {
     /**
      * @var \Jose\Compression\CompressionInterface[]

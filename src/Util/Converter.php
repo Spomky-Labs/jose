@@ -13,7 +13,7 @@ namespace Jose\Util;
 
 use Jose\JSONSerializationModes;
 
-class Converter
+final class Converter
 {
     /**
      * This function will try to convert JWS/JWE from a serialization mode into an other.

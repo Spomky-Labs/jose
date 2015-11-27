@@ -13,7 +13,7 @@ namespace Jose\Finder;
 
 /**
  */
-class JWKFinder implements JWKFinderInterface
+final class JWKFinder implements JWKFinderInterface
 {
     /**
      * {@inheritdoc}

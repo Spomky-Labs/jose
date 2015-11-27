@@ -28,7 +28,7 @@ use Jose\Util\Converter;
 
 /**
  */
-class Encrypter implements EncrypterInterface
+final class Encrypter implements EncrypterInterface
 {
     use HasKeyChecker;
     use HasJWAManager;

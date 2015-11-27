@@ -16,7 +16,7 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 /**
  * Class RS384.
  */
-class RS384 extends RSA
+final class RS384 extends RSA
 {
     /**
      * @return string

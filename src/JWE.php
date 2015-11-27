@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class JWE.
  */
-class JWE extends JWT implements JWEInterface
+final class JWE extends JWT implements JWEInterface
 {
     /**
      * @var string|null

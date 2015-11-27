@@ -18,7 +18,7 @@ namespace Jose\Util;
  *
  * @see https://tools.ietf.org/html/rfc7518#section-4.6.2
  */
-class ConcatKDF
+final class ConcatKDF
 {
     /**
      * Key Derivation Function.

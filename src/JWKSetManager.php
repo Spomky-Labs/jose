@@ -16,7 +16,7 @@ use Jose\Finder\JWKSetFinderInterface;
 
 /**
  */
-class JWKSetManager implements JWKSetManagerInterface
+final class JWKSetManager implements JWKSetManagerInterface
 {
     use HasJWKManager;
 

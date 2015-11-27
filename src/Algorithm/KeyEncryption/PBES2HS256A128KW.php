@@ -16,7 +16,7 @@ use AESKW\A128KW as Wrapper;
 /**
  * Class PBES2HS256A128KW.
  */
-class PBES2HS256A128KW extends PBES2AESKW
+final class PBES2HS256A128KW extends PBES2AESKW
 {
     /**
      * {@inheritdoc}

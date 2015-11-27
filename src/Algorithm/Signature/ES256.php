@@ -15,7 +15,7 @@ use Mdanter\Ecc\EccFactory;
 
 /**
  */
-class ES256 extends ECDSA
+final class ES256 extends ECDSA
 {
     /**
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint

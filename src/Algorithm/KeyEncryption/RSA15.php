@@ -16,7 +16,7 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 /**
  * Class RSA15.
  */
-class RSA15 extends RSA
+final class RSA15 extends RSA
 {
     /**
      * {@inheritdoc}

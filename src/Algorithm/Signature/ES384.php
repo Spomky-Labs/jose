@@ -15,7 +15,7 @@ use Mdanter\Ecc\EccFactory;
 
 /**
  */
-class ES384 extends ECDSA
+final class ES384 extends ECDSA
 {
     /**
      * @return \Mdanter\Ecc\Primitives\GeneratorPoint

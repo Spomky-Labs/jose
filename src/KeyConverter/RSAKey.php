@@ -20,7 +20,7 @@ use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
 use Jose\JWKInterface;
 
-class RSAKey extends Sequence
+final class RSAKey extends Sequence
 {
     private $private;
     private $n;

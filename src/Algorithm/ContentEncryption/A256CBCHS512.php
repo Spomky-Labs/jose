@@ -14,7 +14,7 @@ namespace Jose\Algorithm\ContentEncryption;
 /**
  * Class A256CBCHS512.
  */
-class A256CBCHS512 extends AESCBCHS
+final class A256CBCHS512 extends AESCBCHS
 {
     /**
      * {@inheritdoc}

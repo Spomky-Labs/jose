@@ -15,7 +15,7 @@ use Jose\KeyConverter\KeyConverter;
 
 /**
  */
-class X5UFinder implements JWKSetFinderInterface
+final class X5UFinder implements JWKSetFinderInterface
 {
     /**
      * {@inheritdoc}

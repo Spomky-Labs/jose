@@ -22,7 +22,7 @@ use Mdanter\Ecc\Message\MessageFactory;
 /**
  * Class ECDHES.
  */
-class ECDHES implements KeyAgreementInterface
+final class ECDHES implements KeyAgreementInterface
 {
     /**
      * @var \Mdanter\Ecc\Math\MathAdapterInterface

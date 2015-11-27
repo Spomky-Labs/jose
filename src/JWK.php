@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class JWK.
  */
-class JWK implements JWKInterface
+final class JWK implements JWKInterface
 {
     /**
      * @var array

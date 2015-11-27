@@ -11,7 +11,7 @@
 
 namespace Jose\Payload;
 
-class PayloadConverterManager implements PayloadConverterManagerInterface
+final class PayloadConverterManager implements PayloadConverterManagerInterface
 {
     /**
      * @var \Jose\Payload\PayloadConverterInterface[]

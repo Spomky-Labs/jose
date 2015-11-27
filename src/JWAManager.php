@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class JWAManager.
  */
-class JWAManager implements JWAManagerInterface
+final class JWAManager implements JWAManagerInterface
 {
     /**
      * @var array

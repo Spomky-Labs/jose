@@ -21,7 +21,7 @@ use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
 use Jose\JWKInterface;
 
-class ECKey extends Sequence
+final class ECKey extends Sequence
 {
     private $private;
     private $curve;

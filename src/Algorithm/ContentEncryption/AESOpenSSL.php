@@ -13,7 +13,7 @@ namespace Jose\Algorithm\ContentEncryption;
 
 /**
  */
-class AESOpenSSL implements AESInterface
+final class AESOpenSSL implements AESInterface
 {
     public static function encrypt($data, $k, $iv)
     {

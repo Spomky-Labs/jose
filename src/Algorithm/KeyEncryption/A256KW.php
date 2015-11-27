@@ -16,7 +16,7 @@ use AESKW\A256KW as Wrapper;
 /**
  * Class A256KW.
  */
-class A256KW extends AESKW
+final class A256KW extends AESKW
 {
     /**
      * {@inheritdoc}

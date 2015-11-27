@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class representing a JSON Web Signature.
  */
-class JWTManager implements JWTManagerInterface
+final class JWTManager implements JWTManagerInterface
 {
     /**
      * {@inheritdoc}

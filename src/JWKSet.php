@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class JWKSet.
  */
-class JWKSet implements JWKSetInterface
+final class JWKSet implements JWKSetInterface
 {
     /**
      * @var int

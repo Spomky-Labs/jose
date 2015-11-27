@@ -17,7 +17,7 @@ use Jose\Operation\SignatureInterface;
 /**
  * This class is an abstract class that implements the none algorithm (plaintext).
  */
-class None implements SignatureInterface
+final class None implements SignatureInterface
 {
     /**
      * {@inheritdoc}

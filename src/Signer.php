@@ -22,7 +22,7 @@ use Jose\Util\Converter;
 
 /**
  */
-class Signer implements SignerInterface
+final class Signer implements SignerInterface
 {
     use HasKeyChecker;
     use HasJWAManager;

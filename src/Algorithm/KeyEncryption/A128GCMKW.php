@@ -14,7 +14,7 @@ namespace Jose\Algorithm\KeyEncryption;
 /**
  * Class A128GCMKW.
  */
-class A128GCMKW extends AESGCMKW
+final class A128GCMKW extends AESGCMKW
 {
     /**
      * {@inheritdoc}

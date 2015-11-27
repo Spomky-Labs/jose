@@ -14,7 +14,7 @@ namespace Jose;
 /**
  * Class JWS.
  */
-class JWS extends JWT implements JWSInterface
+final class JWS extends JWT implements JWSInterface
 {
     /**
      * @var string|null

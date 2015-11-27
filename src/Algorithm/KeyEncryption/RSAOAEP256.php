@@ -16,7 +16,7 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 /**
  * Class RSAOAEP256.
  */
-class RSAOAEP256 extends RSA
+final class RSAOAEP256 extends RSA
 {
     /**
      * {@inheritdoc}

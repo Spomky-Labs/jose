@@ -15,7 +15,7 @@ use Base64Url\Base64Url;
 use Jose\JWKInterface;
 use Jose\Operation\DirectEncryptionInterface;
 
-class Dir implements DirectEncryptionInterface
+final class Dir implements DirectEncryptionInterface
 {
     /**
      * {@inheritdoc}

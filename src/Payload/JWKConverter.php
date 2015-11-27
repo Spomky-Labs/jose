@@ -17,7 +17,7 @@ use Jose\JWKManagerInterface;
 /**
  * Trait used to convert payload.
  */
-class JWKConverter implements PayloadConverterInterface
+final class JWKConverter implements PayloadConverterInterface
 {
     /**
      * @var \Jose\JWKManagerInterface

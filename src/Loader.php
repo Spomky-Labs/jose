@@ -35,7 +35,7 @@ use Jose\Util\Converter;
  * Class able to load JWS or JWE.
  * JWS object can also be verified.
  */
-class Loader implements LoaderInterface
+final class Loader implements LoaderInterface
 {
     use HasKeyChecker;
     use HasJWAManager;

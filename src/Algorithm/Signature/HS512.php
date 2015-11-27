@@ -17,7 +17,7 @@ namespace Jose\Algorithm\Signature;
  *
  * Class HS512
  */
-class HS512 extends HMAC
+final class HS512 extends HMAC
 {
     /**
      * @return string

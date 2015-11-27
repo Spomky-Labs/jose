@@ -14,9 +14,18 @@ namespace Jose;
 /**
  * JSON Serialization Modes.
  */
-class JSONSerializationModes
+final class JSONSerializationModes
 {
     const JSON_SERIALIZATION = 'JSON Serialization';
     const JSON_COMPACT_SERIALIZATION = 'JSON Compact Serialization';
     const JSON_FLATTENED_SERIALIZATION = 'JSON Flattened Serialization';
+
+    public function getSupportedSerializationModes()
+    {
+        return [
+            self::JSON_COMPACT_SERIALIZATION,
+            self::JSON_FLATTENED_SERIALIZATION,
+            self::JSON_SERIALIZATION,
+        ];
+    }
 }

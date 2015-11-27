@@ -15,7 +15,7 @@ use Jose\Finder\JWKFinderInterface;
 
 /**
  */
-class JWKManager implements JWKManagerInterface
+final class JWKManager implements JWKManagerInterface
 {
     /**
      * @var \Jose\Finder\JWKFinderInterface[]

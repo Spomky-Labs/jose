@@ -14,7 +14,7 @@ namespace Jose\Algorithm\ContentEncryption;
 /**
  * Class A192GCM.
  */
-class A192GCM extends AESGCM
+final class A192GCM extends AESGCM
 {
     /**
      * {@inheritdoc}
