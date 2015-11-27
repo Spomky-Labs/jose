@@ -23,9 +23,9 @@ interface JWTInterface
     /**
      * @param string $input
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setInput($input);
+    public function withInput($input);
 
     /**
      * Returns the protected header encoded as represented in serialization.
@@ -37,9 +37,9 @@ interface JWTInterface
     /**
      * @param string $encoded_protected_header
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setEncodedProtectedHeader($encoded_protected_header);
+    public function withEncodedProtectedHeader($encoded_protected_header);
 
     /**
      * Returns the protected header of the JWT.
@@ -53,9 +53,9 @@ interface JWTInterface
      *
      * @param array $headers The protected headers parameters
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setProtectedHeader(array $headers);
+    public function withProtectedHeader(array $headers);
 
     /**
      * Returns the unprotected header of the JWT.
@@ -69,9 +69,9 @@ interface JWTInterface
      *
      * @param array $headers The unprotected headers parameters
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setUnprotectedHeader(array $headers);
+    public function withUnprotectedHeader(array $headers);
 
     /**
      * Returns the value of the protected header of the specified key.
@@ -88,9 +88,9 @@ interface JWTInterface
      * @param string $key   The key
      * @param mixed  $value Header value
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setProtectedHeaderValue($key, $value);
+    public function withProtectedHeaderValue($key, $value);
 
     /**
      * Returns the value of the unprotected header of the specified key.
@@ -107,9 +107,9 @@ interface JWTInterface
      * @param string $key   The key
      * @param mixed  $value Header value
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setUnprotectedHeaderValue($key, $value);
+    public function withUnprotectedHeaderValue($key, $value);
 
     /**
      * Returns the value of the header (protected or unprotected) of the specified key.
@@ -147,9 +147,9 @@ interface JWTInterface
      *
      * @param mixed $payload Payload
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setPayload($payload);
+    public function withPayload($payload);
 
     /**
      * Returns the payload encoded as represented in serialization.
@@ -161,9 +161,9 @@ interface JWTInterface
     /**
      * @param string $encoded_payload
      *
-     * @return self
+     * @return \Jose\JWTInterface
      */
-    public function setEncodedPayload($encoded_payload);
+    public function withEncodedPayload($encoded_payload);
 
     /**
      * Returns the value of the payload of the specified key.

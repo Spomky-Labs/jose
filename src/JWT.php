@@ -97,81 +97,89 @@ class JWT implements JWTInterface
     /**
      * {@inheritdoc}
      */
-    public function setInput($input)
+    public function withInput($input)
     {
-        $this->input = $input;
+        $jwt = clone $this;
+        $jwt->input = $input;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setEncodedProtectedHeader($encoded_protected_header)
+    public function withEncodedProtectedHeader($encoded_protected_header)
     {
-        $this->encoded_protected_header = $encoded_protected_header;
+        $jwt = clone $this;
+        $jwt->encoded_protected_header = $encoded_protected_header;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setEncodedPayload($encoded_payload)
+    public function withEncodedPayload($encoded_payload)
     {
-        $this->encoded_payload = $encoded_payload;
+        $jwt = clone $this;
+        $jwt->encoded_payload = $encoded_payload;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setProtectedHeader(array $values)
+    public function withProtectedHeader(array $values)
     {
-        $this->protected_headers = $values;
+        $jwt = clone $this;
+        $jwt->protected_headers = $values;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setUnprotectedHeader(array $values)
+    public function withUnprotectedHeader(array $values)
     {
-        $this->unprotected_headers = $values;
+        $jwt = clone $this;
+        $jwt->unprotected_headers = $values;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setProtectedHeaderValue($key, $value)
+    public function withProtectedHeaderValue($key, $value)
     {
-        $this->protected_headers[$key] = $value;
+        $jwt = clone $this;
+        $jwt->protected_headers[$key] = $value;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setUnprotectedHeaderValue($key, $value)
+    public function withUnprotectedHeaderValue($key, $value)
     {
-        $this->unprotected_headers[$key] = $value;
+        $jwt = clone $this;
+        $jwt->unprotected_headers[$key] = $value;
 
-        return $this;
+        return $jwt;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function setPayload($payload)
+    public function withPayload($payload)
     {
-        $this->payload = $payload;
+        $jwt = clone $this;
+        $jwt->payload = $payload;
 
-        return $this;
+        return $jwt;
     }
 
     /**

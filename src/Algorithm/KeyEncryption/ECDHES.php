@@ -115,8 +115,7 @@ class ECDHES implements KeyAgreementInterface
         if (!is_array($complete_header['epk'])) {
             throw new \InvalidArgumentException('"epk" parameter is not an array of parameter');
         }
-        $public_key = new JWK();
-        $public_key->setValues($complete_header['epk']);
+        $public_key = new JWK($complete_header['epk']);
         $this->checkKey($public_key, false);
 
         return $public_key;

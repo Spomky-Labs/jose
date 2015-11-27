@@ -22,15 +22,15 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     public function testJWS()
     {
         $jws = new JWS();
-        $jws->setProtectedHeader([
+        $jws = $jws->withProtectedHeader([
             'jty'  => 'JWT',
             'cty'  => 'JOSE+JSON',
             'crit' => ['alg', 'iss'],
         ]);
-        $jws->setUnprotectedHeader([
+        $jws = $jws->withUnprotectedHeader([
             'alg' => 'ES256',
         ]);
-        $jws->setPayload([
+        $jws = $jws->withPayload([
             'jti' => 'ABCD',
             'iss' => 'me.example.com',
             'aud' => 'you.example.com',

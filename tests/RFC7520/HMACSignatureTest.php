@@ -29,13 +29,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES512Verify()
     {
-        $key = new JWK();
-
         /*
          * Symmetric Key
          * @see https://tools.ietf.org/html/rfc7520#section-3.5
          */
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
             'use' => 'sig',
@@ -57,13 +55,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES512VerifyWithDetachedPayload()
     {
-        $key = new JWK();
-
         /*
          * Symmetric Key
          * @see https://tools.ietf.org/html/rfc7520#section-3.5
          */
-        $key->setValues([
+        $key = new JWK([
             'kty' => 'oct',
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
             'use' => 'sig',

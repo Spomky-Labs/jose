@@ -19,7 +19,7 @@ class JWS extends JWT implements JWSInterface
     /**
      * @var string|null
      */
-    protected $signature;
+    protected $signature = null;
 
     /**
      * {@inheritdoc}
@@ -32,10 +32,11 @@ class JWS extends JWT implements JWSInterface
     /**
      * {@inheritdoc}
      */
-    public function setSignature($signature)
+    public function withSignature($signature)
     {
-        $this->signature = $signature;
+        $jws = clone $this;
+        $jws->signature = $signature;
 
-        return $this;
+        return $jws;
     }
 }

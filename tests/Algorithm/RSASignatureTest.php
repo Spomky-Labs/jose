@@ -217,13 +217,13 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS256Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'RS256')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'RS256');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty' => 'RSA',
@@ -299,13 +299,13 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS384Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'RS384')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'RS384');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty' => 'RSA',
@@ -340,13 +340,13 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS512Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'RS512')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'RS512');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty' => 'RSA',
@@ -382,14 +382,14 @@ class RSASignatureTest extends TestCase
     public function testCompletePS256Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'PS256')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'PS256');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty'     => 'RSA',
                 'key_ops' => ['verify'],
                 'n'       => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'       => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty'     => 'RSA',
@@ -424,13 +424,13 @@ class RSASignatureTest extends TestCase
     public function testCompletePS384Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'PS384')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'PS384');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty' => 'RSA',
@@ -464,13 +464,13 @@ class RSASignatureTest extends TestCase
     public function testCompletePS512Sign()
     {
         $input = new JWT();
-        $input->setProtectedHeaderValue('alg', 'PS512')
-              ->setProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeaderValue('alg', 'PS512');
+        $input = $input->withProtectedHeaderValue('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
-              ])
-              ->setPayload('Je suis Charlie');
+              ]);
+        $input = $input->withPayload('Je suis Charlie');
 
         $key = new JWK([
                 'kty' => 'RSA',

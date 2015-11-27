@@ -19,27 +19,27 @@ class JWE extends JWT implements JWEInterface
     /**
      * @var string|null
      */
-    private $ciphertext;
+    private $ciphertext = null;
 
     /**
      * @var string|null
      */
-    private $encrypted_key;
+    private $encrypted_key = null;
 
     /**
      * @var string|null
      */
-    private $iv;
+    private $iv = null;
 
     /**
      * @var string|null
      */
-    private $aad;
+    private $aad = null;
 
     /**
      * @var string|null
      */
-    private $tag;
+    private $tag = null;
 
     /**
      * {@inheritdoc}
@@ -68,11 +68,12 @@ class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function setCiphertext($ciphertext)
+    public function withCiphertext($ciphertext)
     {
-        $this->ciphertext = $ciphertext;
+        $jwe = clone $this;
+        $jwe->ciphertext = $ciphertext;
 
-        return $this;
+        return $jwe;
     }
 
     /**
@@ -86,11 +87,12 @@ class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function setEncryptedKey($encrypted_key)
+    public function withEncryptedKey($encrypted_key)
     {
-        $this->encrypted_key = $encrypted_key;
+        $jwe = clone $this;
+        $jwe->encrypted_key = $encrypted_key;
 
-        return $this;
+        return $jwe;
     }
 
     /**
@@ -104,11 +106,12 @@ class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function setAAD($aad)
+    public function withAAD($aad)
     {
-        $this->aad = $aad;
+        $jwe = clone $this;
+        $jwe->aad = $aad;
 
-        return $this;
+        return $jwe;
     }
 
     /**
@@ -122,11 +125,12 @@ class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function setIV($iv)
+    public function withIV($iv)
     {
-        $this->iv = $iv;
+        $jwe = clone $this;
+        $jwe->iv = $iv;
 
-        return $this;
+        return $jwe;
     }
 
     /**
@@ -140,10 +144,11 @@ class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function setTag($tag)
+    public function withTag($tag)
     {
-        $this->tag = $tag;
+        $jwe = clone $this;
+        $jwe->tag = $tag;
 
-        return $this;
+        return $jwe;
     }
 }

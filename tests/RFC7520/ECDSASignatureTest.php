@@ -25,13 +25,11 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES512Verify()
     {
-        $public_key = new JWK();
-
         /*
          * EC public key
          * @see https://tools.ietf.org/html/rfc7520#section-3.1
          */
-        $public_key->setValues([
+        $public_key = new JWK([
             'kty' => 'EC',
             'kid' => 'bilbo.baggins@hobbiton.example',
             'use' => 'sig',

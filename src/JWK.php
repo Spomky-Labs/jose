@@ -22,6 +22,16 @@ class JWK implements JWKInterface
     protected $values = [];
 
     /**
+     * JWK constructor.
+     *
+     * @param array $values
+     */
+    public function __construct(array $values = [])
+    {
+        $this->values = $values;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getKeyType()
@@ -94,14 +104,6 @@ class JWK implements JWKInterface
     }
 
     /**
-     * @param array $values
-     */
-    public function __construct(array $values = [])
-    {
-        $this->setValues($values);
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
@@ -118,7 +120,7 @@ class JWK implements JWKInterface
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getValues()
     {
@@ -126,27 +128,14 @@ class JWK implements JWKInterface
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return self
+     * {@inheritdoc}
      */
-    public function setValue($key, $value)
+    public function withValue($key, $value)
     {
-        $this->values[$key] = $value;
+        $jwk = clone $this;
+        $values = array_merge($this->getValues(), [$key=>$value]);
+        $jwk->values = $values;
 
-        return $this;
-    }
-
-    /**
-     * @param array $values
-     *
-     * @return self
-     */
-    public function setValues(array $values)
-    {
-        $this->values = $values;
-
-        return $this;
+        return $jwk;
     }
 }

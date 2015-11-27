@@ -25,7 +25,7 @@ interface JWSInterface extends JWTInterface
      *
      * @param string $signature The signature
      *
-     * @return self
+     * @return \Jose\JWSInterface
      */
-    public function setSignature($signature);
+    public function withSignature($signature);
 }

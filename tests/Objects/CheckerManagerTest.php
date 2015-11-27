@@ -23,7 +23,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadIssuer()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'foo',
             'sub' => 'SUB2',
@@ -42,7 +42,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadAudience()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
             'sub' => 'SUB2',
@@ -61,7 +61,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckExpiredJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() - 10000,
             'iss' => 'ISS1',
             'sub' => 'SUB2',
@@ -80,7 +80,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTIssuedInTheFutur()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
             'sub' => 'SUB2',
@@ -99,7 +99,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTNotYetUsable()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
             'sub' => 'SUB2',
@@ -118,7 +118,7 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithBadSubject()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload([
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
             'sub' => 'foo',
@@ -137,8 +137,8 @@ class CheckerManagerTest extends TestCase
     public function testCheckJWTWithMissingCriticalParameters()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
-        $jwt->setPayload([
+        $jwt = $jwt->withProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
+        $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
             'sub' => 'foo',
@@ -153,8 +153,8 @@ class CheckerManagerTest extends TestCase
     public function testCheckValidJWT()
     {
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
-        $jwt->setPayload([
+        $jwt = $jwt->withProtectedHeaderValue('crit', ['exp', 'iss', 'foo']);
+        $jwt = $jwt->withPayload([
                 'exp' => time() + 10000,
                 'iss' => 'ISS1',
                 'sub' => 'SUB2',

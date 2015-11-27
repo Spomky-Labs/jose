@@ -22,19 +22,19 @@ class JWETest extends \PHPUnit_Framework_TestCase
     public function testJWE()
     {
         $jwe = new JWE();
-        $jwe->setProtectedHeader([
+        $jwe = $jwe->withProtectedHeader([
             'jty'  => 'JWT',
             'cty'  => 'JOSE+JSON',
             'crit' => ['alg', 'iss'],
             'zip'  => 'DEF',
         ]);
-        $jwe->setProtectedHeaderValue('foo', 'www.example.com');
-        $jwe->setUnprotectedHeader([
+        $jwe = $jwe->withProtectedHeaderValue('foo', 'www.example.com');
+        $jwe = $jwe->withUnprotectedHeader([
             'alg' => 'ES256',
             'enc' => 'A128CBC-HS256',
         ]);
-        $jwe->setUnprotectedHeaderValue('bar', 'me@example.com');
-        $jwe->setPayload([
+        $jwe = $jwe->withUnprotectedHeaderValue('bar', 'me@example.com');
+        $jwe = $jwe->withPayload([
             'jti' => 'ABCD',
             'iss' => 'me.example.com',
             'aud' => 'you.example.com',

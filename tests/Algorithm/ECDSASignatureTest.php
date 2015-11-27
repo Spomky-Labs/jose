@@ -104,10 +104,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES256SignAndVerify()
     {
-        $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
-        $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key'));
+        $public_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
+        $private_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key'));
 
         $ecdsa = new ES256();
         $data = 'Je suis Charlie';
@@ -121,10 +119,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES384SignAndVerify()
     {
-        $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
-        $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key'));
+        $public_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
+        $private_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key'));
 
         $ecdsa = new ES384();
         $data = 'Je suis Charlie';
@@ -138,10 +134,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
      */
     public function testES512SignAndVerify()
     {
-        $public_key = new JWK();
-        $public_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
-        $private_key = new JWK();
-        $private_key->setValues(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key'));
+        $public_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
+        $private_key = new JWK(KeyConverter::loadKeyFromFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key'));
 
         $ecdsa = new ES512();
         $data = 'Je suis Charlie';

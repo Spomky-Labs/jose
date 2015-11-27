@@ -52,8 +52,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeflate()
     {
-        $compression = new Deflate();
-        $compression->setCompressionLevel(9);
+        $compression = new Deflate(9);
 
         $data = 'Je suis Charlie';
         $compressed = $compression->compress($data);
@@ -67,8 +66,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGZip()
     {
-        $compression = new GZip();
-        $compression->setCompressionLevel(9);
+        $compression = new GZip(9);
 
         $data = 'Je suis Charlie';
         $compressed = $compression->compress($data);
@@ -82,8 +80,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testZLib()
     {
-        $compression = new ZLib();
-        $compression->setCompressionLevel(9);
+        $compression = new ZLib(9);
 
         $data = 'Je suis Charlie';
         $compressed = $compression->compress($data);
@@ -98,8 +95,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testDeflateInvalidCompressionLevel()
     {
-        $compression = new Deflate();
-        $compression->setCompressionLevel(100);
+        new Deflate(100);
     }
 
     /**
@@ -108,8 +104,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testGZipInvalidCompressionLevel()
     {
-        $compression = new GZip();
-        $compression->setCompressionLevel(100);
+        new GZip(100);
     }
 
     /**
@@ -118,7 +113,6 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
      */
     public function testZLibInvalidCompressionLevel()
     {
-        $compression = new ZLib();
-        $compression->setCompressionLevel(100);
+        new ZLib(100);
     }
 }

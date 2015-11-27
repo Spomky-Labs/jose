@@ -30,14 +30,14 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'use'     => 'sign',
             'key_ops' => ['sign'],
             'alg'     => 'ES256',
-            'kid'     => '0123456789',
         ]);
-        $jwk->setValue('kid', '0123456789');
+        $jwk2 = $jwk->withValue('kid', '0123456789');
 
         $this->assertEquals('EC', $jwk->getKeyType());
         $this->assertEquals('ES256', $jwk->getAlgorithm());
         $this->assertEquals('sign', $jwk->getPublicKeyUse());
-        $this->assertEquals('0123456789', $jwk->getKeyID());
+        $this->assertNull($jwk->getKeyID());
+        $this->assertEquals('0123456789', $jwk2->getKeyID());
         $this->assertEquals(['sign'], $jwk->getKeyOperations());
         $this->assertEquals('P-256', $jwk->getValue('crv'));
         $this->assertNull($jwk->getX509Url());
@@ -46,7 +46,9 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($jwk->getX509CertificateSha256Thumbprint());
         $this->assertEquals('f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU', $jwk->getValue('x'));
         $this->assertEquals('x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0', $jwk->getValue('y'));
-        $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk));
+        $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256"}', json_encode($jwk));
+        $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk2));
+        $this->assertNotSame($jwk, $jwk2);
     }
 
     /**

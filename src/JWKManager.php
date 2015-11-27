@@ -50,8 +50,7 @@ class JWKManager implements JWKManagerInterface
      */
     public function createJWK(array $values = [])
     {
-        $jwk = new JWK();
-        $jwk->setValues($values);
+        $jwk = new JWK($values);
 
         return $jwk;
     }

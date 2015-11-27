@@ -33,7 +33,7 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
 
         $input = new JWT();
-        $input->setPayload('FOO');
+        $input = $input->withPayload('FOO');
 
         $instruction = new EncryptionInstruction();
         $instruction->setRecipientKey($this->getRSARecipientKey());
@@ -134,7 +134,7 @@ class EncrypterTest extends TestCase
         $instruction2->setRecipientKey($this->getRSARecipientKey());
         $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
 
-        $encrypted = $encrypter->encrypt(
+        $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
             ['enc' => 'A256CBC-HS512'],
@@ -159,7 +159,7 @@ class EncrypterTest extends TestCase
         $instruction2->setRecipientKey($this->getRSARecipientKey());
         $instruction2->setRecipientUnprotectedHeader(['kid' => '123456789', 'alg' => 'RSA-OAEP-256']);
 
-        $encrypted = $encrypter->encrypt(
+        $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
             ['enc' => 'A256CBC-HS512'],

@@ -42,9 +42,9 @@ interface JWEInterface extends JWTInterface
     /**
      * @param string $ciphertext The cyphertext
      *
-     * @return self
+     * @return \Jose\JWEInterface
      */
-    public function setCiphertext($ciphertext);
+    public function withCiphertext($ciphertext);
 
     /**
      * @return string|null The encrypted key
@@ -54,9 +54,9 @@ interface JWEInterface extends JWTInterface
     /**
      * @param string $encrypted_key The encrypted key
      *
-     * @return self
+     * @return \Jose\JWEInterface
      */
-    public function setEncryptedKey($encrypted_key);
+    public function withEncryptedKey($encrypted_key);
 
     /**
      * @return string|null
@@ -66,9 +66,9 @@ interface JWEInterface extends JWTInterface
     /**
      * @param string $aad
      *
-     * @return self
+     * @return \Jose\JWEInterface
      */
-    public function setAAD($aad);
+    public function withAAD($aad);
 
     /**
      * @return string|null
@@ -78,9 +78,9 @@ interface JWEInterface extends JWTInterface
     /**
      * @param string $iv
      *
-     * @return self
+     * @return \Jose\JWEInterface
      */
-    public function setIV($iv);
+    public function withIV($iv);
 
     /**
      * @return string|null
@@ -90,7 +90,7 @@ interface JWEInterface extends JWTInterface
     /**
      * @param string $tag
      *
-     * @return self
+     * @return \Jose\JWEInterface
      */
-    public function setTag($tag);
+    public function withTag($tag);
 }

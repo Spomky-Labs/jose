@@ -21,15 +21,6 @@ interface JWKInterface extends \JsonSerializable
     public function getValues();
 
     /**
-     * Set values of the JWK object.
-     *
-     * @param array $values Values of the JWK object
-     *
-     * @return self
-     */
-    public function setValues(array $values);
-
-    /**
      * Get the value with a specific key.
      *
      * @param string $key The key
@@ -44,9 +35,9 @@ interface JWKInterface extends \JsonSerializable
      * @param string $key   Key
      * @param mixed  $value Value to store
      *
-     * @return self
+     * @return \Jose\JWKInterface
      */
-    public function setValue($key, $value);
+    public function withValue($key, $value);
 
     /**
      * The key type.

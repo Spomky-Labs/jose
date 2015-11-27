@@ -71,8 +71,8 @@ class Encrypter implements EncrypterInterface
         $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
 
         $jwt = $this->getJWTManager()->createJWT();
-        $jwt->setPayload($payload)
-            ->setProtectedHeader($header);
+        $jwt = $jwt->withPayload($payload);
+        $jwt = $jwt->withProtectedHeader($header);
         $input = $jwt;
     }
 

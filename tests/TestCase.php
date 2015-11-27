@@ -58,8 +58,8 @@ use Jose\Compression\Deflate;
 use Jose\Compression\GZip;
 use Jose\Compression\ZLib;
 use Jose\Encrypter;
+use Jose\Finder\JKUFinder;
 use Jose\Finder\JWKFinder;
-use Jose\Finder\JWUFinder;
 use Jose\Finder\X5CFinder;
 use Jose\Finder\X5UFinder;
 use Jose\JWAManager;
@@ -199,7 +199,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getJWKSetManager()
     {
         $keyset_manager = new JWKSetManager();
-        $keyset_manager->addJWKSetFinder(new JWUFinder())
+        $keyset_manager->addJWKSetFinder(new JKUFinder())
             ->addJWKSetFinder(new X5UFinder())
             ->addJWKSetFinder(new AlgorithmFinder())
             ->setJWKManager($this->getJWKManager());

@@ -60,10 +60,10 @@ class NoneSignatureTest extends TestCase
     public function testNoneSignAndVerifyComplete()
     {
         $jwt = new JWT();
-        $jwt->setProtectedHeader([
+        $jwt = $jwt->withProtectedHeader([
             'alg' => 'none',
         ]);
-        $jwt->setPayload('Je suis Charlie');
+        $jwt = $jwt->withPayload('Je suis Charlie');
 
         $jwk = new JWK([
             'kty' => 'none',

@@ -23,29 +23,29 @@ class Deflate implements CompressionInterface
     protected $compression_level = -1;
 
     /**
-     * @param int $level
+     * Deflate constructor.
      *
-     * @return self
+     * @param int $compression_level
      */
-    public function setCompressionLevel($level)
+    public function __construct($compression_level = -1)
     {
-        if (!is_numeric($level) || $level < -1 || $level > 9) {
+        if (!is_numeric($compression_level) || $compression_level < -1 || $compression_level > 9) {
             throw new \InvalidArgumentException('The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.');
         }
 
-        return $this;
+        $this->compression_level = $compression_level;
     }
 
     /**
      * @return int
      */
-    public function getCompressionLevel()
+    private function getCompressionLevel()
     {
         return $this->compression_level;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getMethodName()
     {
@@ -53,9 +53,7 @@ class Deflate implements CompressionInterface
     }
 
     /**
-     * @param string $data
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function compress($data)
     {
@@ -63,9 +61,7 @@ class Deflate implements CompressionInterface
     }
 
     /**
-     * @param string $data
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function uncompress($data)
     {
