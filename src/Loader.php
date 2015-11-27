@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
@@ -22,12 +23,11 @@ use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
-use Jose\Operation\ContentEncryptionInterface;
-use Jose\Operation\DirectEncryptionInterface;
-use Jose\Operation\KeyAgreementInterface;
-use Jose\Operation\KeyAgreementWrappingInterface;
-use Jose\Operation\KeyEncryptionInterface;
-use Jose\Operation\SignatureInterface;
+use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
+use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -248,7 +248,7 @@ final class Loader implements LoaderInterface
      * @param array              $header
      * @param \Jose\JWKInterface $key
      *
-     * @return \Jose\Operation\SignatureInterface|null
+     * @return \Jose\Algorithm\Signature\SignatureInterface|null
      */
     protected function getAlgorithm(array $header, JWKInterface $key)
     {
@@ -271,11 +271,11 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\JWAInterface                         $key_encryption_algorithm
-     * @param \Jose\Operation\ContentEncryptionInterface $content_encryption_algorithm
-     * @param \Jose\JWKInterface                         $key
-     * @param string|null                                $encrypted_cek
-     * @param array                                      $header
+     * @param \Jose\JWAInterface                                           $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
+     * @param \Jose\JWKInterface                                           $key
+     * @param string|null                                                  $encrypted_cek
+     * @param array                                                        $header
      *
      * @return string|null
      */
@@ -328,7 +328,7 @@ final class Loader implements LoaderInterface
     /**
      * @param \Jose\JWEInterface                         $jwe
      * @param string                                     $cek
-     * @param \Jose\Operation\ContentEncryptionInterface $content_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *
      * @return \Jose\JWEInterface
      */
@@ -379,16 +379,16 @@ final class Loader implements LoaderInterface
     /**
      * @param string $algorithm
      *
-     * @return \Jose\Operation\DirectEncryptionInterface|\Jose\Operation\KeyEncryptionInterface|\Jose\Operation\KeyAgreementInterface|\Jose\Operation\KeyAgreementWrappingInterface
+     * @return \Jose\Algorithm\KeyEncryption\DirectEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface
      */
     protected function getKeyEncryptionAlgorithm($algorithm)
     {
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
         foreach ([
-                    '\Jose\Operation\DirectEncryptionInterface',
-                    '\Jose\Operation\KeyEncryptionInterface',
-                    '\Jose\Operation\KeyAgreementInterface',
-                    '\Jose\Operation\KeyAgreementWrappingInterface',
+                    '\Jose\Algorithm\KeyEncryption\DirectEncryptionInterface',
+                    '\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface',
+                    '\Jose\Algorithm\KeyEncryption\KeyAgreementInterface',
+                    '\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface',
                 ] as $class) {
             if ($key_encryption_algorithm instanceof $class) {
                 return $key_encryption_algorithm;
@@ -400,7 +400,7 @@ final class Loader implements LoaderInterface
     /**
      * @param $algorithm
      *
-     * @return \Jose\Operation\ContentEncryptionInterface
+     * @return \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface
      */
     protected function getContentEncryptionAlgorithm($algorithm)
     {

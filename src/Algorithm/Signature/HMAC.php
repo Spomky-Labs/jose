@@ -13,7 +13,6 @@ namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;
-use Jose\Operation\SignatureInterface;
 
 /**
  * This class handles signatures using HMAC.

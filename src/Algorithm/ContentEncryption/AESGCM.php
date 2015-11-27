@@ -12,7 +12,6 @@
 namespace Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
-use Jose\Operation\ContentEncryptionInterface;
 
 /**
  *

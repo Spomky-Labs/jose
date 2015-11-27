@@ -9,9 +9,10 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Operation;
+namespace Jose\Algorithm\KeyEncryption;
 
-use JOSE\JWKInterface;
+use Jose\Algorithm\EncryptionInterface;
+use Jose\JWKInterface;
 
 /**
  *

@@ -18,11 +18,11 @@ use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Compression\CompressionManagerInterface;
-use Jose\Operation\ContentEncryptionInterface;
-use Jose\Operation\DirectEncryptionInterface;
-use Jose\Operation\KeyAgreementInterface;
-use Jose\Operation\KeyAgreementWrappingInterface;
-use Jose\Operation\KeyEncryptionInterface;
+use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
+use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -500,7 +500,7 @@ final class Encrypter implements EncrypterInterface
     /**
      * @param array $complete_header
      *
-     * @return \Jose\Operation\DirectEncryptionInterface|\Jose\Operation\KeyEncryptionInterface|\Jose\Operation\KeyAgreementInterface|\Jose\Operation\KeyAgreementWrappingInterface
+     * @return \Jose\Algorithm\KeyEncryption\DirectEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface
      */
     protected function getKeyEncryptionAlgorithm($complete_header)
     {
@@ -509,10 +509,10 @@ final class Encrypter implements EncrypterInterface
         }
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         foreach ([
-                     '\Jose\Operation\DirectEncryptionInterface',
-                     '\Jose\Operation\KeyEncryptionInterface',
-                     '\Jose\Operation\KeyAgreementInterface',
-                     '\Jose\Operation\KeyAgreementWrappingInterface',
+                     '\Jose\Algorithm\KeyEncryption\DirectEncryptionInterface',
+                     '\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface',
+                     '\Jose\Algorithm\KeyEncryption\KeyAgreementInterface',
+                     '\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface',
                  ] as $class) {
             if ($key_encryption_algorithm instanceof $class) {
                 return $key_encryption_algorithm;
@@ -526,7 +526,7 @@ final class Encrypter implements EncrypterInterface
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      *
-     * @return \Jose\Operation\ContentEncryptionInterface
+     * @return \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface
      */
     protected function getContentEncryptionAlgorithm(array $instructions, array $protected_header = [], array $unprotected_header = [])
     {

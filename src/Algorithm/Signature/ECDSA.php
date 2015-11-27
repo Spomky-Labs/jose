@@ -13,7 +13,6 @@ namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;
-use Jose\Operation\SignatureInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;

@@ -11,8 +11,6 @@
 
 namespace Jose\Algorithm\ContentEncryption;
 
-use Jose\Operation\ContentEncryptionInterface;
-
 /**
  *
  */

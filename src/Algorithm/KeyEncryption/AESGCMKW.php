@@ -14,7 +14,6 @@ namespace Jose\Algorithm\KeyEncryption;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\JWKInterface;
-use Jose\Operation\KeyEncryptionInterface;
 
 /**
  * Class AESGCMKW.

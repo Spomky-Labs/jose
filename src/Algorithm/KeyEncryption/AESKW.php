@@ -13,7 +13,6 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Jose\JWKInterface;
-use Jose\Operation\KeyEncryptionInterface;
 
 /**
  * Class AESKW.

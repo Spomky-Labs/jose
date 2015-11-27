@@ -13,7 +13,6 @@ namespace Jose\Algorithm\Signature;
 
 use Jose\JWKInterface;
 use Jose\KeyConverter\KeyConverter;
-use Jose\Operation\SignatureInterface;
 
 /**
  * Class RSA.

@@ -12,11 +12,11 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
-use Jose\Operation\SignatureInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -135,7 +135,7 @@ final class Signer implements SignerInterface
      * @param array              $complete_header The complete header
      * @param \Jose\JWKInterface $key
      *
-     * @return \Jose\Operation\SignatureInterface
+     * @return \Jose\Algorithm\Signature\SignatureInterface
      */
     protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {

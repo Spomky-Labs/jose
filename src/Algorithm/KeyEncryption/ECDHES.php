@@ -14,7 +14,6 @@ namespace Jose\Algorithm\KeyEncryption;
 use Base64Url\Base64Url;
 use Jose\JWK;
 use Jose\JWKInterface;
-use Jose\Operation\KeyAgreementInterface;
 use Jose\Util\ConcatKDF;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Message\MessageFactory;

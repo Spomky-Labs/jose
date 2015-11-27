@@ -9,8 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Operation;
+namespace Jose\Algorithm\ContentEncryption;
 
+use Jose\Algorithm\EncryptionInterface;
 interface ContentEncryptionInterface extends EncryptionInterface
 {
     /**
