@@ -133,7 +133,7 @@ class JWK implements JWKInterface
     public function withValue($key, $value)
     {
         $jwk = clone $this;
-        $values = array_merge($this->getValues(), [$key=>$value]);
+        $values = array_merge($this->getValues(), [$key => $value]);
         $jwk->values = $values;
 
         return $jwk;

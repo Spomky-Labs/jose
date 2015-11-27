@@ -40,8 +40,7 @@ class Signer implements SignerInterface
         JWTManagerInterface $jwt_manager,
         JWAManagerInterface $jwa_manager,
         PayloadConverterManagerInterface $payload_converter_manager
-    )
-    {
+    ) {
         $this->setJWTManager($jwt_manager);
         $this->setJWAManager($jwa_manager);
         $this->setPayloadConverter($payload_converter_manager);

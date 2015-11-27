@@ -200,7 +200,7 @@ class RSAKey extends Sequence
     public static function toPublic(RSAKey $private)
     {
         $data = $private->toArray();
-        $keys = ['p','d','q','dp','dq','qi'];
+        $keys = ['p', 'd', 'q', 'dp', 'dq', 'qi'];
         foreach ($keys as $key) {
             if (array_key_exists($key, $data)) {
                 unset($data[$key]);
