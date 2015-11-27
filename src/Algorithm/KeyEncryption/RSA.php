@@ -31,7 +31,7 @@ abstract class RSA implements KeyEncryptionInterface
         $rsa = $this->getRsaObject($values);
 
         try {
-            $encrypted = @$rsa->encrypt($cek);
+            $encrypted = $rsa->encrypt($cek);
             if (false === $encrypted) {
                 return;
             }
@@ -53,7 +53,7 @@ abstract class RSA implements KeyEncryptionInterface
         $rsa = $this->getRsaObject($values);
 
         try {
-            $decrypted = @$rsa->decrypt($encrypted_key);
+            $decrypted = $rsa->decrypt($encrypted_key);
             if (false === $decrypted) {
                 return;
             }
