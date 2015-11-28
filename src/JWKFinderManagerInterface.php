@@ -13,7 +13,6 @@ namespace Jose;
 
 use Jose\Finder\JWKFinderInterface;
 
-
 interface JWKFinderManagerInterface
 {
     /**

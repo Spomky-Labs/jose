@@ -12,7 +12,6 @@
 namespace Jose;
 
 use Jose\Behaviour\HasJWKManager;
-use Jose\Finder\JWKSetFinderInterface;
 
 /**
  */

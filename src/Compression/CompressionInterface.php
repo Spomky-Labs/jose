@@ -26,9 +26,9 @@ interface CompressionInterface
      *
      * @param string $data The data to compress
      *
-     * @return string The compressed data
-     *
      * @throws \RuntimeException
+     *
+     * @return string The compressed data
      */
     public function compress($data);
 
@@ -37,9 +37,9 @@ interface CompressionInterface
      *
      * @param string $data The data to uncompress
      *
-     * @return string The uncompressed data
-     *
      * @throws \RuntimeException
+     *
+     * @return string The uncompressed data
      */
     public function uncompress($data);
 }
