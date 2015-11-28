@@ -16,6 +16,7 @@ use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
+use Jose\Behaviour\HasJWKFinderManager;
 use Jose\Behaviour\HasJWKManager;
 use Jose\Behaviour\HasJWKSetManager;
 use Jose\Behaviour\HasJWTManager;
@@ -42,6 +43,7 @@ final class Loader implements LoaderInterface
     use HasJWTManager;
     use HasJWKManager;
     use HasJWKSetManager;
+    use HasJWKFinderManager;
     use HasCheckerManager;
     use HasPayloadConverter;
     use HasCompressionManager;
@@ -53,6 +55,7 @@ final class Loader implements LoaderInterface
      * @param \Jose\JWAManagerInterface                      $jwa_manager
      * @param \Jose\JWKManagerInterface                      $jwk_manager
      * @param \Jose\JWKSetManagerInterface                   $jwkset_manager
+     * @param \Jose\JWKFinderManagerInterface                $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
@@ -62,6 +65,7 @@ final class Loader implements LoaderInterface
         JWAManagerInterface $jwa_manager,
         JWKManagerInterface $jwk_manager,
         JWKSetManagerInterface $jwkset_manager,
+        JWKFinderManagerInterface $jwk_finder_manager,
         PayloadConverterManagerInterface $payload_converter_manager,
         CompressionManagerInterface $compression_manager,
         CheckerManagerInterface $checker_manager)
@@ -70,6 +74,7 @@ final class Loader implements LoaderInterface
         $this->setJWAManager($jwa_manager);
         $this->setJWKManager($jwk_manager);
         $this->setJWKSetManager($jwkset_manager);
+        $this->setJWKFinderManager($jwk_finder_manager);
         $this->setPayloadConverter($payload_converter_manager);
         $this->setCompressionManager($compression_manager);
         $this->setCheckerManager($checker_manager);
@@ -424,20 +429,9 @@ final class Loader implements LoaderInterface
 
     protected function getKeysFromCompleteHeader(array $header)
     {
-        $keys = $this->getJWKSetManager()->createJWKSet();
-        $jwk = $this->getJWKManager()->findJWK($header);
-        if ($jwk instanceof JWKInterface) {
-            $keys->addKey($jwk);
-        }
-        $jwkset = $this->getJWKSetManager()->findJWKSet($header);
-        if ($jwkset instanceof JWKSetInterface) {
-            foreach ($jwkset as $key) {
-                $keys->addKey($key);
-            }
-        }/* elseif ($jwkset instanceof JWKInterface) {
-            $keys->addKey($jwkset);
-        }*/
+        $keys = $this->getJWKFinderManager()->findJWK($header);
+        $jwkset = $this->getJWKSetManager()->createJWKSet($keys);
 
-        return $keys;
+        return $jwkset;
     }
 }

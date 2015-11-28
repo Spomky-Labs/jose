@@ -11,16 +11,16 @@
 
 namespace Jose\Test\Stub;
 
-use Jose\Finder\JWKSetFinderInterface;
+use Jose\Finder\JWKFinderInterface;
 
 /**
  */
-class AlgorithmFinder implements JWKSetFinderInterface
+class AlgorithmFinder implements JWKFinderInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function findJWKSet(array $header)
+    public function findJWK(array $header)
     {
         if (!isset($header['alg'])) {
             return;

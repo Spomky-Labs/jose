@@ -15,12 +15,12 @@ use Jose\KeyConverter\KeyConverter;
 
 /**
  */
-final class X5UFinder implements JWKSetFinderInterface
+final class X5UFinder implements JWKFinderInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function findJWKSet(array $header)
+    public function findJWK(array $header)
     {
         if (!isset($header['x5u'])) {
             return;

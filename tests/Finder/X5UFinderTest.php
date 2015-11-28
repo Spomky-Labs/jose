@@ -19,7 +19,7 @@ class X5UFinderTest extends \PHPUnit_Framework_TestCase
     public function testWithValidParameter1()
     {
         $finder = new X5UFinder();
-        $result = $finder->findJWKSet([
+        $result = $finder->findJWK([
             'x5u' => 'https://www.googleapis.com/oauth2/v1/certs',
         ]);
 

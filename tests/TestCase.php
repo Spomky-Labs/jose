@@ -63,6 +63,7 @@ use Jose\Finder\JWKFinder;
 use Jose\Finder\X5CFinder;
 use Jose\Finder\X5UFinder;
 use Jose\JWAManager;
+use Jose\JWKFinderManager;
 use Jose\JWKManager;
 use Jose\JWKSetManager;
 use Jose\JWTManager;
@@ -92,6 +93,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
             $this->getJWAManager(),
             $this->getJWKManager(),
             $this->getJWKSetManager(),
+            $this->getJWKFinderManager(),
             $this->getPayloadConverterManager(),
             $this->getCompressionManager(),
             $this->getCheckerManager()
@@ -183,32 +185,41 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Jose\JWKManager
+     * @return \Jose\JWKManagerInterface
      */
     protected function getJWKManager()
     {
         $key_manager = new JWKManager();
-        $key_manager->addJWKFinder(new JWKFinder());
-        $key_manager->addJWKFinder(new X5CFinder());
-        $key_manager->addJWKFinder(new APVFinder());
-        $key_manager->addJWKFinder(new KIDFinder());
 
         return $key_manager;
     }
 
     /**
-     * @return \Jose\JWKSetManager
+     * @return \Jose\JWKSetManagerInterface
      */
     protected function getJWKSetManager()
     {
         $keyset_manager = new JWKSetManager(
             $this->getJWKManager()
         );
-        $keyset_manager->addJWKSetFinder(new JKUFinder());
-        $keyset_manager->addJWKSetFinder(new X5UFinder());
-        $keyset_manager->addJWKSetFinder(new AlgorithmFinder());
 
         return $keyset_manager;
+    }
+
+    /**
+     * @return \Jose\JWKFinderManagerInterface
+     */
+    protected function getJWKFinderManager()
+    {
+        $jwk_finder_manager = new JWKFinderManager();
+
+        $jwk_finder_manager->addJWKFinder(new JWKFinder());
+        $jwk_finder_manager->addJWKFinder(new X5CFinder());
+        $jwk_finder_manager->addJWKFinder(new APVFinder());
+        $jwk_finder_manager->addJWKFinder(new KIDFinder());
+        $jwk_finder_manager->addJWKFinder(new AlgorithmFinder());
+
+        return $jwk_finder_manager;
     }
 
     /**

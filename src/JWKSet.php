@@ -29,6 +29,17 @@ final class JWKSet implements JWKSetInterface
     /**
      * {@inheritdoc}
      */
+    public function getKey($index)
+    {
+        if (!isset($this->keys[$index])) {
+            throw new \InvalidArgumentException('Undefined index.');
+        }
+        return $this->keys[$index];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getKeys()
     {
         return $this->keys;
@@ -39,7 +50,10 @@ final class JWKSet implements JWKSetInterface
      */
     public function addKey(JWKInterface $key)
     {
-        $this->keys[] = $key;
+        $keyset = clone $this;
+        $keyset->keys[] = $key;
+
+        return $keyset;
     }
 
     /**
@@ -48,8 +62,13 @@ final class JWKSet implements JWKSetInterface
     public function removeKey($key)
     {
         if (isset($this->keys[$key])) {
-            unset($this->keys[$key]);
+            $keyset = clone $this;
+            unset($keyset->keys[$key]);
+
+            return $keyset;
         }
+
+        return $this;
     }
 
     /**
@@ -71,45 +90,9 @@ final class JWKSet implements JWKSetInterface
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
-    {
-        $keys = $this->getKeys();
-
-        return isset($keys[$offset]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetGet($offset)
-    {
-        $keys = $this->getKeys();
-
-        return isset($keys[$offset]) ? $keys[$offset] : null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetSet($offset, $key)
-    {
-        $this->addKey($key);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function offsetUnset($offset)
-    {
-        $this->removeKey($offset);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function current()
     {
-        return $this->offsetGet($this->position);
+        return isset($this->keys[$this->position])?$this->keys[$this->position]:null;
     }
 
     /**

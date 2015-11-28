@@ -80,8 +80,8 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $jwkset = new JWKSet();
-        $jwkset[] = $jwk1;
-        $jwkset->addKey($jwk2);
+        $jwkset = $jwkset->addKey($jwk1);
+        $jwkset = $jwkset->addKey($jwk2);
 
         $this->assertEquals('{"keys":[{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"},{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","d":"jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI","use":"sign","key_ops":["verify"],"alg":"ES256","kid":"9876543210"}]}', json_encode($jwkset));
         $this->assertEquals(2, count($jwkset));
@@ -92,18 +92,48 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         }
         $this->assertEquals(2, $jwkset->key());
 
-        for ($i = 0; $i < count($jwkset);++$i) {
-            $this->assertEquals('EC', $jwkset[$i]->getKeyType());
-        }
-
-        $this->assertNull($jwkset[2]);
-        $this->assertEquals('9876543210', $jwkset[1]->getKeyID());
-        unset($jwkset[1]);
+        $this->assertEquals('9876543210', $jwkset->getKey(1)->getKeyID());
+        $jwkset = $jwkset->removeKey(1);
 
         $this->assertEquals(1, count($jwkset));
         $this->assertEquals(1, $jwkset->count());
 
-        $this->assertTrue(isset($jwkset[0]));
-        $this->assertFalse(isset($jwkset[1]));
+        $this->assertInstanceOf('\Jose\JWKInterface', $jwkset->getKey(0));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Undefined index.
+     */
+    public function testKeySet2()
+    {
+        $jwk1 = new JWK([
+            'kty'     => 'EC',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'use'     => 'sign',
+            'key_ops' => ['sign'],
+            'alg'     => 'ES256',
+            'kid'     => '0123456789',
+        ]);
+
+        $jwk2 = new JWK([
+            'kty'     => 'EC',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd'       => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
+            'use'     => 'sign',
+            'key_ops' => ['verify'],
+            'alg'     => 'ES256',
+            'kid'     => '9876543210',
+        ]);
+
+        $jwkset = new JWKSet();
+        $jwkset = $jwkset->addKey($jwk1);
+        $jwkset = $jwkset->addKey($jwk2);
+
+        $jwkset->getKey(2);
     }
 }

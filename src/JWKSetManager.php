@@ -31,32 +31,6 @@ final class JWKSetManager implements JWKSetManagerInterface
     }
 
     /**
-     * @var \Jose\Finder\JWKSetFinderInterface[]
-     */
-    private $finders = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    public function addJWKSetFinder(JWKSetFinderInterface $finder)
-    {
-        $this->finders[] = $finder;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findJWKSet(array $header)
-    {
-        foreach ($this->finders as $finder) {
-            $result = $finder->findJWKSet($header);
-            if (is_array($result)) {
-                return $this->createJWKSet($result);
-            }
-        }
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function createJWKSet(array $values = [])
@@ -65,7 +39,7 @@ final class JWKSetManager implements JWKSetManagerInterface
         if (array_key_exists('keys', $values)) {
             foreach ($values['keys'] as $value) {
                 $key = $this->getJWKManager()->createJWK($value);
-                $key_set->addKey($key);
+                $key_set = $key_set->addKey($key);
             }
         }
 

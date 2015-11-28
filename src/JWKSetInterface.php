@@ -11,8 +11,17 @@
 
 namespace Jose;
 
-interface JWKSetInterface extends \Countable, \ArrayAccess, \Iterator, \JsonSerializable
+interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable
 {
+    /**
+     * @param $index
+     *
+     * @throws
+     *
+     * @return \Jose\JWKInterface
+     */
+    public function getKey($index);
+
     /**
      * Returns all keys in the key set.
      *
@@ -24,6 +33,8 @@ interface JWKSetInterface extends \Countable, \ArrayAccess, \Iterator, \JsonSeri
      * Add key in the key set.
      *
      * @param \Jose\JWKInterface A key to store in the key set
+     *
+     * @return \Jose\JWKSetInterface
      */
     public function addKey(JWKInterface $key);
 
@@ -31,6 +42,8 @@ interface JWKSetInterface extends \Countable, \ArrayAccess, \Iterator, \JsonSeri
      * Remove key from the key set.
      *
      * @param int $key Key to remove from the key set
+     *
+     * @return \Jose\JWKSetInterface
      */
     public function removeKey($key);
 }

@@ -13,12 +13,12 @@ namespace Jose\Finder;
 
 /**
  */
-final class JKUFinder implements JWKSetFinderInterface
+final class JKUFinder implements JWKFinderInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function findJWKSet(array $header)
+    public function findJWK(array $header)
     {
         if (!isset($header['jku'])) {
             return;
