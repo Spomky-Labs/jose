@@ -34,6 +34,7 @@ final class JWKSet implements JWKSetInterface
         if (!isset($this->keys[$index])) {
             throw new \InvalidArgumentException('Undefined index.');
         }
+
         return $this->keys[$index];
     }
 
@@ -92,7 +93,7 @@ final class JWKSet implements JWKSetInterface
      */
     public function current()
     {
-        return isset($this->keys[$this->position])?$this->keys[$this->position]:null;
+        return isset($this->keys[$this->position]) ? $this->keys[$this->position] : null;
     }
 
     /**

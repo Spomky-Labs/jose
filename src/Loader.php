@@ -12,6 +12,11 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
+use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
+use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
@@ -24,11 +29,6 @@ use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
-use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
-use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
-use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
-use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
-use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -331,8 +331,8 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\JWEInterface                         $jwe
-     * @param string                                     $cek
+     * @param \Jose\JWEInterface                                           $jwe
+     * @param string                                                       $cek
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *
      * @return \Jose\JWEInterface

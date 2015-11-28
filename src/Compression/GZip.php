@@ -29,7 +29,7 @@ final class GZip implements CompressionInterface
      */
     public function __construct($compression_level = -1)
     {
-        if (!is_integer($compression_level) || $compression_level < -1 || $compression_level > 9) {
+        if (!is_int($compression_level) || $compression_level < -1 || $compression_level > 9) {
             throw new \InvalidArgumentException('The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.');
         }
 
@@ -61,6 +61,7 @@ final class GZip implements CompressionInterface
         if (false === $data) {
             throw new \RuntimeException('Unable to compress data');
         }
+
         return $data;
     }
 
@@ -73,6 +74,7 @@ final class GZip implements CompressionInterface
         if (false === $data) {
             throw new \RuntimeException('Unable to uncompress data');
         }
+
         return $data;
     }
 }

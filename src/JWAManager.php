@@ -64,7 +64,7 @@ final class JWAManager implements JWAManagerInterface
     }
 
     /**
-     * [@inheritdoc}
+     * [@inheritdoc}.
      */
     public function removeAlgorithm($algorithm)
     {

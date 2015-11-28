@@ -46,6 +46,7 @@ final class JWKFinderManager implements JWKFinderManagerInterface
                 }
             }
         }
+
         return $keys;
     }
 }
