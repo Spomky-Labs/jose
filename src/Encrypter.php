@@ -31,8 +31,8 @@ use Jose\Util\Converter;
 final class Encrypter implements EncrypterInterface
 {
     use HasKeyChecker;
-    use HasJWAManager;
     use HasJWTManager;
+    use HasJWAManager;
     use HasPayloadConverter;
     use HasCompressionManager;
 
@@ -45,12 +45,10 @@ final class Encrypter implements EncrypterInterface
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      */
     public function __construct(
-        JWTManagerInterface $jwt_manager,
         JWAManagerInterface $jwa_manager,
         PayloadConverterManagerInterface $payload_converter_manager,
         CompressionManagerInterface $compression_manager)
     {
-        $this->setJWTManager($jwt_manager);
         $this->setJWAManager($jwa_manager);
         $this->setPayloadConverter($payload_converter_manager);
         $this->setCompressionManager($compression_manager);

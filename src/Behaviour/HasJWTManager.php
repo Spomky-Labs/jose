@@ -11,28 +11,15 @@
 
 namespace Jose\Behaviour;
 
-use Jose\JWTManagerInterface;
+use Jose\JWTManager;
 
 trait HasJWTManager
 {
-    /**
-     * @var \Jose\JWTManagerInterface
-     */
-    private $jwt_manager;
-
-    /**
-     * @param \Jose\JWTManagerInterface $jwt_manager
-     */
-    private function setJWTManager(JWTManagerInterface $jwt_manager)
-    {
-        $this->jwt_manager = $jwt_manager;
-    }
-
     /**
      * @return \Jose\JWTManagerInterface
      */
     private function getJWTManager()
     {
-        return $this->jwt_manager;
+        return new JWTManager();
     }
 }

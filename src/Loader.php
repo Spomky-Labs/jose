@@ -51,29 +51,20 @@ final class Loader implements LoaderInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\JWTManagerInterface                      $jwt_manager
      * @param \Jose\JWAManagerInterface                      $jwa_manager
-     * @param \Jose\JWKManagerInterface                      $jwk_manager
-     * @param \Jose\JWKSetManagerInterface                   $jwkset_manager
      * @param \Jose\JWKFinderManagerInterface                $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
      */
     public function __construct(
-        JWTManagerInterface $jwt_manager,
         JWAManagerInterface $jwa_manager,
-        JWKManagerInterface $jwk_manager,
-        JWKSetManagerInterface $jwkset_manager,
         JWKFinderManagerInterface $jwk_finder_manager,
         PayloadConverterManagerInterface $payload_converter_manager,
         CompressionManagerInterface $compression_manager,
         CheckerManagerInterface $checker_manager)
     {
-        $this->setJWTManager($jwt_manager);
         $this->setJWAManager($jwa_manager);
-        $this->setJWKManager($jwk_manager);
-        $this->setJWKSetManager($jwkset_manager);
         $this->setJWKFinderManager($jwk_finder_manager);
         $this->setPayloadConverter($payload_converter_manager);
         $this->setCompressionManager($compression_manager);

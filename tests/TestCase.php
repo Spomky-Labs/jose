@@ -87,10 +87,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getLoader()
     {
         $loader = new Loader(
-            $this->getJWTManager(),
             $this->getJWAManager(),
-            $this->getJWKManager(),
-            $this->getJWKSetManager(),
             $this->getJWKFinderManager(),
             $this->getPayloadConverterManager(),
             $this->getCompressionManager(),
@@ -106,7 +103,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getSigner()
     {
         $signer = new Signer(
-            $this->getJWTManager(),
             $this->getJWAManager(),
             $this->getPayloadConverterManager()
         );
@@ -120,7 +116,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getEncrypter()
     {
         $encrypter = new Encrypter(
-            $this->getJWTManager(),
             $this->getJWAManager(),
             $this->getPayloadConverterManager(),
             $this->getCompressionManager()

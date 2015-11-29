@@ -11,28 +11,15 @@
 
 namespace Jose\Behaviour;
 
-use Jose\JWKSetManagerInterface;
+use Jose\JWKSetManager;
 
 trait HasJWKSetManager
 {
-    /**
-     * @var \Jose\JWKSetManagerInterface
-     */
-    private $jwkset_manager;
-
-    /**
-     * @param \Jose\JWKSetManagerInterface $jwkset_manager
-     */
-    private function setJWKSetManager(JWKSetManagerInterface $jwkset_manager)
-    {
-        $this->jwkset_manager = $jwkset_manager;
-    }
-
     /**
      * @return \Jose\JWKSetManagerInterface
      */
     private function getJWKSetManager()
     {
-        return $this->jwkset_manager;
+        return new JWKSetManager();
     }
 }
