@@ -28,8 +28,6 @@ final class CheckerManager implements CheckerManagerInterface
         foreach ($this->getCheckers() as $checker) {
             $checker->checkJWT($jwt);
         }
-
-        return $this;
     }
 
     /**
@@ -38,8 +36,6 @@ final class CheckerManager implements CheckerManagerInterface
     public function addChecker(CheckerInterface $checker)
     {
         $this->checkers[] = $checker;
-
-        return $this;
     }
 
     /**

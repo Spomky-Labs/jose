@@ -25,12 +25,12 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     public function testGetValidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
-        $manager->addCompressionAlgorithm(new Deflate())
-                ->addCompressionAlgorithm(new GZip())
-                ->addCompressionAlgorithm(new ZLib());
+        $manager->addCompressionAlgorithm(new Deflate());
+        $manager->addCompressionAlgorithm(new GZip());
+        $manager->addCompressionAlgorithm(new ZLib());
 
         $compression = $manager->getCompressionAlgorithm('DEF');
-        $this->assertInstanceOf("Jose\Compression\CompressionInterface", $compression);
+        $this->assertInstanceOf('Jose\Compression\CompressionInterface', $compression);
     }
 
     /**
@@ -39,9 +39,9 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     public function testGetInvalidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
-        $manager->addCompressionAlgorithm(new Deflate())
-                ->addCompressionAlgorithm(new GZip())
-                ->addCompressionAlgorithm(new ZLib());
+        $manager->addCompressionAlgorithm(new Deflate());
+        $manager->addCompressionAlgorithm(new GZip());
+        $manager->addCompressionAlgorithm(new ZLib());
 
         $compression = $manager->getCompressionAlgorithm('FOO');
         $this->assertNull($compression);

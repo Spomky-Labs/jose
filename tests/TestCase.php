@@ -131,13 +131,13 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $checker_manager = new CheckerManager();
 
-        $checker_manager->addChecker(new AudienceChecker('My service'))
-                        ->addChecker(new CriticalChecker())
-                        ->addChecker(new ExpirationChecker())
-                        ->addChecker(new NotBeforeChecker())
-                        ->addChecker(new IssuedAtChecker())
-                        ->addChecker(new IssuerChecker())
-                        ->addChecker(new SubjectChecker());
+        $checker_manager->addChecker(new AudienceChecker('My service'));
+        $checker_manager->addChecker(new CriticalChecker());
+        $checker_manager->addChecker(new ExpirationChecker());
+        $checker_manager->addChecker(new NotBeforeChecker());
+        $checker_manager->addChecker(new IssuedAtChecker());
+        $checker_manager->addChecker(new IssuerChecker());
+        $checker_manager->addChecker(new SubjectChecker());
 
         return $checker_manager;
     }
@@ -148,8 +148,8 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getPayloadConverterManager()
     {
         $payload_converter_manager = new PayloadConverterManager();
-        $payload_converter_manager->addConverter(new JWKConverter($this->getJWKManager()))
-                                  ->addConverter(new JWKSetConverter($this->getJWKSetManager()));
+        $payload_converter_manager->addConverter(new JWKConverter());
+        $payload_converter_manager->addConverter(new JWKSetConverter());
 
         return $payload_converter_manager;
     }
@@ -170,9 +170,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getCompressionManager()
     {
         $compression_manager = new CompressionManager();
-        $compression_manager->addCompressionAlgorithm(new Deflate())
-                            ->addCompressionAlgorithm(new GZip())
-                            ->addCompressionAlgorithm(new ZLib());
+        $compression_manager->addCompressionAlgorithm(new Deflate());
+        $compression_manager->addCompressionAlgorithm(new GZip());
+        $compression_manager->addCompressionAlgorithm(new ZLib());
 
         return $compression_manager;
     }

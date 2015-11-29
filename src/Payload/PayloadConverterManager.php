@@ -32,8 +32,6 @@ final class PayloadConverterManager implements PayloadConverterManagerInterface
     public function addConverter(PayloadConverterInterface $converter)
     {
         $this->converters[] = $converter;
-
-        return $this;
     }
 
     /**

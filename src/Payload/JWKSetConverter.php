@@ -11,27 +11,15 @@
 
 namespace Jose\Payload;
 
+use Jose\Behaviour\HasJWKSetManager;
 use Jose\JWKSetInterface;
-use Jose\JWKSetManagerInterface;
 
 /**
  * Trait used to convert payload.
  */
 final class JWKSetConverter implements PayloadConverterInterface
 {
-    /**
-     * @var \Jose\JWKSetManagerInterface
-     */
-    private $jwkset_manager;
-
-    /**
-     * @param \Jose\JWKSetManagerInterface $jwkset_manager
-     */
-    public function __construct(JWKSetManagerInterface $jwkset_manager)
-    {
-        $this->jwkset_manager = $jwkset_manager;
-    }
-
+    use HasJWKSetManager;
     /**
      * {@inheritdoc}
      */
@@ -68,6 +56,6 @@ final class JWKSetConverter implements PayloadConverterInterface
             throw new \InvalidArgumentException('The content type claims content is a JWKSet, but cannot be converted into JWKSet');
         }
 
-        return $this->jwkset_manager->createJWKSet($jwk);
+        return $this->getJWKSetManager()->createJWKSet($jwk);
     }
 }

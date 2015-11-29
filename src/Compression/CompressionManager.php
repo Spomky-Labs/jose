@@ -27,8 +27,6 @@ final class CompressionManager implements CompressionManagerInterface
     public function addCompressionAlgorithm(CompressionInterface $compression_algorithm)
     {
         $this->compression_algorithms[$compression_algorithm->getMethodName()] = $compression_algorithm;
-
-        return $this;
     }
 
     /**
