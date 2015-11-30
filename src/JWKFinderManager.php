@@ -54,7 +54,7 @@ final class JWKFinderManager implements JWKFinderManagerInterface
     private function addKey(array &$keys, array $result, $key_type)
     {
         if (array_key_exists('keys', $result)) {
-            foreach($result['keys'] as $key) {
+            foreach ($result['keys'] as $key) {
                 $this->addKey($keys, $key, $key_type);
             }
         } else {
@@ -72,21 +72,22 @@ final class JWKFinderManager implements JWKFinderManagerInterface
      */
     private function isKeySearched(array $key, $key_type)
     {
-        if ($key_type&self::KEY_TYPE_DIRECT && true === $this->isDirectKey($key)) {
+        if ($key_type & self::KEY_TYPE_DIRECT && true === $this->isDirectKey($key)) {
             return true;
         }
-        if ($key_type&self::KEY_TYPE_NONE && true === $this->isNoneKey($key)) {
+        if ($key_type & self::KEY_TYPE_NONE && true === $this->isNoneKey($key)) {
             return true;
         }
-        if ($key_type&self::KEY_TYPE_SYMMETRIC && true === $this->isSymmetricKey($key)) {
+        if ($key_type & self::KEY_TYPE_SYMMETRIC && true === $this->isSymmetricKey($key)) {
             return true;
         }
-        if ($key_type&self::KEY_TYPE_PUBLIC && true === $this->isPublicKey($key)) {
+        if ($key_type & self::KEY_TYPE_PUBLIC && true === $this->isPublicKey($key)) {
             return true;
         }
-        if ($key_type&self::KEY_TYPE_PRIVATE && true === $this->isPrivateKey($key)) {
+        if ($key_type & self::KEY_TYPE_PRIVATE && true === $this->isPrivateKey($key)) {
             return true;
         }
+
         return false;
     }
 

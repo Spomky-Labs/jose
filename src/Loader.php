@@ -103,7 +103,7 @@ final class Loader implements LoaderInterface
         if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader(
                 $complete_header,
-                JWKFinderManagerInterface::KEY_TYPE_PRIVATE|JWKFinderManagerInterface::KEY_TYPE_DIRECT|JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC
+                JWKFinderManagerInterface::KEY_TYPE_PRIVATE | JWKFinderManagerInterface::KEY_TYPE_DIRECT | JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC
             );
         }
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
@@ -146,7 +146,7 @@ final class Loader implements LoaderInterface
         if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader(
                 $complete_header,
-                JWKFinderManagerInterface::KEY_TYPE_PUBLIC|JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC|JWKFinderManagerInterface::KEY_TYPE_NONE
+                JWKFinderManagerInterface::KEY_TYPE_PUBLIC | JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC | JWKFinderManagerInterface::KEY_TYPE_NONE
             );
         }
 
