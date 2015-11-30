@@ -20,6 +20,7 @@ use Jose\JWKSetInterface;
 final class JWKSetConverter implements PayloadConverterInterface
 {
     use HasJWKSetManager;
+
     /**
      * {@inheritdoc}
      */

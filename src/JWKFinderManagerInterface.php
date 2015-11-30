@@ -30,7 +30,7 @@ interface JWKFinderManagerInterface
      * Find key using the header.
      * This method will use JWK Finders and the header to identify a unique key ('kid', 'x5c', 'x5t'...).
      *
-     * @param array $header The header
+     * @param array $header   The header
      * @param int   $key_type
      *
      * @return array Returns an array of keys found according to the header
