@@ -101,7 +101,10 @@ final class Loader implements LoaderInterface
         $this->checkCompleteHeader($complete_header);
 
         if (null === $jwk_set) {
-            $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+            $jwk_set = $this->getKeysFromCompleteHeader(
+                $complete_header,
+                JWKFinderManagerInterface::KEY_TYPE_PRIVATE|JWKFinderManagerInterface::KEY_TYPE_DIRECT|JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC
+            );
         }
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
@@ -141,7 +144,10 @@ final class Loader implements LoaderInterface
         }
         $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
         if (null === $jwk_set) {
-            $jwk_set = $this->getKeysFromCompleteHeader($complete_header);
+            $jwk_set = $this->getKeysFromCompleteHeader(
+                $complete_header,
+                JWKFinderManagerInterface::KEY_TYPE_PUBLIC|JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC|JWKFinderManagerInterface::KEY_TYPE_NONE
+            );
         }
 
         $input = $jws->getEncodedProtectedHeader().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
@@ -408,19 +414,32 @@ final class Loader implements LoaderInterface
         return $content_encryption_algorithm;
     }
 
+    /**
+     * @param string $method
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return \Jose\Compression\CompressionInterface
+     */
     protected function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
         if (null === $compression_method) {
-            throw new \RuntimeException(sprintf("Compression method '%s' not supported"), $method);
+            throw new \InvalidArgumentException(sprintf("Compression method '%s' not supported"), $method);
         }
 
         return $compression_method;
     }
 
-    protected function getKeysFromCompleteHeader(array $header)
+    /**
+     * @param array $header
+     * @param int   $key_type
+     *
+     * @return \Jose\JWKSetInterface
+     */
+    protected function getKeysFromCompleteHeader(array $header, $key_type)
     {
-        $keys = $this->getJWKFinderManager()->findJWK($header);
+        $keys = $this->getJWKFinderManager()->findJWK($header, $key_type);
         $jwkset = $this->getJWKSetManager()->createJWKSet($keys);
 
         return $jwkset;
