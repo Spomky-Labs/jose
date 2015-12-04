@@ -11,28 +11,11 @@
 
 namespace Jose;
 
-use Jose\Finder\JWKFinderInterface;
-
 /**
  * Interface representing a JSON Web Key Manager.
  */
 interface JWKManagerInterface
 {
-    /**
-     * @param \Jose\Finder\JWKFinderInterface $finder
-     */
-    public function addJWKFinder(JWKFinderInterface $finder);
-
-    /**
-     * Find key using the header.
-     * This method will use JWK Finders and the header to identify a unique key ('kid', 'x5c', 'x5t'...).
-     *
-     * @param array $header The header
-     *
-     * @return \Jose\JWKInterface|null Returns a JWKInterface object according to the header or null
-     */
-    public function findJWK(array $header);
-
     /**
      * Create a JWK object.
      *

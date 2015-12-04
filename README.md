@@ -40,7 +40,7 @@ That is why we created to other projects to ease the use of this library:
 * [Jose Service](https://github.com/Spomky-Labs/jose-service): this project uses Pimple to provide only one service to rule them all.
 * [Jose Bundle](https://github.com/Spomky-Labs/JoseBundle): a Symfony 2.7+ bundle that provides easy to use services
 
-Finally, this library and all these projects are still in active development. Do not hesitate to send us your feedbacks!
+Finally, this library and all these projects are still in active development. Do not hesitate to send us your feedback!
 
 # Status of implementations
 
@@ -60,9 +60,10 @@ Please consider the following optional requirements:
 
 # Continuous Integration
 
-It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` with all algorithms.
+It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM`.
 
-Some tests on `HHVM` were skipped because PECL is not supported on Travis-CI with `HHVM`. Anyway, this library should work fine.
+Please note that `AxxxGCM` and `AxxxGCMKW` tests are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
+Anyway, as the this library should work fine.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
