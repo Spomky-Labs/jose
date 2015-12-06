@@ -194,4 +194,32 @@ class ECKeysTest extends TestCase
 
         ]);
     }
+
+    /**
+     */
+    public function testConvertPrivateKeyToPublic()
+    {
+        $private_ec_key = new ECKey([
+            'kty' => 'EC',
+            'kid' => 'Foo',
+            'crv' => 'P-256',
+            'use' => 'sig',
+            'd'   => 'q_VkzNnxTG39jHB0qkwA_SeVXud7yCHT7kb7kZv-0xQ',
+            'x'   => 'vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U',
+            'y'   => 'oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE',
+            'foo' => 'bar',
+        ]);
+
+        $public_ec_key = ECKey::toPublic($private_ec_key);
+
+        $this->assertEquals([
+            'kty' => 'EC',
+            'kid' => 'Foo',
+            'crv' => 'P-256',
+            'use' => 'sig',
+            'x'   => 'vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U',
+            'y'   => 'oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE',
+            'foo' => 'bar',
+        ], $public_ec_key->toArray());
+    }
 }

@@ -22,17 +22,15 @@ use Jose\JWKInterface;
 
 final class RSAKey extends Sequence
 {
-    private $private;
-    private $n;
-    private $e;
-    private $d;
-    private $p;
-    private $q;
-    private $dp;
-    private $dq;
-    private $qi;
-    private $use;
-    private $key_ops;
+    /**
+     * @var bool
+     */
+    private $private = false;
+
+    /**
+     * @var array
+     */
+    private $values = [];
 
     /**
      * @param \Jose\JWKInterface|string|array $data
@@ -50,7 +48,7 @@ final class RSAKey extends Sequence
         } else {
             throw new \InvalidArgumentException('Unsupported input');
         }
-        $this->private = null !== $this->d;
+        $this->private = isset($this->values['d']);
     }
 
     /**
@@ -75,16 +73,21 @@ final class RSAKey extends Sequence
             throw new \Exception('Unable to load the key');
         }
 
+        $this->values['kty'] = 'RSA';
+        $keys = [
+            'n' => 'n',
+            'e' => 'e',
+            'd' => 'd',
+            'p' => 'p',
+            'q' => 'q',
+            'dp' => 'dmp1',
+            'dq' => 'dmq1',
+            'qi' => 'iqmp',
+        ];
         foreach ($details['rsa'] as $key => $value) {
-            $value = Base64Url::encode($value);
-            if ($key === 'dmp1') {
-                $this->dp = $value;
-            } elseif ($key === 'dmq1') {
-                $this->dq = $value;
-            } elseif ($key === 'iqmp') {
-                $this->qi = $value;
-            } else {
-                $this->$key = $value;
+            if (in_array($key, $keys)) {
+                $value = Base64Url::encode($value);
+                $this->values[array_search($key, $keys)] = $value;
             }
         }
     }
@@ -98,22 +101,13 @@ final class RSAKey extends Sequence
             throw new \InvalidArgumentException('JWK is not a RSA key');
         }
 
-        $this->n = $jwk['n'];
-        $this->e = $jwk['e'];
-        $this->use = isset($jwk['use']) ? $jwk['use'] : null;
-        $this->key_ops = isset($jwk['key_ops']) ? $jwk['key_ops'] : null;
+        $this->values = $jwk;
         if (array_key_exists('p', $jwk)) {
-            $this->private = true;
-            $this->p = $jwk['p'];
-            $this->d = $jwk['d'];
-            $this->q = $jwk['q'];
-            $this->dp = isset($jwk['dp']) ? $jwk['dp'] : Base64Url::encode(0);
-            $this->dq = isset($jwk['dq']) ? $jwk['dq'] : Base64Url::encode(0);
-            $this->qi = isset($jwk['qi']) ? $jwk['qi'] : Base64Url::encode(0);
+            $this->values['dp'] = isset($jwk['dp']) ? $jwk['dp'] : Base64Url::encode(0);
+            $this->values['dq'] = isset($jwk['dq']) ? $jwk['dq'] : Base64Url::encode(0);
+            $this->values['qi'] = isset($jwk['qi']) ? $jwk['qi'] : Base64Url::encode(0);
             $this->initPrivateKey();
         } else {
-            $this->private = false;
-            $this->d = null;
             $this->initPublicKey();
         }
     }
@@ -128,8 +122,8 @@ final class RSAKey extends Sequence
         $oid_sequence->addChild(new NullObject());
         $this->addChild($oid_sequence);
 
-        $n = new Integer($this->fromBase64ToInteger($this->n));
-        $e = new Integer($this->fromBase64ToInteger($this->e));
+        $n = new Integer($this->fromBase64ToInteger($this->values['n']));
+        $e = new Integer($this->fromBase64ToInteger($this->values['e']));
 
         $key_sequence = new Sequence();
         $key_sequence->addChild($n);
@@ -151,14 +145,14 @@ final class RSAKey extends Sequence
         $this->addChild($oid_sequence);
 
         $v = new Integer(0);
-        $n = new Integer($this->fromBase64ToInteger($this->n));
-        $e = new Integer($this->fromBase64ToInteger($this->e));
-        $d = new Integer($this->fromBase64ToInteger($this->d));
-        $p = new Integer($this->fromBase64ToInteger($this->p));
-        $q = new Integer($this->fromBase64ToInteger($this->q));
-        $dp = new Integer($this->fromBase64ToInteger($this->dp));
-        $dq = new Integer($this->fromBase64ToInteger($this->dq));
-        $qi = new Integer($this->fromBase64ToInteger($this->qi));
+        $n = new Integer($this->fromBase64ToInteger($this->values['n']));
+        $e = new Integer($this->fromBase64ToInteger($this->values['e']));
+        $d = new Integer($this->fromBase64ToInteger($this->values['d']));
+        $p = new Integer($this->fromBase64ToInteger($this->values['p']));
+        $q = new Integer($this->fromBase64ToInteger($this->values['q']));
+        $dp = new Integer($this->fromBase64ToInteger($this->values['dp']));
+        $dq = new Integer($this->fromBase64ToInteger($this->values['dq']));
+        $qi = new Integer($this->fromBase64ToInteger($this->values['qi']));
 
         $key_sequence = new Sequence();
         $key_sequence->addChild($v);
@@ -220,27 +214,7 @@ final class RSAKey extends Sequence
      */
     public function toArray()
     {
-        $values = [
-            'kty' => 'RSA',
-            'n'   => $this->n,
-            'e'   => $this->e,
-        ];
-        if (null !== $this->use) {
-            $values['use'] = $this->use;
-        }
-        if (null !== $this->key_ops) {
-            $values['key_ops'] = $this->key_ops;
-        }
-        if (true === $this->private) {
-            $values['p'] = $this->p;
-            $values['d'] = $this->d;
-            $values['q'] = $this->q;
-            $values['dp'] = $this->dp;
-            $values['dq'] = $this->dq;
-            $values['qi'] = $this->qi;
-        }
-
-        return $values;
+        return $this->values;
     }
 
     /**

@@ -23,13 +23,15 @@ use Jose\JWKInterface;
 
 final class ECKey extends Sequence
 {
-    private $private;
-    private $curve;
-    private $d;
-    private $x;
-    private $y;
-    private $use;
-    private $key_ops;
+    /**
+     * @var bool
+     */
+    private $private = false;
+
+    /**
+     * @var array
+     */
+    private $values = [];
 
     /**
      * @param \Jose\JWKInterface|string|array $data
@@ -47,6 +49,7 @@ final class ECKey extends Sequence
         } else {
             throw new \InvalidArgumentException('Unsupported input');
         }
+        $this->private = isset($this->values['d']);
     }
 
     /**
@@ -88,18 +91,10 @@ final class ECKey extends Sequence
         if (!array_key_exists('x', $jwk) || !array_key_exists('y', $jwk)) {
             throw new \InvalidArgumentException('Point parameters are missing');
         }
-        $this->curve = $jwk['crv'];
-        $this->x = $jwk['x'];
-        $this->y = $jwk['y'];
-        $this->use = isset($jwk['use']) ? $jwk['use'] : null;
-        $this->key_ops = isset($jwk['key_ops']) ? $jwk['key_ops'] : null;
+        $this->values = $jwk;
         if (array_key_exists('d', $jwk)) {
-            $this->private = true;
-            $this->d = $jwk['d'];
             $this->initPrivateKey();
         } else {
-            $this->private = false;
-            $this->d = null;
             $this->initPublicKey();
         }
     }
@@ -111,12 +106,12 @@ final class ECKey extends Sequence
     {
         $oid_sequence = new Sequence();
         $oid_sequence->addChild(new ObjectIdentifier('1.2.840.10045.2.1'));
-        $oid_sequence->addChild(new ObjectIdentifier($this->getOID($this->curve)));
+        $oid_sequence->addChild(new ObjectIdentifier($this->getOID($this->values['crv'])));
         $this->addChild($oid_sequence);
 
         $bits = '04';
-        $bits .= bin2hex(Base64Url::decode($this->x));
-        $bits .= bin2hex(Base64Url::decode($this->y));
+        $bits .= bin2hex(Base64Url::decode($this->values['x']));
+        $bits .= bin2hex(Base64Url::decode($this->values['y']));
         $this->addChild(new BitString($bits));
     }
 
@@ -126,14 +121,14 @@ final class ECKey extends Sequence
     private function initPrivateKey()
     {
         $this->addChild(new Integer(1));
-        $this->addChild(new OctetString(bin2hex(Base64Url::decode($this->d))));
+        $this->addChild(new OctetString(bin2hex(Base64Url::decode($this->values['d']))));
 
-        $oid = new ObjectIdentifier($this->getOID($this->curve));
+        $oid = new ObjectIdentifier($this->getOID($this->values['crv']));
         $this->addChild(new ExplicitlyTaggedObject(0, $oid));
 
         $bits = '04';
-        $bits .= bin2hex(Base64Url::decode($this->x));
-        $bits .= bin2hex(Base64Url::decode($this->y));
+        $bits .= bin2hex(Base64Url::decode($this->values['x']));
+        $bits .= bin2hex(Base64Url::decode($this->values['y']));
         $bit = new BitString($bits);
         $this->addChild(new ExplicitlyTaggedObject(1, $bit));
     }
@@ -168,10 +163,10 @@ final class ECKey extends Sequence
             throw new \Exception('Unsupported key type');
         }
 
-        $this->private = false;
-        $this->curve = $this->getCurve($sub[1]->getContent());
-        $this->x = Base64Url::encode(hex2bin(substr($bits, 2, (strlen($bits) - 2) / 2)));
-        $this->y = Base64Url::encode(hex2bin(substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
+        $this->values['kty'] = 'EC';
+        $this->values['crv'] = $this->getCurve($sub[1]->getContent());
+        $this->values['x'] = Base64Url::encode(hex2bin(substr($bits, 2, (strlen($bits) - 2) / 2)));
+        $this->values['y'] = Base64Url::encode(hex2bin(substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
     }
 
     /**
@@ -253,10 +248,11 @@ final class ECKey extends Sequence
         $curve = $children[2]->getContent()->getContent();
 
         $this->private = true;
-        $this->curve = $this->getCurve($curve);
-        $this->d = Base64Url::encode(hex2bin($d));
-        $this->x = Base64Url::encode(hex2bin($x));
-        $this->y = Base64Url::encode(hex2bin($y));
+        $this->values['kty'] = 'EC';
+        $this->values['crv'] = $this->getCurve($curve);
+        $this->values['d'] = Base64Url::encode(hex2bin($d));
+        $this->values['x'] = Base64Url::encode(hex2bin($x));
+        $this->values['y'] = Base64Url::encode(hex2bin($y));
     }
 
     /**
@@ -292,23 +288,7 @@ final class ECKey extends Sequence
      */
     public function toArray()
     {
-        $values = [
-            'kty' => 'EC',
-            'crv' => $this->curve,
-            'x'   => $this->x,
-            'y'   => $this->y,
-        ];
-        if (null !== $this->use) {
-            $values['use'] = $this->use;
-        }
-        if (null !== $this->key_ops) {
-            $values['key_ops'] = $this->key_ops;
-        }
-        if (true === $this->private) {
-            $values['d'] = $this->d;
-        }
-
-        return $values;
+        return $this->values;
     }
 
     /**

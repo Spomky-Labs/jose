@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\Finder\JWKFinderInterface;
-
 /**
  */
 final class JWKManager implements JWKManagerInterface
