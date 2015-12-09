@@ -72,8 +72,6 @@ final class Decrypter implements DecrypterInterface
      */
     public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set = null)
     {
-        //$complete_header = $jwe->getHeaders();
-
         $this->checkCompleteHeader($jwe->getHeaders());
 
         if (null === $jwk_set) {

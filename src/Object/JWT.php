@@ -42,7 +42,7 @@ class JWT implements JWTInterface
     private $unprotected_headers = [];
 
     /**
-     * @var null
+     * @var mixed|null
      */
     private $payload = null;
 

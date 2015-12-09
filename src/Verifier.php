@@ -72,10 +72,10 @@ final class Verifier implements VerifierInterface
         if (null !== $detached_payload && !empty($jws->getPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
         }
-        $complete_header = $jws->getHeaders();
+        
         if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader(
-                $complete_header,
+                $jws->getHeaders(),
                 JWKFinderManagerInterface::KEY_TYPE_PUBLIC | JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC | JWKFinderManagerInterface::KEY_TYPE_NONE
             );
         }
@@ -86,7 +86,7 @@ final class Verifier implements VerifierInterface
             return false;
         }
         foreach ($jwk_set->getKeys() as $jwk) {
-            $algorithm = $this->getAlgorithm($complete_header, $jwk);
+            $algorithm = $this->getAlgorithm($jws->getHeaders());
             if (!$this->checkKeyUsage($jwk, 'verification')) {
                 continue;
             }
@@ -108,22 +108,16 @@ final class Verifier implements VerifierInterface
     }
 
     /**
-     * @param array                     $header
-     * @param \Jose\Object\JWKInterface $key
+     * @param array $header
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface|null
      */
-    private function getAlgorithm(array $header, JWKInterface $key)
+    private function getAlgorithm(array $header)
     {
         if (!array_key_exists('alg', $header)) {
-            //if (!$key->hasHeader('alg')) {
             throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
-        }/* else {
-                $alg = $key->getHeader('alg');
-            }*/
-        //} else {
+        }
         $alg = $header['alg'];
-        //}
 
         $algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$algorithm instanceof SignatureInterface) {
