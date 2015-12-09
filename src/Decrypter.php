@@ -47,8 +47,8 @@ final class Decrypter implements DecrypterInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
-     * @param \Jose\Finder\JWKFinderManagerInterface                $jwk_finder_manager
+     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
+     * @param \Jose\Finder\JWKFinderManagerInterface         $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
@@ -98,6 +98,7 @@ final class Decrypter implements DecrypterInterface
                 if (null !== $cek) {
                     if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm)) {
                         $this->getCheckerManager()->checkJWT($jwe);
+
                         return true;
                     }
                 }
@@ -110,9 +111,9 @@ final class Decrypter implements DecrypterInterface
     }
 
     /**
-     * @param \Jose\Algorithm\JWAInterface                                           $key_encryption_algorithm
+     * @param \Jose\Algorithm\JWAInterface                                 $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
-     * @param \Jose\Object\JWKInterface                                           $key
+     * @param \Jose\Object\JWKInterface                                    $key
      * @param string|null                                                  $encrypted_cek
      * @param array                                                        $header
      *
@@ -134,7 +135,7 @@ final class Decrypter implements DecrypterInterface
     }
 
     /**
-     * @param \Jose\Object\JWEInterface                                           $jwe
+     * @param \Jose\Object\JWEInterface                                    $jwe
      * @param string                                                       $cek
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *

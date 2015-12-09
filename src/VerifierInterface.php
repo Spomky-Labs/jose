@@ -10,6 +10,7 @@
  */
 
 namespace Jose;
+
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 
@@ -18,7 +19,6 @@ use Jose\Object\JWSInterface;
  */
 interface VerifierInterface
 {
-
     /**
      * Verify the signature of the input.
      * The input must be a valid JWS. This method is usually called after the "load" method.

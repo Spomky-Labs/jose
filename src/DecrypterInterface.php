@@ -10,6 +10,7 @@
  */
 
 namespace Jose;
+
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKSetInterface;
 
