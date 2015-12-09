@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class AudienceChecker implements CheckerInterface
 {
@@ -30,11 +30,10 @@ final class AudienceChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $aud = $jwt->getAudience();
-        if (null === $aud) {
+        if (!$jwt->hasClaim('aud')) {
             return;
         }
-
+        $aud = $jwt->getClaim('aud');
         if (is_string($aud) && $this->audience == $aud) {
             return;
         }

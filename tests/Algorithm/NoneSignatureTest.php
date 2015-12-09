@@ -10,9 +10,9 @@
  */
 
 use Jose\Algorithm\Signature\None;
-use Jose\JWK;
-use Jose\JWT;
-use Jose\SignatureInstruction;
+use Jose\Object\JWK;
+use Jose\Object\JWT;
+use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**
@@ -60,7 +60,7 @@ class NoneSignatureTest extends TestCase
     public function testNoneSignAndVerifyComplete()
     {
         $jwt = new JWT();
-        $jwt = $jwt->withProtectedHeader([
+        $jwt = $jwt->withProtectedHeaders([
             'alg' => 'none',
         ]);
         $jwt = $jwt->withPayload('Je suis Charlie');
@@ -80,9 +80,9 @@ class NoneSignatureTest extends TestCase
 
         $result = $loader->load($signed);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
 
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('none', $result->getAlgorithm());
+        $this->assertEquals('none', $result->getHeader('alg'));
     }
 }

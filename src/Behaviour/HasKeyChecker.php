@@ -11,12 +11,12 @@
 
 namespace Jose\Behaviour;
 
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 trait HasKeyChecker
 {
     /**
-     * @param \Jose\JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param string             $usage
      *
      * @throws \InvalidArgumentException
@@ -25,13 +25,11 @@ trait HasKeyChecker
      */
     private function checkKeyUsage(JWKInterface $key, $usage)
     {
-        $use = $key->getPublicKeyUse();
-        $ops = $key->getKeyOperations();
-        if (null === $use && null === $ops) {
+        if (!$key->has('use') && !$key->has('key_ops')) {
             return true;
         }
-
-        if (null !== $use) {
+        if ($key->has('use')) {
+            $use = $key->get('use');
             switch ($usage) {
                 case 'verification':
                 case 'signature':
@@ -50,7 +48,7 @@ trait HasKeyChecker
                 default:
                     throw new \InvalidArgumentException('Unsupported key usage.');
             }
-        } elseif (is_array($ops)) {
+        } elseif ($key->has('key_ops') && is_array($ops = $key->get('key_ops'))) {
             switch ($usage) {
                 case 'verification':
                     if (in_array('verify', $ops)) {
@@ -85,15 +83,17 @@ trait HasKeyChecker
     }
 
     /**
-     * @param \Jose\JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param string             $algorithm
      *
      * @return bool
      */
     private function checkKeyAlgorithm(JWKInterface $key, $algorithm)
     {
-        $alg = $key->getAlgorithm();
+        if (!$key->has('alg')) {
+            return true;
+        }
 
-        return null === $alg || $alg === $algorithm;
+        return $key->get('alg') === $algorithm;
     }
 }

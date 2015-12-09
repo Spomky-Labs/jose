@@ -11,7 +11,7 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 use Jose\KeyConverter\KeyConverter;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
@@ -26,7 +26,7 @@ abstract class RSA implements KeyEncryptionInterface
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e']));
+        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e']));
         $rsa = $this->getRsaObject($values);
 
         try {
@@ -48,7 +48,7 @@ abstract class RSA implements KeyEncryptionInterface
     public function decryptKey(JWKInterface $key, $encrypted_key, array $header)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
+        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
         $rsa = $this->getRsaObject($values);
 
         try {
@@ -87,7 +87,7 @@ abstract class RSA implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('RSA' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'RSA' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

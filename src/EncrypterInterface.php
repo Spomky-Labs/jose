@@ -22,8 +22,8 @@ interface EncrypterInterface
      * To encrypt the input using different algorithms, the "alg" parameter must be set in the unprotected header of the $instruction.
      * Please note that this is not possible when using the algorithms "dir" or "ECDH-ES".
      *
-     * @param \Jose\JWTInterface|\Jose\JWKInterface|\Jose\JWKSetInterface|array|string $input                     A JWKInterface/JWKInterface/JWKSetInterface object
-     * @param \Jose\EncryptionInstructionInterface[]                                   $instructions              A list of instructions used to encrypt the input
+     * @param \Jose\Object\JWTInterface|\Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface|array|string $input                     A JWKInterface/JWKInterface/JWKSetInterface object
+     * @param \Jose\Object\EncryptionInstructionInterface[]                                   $instructions              A list of instructions used to encrypt the input
      * @param array                                                                    $shared_protected_header   Shared protected headers. If the input is a JWTInterface object, this parameter is merged with the protected header of the input.
      * @param array                                                                    $shared_unprotected_header Shared unprotected headers. If the input is a JWTInterface object, this parameter is merged with the unprotected header of the input.
      * @param string                                                                   $serialization             Serialization method.

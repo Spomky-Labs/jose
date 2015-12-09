@@ -11,17 +11,17 @@
 
 namespace Jose\Behaviour;
 
-use Jose\JWAManagerInterface;
+use Jose\Algorithm\JWAManagerInterface;
 
 trait HasJWAManager
 {
     /**
-     * @var \Jose\JWAManagerInterface
+     * @var \Jose\Algorithm\JWAManagerInterface
      */
     private $jwa_manager;
 
     /**
-     * @param \Jose\JWAManagerInterface $jwa_manager
+     * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
      */
     private function setJWAManager(JWAManagerInterface $jwa_manager)
     {
@@ -29,7 +29,7 @@ trait HasJWAManager
     }
 
     /**
-     * @return \Jose\JWAManagerInterface
+     * @return \Jose\Algorithm\JWAManagerInterface
      */
     private function getJWAManager()
     {

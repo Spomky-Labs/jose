@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 abstract class SubjectChecker implements CheckerInterface
 {
@@ -27,8 +27,11 @@ abstract class SubjectChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $sub = $jwt->getSubject();
-        if (null !== $sub && !$this->isSubjectValid($sub)) {
+        if (!$jwt->hasClaim('sub')) {
+            return;
+        }
+        $sub = $jwt->getClaim('sub');
+        if (!$this->isSubjectValid($sub)) {
             throw new \Exception('Invalid subject.');
         }
     }

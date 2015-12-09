@@ -9,12 +9,13 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 interface JWSInterface extends JWTInterface
 {
     /**
      * Returns the signature associated with the loaded JWS.
+     * Note: This method is used internally and should not be used directly.
      *
      * @return string
      */
@@ -22,10 +23,11 @@ interface JWSInterface extends JWTInterface
 
     /**
      * Set the signature associated with the loaded JWS.
+     * Note: This method is used internally and should not be used directly.
      *
      * @param string $signature The signature
      *
-     * @return \Jose\JWSInterface
+     * @return \Jose\Object\JWSInterface
      */
     public function withSignature($signature);
 }

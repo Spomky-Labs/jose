@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
@@ -41,12 +41,12 @@ abstract class ECDSA implements SignatureInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
-        if (null === $key->getValue('d')) {
+        if (!$key->has('d')) {
             throw new \InvalidArgumentException('The EC key is not private');
         }
 
         $p = $this->getGenerator();
-        $d = $this->convertBase64ToDec($key->getValue('d'));
+        $d = $this->convertBase64ToDec($key->get('d'));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $k = RandomGeneratorFactory::getRandomGenerator()->generate($p->getOrder());
@@ -78,8 +78,8 @@ abstract class ECDSA implements SignatureInterface
         }
 
         $p = $this->getGenerator();
-        $x = $this->convertBase64ToDec($key->getValue('x'));
-        $y = $this->convertBase64ToDec($key->getValue('y'));
+        $x = $this->convertBase64ToDec($key->get('x'));
+        $y = $this->convertBase64ToDec($key->get('y'));
         $R = $this->convertHexToDec(substr($signature, 0, $part_length));
         $S = $this->convertHexToDec(substr($signature, $part_length));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
@@ -163,8 +163,11 @@ abstract class ECDSA implements SignatureInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if ('EC' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
+        }
+        if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
+            throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
         }
     }
 }

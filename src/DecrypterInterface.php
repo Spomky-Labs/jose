@@ -9,17 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Behaviour;
+namespace Jose;
 
-use Jose\JWKManager;
-
-trait HasJWKManager
+/**
+ * Decrypter Interface.
+ */
+interface DecrypterInterface
 {
-    /**
-     * @return \Jose\JWKManagerInterface
-     */
-    private function getJWKManager()
-    {
-        return new JWKManager();
-    }
 }

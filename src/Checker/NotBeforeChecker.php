@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class NotBeforeChecker implements CheckerInterface
 {
@@ -20,8 +20,11 @@ final class NotBeforeChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $nbf = $jwt->getNotBefore();
-        if (null !== $nbf && time() < $nbf) {
+        if (!$jwt->hasClaim('nbf')) {
+            return;
+        }
+        $nbf = (int) $jwt->getClaim('nbf');
+        if (time() < $nbf) {
             throw new \Exception('Can not use this JWT yet.');
         }
     }

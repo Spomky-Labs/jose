@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\KeyEncryption;
 
 use Jose\Algorithm\EncryptionInterface;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 /**
  *
@@ -22,8 +22,8 @@ interface KeyAgreementWrappingInterface extends EncryptionInterface
     /**
      * Wrap the agreement key.
      *
-     * @param \Jose\JWKInterface $sender_key               The sender's key
-     * @param \Jose\JWKInterface $receiver_key             The receiver's key
+     * @param \Jose\Object\JWKInterface $sender_key               The sender's key
+     * @param \Jose\Object\JWKInterface $receiver_key             The receiver's key
      * @param string             $cek                      The CEK to wrap
      * @param int                $encryption_key_length    Size of the key expected for the algorithm used for data encryption
      * @param array              $complete_header          The complete header of the JWT
@@ -38,7 +38,7 @@ interface KeyAgreementWrappingInterface extends EncryptionInterface
     /**
      * Unwrap the agreement key.
      *
-     * @param \Jose\JWKInterface $receiver_key          The receiver's key
+     * @param \Jose\Object\JWKInterface $receiver_key          The receiver's key
      * @param string             $encrypted_cek         The encrypted CEK
      * @param int                $encryption_key_length Size of the key expected for the algorithm used for data encryption
      * @param array              $complete_header       The complete header of the JWT

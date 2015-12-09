@@ -13,7 +13,7 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Crypto\Cipher;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 /**
  * Class AESGCMKW.
@@ -21,7 +21,7 @@ use Jose\JWKInterface;
 abstract class AESGCMKW implements KeyEncryptionInterface
 {
     /**
-     * @param JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param string       $cek
      * @param array        $header
      *
@@ -34,7 +34,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $cipher->setAAD(null);
         $iv = openssl_random_pseudo_bytes(96 / 8);
-        $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->getValue('k')), $iv);
+        $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
 
         $header['iv'] = Base64Url::encode($iv);
         $header['tag'] = Base64Url::encode($cipher->getTag());
@@ -43,7 +43,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     }
 
     /**
-     * @param JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param string       $encryted_cek
      * @param array        $header
      *
@@ -58,7 +58,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         $cipher->setTag(Base64Url::decode($header['tag']));
         $cipher->setAAD(null);
 
-        $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->getValue('k')), Base64Url::decode($header['iv']));
+        $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
 
         return $cek;
     }
@@ -68,7 +68,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

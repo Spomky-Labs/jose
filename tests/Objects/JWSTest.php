@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\JWS;
+use Jose\Object\JWS;
 
 /**
  * Class JWSTest.
@@ -22,15 +22,15 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     public function testJWS()
     {
         $jws = new JWS();
-        $jws = $jws->withProtectedHeader([
+        $jws = $jws->withProtectedHeaders([
             'jty'  => 'JWT',
             'cty'  => 'JOSE+JSON',
             'crit' => ['alg', 'iss'],
         ]);
-        $jws = $jws->withUnprotectedHeader([
+        $jws = $jws->withUnprotectedHeaders([
             'alg' => 'ES256',
         ]);
-        $jws = $jws->withPayload([
+        $jws = $jws->withClaims([
             'jti' => 'ABCD',
             'iss' => 'me.example.com',
             'aud' => 'you.example.com',
@@ -40,23 +40,21 @@ class JWSTest extends \PHPUnit_Framework_TestCase
             'iat' => 123000,
         ]);
 
-        $this->assertEquals('ABCD', $jws->getJWTID());
-        $this->assertEquals('me.example.com', $jws->getIssuer());
-        $this->assertEquals('you.example.com', $jws->getAudience());
-        $this->assertEquals('him.example.com', $jws->getSubject());
-        $this->assertEquals(123456, $jws->getExpirationTime());
-        $this->assertEquals(123000, $jws->getNotBefore());
-        $this->assertEquals(123000, $jws->getIssuedAt());
-        $this->assertEquals('JOSE+JSON', $jws->getContentType());
-        $this->assertEquals('ES256', $jws->getAlgorithm());
-        $this->assertEquals('JWT', $jws->getType());
-        $this->assertNull($jws->getKeyID());
-        $this->assertNull($jws->getJWKUrl());
-        $this->assertNull($jws->getJWK());
-        $this->assertNull($jws->getX509Url());
-        $this->assertNull($jws->getX509CertificateChain());
-        $this->assertNull($jws->getX509CertificateSha1Thumbprint());
-        $this->assertNull($jws->getX509CertificateSha256Thumbprint());
-        $this->assertEquals(['alg', 'iss'], $jws->getCritical());
+
+        $this->assertEquals('ABCD', $jws->getClaim('jti'));
+        $this->assertEquals('me.example.com', $jws->getClaim('iss'));
+        $this->assertEquals('you.example.com', $jws->getClaim('aud'));
+        $this->assertEquals('him.example.com', $jws->getClaim('sub'));
+        $this->assertEquals(123456, $jws->getClaim('exp'));
+        $this->assertEquals(123000, $jws->getClaim('nbf'));
+        $this->assertEquals(123000, $jws->getClaim('iat'));
+        $this->assertEquals('JOSE+JSON', $jws->getProtectedHeader('cty'));
+        $this->assertEquals('ES256', $jws->getUnprotectedHeader('alg'));
+        $this->assertEquals('JWT', $jws->getProtectedHeader('jty'));
+        $this->assertFalse($jws->hasHeaderOrClaim('jwk'));
+        $this->assertFalse($jws->hasHeaderOrClaim('jku'));
+        $this->assertFalse($jws->hasHeaderOrClaim('kid'));
+        $this->assertFalse($jws->hasHeaderOrClaim('x5u'));
+        $this->assertEquals(['alg', 'iss'], $jws->getProtectedHeader('crit'));
     }
 }

@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 /**
  * Encryption Instruction Interface.
@@ -21,14 +21,14 @@ interface EncryptionInstructionInterface
     /**
      * The key used to encrypt the payload.
      *
-     * @return \Jose\JWKInterface
+     * @return \Jose\Object\JWKInterface
      */
     public function getRecipientKey();
 
     /**
      * The key of the sender. This key is only needed when using some algorithm that require it (e.g. agreement key algorithm such as ECDH-ES, ECDH-ES+A128KW, ECDH-ES+A192KW, ECDH-ES+A256KW).
      *
-     * @return \Jose\JWKInterface|null
+     * @return \Jose\Object\JWKInterface|null
      */
     public function getSenderKey();
 

@@ -11,7 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 use Jose\KeyConverter\KeyConverter;
 
 /**
@@ -36,7 +36,7 @@ abstract class RSA implements SignatureInterface
     {
         $this->checkKey($key);
 
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e']));
+        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e']));
         $rsa = KeyConverter::fromArrayToRSACrypt($values);
 
         $rsa->setHash($this->getAlgorithm());
@@ -56,7 +56,7 @@ abstract class RSA implements SignatureInterface
     {
         $this->checkKey($key);
 
-        $values = array_intersect_key($key->getValues(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
+        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
         $rsa = KeyConverter::fromArrayToRSACrypt($values);
 
         if ($rsa->getPrivateKey() === false) {
@@ -83,7 +83,7 @@ abstract class RSA implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('RSA' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'RSA' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

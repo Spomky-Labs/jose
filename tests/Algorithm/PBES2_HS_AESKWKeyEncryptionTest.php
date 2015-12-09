@@ -13,7 +13,7 @@ use Base64Url\Base64Url;
 use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
 use Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
 use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
-use Jose\JWK;
+use Jose\Object\JWK;
 
 /**
  * Class PBES2_HS_AESKWKeyEncryptionTest.

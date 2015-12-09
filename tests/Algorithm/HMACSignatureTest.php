@@ -12,7 +12,7 @@
 use Jose\Algorithm\Signature\HS256;
 use Jose\Algorithm\Signature\HS384;
 use Jose\Algorithm\Signature\HS512;
-use Jose\JWK;
+use Jose\Object\JWK;
 
 /**
  * Class HMACSignatureTest.

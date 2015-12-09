@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class CheckerManager implements CheckerManagerInterface
 {

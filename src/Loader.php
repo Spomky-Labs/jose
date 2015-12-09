@@ -13,6 +13,8 @@ namespace Jose;
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\JWAInterface;
+use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
@@ -22,13 +24,19 @@ use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasJWKFinderManager;
-use Jose\Behaviour\HasJWKManager;
-use Jose\Behaviour\HasJWKSetManager;
-use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
+use Jose\Finder\JWKFinderManagerInterface;
+use Jose\Object\JWE;
+use Jose\Object\JWEInterface;
+use Jose\Object\JWKInterface;
+use Jose\Object\JWKSet;
+use Jose\Object\JWKSetInterface;
+use Jose\Object\JWS;
+use Jose\Object\JWSInterface;
+use Jose\Object\JWTInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -40,9 +48,6 @@ final class Loader implements LoaderInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasJWTManager;
-    use HasJWKManager;
-    use HasJWKSetManager;
     use HasJWKFinderManager;
     use HasCheckerManager;
     use HasPayloadConverter;
@@ -51,8 +56,8 @@ final class Loader implements LoaderInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\JWAManagerInterface                      $jwa_manager
-     * @param \Jose\JWKFinderManagerInterface                $jwk_finder_manager
+     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Finder\JWKFinderManagerInterface                $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
@@ -93,10 +98,7 @@ final class Loader implements LoaderInterface
      */
     public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set = null)
     {
-        $complete_header = array_merge(
-            $jwe->getProtectedHeader(),
-            $jwe->getUnprotectedHeader()
-        );
+        $complete_header = $jwe->getHeaders();
 
         $this->checkCompleteHeader($complete_header);
 
@@ -142,7 +144,7 @@ final class Loader implements LoaderInterface
         if (null !== $detached_payload && !empty($jws->getPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
         }
-        $complete_header = array_merge($jws->getProtectedHeader(), $jws->getUnprotectedHeader());
+        $complete_header = $jws->getHeaders();
         if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader(
                 $complete_header,
@@ -150,7 +152,7 @@ final class Loader implements LoaderInterface
             );
         }
 
-        $input = $jws->getEncodedProtectedHeader().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
+        $input = $jws->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 
         if (0 === count($jwk_set)) {
             return false;
@@ -189,7 +191,7 @@ final class Loader implements LoaderInterface
      * @param array  $data
      * @param string $input
      *
-     * @return \Jose\JWSInterface|\Jose\JWSInterface[]
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWSInterface[]
      */
     protected function loadSerializedJsonJWS(array $data, $input)
     {
@@ -225,22 +227,22 @@ final class Loader implements LoaderInterface
      *
      * @throws \Exception
      *
-     * @return \Jose\JWSInterface
+     * @return \Jose\Object\JWSInterface
      */
     protected function createJWS($encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, $signature)
     {
         $complete_header = array_merge($protected_header, $unprotected_header);
         $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
-        $jws = $this->getJWTManager()->createJWS();
+        $jws = new JWS();
         $jws = $jws->withSignature($signature);
         $jws = $jws->withPayload($payload);
-        $jws = $jws->withEncodedProtectedHeader($encoded_protected_header);
+        $jws = $jws->withEncodedProtectedHeaders($encoded_protected_header);
         $jws = $jws->withEncodedPayload($encoded_payload);
         if (!empty($protected_header)) {
-            $jws = $jws->withProtectedHeader($protected_header);
+            $jws = $jws->withProtectedHeaders($protected_header);
         }
         if (!empty($unprotected_header)) {
-            $jws = $jws->withUnprotectedHeader($unprotected_header);
+            $jws = $jws->withUnprotectedHeaders($unprotected_header);
         }
 
         return $jws;
@@ -248,21 +250,21 @@ final class Loader implements LoaderInterface
 
     /**
      * @param array              $header
-     * @param \Jose\JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface|null
      */
     protected function getAlgorithm(array $header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $header)) {
-            if (null === $key->getAlgorithm()) {
+            //if (!$key->hasHeader('alg')) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
-            } else {
-                $alg = $key->getAlgorithm();
-            }
-        } else {
+            }/* else {
+                $alg = $key->getHeader('alg');
+            }*/
+        //} else {
             $alg = $header['alg'];
-        }
+        //}
 
         $algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$algorithm instanceof SignatureInterface) {
@@ -273,9 +275,9 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\JWAInterface                                           $key_encryption_algorithm
+     * @param \Jose\Algorithm\JWAInterface                                           $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
-     * @param \Jose\JWKInterface                                           $key
+     * @param \Jose\Object\JWKInterface                                           $key
      * @param string|null                                                  $encrypted_cek
      * @param array                                                        $header
      *
@@ -300,7 +302,7 @@ final class Loader implements LoaderInterface
      * @param array  $data
      * @param string $input
      *
-     * @return \Jose\JWEInterface|\Jose\JWEInterface[]
+     * @return \Jose\Object\JWEInterface|\Jose\Object\JWEInterface[]
      */
     protected function loadSerializedJsonJWE(array $data, $input)
     {
@@ -311,15 +313,15 @@ final class Loader implements LoaderInterface
             $unprotected_header = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : [];
 
-            $jwe = $this->getJWTManager()->createJWE();
+            $jwe = new JWE();
             $jwe = $jwe->withAAD(array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null);
             $jwe = $jwe->withCiphertext(Base64Url::decode($data['ciphertext']));
             $jwe = $jwe->withEncryptedKey(array_key_exists('encrypted_key', $recipient) ? Base64Url::decode($recipient['encrypted_key']) : null);
             $jwe = $jwe->withIV(array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null);
             $jwe = $jwe->withTag(array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null);
-            $jwe = $jwe->withProtectedHeader($protected_header);
-            $jwe = $jwe->withEncodedProtectedHeader($encoded_protected_header);
-            $jwe = $jwe->withUnprotectedHeader(array_merge($unprotected_header, $header));
+            $jwe = $jwe->withProtectedHeaders($protected_header);
+            $jwe = $jwe->withEncodedProtectedHeaders($encoded_protected_header);
+            $jwe = $jwe->withUnprotectedHeaders(array_merge($unprotected_header, $header));
             $jwe = $jwe->withInput($input);
             $result[] = $jwe;
         }
@@ -328,11 +330,11 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\JWEInterface                                           $jwe
+     * @param \Jose\Object\JWEInterface                                           $jwe
      * @param string                                                       $cek
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     protected function decryptPayload(JWEInterface &$jwe, $cek, $content_encryption_algorithm)
     {
@@ -341,7 +343,7 @@ final class Loader implements LoaderInterface
             $cek,
             $jwe->getIV(),
             $jwe->getAAD(),
-            $jwe->getEncodedProtectedHeader(),
+            $jwe->getEncodedProtectedHeaders(),
             $jwe->getTag()
         );
 
@@ -349,15 +351,15 @@ final class Loader implements LoaderInterface
             return false;
         }
 
-        if (null !== $jwe->getZip()) {
-            $compression_method = $this->getCompressionMethod($jwe->getZip());
+        if ($jwe->hasHeader('zip')) {
+            $compression_method = $this->getCompressionMethod($jwe->getHeader('zip'));
             $payload = $compression_method->uncompress($payload);
             if (!is_string($payload)) {
                 throw new \RuntimeException('Decompression failed');
             }
         }
 
-        $payload = $this->getPayloadConverter()->convertStringToPayload(array_merge($jwe->getProtectedHeader(), $jwe->getUnprotectedHeader()), $payload);
+        $payload = $this->getPayloadConverter()->convertStringToPayload($jwe->getHeaders(), $payload);
 
         $jwe = $jwe->withPayload($payload);
 
@@ -435,12 +437,12 @@ final class Loader implements LoaderInterface
      * @param array $header
      * @param int   $key_type
      *
-     * @return \Jose\JWKSetInterface
+     * @return \Jose\Object\JWKSetInterface
      */
     protected function getKeysFromCompleteHeader(array $header, $key_type)
     {
         $keys = $this->getJWKFinderManager()->findJWK($header, $key_type);
-        $jwkset = $this->getJWKSetManager()->createJWKSet($keys);
+        $jwkset = new JWKSet($keys);
 
         return $jwkset;
     }

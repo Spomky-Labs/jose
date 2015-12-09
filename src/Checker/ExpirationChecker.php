@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class ExpirationChecker implements CheckerInterface
 {
@@ -20,8 +20,11 @@ final class ExpirationChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $exp = $jwt->getExpirationTime();
-        if (null !== $exp && time() > $exp) {
+        if (!$jwt->hasClaim('exp')) {
+            return;
+        }
+        $exp = (int) $jwt->getClaim('exp');
+        if (time() > $exp) {
             throw new \Exception('The JWT has expired.');
         }
     }

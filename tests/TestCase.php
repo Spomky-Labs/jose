@@ -34,6 +34,7 @@ use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
 use Jose\Algorithm\KeyEncryption\RSA15;
 use Jose\Algorithm\KeyEncryption\RSAOAEP;
 use Jose\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\Algorithm\JWAManager;
 use Jose\Algorithm\Signature\ES256;
 use Jose\Algorithm\Signature\ES384;
 use Jose\Algorithm\Signature\ES512;
@@ -60,11 +61,7 @@ use Jose\Compression\ZLib;
 use Jose\Encrypter;
 use Jose\Finder\JWKFinder;
 use Jose\Finder\X5CFinder;
-use Jose\JWAManager;
-use Jose\JWKFinderManager;
-use Jose\JWKManager;
-use Jose\JWKSetManager;
-use Jose\JWTManager;
+use Jose\Finder\JWKFinderManager;
 use Jose\Loader;
 use Jose\Payload\JWKConverter;
 use Jose\Payload\JWKSetConverter;
@@ -155,16 +152,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Jose\JWTManager
-     */
-    protected function getJWTManager()
-    {
-        $jwt_manager = new JWTManager();
-
-        return $jwt_manager;
-    }
-
-    /**
      * @return \Jose\Compression\CompressionManager
      */
     protected function getCompressionManager()
@@ -178,29 +165,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Jose\JWKManagerInterface
-     */
-    protected function getJWKManager()
-    {
-        $key_manager = new JWKManager();
-
-        return $key_manager;
-    }
-
-    /**
-     * @return \Jose\JWKSetManagerInterface
-     */
-    protected function getJWKSetManager()
-    {
-        $keyset_manager = new JWKSetManager(
-            $this->getJWKManager()
-        );
-
-        return $keyset_manager;
-    }
-
-    /**
-     * @return \Jose\JWKFinderManagerInterface
+     * @return \Jose\Finder\JWKFinderManagerInterface
      */
     protected function getJWKFinderManager()
     {
@@ -216,7 +181,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return \Jose\JWAManager
+     * @return \Jose\Algorithm\JWAManager
      */
     protected function getJWAManager()
     {

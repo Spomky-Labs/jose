@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class CriticalChecker implements CheckerInterface
 {
@@ -20,12 +20,17 @@ final class CriticalChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $crit = $jwt->getCritical();
-        if (null !== $crit) {
-            foreach ($crit as $critical) {
-                if (null === $jwt->getHeaderValue($critical) && null === $jwt->getPayloadValue($critical)) {
-                    throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $critical));
-                }
+        if (!$jwt->hasProtectedHeader('crit')) {
+            return;
+        }
+        $crit = $jwt->getProtectedHeader('crit');
+        if (!is_array($crit)) {
+            throw new \RuntimeException('The header "crit" must contain an array');
+        }
+
+        foreach ($crit as $critical) {
+            if (!$jwt->hasHeaderOrClaim($critical)) {
+                throw new \Exception(sprintf("The claim/header '%s' is marked as critical but value is not set.", $critical));
             }
         }
     }

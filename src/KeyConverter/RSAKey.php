@@ -18,7 +18,7 @@ use FG\ASN1\Universal\NullObject;
 use FG\ASN1\Universal\ObjectIdentifier;
 use FG\ASN1\Universal\OctetString;
 use FG\ASN1\Universal\Sequence;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 final class RSAKey extends Sequence
 {
@@ -33,14 +33,14 @@ final class RSAKey extends Sequence
     private $values = [];
 
     /**
-     * @param \Jose\JWKInterface|string|array $data
+     * @param \Jose\Object\JWKInterface|string|array $data
      */
     public function __construct($data)
     {
         parent::__construct();
 
         if ($data instanceof JWKInterface) {
-            $this->loadJWK($data->getValues());
+            $this->loadJWK($data->getAll());
         } elseif (is_array($data)) {
             $this->loadJWK($data);
         } elseif (is_string($data)) {

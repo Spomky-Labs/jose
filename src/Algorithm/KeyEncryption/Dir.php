@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 final class Dir implements DirectEncryptionInterface
 {
@@ -21,11 +21,11 @@ final class Dir implements DirectEncryptionInterface
      */
     public function getCEK(JWKInterface $key, array $header)
     {
-        if ('dir' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'dir' !== $key->get('kty') || !$key->has('dir')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
 
-        return Base64Url::decode($key->getValue('dir'));
+        return Base64Url::decode($key->get('dir'));
     }
 
     /**

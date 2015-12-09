@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable
 {
@@ -18,23 +18,23 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable
      *
      * @throws
      *
-     * @return \Jose\JWKInterface
+     * @return \Jose\Object\JWKInterface
      */
     public function getKey($index);
 
     /**
      * Returns all keys in the key set.
      *
-     * @return \Jose\JWKInterface[] An array of keys stored in the key set
+     * @return \Jose\Object\JWKInterface[] An array of keys stored in the key set
      */
     public function getKeys();
 
     /**
      * Add key in the key set.
      *
-     * @param \Jose\JWKInterface A key to store in the key set
+     * @param \Jose\Object\JWKInterface A key to store in the key set
      *
-     * @return \Jose\JWKSetInterface
+     * @return \Jose\Object\JWKSetInterface
      */
     public function addKey(JWKInterface $key);
 
@@ -43,7 +43,7 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable
      *
      * @param int $key Key to remove from the key set
      *
-     * @return \Jose\JWKSetInterface
+     * @return \Jose\Object\JWKSetInterface
      */
     public function removeKey($key);
 }

@@ -10,9 +10,9 @@
  */
 
 use Jose\JSONSerializationModes;
-use Jose\JWK;
-use Jose\JWKSet;
-use Jose\SignatureInstruction;
+use Jose\Object\JWK;
+use Jose\Object\JWKSet;
+use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**

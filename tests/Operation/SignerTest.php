@@ -10,10 +10,10 @@
  */
 
 use Jose\JSONSerializationModes;
-use Jose\JWK;
-use Jose\JWKSet;
-use Jose\JWS;
-use Jose\SignatureInstruction;
+use Jose\Object\JWK;
+use Jose\Object\JWKSet;
+use Jose\Object\JWS;
+use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**
@@ -122,19 +122,19 @@ class SignerTest extends TestCase
         $this->assertTrue(is_string($signatures));
 
         /*
-         * @var \Jose\JWSInterface[]
+         * @var \Jose\Object\JWSInterface[]
          */
         $loaded = $loader->load($signatures);
 
         $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf('\Jose\JWSInterface', $loaded[0]);
-        $this->assertInstanceOf('\Jose\JWKInterface', $loaded[0]->getPayload());
-        $this->assertEquals('HS512', $loaded[0]->getAlgorithm());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[0]);
+        $this->assertInstanceOf('\Jose\Object\JWKInterface', $loaded[0]->getPayload());
+        $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
 
-        $this->assertInstanceOf('\Jose\JWSInterface', $loaded[1]);
-        $this->assertInstanceOf('\Jose\JWKInterface', $loaded[1]->getPayload());
-        $this->assertEquals('RS512', $loaded[1]->getAlgorithm());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[1]);
+        $this->assertInstanceOf('\Jose\Object\JWKInterface', $loaded[1]->getPayload());
+        $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
 
     /**
@@ -208,13 +208,13 @@ class SignerTest extends TestCase
         $this->assertTrue(is_string($signatures));
 
         /*
-         * @var \Jose\JWSInterface
+         * @var \Jose\Object\JWSInterface
          */
         $loaded = $loader->load($signatures);
 
-        $this->assertInstanceOf('\Jose\JWSInterface', $loaded);
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
         $this->assertTrue(is_array($loaded->getPayload()));
-        $this->assertEquals('HS512', $loaded->getAlgorithm());
+        $this->assertEquals('HS512', $loaded->getHeader('alg'));
     }
 
     /**
@@ -235,17 +235,17 @@ class SignerTest extends TestCase
         $loaded = $loader->load($signatures);
 
         /*
-         * @var \Jose\JWSInterface[] $loaded
+         * @var \Jose\Object\JWSInterface[] $loaded
          */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf('\Jose\JWSInterface', $jws);
+            $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
             $this->assertEquals('Je suis Charlie', $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }
-        $this->assertEquals('HS512', $loaded[0]->getAlgorithm());
-        $this->assertEquals('RS512', $loaded[1]->getAlgorithm());
+        $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
+        $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
 
     /**
@@ -299,13 +299,13 @@ class SignerTest extends TestCase
         $loader = $this->getLoader();
 
         $jws = new JWS();
-        $jws = $jws->withProtectedHeaderValue('crit', [
+        $jws = $jws->withProtectedHeader('crit', [
             'exp',
             'nbf',
             'aud',
         ]);
-        $jws = $jws->withUnprotectedHeaderValue('exp', time() + 100);
-        $jws = $jws->withProtectedHeaderValue('nbf', time() - 100);
+        $jws = $jws->withUnprotectedHeader('exp', time() + 100);
+        $jws = $jws->withProtectedHeader('nbf', time() - 100);
 
         $loader->verify($jws);
     }
@@ -328,17 +328,17 @@ class SignerTest extends TestCase
         $loaded = $loader->load($signatures);
 
         /*
-         * @var \Jose\JWSInterface[] $loaded
+         * @var \Jose\Object\JWSInterface[] $loaded
          */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
         foreach ($loaded as $jws) {
-            $this->assertInstanceOf('\Jose\JWSInterface', $jws);
+            $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
             $this->assertEquals($this->getKeyset(), $jws->getPayload());
             $this->assertTrue($loader->verifySignature($jws));
         }
-        $this->assertEquals('HS512', $loaded[0]->getAlgorithm());
-        $this->assertEquals('RS512', $loaded[1]->getAlgorithm());
+        $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
+        $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
 
     /**

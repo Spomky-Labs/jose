@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 interface CheckerManagerInterface
 {
@@ -21,7 +21,7 @@ interface CheckerManagerInterface
     public function addChecker(CheckerInterface $checker);
 
     /**
-     * @param \Jose\JWTInterface $jwt
+     * @param \Jose\Object\JWTInterface $jwt
      *
      * @throws \Exception If verification failed
      */

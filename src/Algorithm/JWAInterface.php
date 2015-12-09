@@ -9,19 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Algorithm;
 
-/**
- */
-final class JWKManager implements JWKManagerInterface
+interface JWAInterface
 {
     /**
-     * {@inheritdoc}
+     * @return string Returns the name of the algorithm
      */
-    public function createJWK(array $values = [])
-    {
-        $jwk = new JWK($values);
-
-        return $jwk;
-    }
+    public function getAlgorithmName();
 }

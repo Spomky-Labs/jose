@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 /**
  * Class SignatureInstruction.
@@ -17,7 +17,7 @@ namespace Jose;
 final class SignatureInstruction implements SignatureInstructionInterface
 {
     /**
-     * @var \Jose\JWKInterface
+     * @var \Jose\Object\JWKInterface
      */
     protected $key = null;
     /**
@@ -32,7 +32,7 @@ final class SignatureInstruction implements SignatureInstructionInterface
     /**
      * SignatureInstruction constructor.
      *
-     * @param \Jose\JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param array              $protected_header
      * @param array              $unprotected_header
      */

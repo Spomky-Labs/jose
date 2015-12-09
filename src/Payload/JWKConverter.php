@@ -11,16 +11,14 @@
 
 namespace Jose\Payload;
 
-use Jose\Behaviour\HasJWKManager;
-use Jose\JWKInterface;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 
 /**
  * Trait used to convert payload.
  */
 final class JWKConverter implements PayloadConverterInterface
 {
-    use HasJWKManager;
-
     /**
      * {@inheritdoc}
      */
@@ -57,6 +55,6 @@ final class JWKConverter implements PayloadConverterInterface
             throw new \InvalidArgumentException('The content type claims content is a JWK, but cannot be converted into JWK');
         }
 
-        return $this->getJWKManager()->createJWK($jwk);
+        return new JWK($jwk);
     }
 }

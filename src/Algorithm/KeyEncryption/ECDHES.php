@@ -12,8 +12,8 @@
 namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
-use Jose\JWK;
-use Jose\JWKInterface;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 use Jose\Util\ConcatKDF;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Message\MessageFactory;
@@ -48,14 +48,14 @@ final class ECDHES implements KeyAgreementInterface
             $this->checkKey($public_key, false);
             $additional_header_values = array_merge($additional_header_values, [
                 'epk' => [
-                    'kty' => $private_key->getKeyType(),
-                    'crv' => $private_key->getValue('crv'),
-                    'x'   => $private_key->getValue('x'),
-                    'y'   => $private_key->getValue('y'),
+                    'kty' => $private_key->get('kty'),
+                    'crv' => $private_key->get('crv'),
+                    'x'   => $private_key->get('x'),
+                    'y'   => $private_key->get('y'),
                 ],
             ]);
         }
-        if ($private_key->getValue('crv') !== $public_key->getValue('crv')) {
+        if ($private_key->get('crv') !== $public_key->get('crv')) {
             throw new \InvalidArgumentException('Curves are different');
         }
 
@@ -68,8 +68,8 @@ final class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param JWKInterface $private_key
-     * @param JWKInterface $public_key
+     * @param \Jose\Object\JWKInterface $private_key
+     * @param \Jose\Object\JWKInterface $public_key
      *
      * @throws \InvalidArgumentException
      *
@@ -79,9 +79,9 @@ final class ECDHES implements KeyAgreementInterface
     {
         $p = $this->getGenerator($private_key);
 
-        $rec_x = $this->convertBase64ToDec($public_key->getValue('x'));
-        $rec_y = $this->convertBase64ToDec($public_key->getValue('y'));
-        $sen_d = $this->convertBase64ToDec($private_key->getValue('d'));
+        $rec_x = $this->convertBase64ToDec($public_key->get('x'));
+        $rec_y = $this->convertBase64ToDec($public_key->get('y'));
+        $sen_d = $this->convertBase64ToDec($private_key->get('d'));
 
         $private_key = $p->getPrivateKeyFrom($sen_d);
 
@@ -104,7 +104,7 @@ final class ECDHES implements KeyAgreementInterface
     /**
      * @param array $complete_header
      *
-     * @return \Jose\JWKInterface
+     * @return \Jose\Object\JWKInterface
      */
     private function getPublicKey(array $complete_header)
     {
@@ -121,15 +121,18 @@ final class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      * @param bool         $is_private
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        if ('EC' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
             throw new \InvalidArgumentException("The key type must be 'EC'");
         }
-        if (null === $key->getValue('d') && true === $is_private) {
+        if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
+            throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
+        }
+        if (!$key->has('d') && true === $is_private) {
             throw new \InvalidArgumentException('The key must be private');
         }
     }
@@ -143,7 +146,7 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function getGenerator(JWKInterface $key)
     {
-        $crv = $key->getValue('crv');
+        $crv = $key->get('crv');
 
         switch ($crv) {
             case 'P-256':

@@ -11,12 +11,12 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 interface CheckerInterface
 {
     /**
-     * @param \Jose\JWTInterface $jwt
+     * @param \Jose\Object\JWTInterface $jwt
      *
      * @throws \Exception If verification failed
      */

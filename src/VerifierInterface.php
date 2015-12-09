@@ -9,17 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Behaviour;
+namespace Jose;
 
-use Jose\JWTManager;
-
-trait HasJWTManager
+/**
+ * Verifier Interface.
+ */
+interface VerifierInterface
 {
-    /**
-     * @return \Jose\JWTManagerInterface
-     */
-    private function getJWTManager()
-    {
-        return new JWTManager();
-    }
 }

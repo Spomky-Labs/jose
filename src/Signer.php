@@ -12,11 +12,15 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasJWAManager;
-use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
+use Jose\Object\JWKInterface;
+use Jose\Object\JWT;
+use Jose\Object\JWTInterface;
+use Jose\Object\SignatureInstructionInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -26,13 +30,12 @@ final class Signer implements SignerInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasJWTManager;
     use HasPayloadConverter;
 
     /**
      * Signer constructor.
      *
-     * @param \Jose\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      */
     public function __construct(
@@ -55,9 +58,9 @@ final class Signer implements SignerInterface
         $header = [];
         $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
 
-        $jwt = $this->getJWTManager()->createJWT();
+        $jwt = new JWT();
         $jwt = $jwt->withPayload($payload);
-        $jwt = $jwt->withProtectedHeader($header);
+        $jwt = $jwt->withProtectedHeaders($header);
         $input = $jwt;
     }
 
@@ -91,16 +94,16 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param \Jose\SignatureInstructionInterface $instruction
-     * @param \Jose\JWTInterface                  $input
+     * @param \Jose\Object\SignatureInstructionInterface $instruction
+     * @param \Jose\Object\JWTInterface                  $input
      * @param string                              $jwt_payload
      *
      * @return array
      */
     protected function computeSignature(SignatureInstructionInterface $instruction, JWTInterface $input, $jwt_payload)
     {
-        $protected_header = array_merge($input->getProtectedHeader(), $instruction->getProtectedHeader());
-        $unprotected_header = array_merge($input->getUnprotectedHeader(), $instruction->getUnprotectedHeader());
+        $protected_header = array_merge($input->getProtectedHeaders(), $instruction->getProtectedHeader());
+        $unprotected_header = array_merge($input->getUnprotectedHeaders(), $instruction->getUnprotectedHeader());
         $complete_header = array_merge($protected_header, $protected_header);
 
         $jwt_protected_header = empty($protected_header) ? null : Base64Url::encode(json_encode($protected_header));
@@ -130,7 +133,7 @@ final class Signer implements SignerInterface
 
     /**
      * @param array              $complete_header The complete header
-     * @param \Jose\JWKInterface $key
+     * @param \Jose\Object\JWKInterface $key
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface
      */
@@ -139,7 +142,7 @@ final class Signer implements SignerInterface
         if (!array_key_exists('alg', $complete_header)) {
             throw new \InvalidArgumentException('No "alg" parameter set in the header.');
         }
-        if (null !== $key->getAlgorithm() && $key->getAlgorithm() !== $complete_header['alg']) {
+        if ($key->has('alg') && $key->get('alg') !== $complete_header['alg']) {
             throw new \InvalidArgumentException(sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg']));
         }
 
@@ -152,7 +155,7 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param string                                 $serialization
      */
     protected function checkInstructions(array $instructions, $serialization)

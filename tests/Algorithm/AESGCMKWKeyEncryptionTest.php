@@ -13,7 +13,7 @@ use Base64Url\Base64Url;
 use Jose\Algorithm\KeyEncryption\A128GCMKW;
 use Jose\Algorithm\KeyEncryption\A192GCMKW;
 use Jose\Algorithm\KeyEncryption\A256GCMKW;
-use Jose\JWK;
+use Jose\Object\JWK;
 
 /**
  * @group AESGCMKW

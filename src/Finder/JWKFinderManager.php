@@ -9,9 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
-
-use Jose\Finder\JWKFinderInterface;
+namespace Jose\Finder;
 
 /**
  */

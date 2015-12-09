@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\JWK;
-use Jose\JWKSet;
+use Jose\Object\JWK;
+use Jose\Object\JWKSet;
 
 /**
  * Class JWKTest.
@@ -33,19 +33,19 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         ]);
         $jwk2 = $jwk->withValue('kid', '0123456789');
 
-        $this->assertEquals('EC', $jwk->getKeyType());
-        $this->assertEquals('ES256', $jwk->getAlgorithm());
-        $this->assertEquals('sign', $jwk->getPublicKeyUse());
-        $this->assertNull($jwk->getKeyID());
-        $this->assertEquals('0123456789', $jwk2->getKeyID());
-        $this->assertEquals(['sign'], $jwk->getKeyOperations());
-        $this->assertEquals('P-256', $jwk->getValue('crv'));
-        $this->assertNull($jwk->getX509Url());
-        $this->assertNull($jwk->getX509CertificateChain());
-        $this->assertNull($jwk->getX509CertificateSha1Thumbprint());
-        $this->assertNull($jwk->getX509CertificateSha256Thumbprint());
-        $this->assertEquals('f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU', $jwk->getValue('x'));
-        $this->assertEquals('x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0', $jwk->getValue('y'));
+        $this->assertEquals('EC', $jwk->get('kty'));
+        $this->assertEquals('ES256', $jwk->get('alg'));
+        $this->assertEquals('sign', $jwk->get('use'));
+        $this->assertFalse($jwk->has('kid'));
+        $this->assertEquals('0123456789', $jwk2->get('kid'));
+        $this->assertEquals(['sign'], $jwk->get('key_ops'));
+        $this->assertEquals('P-256', $jwk->get('crv'));
+        $this->assertFalse($jwk->has('x5u'));
+        $this->assertFalse($jwk->has('x5c'));
+        $this->assertFalse($jwk->has('x5t'));
+        $this->assertFalse($jwk->has('x5t#256'));
+        $this->assertEquals('f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU', $jwk->get('x'));
+        $this->assertEquals('x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0', $jwk->get('y'));
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256"}', json_encode($jwk));
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk2));
         $this->assertNotSame($jwk, $jwk2);
@@ -88,17 +88,17 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $jwkset->count());
 
         foreach ($jwkset as $key) {
-            $this->assertEquals('EC', $key->getKeyType());
+            $this->assertEquals('EC', $key->get('kty'));
         }
         $this->assertEquals(2, $jwkset->key());
 
-        $this->assertEquals('9876543210', $jwkset->getKey(1)->getKeyID());
+        $this->assertEquals('9876543210', $jwkset->getKey(1)->get('kid'));
         $jwkset = $jwkset->removeKey(1);
 
         $this->assertEquals(1, count($jwkset));
         $this->assertEquals(1, $jwkset->count());
 
-        $this->assertInstanceOf('\Jose\JWKInterface', $jwkset->getKey(0));
+        $this->assertInstanceOf('\Jose\Object\JWKInterface', $jwkset->getKey(0));
     }
 
     /**

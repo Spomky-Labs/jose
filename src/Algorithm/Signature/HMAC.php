@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 /**
  * This class handles signatures using HMAC.
@@ -27,7 +27,7 @@ abstract class HMAC implements SignatureInterface
     {
         $this->checkKey($key);
 
-        return hash_hmac($this->getHashAlgorithm(), $input, Base64Url::decode($key->getValue('k')), true);
+        return hash_hmac($this->getHashAlgorithm(), $input, Base64Url::decode($key->get('k')), true);
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class HMAC implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->getKeyType() || null === $key->getValue('k')) {
+        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

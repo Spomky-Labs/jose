@@ -11,8 +11,6 @@
 
 namespace Jose\Algorithm;
 
-use Jose\JWAInterface;
-
 interface EncryptionInterface extends JWAInterface
 {
 }

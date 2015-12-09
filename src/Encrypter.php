@@ -13,16 +13,19 @@ namespace Jose;
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
-use Jose\Behaviour\HasJWTManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Compression\CompressionManagerInterface;
+use Jose\Object\EncryptionInstructionInterface;
+use Jose\Object\JWT;
+use Jose\Object\JWTInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -31,7 +34,6 @@ use Jose\Util\Converter;
 final class Encrypter implements EncrypterInterface
 {
     use HasKeyChecker;
-    use HasJWTManager;
     use HasJWAManager;
     use HasPayloadConverter;
     use HasCompressionManager;
@@ -39,8 +41,7 @@ final class Encrypter implements EncrypterInterface
     /**
      * Encrypter constructor.
      *
-     * @param \Jose\JWTManagerInterface                      $jwt_manager
-     * @param \Jose\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      */
@@ -90,14 +91,14 @@ final class Encrypter implements EncrypterInterface
         $header = [];
         $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
 
-        $jwt = $this->getJWTManager()->createJWT();
+        $jwt = new JWT();
         $jwt = $jwt->withPayload($payload);
-        $jwt = $jwt->withProtectedHeader($header);
+        $jwt = $jwt->withProtectedHeaders($header);
         $input = $jwt;
     }
 
     /**
-     * @param array|JWKInterface|JWKSetInterface|JWTInterface|string $input
+     * @param array|\Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface|\Jose\Object\JWTInterface|string $input
      * @param array                                                  $instructions
      * @param array                                                  $shared_protected_header
      * @param array                                                  $shared_unprotected_header
@@ -111,8 +112,8 @@ final class Encrypter implements EncrypterInterface
         $this->checkInput($input);
         $this->checkInstructions($instructions, $serialization);
 
-        $protected_header = array_merge($input->getProtectedHeader(), $shared_protected_header);
-        $unprotected_header = array_merge($input->getUnprotectedHeader(), $shared_unprotected_header);
+        $protected_header = array_merge($input->getProtectedHeaders(), $shared_protected_header);
+        $unprotected_header = array_merge($input->getUnprotectedHeaders(), $shared_unprotected_header);
 
         // We check if key management mode is OK
         $key_management_mode = $this->getKeyManagementMode($instructions, $protected_header, $unprotected_header);
@@ -178,7 +179,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface $instruction
+     * @param \Jose\Object\EncryptionInstructionInterface $instruction
      * @param                                      $protected_header
      * @param                                      $unprotected_header
      * @param string                               $cek
@@ -250,7 +251,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      *
@@ -325,7 +326,7 @@ final class Encrypter implements EncrypterInterface
 
     /**
      * @param string                                 $key_management_mode
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      * @param int                                    $cek_size
@@ -348,7 +349,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      *
@@ -380,7 +381,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      * @param int                                    $cek_size
@@ -433,7 +434,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      *
@@ -477,7 +478,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param string                                 $serialization
      */
     protected function checkInstructions(array $instructions, $serialization)
@@ -520,7 +521,7 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\EncryptionInstructionInterface[] $instructions
+     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param array                                  $protected_header
      * @param array                                  $unprotected_header
      *

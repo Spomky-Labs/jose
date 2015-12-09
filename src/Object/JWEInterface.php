@@ -9,88 +9,87 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 interface JWEInterface extends JWTInterface
 {
     /**
-     * The key encryption algorithm.
-     * This is an convenient method and must return the value `getHeaderValue('enc')`.
+     * Note: This method is used internally and should not be used directly.
      *
-     * @return string|null The key encryption algorithm
-     *
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-37#section-4.1.2
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-37
-     */
-    public function getEncryptionAlgorithm();
-
-    /**
-     * The compression method.
-     * This is an convenient method and must return the value `getHeaderValue('zip')`.
-     *
-     * @return string|null The compression method
-     *
-     * @see https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-37#section-4.1.3
-     */
-    public function getZip();
-
-    /**
      * @return string|null The cyphertext
      */
     public function getCiphertext();
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @param string $ciphertext The cyphertext
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     public function withCiphertext($ciphertext);
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @return string|null The encrypted key
      */
     public function getEncryptedKey();
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @param string $encrypted_key The encrypted key
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     public function withEncryptedKey($encrypted_key);
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @return string|null
      */
     public function getAAD();
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @param string $aad
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     public function withAAD($aad);
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @return string|null
      */
     public function getIV();
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @param string $iv
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     public function withIV($iv);
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @return string|null
      */
     public function getTag();
 
     /**
+     * Note: This method is used internally and should not be used directly.
+     *
      * @param string $tag
      *
-     * @return \Jose\JWEInterface
+     * @return \Jose\Object\JWEInterface
      */
     public function withTag($tag);
 }

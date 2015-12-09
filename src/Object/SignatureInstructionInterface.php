@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 /**
  * Signature Instruction Interface.
@@ -21,7 +21,7 @@ interface SignatureInstructionInterface
     /**
      * The private key used to sign the payload.
      *
-     * @return \Jose\JWKInterface
+     * @return \Jose\Object\JWKInterface
      */
     public function getKey();
 

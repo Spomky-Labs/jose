@@ -17,10 +17,10 @@ use Jose\Algorithm\Signature\RS256;
 use Jose\Algorithm\Signature\RS384;
 use Jose\Algorithm\Signature\RS512;
 use Jose\JSONSerializationModes;
-use Jose\JWK;
-use Jose\JWT;
+use Jose\Object\JWK;
+use Jose\Object\JWT;
 use Jose\KeyConverter\KeyConverter;
-use Jose\SignatureInstruction;
+use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**
@@ -217,8 +217,8 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS256Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'RS256');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'RS256');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
@@ -246,9 +246,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('RS256', $result->getAlgorithm());
+        $this->assertEquals('RS256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -285,9 +285,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('', $result->getPayload());
-        $this->assertEquals('RS256', $result->getAlgorithm());
+        $this->assertEquals('RS256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -296,8 +296,8 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS384Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'RS384');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'RS384');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
@@ -325,9 +325,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('RS384', $result->getAlgorithm());
+        $this->assertEquals('RS384', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -336,8 +336,8 @@ class RSASignatureTest extends TestCase
     public function testCompleteRS512Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'RS512');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'RS512');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
@@ -366,9 +366,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('RS512', $result->getAlgorithm());
+        $this->assertEquals('RS512', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -377,8 +377,8 @@ class RSASignatureTest extends TestCase
     public function testCompletePS256Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'PS256');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'PS256');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty'     => 'RSA',
                 'key_ops' => ['verify'],
                 'n'       => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -407,9 +407,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('PS256', $result->getAlgorithm());
+        $this->assertEquals('PS256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -418,8 +418,8 @@ class RSASignatureTest extends TestCase
     public function testCompletePS384Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'PS384');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'PS384');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
@@ -446,9 +446,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('PS384', $result->getAlgorithm());
+        $this->assertEquals('PS384', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -457,8 +457,8 @@ class RSASignatureTest extends TestCase
     public function testCompletePS512Sign()
     {
         $input = new JWT();
-        $input = $input->withProtectedHeaderValue('alg', 'PS512');
-        $input = $input->withProtectedHeaderValue('jwk', [
+        $input = $input->withProtectedHeader('alg', 'PS512');
+        $input = $input->withProtectedHeader('jwk', [
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                 'e'   => 'AQAB',
@@ -485,9 +485,9 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
         $result = $loader->load($signature);
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('PS512', $result->getAlgorithm());
+        $this->assertEquals('PS512', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -499,9 +499,9 @@ class RSASignatureTest extends TestCase
 
         $loaded = $loader->load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
 
-        $this->assertInstanceOf('Jose\JWEInterface', $loaded);
-        $this->assertEquals('RSA1_5', $loaded->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $loaded->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertEquals('RSA1_5', $loaded->getProtectedHeader('alg'));
+        $this->assertEquals('A128CBC-HS256', $loaded->getProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
         $result = $loader->decrypt($loaded);
@@ -518,15 +518,15 @@ class RSASignatureTest extends TestCase
         $loader = $this->getLoader();
 
         /*
-         * @var \Jose\JWEInterface[]
+         * @var \Jos\Objecte\JWEInterface[]
          */
         $loaded = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"recipients":[{"header":{"alg":"RSA1_5","kid":"2011-04-29"},"encrypted_key":"UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A"},{"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ"}],"iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
 
         $this->assertEquals(2, count($loaded));
 
-        $this->assertInstanceOf('Jose\JWEInterface', $loaded[0]);
-        $this->assertEquals('RSA1_5', $loaded[0]->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $loaded[0]->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded[0]);
+        $this->assertEquals('RSA1_5', $loaded[0]->getHeader('alg'));
+        $this->assertEquals('A128CBC-HS256', $loaded[0]->getHeader('enc'));
         $this->assertNull($loaded[0]->getPayload());
 
         $result = $loader->decrypt($loaded[0]);
@@ -534,9 +534,9 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded[0]->getPayload());
 
-        $this->assertInstanceOf('Jose\JWEInterface', $loaded[1]);
-        $this->assertEquals('A128KW', $loaded[1]->getAlgorithm());
-        $this->assertEquals('A128CBC-HS256', $loaded[1]->getEncryptionAlgorithm());
+        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded[1]);
+        $this->assertEquals('A128KW', $loaded[1]->getHeader('alg'));
+        $this->assertEquals('A128CBC-HS256', $loaded[1]->getProtectedHeader('enc'));
         $this->assertNull($loaded[1]->getPayload());
 
         $result = $loader->decrypt($loaded[1]);
@@ -555,10 +555,10 @@ class RSASignatureTest extends TestCase
         $result = $loader->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","signatures":[{"protected":"eyJhbGciOiJSUzI1NiJ9","header":{"kid":"2010-12-29"},"signature":"cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw"},{"protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}]}');
 
         $this->assertTrue(is_array($result));
-        $this->assertInstanceOf('Jose\JWSInterface', $result[0]);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result[0]);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result[0]->getPayload());
-        $this->assertEquals('RS256', $result[0]->getAlgorithm());
-        $this->assertEquals('ES256', $result[1]->getAlgorithm());
+        $this->assertEquals('RS256', $result[0]->getProtectedHeader('alg'));
+        $this->assertEquals('ES256', $result[1]->getProtectedHeader('alg'));
 
         $this->assertTrue($loader->verifySignature($result[0]));
         $this->assertTrue($loader->verifySignature($result[1]));
@@ -574,9 +574,9 @@ class RSASignatureTest extends TestCase
         $result = $loader->load('{"signatures":[{"protected":"eyJhbGciOiJSUzI1NiJ9","header":{"kid":"2010-12-29"},"signature":"cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw"},{"protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}]}');
 
         $this->assertTrue(is_array($result));
-        $this->assertInstanceOf('Jose\JWSInterface', $result[0]);
-        $this->assertEquals('RS256', $result[0]->getAlgorithm());
-        $this->assertEquals('ES256', $result[1]->getAlgorithm());
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result[0]);
+        $this->assertEquals('RS256', $result[0]->getProtectedHeader('alg'));
+        $this->assertEquals('ES256', $result[1]->getProtectedHeader('alg'));
 
         $this->assertTrue($loader->verifySignature($result[0], null, 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
         $this->assertTrue($loader->verifySignature($result[1], null, 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
@@ -613,9 +613,9 @@ class RSASignatureTest extends TestCase
 
         $result = $loader->load('eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk');
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result->getPayload());
-        $this->assertEquals('HS256', $result->getAlgorithm());
+        $this->assertEquals('HS256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -627,9 +627,9 @@ class RSASignatureTest extends TestCase
 
         $result = $loader->load('eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw');
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result->getPayload());
-        $this->assertEquals('RS256', $result->getAlgorithm());
+        $this->assertEquals('RS256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -641,9 +641,9 @@ class RSASignatureTest extends TestCase
 
         $result = $loader->load('eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q');
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result->getPayload());
-        $this->assertEquals('ES256', $result->getAlgorithm());
+        $this->assertEquals('ES256', $result->getProtectedHeader('alg'));
     }
 
     /**
@@ -655,9 +655,9 @@ class RSASignatureTest extends TestCase
 
         $result = $loader->load('eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA.AdwMgeerwtHoh-l192l60hp9wAHZFVJbLfD_UxMi70cwnZOYaRI1bKPWROc-mZZqwqT2SI-KGDKB34XO0aw_7XdtAG8GaSwFKdCAPZgoXD2YBJZCPEX3xKpRwcdOO8KpEHwJjyqOgzDO7iKvU8vcnwNrmxYbSW9ERBXukOXolLzeO_Jn');
 
-        $this->assertInstanceOf('Jose\JWSInterface', $result);
+        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
         $this->assertEquals('Payload', $result->getPayload());
-        $this->assertEquals('ES512', $result->getAlgorithm());
+        $this->assertEquals('ES512', $result->getProtectedHeader('alg'));
     }
 
     /**

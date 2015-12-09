@@ -11,7 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
-use Jose\JWKInterface;
+use Jose\Object\JWKInterface;
 
 /**
  * This class is an abstract class that implements the none algorithm (plaintext).
@@ -41,7 +41,7 @@ final class None implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('none' !== $key->getKeyType()) {
+        if (!$key->has('kty') || 'none' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

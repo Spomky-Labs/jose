@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 abstract class IssuerChecker implements CheckerInterface
 {
@@ -27,8 +27,11 @@ abstract class IssuerChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $iss = $jwt->getIssuer();
-        if (null !== $iss && !$this->isIssuerValid($iss)) {
+        if (!$jwt->hasClaim('iss')) {
+            return;
+        }
+        $iss = $jwt->getClaim('iss');
+        if (!$this->isIssuerValid($iss)) {
             throw new \Exception('Issuer not allowed.');
         }
     }

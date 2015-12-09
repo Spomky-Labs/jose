@@ -11,17 +11,17 @@
 
 namespace Jose\Behaviour;
 
-use Jose\JWKFinderManagerInterface;
+use Jose\Finder\JWKFinderManagerInterface;
 
 trait HasJWKFinderManager
 {
     /**
-     * @var \Jose\JWKFinderManagerInterface
+     * @var \Jose\Finder\JWKFinderManagerInterface
      */
     private $jwk_finder_manager;
 
     /**
-     * @param \Jose\JWKFinderManagerInterface $jwk_finder_manager
+     * @param \Jose\Finder\JWKFinderManagerInterface $jwk_finder_manager
      */
     private function setJWKFinderManager(JWKFinderManagerInterface $jwk_finder_manager)
     {
@@ -29,7 +29,7 @@ trait HasJWKFinderManager
     }
 
     /**
-     * @return \Jose\JWKFinderManagerInterface
+     * @return \Jose\Finder\JWKFinderManagerInterface
      */
     private function getJWKFinderManager()
     {

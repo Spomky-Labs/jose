@@ -11,7 +11,7 @@
 
 namespace Jose\Checker;
 
-use Jose\JWTInterface;
+use Jose\Object\JWTInterface;
 
 final class IssuedAtChecker implements CheckerInterface
 {
@@ -20,8 +20,11 @@ final class IssuedAtChecker implements CheckerInterface
      */
     public function checkJWT(JWTInterface $jwt)
     {
-        $iat = $jwt->getIssuedAt();
-        if (null !== $iat && time() < $iat) {
+        if (!$jwt->hasClaim('iat')) {
+            return;
+        }
+        $iat = (int) $jwt->getClaim('iat');
+        if (time() < $iat) {
             throw new \Exception('The JWT is issued in the futur.');
         }
     }

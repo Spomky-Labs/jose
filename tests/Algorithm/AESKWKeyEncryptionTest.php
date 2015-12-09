@@ -13,7 +13,7 @@ use Base64Url\Base64Url;
 use Jose\Algorithm\KeyEncryption\A128KW;
 use Jose\Algorithm\KeyEncryption\A192KW;
 use Jose\Algorithm\KeyEncryption\A256KW;
-use Jose\JWK;
+use Jose\Object\JWK;
 
 /**
  * @group AESKW

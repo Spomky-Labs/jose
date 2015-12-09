@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Object;
 
 /**
  * Class JWKSet.
@@ -25,6 +25,16 @@ final class JWKSet implements JWKSetInterface
      * @var array
      */
     protected $keys = [];
+
+    public function __construct(array $keys = [])
+    {
+        if (array_key_exists('keys', $keys)) {
+            foreach ($keys['keys'] as $value) {
+                $key = new JWK($value);
+                $this->keys[] = $key;
+            }
+        }
+    }
 
     /**
      * {@inheritdoc}

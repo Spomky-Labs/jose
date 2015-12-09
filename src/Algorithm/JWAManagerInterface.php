@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose;
+namespace Jose\Algorithm;
 
 interface JWAManagerInterface
 {
@@ -23,12 +23,12 @@ interface JWAManagerInterface
     /**
      * @param string $algorithm The algorithm
      *
-     * @return \Jose\JWAInterface|null Returns JWAInterface object if the algorithm is supported, else null
+     * @return \Jose\Algorithm\JWAInterface|null Returns JWAInterface object if the algorithm is supported, else null
      */
     public function getAlgorithm($algorithm);
 
     /**
-     * @return \Jose\JWAInterface[] Returns the list of supported algorithms
+     * @return \Jose\Algorithm\JWAInterface[] Returns the list of supported algorithms
      */
     public function getAlgorithms();
 
@@ -38,7 +38,7 @@ interface JWAManagerInterface
     public function listAlgorithms();
 
     /**
-     * @param \Jose\JWAInterface $algorithm
+     * @param \Jose\Algorithm\JWAInterface $algorithm
      */
     public function addAlgorithm(JWAInterface $algorithm);
 

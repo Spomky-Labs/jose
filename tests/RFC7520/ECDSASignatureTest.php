@@ -13,7 +13,7 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\Signature\ES512;
-use Jose\JWK;
+use Jose\Object\JWK;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.3

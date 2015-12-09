@@ -11,7 +11,7 @@
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\KeyEncryption\Dir;
-use Jose\JWK;
+use Jose\Object\JWK;
 use Jose\Test\TestCase;
 
 /**
