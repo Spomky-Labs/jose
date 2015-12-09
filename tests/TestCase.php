@@ -58,6 +58,7 @@ use Jose\Compression\CompressionManager;
 use Jose\Compression\Deflate;
 use Jose\Compression\GZip;
 use Jose\Compression\ZLib;
+use Jose\Decrypter;
 use Jose\Encrypter;
 use Jose\Finder\JWKFinder;
 use Jose\Finder\JWKFinderManager;
@@ -72,6 +73,7 @@ use Jose\Test\Stub\APVFinder;
 use Jose\Test\Stub\IssuerChecker;
 use Jose\Test\Stub\KIDFinder;
 use Jose\Test\Stub\SubjectChecker;
+use Jose\Verifier;
 
 /**
  * Class TestCase.
@@ -84,6 +86,38 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getLoader()
     {
         $loader = new Loader(
+            $this->getJWAManager(),
+            $this->getJWKFinderManager(),
+            $this->getPayloadConverterManager(),
+            $this->getCompressionManager(),
+            $this->getCheckerManager()
+        );
+
+        return $loader;
+    }
+
+    /**
+     * @return Decrypter
+     */
+    protected function getDecrypter()
+    {
+        $loader = new Decrypter(
+            $this->getJWAManager(),
+            $this->getJWKFinderManager(),
+            $this->getPayloadConverterManager(),
+            $this->getCompressionManager(),
+            $this->getCheckerManager()
+        );
+
+        return $loader;
+    }
+
+    /**
+     * @return Verifier
+     */
+    protected function getVerifier()
+    {
+        $loader = new Verifier(
             $this->getJWAManager(),
             $this->getJWKFinderManager(),
             $this->getPayloadConverterManager(),

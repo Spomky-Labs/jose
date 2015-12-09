@@ -26,7 +26,6 @@ use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Jose\Object\JWTInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 
 /**
@@ -68,7 +67,7 @@ final class Verifier implements VerifierInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set = null, $detached_payload = null)
+    public function verify(JWSInterface $jws, JWKSetInterface $jwk_set = null, $detached_payload = null)
     {
         if (null !== $detached_payload && !empty($jws->getPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
@@ -96,6 +95,7 @@ final class Verifier implements VerifierInterface
             }
             try {
                 if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
+                    $this->getCheckerManager()->checkJWT($jws);
                     return true;
                 }
             } catch (\InvalidArgumentException $e) {
@@ -104,16 +104,6 @@ final class Verifier implements VerifierInterface
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function verify(JWTInterface $jwt)
-    {
-        $this->getCheckerManager()->checkJWT($jwt);
-
-        return true;
     }
 
     /**

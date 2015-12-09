@@ -224,6 +224,7 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
         $loader = $this->getLoader();
+        $verifier = $this->getVerifier();
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
 
@@ -242,7 +243,7 @@ class SignerTest extends TestCase
         foreach ($loaded as $jws) {
             $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
             $this->assertEquals('Je suis Charlie', $jws->getPayload());
-            $this->assertTrue($loader->verifySignature($jws));
+            $this->assertTrue($verifier->verify($jws));
         }
         $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
         $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
@@ -254,12 +255,12 @@ class SignerTest extends TestCase
      */
     public function testExpiredJWS()
     {
-        $loader = $this->getLoader();
+        $checker = $this->getCheckerManager();
 
         $jws = new JWS();
         $jws = $jws->withPayload(['exp' => time() - 1]);
 
-        $loader->verify($jws);
+        $checker->checkJWT($jws);
     }
 
     /**
@@ -268,12 +269,12 @@ class SignerTest extends TestCase
      */
     public function testInvalidNotBeforeJWS()
     {
-        $loader = $this->getLoader();
+        $checker = $this->getCheckerManager();
 
         $jws = new JWS();
         $jws = $jws->withPayload(['nbf' => time() + 1000]);
 
-        $loader->verify($jws);
+        $checker->checkJWT($jws);
     }
 
     /**
@@ -282,12 +283,12 @@ class SignerTest extends TestCase
      */
     public function testInvalidIssuedAtJWS()
     {
-        $loader = $this->getLoader();
+        $checker = $this->getCheckerManager();
 
         $jws = new JWS();
         $jws = $jws->withPayload(['iat' => time() + 1000]);
 
-        $loader->verify($jws);
+        $checker->checkJWT($jws);
     }
 
     /**
@@ -296,7 +297,7 @@ class SignerTest extends TestCase
      */
     public function testInvalidCriticalJWS()
     {
-        $loader = $this->getLoader();
+        $checker = $this->getCheckerManager();
 
         $jws = new JWS();
         $jws = $jws->withProtectedHeader('crit', [
@@ -307,7 +308,7 @@ class SignerTest extends TestCase
         $jws = $jws->withUnprotectedHeader('exp', time() + 100);
         $jws = $jws->withProtectedHeader('nbf', time() - 100);
 
-        $loader->verify($jws);
+        $checker->checkJWT($jws);
     }
 
     /**
@@ -317,9 +318,9 @@ class SignerTest extends TestCase
     {
         $signer = $this->getSigner();
         $loader = $this->getLoader();
+        $verifier = $this->getVerifier();
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
-
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign($this->getKeyset(), [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
@@ -335,7 +336,7 @@ class SignerTest extends TestCase
         foreach ($loaded as $jws) {
             $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
             $this->assertEquals($this->getKeyset(), $jws->getPayload());
-            $this->assertTrue($loader->verifySignature($jws));
+            $this->assertTrue($verifier->verify($jws));
         }
         $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
         $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));

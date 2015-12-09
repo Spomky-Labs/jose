@@ -22,6 +22,7 @@ class FlattenedTest extends TestCase
     public function testLoadFlattenedJWE()
     {
         $loader = $this->getLoader();
+        $decrypter = $this->getDecrypter();
 
         $loaded = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ","iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
 
@@ -30,7 +31,7 @@ class FlattenedTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $loader->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded);
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());

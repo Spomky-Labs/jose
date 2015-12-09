@@ -10,10 +10,23 @@
  */
 
 namespace Jose;
+use Jose\Object\JWEInterface;
+use Jose\Object\JWKSetInterface;
 
 /**
  * Decrypter Interface.
  */
 interface DecrypterInterface
 {
+    /**
+     * Load data and try to return a JWSInterface object, a JWEInterface object or a list of these objects.
+     * If the result is a JWE, nothing is decrypted and method `decrypt` must be executed
+     * If the result is a JWS, no signature is verified and method `verifySignature` must be executed.
+     *
+     * @param \Jose\Object\JWEInterface         $input   A JWE object to decrypt
+     * @param \Jose\Object\JWKSetInterface|null $jwk_set If not null, use the key set used to verify or decrypt the input, else this method should use a default keys manager.
+     *
+     * @return bool Returns true if the JWE has been populated with decrypted values, else false.
+     */
+    public function decrypt(JWEInterface &$input, JWKSetInterface $jwk_set = null);
 }

@@ -72,18 +72,18 @@ final class Decrypter implements DecrypterInterface
      */
     public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set = null)
     {
-        $complete_header = $jwe->getHeaders();
+        //$complete_header = $jwe->getHeaders();
 
-        $this->checkCompleteHeader($complete_header);
+        $this->checkCompleteHeader($jwe->getHeaders());
 
         if (null === $jwk_set) {
             $jwk_set = $this->getKeysFromCompleteHeader(
-                $complete_header,
+                $jwe->getHeaders(),
                 JWKFinderManagerInterface::KEY_TYPE_PRIVATE | JWKFinderManagerInterface::KEY_TYPE_DIRECT | JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC
             );
         }
-        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header['alg']);
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_header['enc']);
+        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe->getHeader('enc'));
 
         foreach ($jwk_set as $jwk) {
             if (!$this->checkKeyUsage($jwk, 'decryption')) {
@@ -93,10 +93,11 @@ final class Decrypter implements DecrypterInterface
                 continue;
             }
             try {
-                $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $complete_header);
+                $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $jwe->getHeaders());
 
                 if (null !== $cek) {
                     if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm)) {
+                        $this->getCheckerManager()->checkJWT($jwe);
                         return true;
                     }
                 }
@@ -106,8 +107,6 @@ final class Decrypter implements DecrypterInterface
         }
 
         return false;
-
-        //$this->getCheckerManager()->checkJWT($jwe);
     }
 
     /**
