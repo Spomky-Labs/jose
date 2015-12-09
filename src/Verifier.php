@@ -42,8 +42,8 @@ final class Verifier implements VerifierInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
-     * @param \Jose\Finder\JWKFinderManagerInterface                $jwk_finder_manager
+     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
+     * @param \Jose\Finder\JWKFinderManagerInterface         $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
@@ -96,6 +96,7 @@ final class Verifier implements VerifierInterface
             try {
                 if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
                     $this->getCheckerManager()->checkJWT($jws);
+
                     return true;
                 }
             } catch (\InvalidArgumentException $e) {
@@ -107,7 +108,7 @@ final class Verifier implements VerifierInterface
     }
 
     /**
-     * @param array              $header
+     * @param array                     $header
      * @param \Jose\Object\JWKInterface $key
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface|null
