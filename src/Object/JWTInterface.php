@@ -74,7 +74,7 @@ interface JWTInterface
     /**
      * Unset the value of the protected header of the specified key.
      *
-     * @param string $key   The key
+     * @param string $key The key
      *
      * @return \Jose\Object\JWTInterface
      */
@@ -109,7 +109,7 @@ interface JWTInterface
     /**
      * Unset the value of the unprotected header of the specified key.
      *
-     * @param string $key   The key
+     * @param string $key The key
      *
      * @return \Jose\Object\JWTInterface
      */
@@ -117,7 +117,8 @@ interface JWTInterface
 
     /**
      * Returns the value of the headers (protected or unprotected).
-     *     *
+     *     *.
+     *
      * @return array Header values
      */
     public function getHeaders();
@@ -186,7 +187,7 @@ interface JWTInterface
     public function getClaim($key);
 
     /**
-     * Returns the claims
+     * Returns the claims.
      *
      * @return mixed|null Payload value
      */
@@ -213,7 +214,7 @@ interface JWTInterface
     public function withClaim($key, $value);
 
     /**
-     * @param string $key   The key
+     * @param string $key The key
      *
      * @return \Jose\Object\JWTInterface
      */
@@ -251,7 +252,7 @@ interface JWTInterface
 
     /**
      * @param string $encoded_protected_header
-     * Note: This method is used internally and should not be used directly.
+     *                                         Note: This method is used internally and should not be used directly.
      *
      * @return \Jose\Object\JWTInterface
      */
@@ -267,7 +268,7 @@ interface JWTInterface
 
     /**
      * @param string $encoded_payload
-     * Note: This method is used internally and should not be used directly.
+     *                                Note: This method is used internally and should not be used directly.
      *
      * @return \Jose\Object\JWTInterface
      */

@@ -40,7 +40,6 @@ class JWSTest extends \PHPUnit_Framework_TestCase
             'iat' => 123000,
         ]);
 
-
         $this->assertEquals('ABCD', $jws->getClaim('jti'));
         $this->assertEquals('me.example.com', $jws->getClaim('iss'));
         $this->assertEquals('you.example.com', $jws->getClaim('aud'));

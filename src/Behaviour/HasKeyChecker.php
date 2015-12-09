@@ -17,7 +17,7 @@ trait HasKeyChecker
 {
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param string             $usage
+     * @param string                    $usage
      *
      * @throws \InvalidArgumentException
      *
@@ -84,7 +84,7 @@ trait HasKeyChecker
 
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param string             $algorithm
+     * @param string                    $algorithm
      *
      * @return bool
      */

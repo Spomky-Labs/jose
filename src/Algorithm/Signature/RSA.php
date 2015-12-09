@@ -11,8 +11,8 @@
 
 namespace Jose\Algorithm\Signature;
 
-use Jose\Object\JWKInterface;
 use Jose\KeyConverter\KeyConverter;
+use Jose\Object\JWKInterface;
 
 /**
  * Class RSA.

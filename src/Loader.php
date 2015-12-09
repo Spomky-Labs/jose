@@ -56,8 +56,8 @@ final class Loader implements LoaderInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
-     * @param \Jose\Finder\JWKFinderManagerInterface                $jwk_finder_manager
+     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
+     * @param \Jose\Finder\JWKFinderManagerInterface         $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
@@ -249,7 +249,7 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param array              $header
+     * @param array                     $header
      * @param \Jose\Object\JWKInterface $key
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface|null
@@ -259,7 +259,7 @@ final class Loader implements LoaderInterface
         if (!array_key_exists('alg', $header)) {
             //if (!$key->hasHeader('alg')) {
                 throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
-            }/* else {
+        }/* else {
                 $alg = $key->getHeader('alg');
             }*/
         //} else {
@@ -275,9 +275,9 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\Algorithm\JWAInterface                                           $key_encryption_algorithm
+     * @param \Jose\Algorithm\JWAInterface                                 $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
-     * @param \Jose\Object\JWKInterface                                           $key
+     * @param \Jose\Object\JWKInterface                                    $key
      * @param string|null                                                  $encrypted_cek
      * @param array                                                        $header
      *
@@ -330,7 +330,7 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param \Jose\Object\JWEInterface                                           $jwe
+     * @param \Jose\Object\JWEInterface                                    $jwe
      * @param string                                                       $cek
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *

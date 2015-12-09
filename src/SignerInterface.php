@@ -20,10 +20,10 @@ interface SignerInterface
      * Sign an input and convert it into JWS JSON (Compact/Flattened) Serialized representation.
      *
      * @param \Jose\Object\JWTInterface|\Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface|string|array $input              A JWKInterface/JWKInterface/JWKSetInterface object
-     * @param \Jose\Object\SignatureInstructionInterface[]                                    $instructions       A list of instructions used to encrypt the input
-     * @param string                                                                   $serialization      Serialization method. If the argument $keys contains more than one private key and value is JSON_COMPACT_SERIALIZATION or JSON_FLATTENED_SERIALIZATION, the result will be an array of JWT.
-     * @param bool                                                                     $detached_signature If true, the payload will be detached and variable $detached_payload will be set
-     * @param null|string                                                              $detached_payload   The detached payload encoded in Base64 URL safe
+     * @param \Jose\Object\SignatureInstructionInterface[]                                                  $instructions       A list of instructions used to encrypt the input
+     * @param string                                                                                        $serialization      Serialization method. If the argument $keys contains more than one private key and value is JSON_COMPACT_SERIALIZATION or JSON_FLATTENED_SERIALIZATION, the result will be an array of JWT.
+     * @param bool                                                                                          $detached_signature If true, the payload will be detached and variable $detached_payload will be set
+     * @param null|string                                                                                   $detached_payload   The detached payload encoded in Base64 URL safe
      *
      * @throws \Exception
      *

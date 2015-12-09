@@ -24,10 +24,10 @@ interface KeyAgreementWrappingInterface extends EncryptionInterface
      *
      * @param \Jose\Object\JWKInterface $sender_key               The sender's key
      * @param \Jose\Object\JWKInterface $receiver_key             The receiver's key
-     * @param string             $cek                      The CEK to wrap
-     * @param int                $encryption_key_length    Size of the key expected for the algorithm used for data encryption
-     * @param array              $complete_header          The complete header of the JWT
-     * @param array              $additional_header_values Set additional header values if needed
+     * @param string                    $cek                      The CEK to wrap
+     * @param int                       $encryption_key_length    Size of the key expected for the algorithm used for data encryption
+     * @param array                     $complete_header          The complete header of the JWT
+     * @param array                     $additional_header_values Set additional header values if needed
      *
      * @throws \Exception If key does not support the algorithm or if the key usage does not authorize the operation
      *
@@ -39,9 +39,9 @@ interface KeyAgreementWrappingInterface extends EncryptionInterface
      * Unwrap the agreement key.
      *
      * @param \Jose\Object\JWKInterface $receiver_key          The receiver's key
-     * @param string             $encrypted_cek         The encrypted CEK
-     * @param int                $encryption_key_length Size of the key expected for the algorithm used for data encryption
-     * @param array              $complete_header       The complete header of the JWT
+     * @param string                    $encrypted_cek         The encrypted CEK
+     * @param int                       $encryption_key_length Size of the key expected for the algorithm used for data encryption
+     * @param array                     $complete_header       The complete header of the JWT
      *
      * @throws \Exception If key does not support the algorithm or if the key usage does not authorize the operation
      *

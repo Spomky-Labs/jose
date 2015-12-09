@@ -34,7 +34,7 @@ final class EncryptionInstruction implements EncryptionInstructionInterface
      *
      * @param \Jose\Object\JWKInterface      $recipient_public_key
      * @param \Jose\Object\JWKInterface|null $sender_private_key
-     * @param array                   $recipient_unprotected_header
+     * @param array                          $recipient_unprotected_header
      */
     public function __construct(JWKInterface $recipient_public_key, JWKInterface $sender_private_key = null, array $recipient_unprotected_header = [])
     {

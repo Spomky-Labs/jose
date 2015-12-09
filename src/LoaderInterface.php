@@ -10,6 +10,7 @@
  */
 
 namespace Jose;
+
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
@@ -49,7 +50,7 @@ interface LoaderInterface
      *
      * @param \Jose\Object\JWSInterface         $input            A JWS object.
      * @param \Jose\Object\JWKSetInterface|null $jwk_set          If not null, the signature will be verified only using keys in the key set, else this method should use a default keys manager
-     * @param null|string                $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
+     * @param null|string                       $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
      *
      * @return bool True if the signature has been verified, else false
      */

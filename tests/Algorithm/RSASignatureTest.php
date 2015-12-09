@@ -17,9 +17,9 @@ use Jose\Algorithm\Signature\RS256;
 use Jose\Algorithm\Signature\RS384;
 use Jose\Algorithm\Signature\RS512;
 use Jose\JSONSerializationModes;
+use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWT;
-use Jose\KeyConverter\KeyConverter;
 use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 

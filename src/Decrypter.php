@@ -18,7 +18,6 @@ use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
-use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
@@ -32,7 +31,6 @@ use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
-use Jose\Object\JWTInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 
 /**

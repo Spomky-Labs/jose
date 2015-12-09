@@ -21,7 +21,7 @@ interface DirectEncryptionInterface extends EncryptionInterface
 {
     /**
      * @param \Jose\Object\JWKInterface $key    The key used to get the CEK
-     * @param array              $header The complete header of the JWT
+     * @param array                     $header The complete header of the JWT
      *
      * @throws \Exception If key does not support the algorithm or if the key usage does not authorize the operation
      *
