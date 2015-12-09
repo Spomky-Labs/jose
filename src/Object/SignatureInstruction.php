@@ -33,8 +33,8 @@ final class SignatureInstruction implements SignatureInstructionInterface
      * SignatureInstruction constructor.
      *
      * @param \Jose\Object\JWKInterface $key
-     * @param array              $protected_header
-     * @param array              $unprotected_header
+     * @param array                     $protected_header
+     * @param array                     $unprotected_header
      */
     public function __construct(JWKInterface $key, array $protected_header = [], array $unprotected_header = [])
     {

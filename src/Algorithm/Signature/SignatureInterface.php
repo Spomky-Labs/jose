@@ -23,7 +23,7 @@ interface SignatureInterface extends JWAInterface
      * Sign the input.
      *
      * @param \Jose\Object\JWKInterface $key   The private key used to sign the data
-     * @param string             $input The input
+     * @param string                    $input The input
      *
      * @throws \Exception If key does not support the algorithm or if the key usage does not authorize the operation
      *
@@ -35,8 +35,8 @@ interface SignatureInterface extends JWAInterface
      * Verify the signature of data.
      *
      * @param \Jose\Object\JWKInterface $key       The private key used to sign the data
-     * @param string             $input     The input
-     * @param string             $signature The signature to verify
+     * @param string                    $input     The input
+     * @param string                    $signature The signature to verify
      *
      * @throws \Exception If key does not support the algorithm or if the key usage does not authorize the operation
      *
