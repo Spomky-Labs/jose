@@ -11,8 +11,8 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
-use Jose\Object\JWKInterface;
 use Jose\KeyConverter\KeyConverter;
+use Jose\Object\JWKInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**

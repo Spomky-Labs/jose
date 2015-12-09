@@ -22,8 +22,8 @@ abstract class AESGCMKW implements KeyEncryptionInterface
 {
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param string       $cek
-     * @param array        $header
+     * @param string                    $cek
+     * @param array                     $header
      *
      * @return mixed
      */
@@ -44,8 +44,8 @@ abstract class AESGCMKW implements KeyEncryptionInterface
 
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param string       $encryted_cek
-     * @param array        $header
+     * @param string                    $encryted_cek
+     * @param array                     $header
      *
      * @return mixed
      */

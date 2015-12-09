@@ -35,7 +35,7 @@ final class Signer implements SignerInterface
     /**
      * Signer constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface                      $jwa_manager
+     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      */
     public function __construct(
@@ -96,7 +96,7 @@ final class Signer implements SignerInterface
     /**
      * @param \Jose\Object\SignatureInstructionInterface $instruction
      * @param \Jose\Object\JWTInterface                  $input
-     * @param string                              $jwt_payload
+     * @param string                                     $jwt_payload
      *
      * @return array
      */
@@ -132,7 +132,7 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param array              $complete_header The complete header
+     * @param array                     $complete_header The complete header
      * @param \Jose\Object\JWKInterface $key
      *
      * @return \Jose\Algorithm\Signature\SignatureInterface
@@ -156,7 +156,7 @@ final class Signer implements SignerInterface
 
     /**
      * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
-     * @param string                                 $serialization
+     * @param string                                        $serialization
      */
     protected function checkInstructions(array $instructions, $serialization)
     {

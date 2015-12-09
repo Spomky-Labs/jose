@@ -60,7 +60,7 @@ interface JWKInterface extends \JsonSerializable
     /**
      * Unset values of the JWK object.
      *
-     * @param string $key   Key
+     * @param string $key Key
      *
      * @return \Jose\Object\JWKInterface
      */

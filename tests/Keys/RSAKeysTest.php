@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Object\JWK;
 use Jose\KeyConverter\RSAKey;
+use Jose\Object\JWK;
 use Jose\Test\TestCase;
 
 /**

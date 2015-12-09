@@ -11,18 +11,6 @@
 
 namespace Jose;
 
-use Base64Url\Base64Url;
-use Jose\Algorithm\Signature\SignatureInterface;
-use Jose\Behaviour\HasJWAManager;
-use Jose\Behaviour\HasJWTManager;
-use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasPayloadConverter;
-use Jose\Object\JWKInterface;
-use Jose\Object\JWTInterface;
-use Jose\Object\SignatureInstructionInterface;
-use Jose\Payload\PayloadConverterManagerInterface;
-use Jose\Util\Converter;
-
 /**
  */
 final class Verifier implements VerifierInterface

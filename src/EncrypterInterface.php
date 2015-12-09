@@ -23,11 +23,11 @@ interface EncrypterInterface
      * Please note that this is not possible when using the algorithms "dir" or "ECDH-ES".
      *
      * @param \Jose\Object\JWTInterface|\Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface|array|string $input                     A JWKInterface/JWKInterface/JWKSetInterface object
-     * @param \Jose\Object\EncryptionInstructionInterface[]                                   $instructions              A list of instructions used to encrypt the input
-     * @param array                                                                    $shared_protected_header   Shared protected headers. If the input is a JWTInterface object, this parameter is merged with the protected header of the input.
-     * @param array                                                                    $shared_unprotected_header Shared unprotected headers. If the input is a JWTInterface object, this parameter is merged with the unprotected header of the input.
-     * @param string                                                                   $serialization             Serialization method.
-     * @param string|null                                                              $aad                       Additional Authentication Data. This parameter is useless if the serialization is JSON_COMPACT_SERIALIZATION.
+     * @param \Jose\Object\EncryptionInstructionInterface[]                                                 $instructions              A list of instructions used to encrypt the input
+     * @param array                                                                                         $shared_protected_header   Shared protected headers. If the input is a JWTInterface object, this parameter is merged with the protected header of the input.
+     * @param array                                                                                         $shared_unprotected_header Shared unprotected headers. If the input is a JWTInterface object, this parameter is merged with the unprotected header of the input.
+     * @param string                                                                                        $serialization             Serialization method.
+     * @param string|null                                                                                   $aad                       Additional Authentication Data. This parameter is useless if the serialization is JSON_COMPACT_SERIALIZATION.
      *
      * @throws \Exception
      *

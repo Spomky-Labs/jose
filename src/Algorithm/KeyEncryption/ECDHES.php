@@ -122,7 +122,7 @@ final class ECDHES implements KeyAgreementInterface
 
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param bool         $is_private
+     * @param bool                      $is_private
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
