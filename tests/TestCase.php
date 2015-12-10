@@ -335,6 +335,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
             ],
         ]];
+
         return new JWKSet($keys);
     }
 
@@ -385,6 +386,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
             ],
         ]];
+
         return new JWKSet($keys);
     }
 
@@ -409,6 +411,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
                 'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
             ],
         ]];
+
         return new JWKSet($keys);
     }
 }
