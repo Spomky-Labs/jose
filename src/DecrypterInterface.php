@@ -24,10 +24,10 @@ interface DecrypterInterface
      * If the result is a JWE, nothing is decrypted and method `decrypt` must be executed
      * If the result is a JWS, no signature is verified and method `verifySignature` must be executed.
      *
-     * @param \Jose\Object\JWEInterface         $input   A JWE object to decrypt
-     * @param \Jose\Object\JWKSetInterface|null $jwk_set If not null, use the key set used to verify or decrypt the input, else this method should use a default keys manager.
+     * @param \Jose\Object\JWEInterface    $input   A JWE object to decrypt
+     * @param \Jose\Object\JWKSetInterface $jwk_set The key set used to decrypt the input
      *
      * @return bool Returns true if the JWE has been populated with decrypted values, else false.
      */
-    public function decrypt(JWEInterface &$input, JWKSetInterface $jwk_set = null);
+    public function decrypt(JWEInterface &$input, JWKSetInterface $jwk_set);
 }

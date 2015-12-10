@@ -155,7 +155,7 @@ class RSAKeyEncryptionTest extends TestCase
         $this->assertEquals('A256GCM', $loaded->getHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $loaded->getPayload());
@@ -176,7 +176,7 @@ class RSAKeyEncryptionTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
@@ -197,7 +197,7 @@ class RSAKeyEncryptionTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getSymmetricKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());

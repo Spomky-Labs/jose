@@ -505,7 +505,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
@@ -531,7 +531,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded[0]->getHeader('enc'));
         $this->assertNull($loaded[0]->getPayload());
 
-        $result = $decrypter->decrypt($loaded[0]);
+        $result = $decrypter->decrypt($loaded[0], $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded[0]->getPayload());
@@ -541,7 +541,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded[1]->getProtectedHeader('enc'));
         $this->assertNull($loaded[1]->getPayload());
 
-        $result = $decrypter->decrypt($loaded[1]);
+        $result = $decrypter->decrypt($loaded[1], $this->getSymmetricKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded[1]->getPayload());
@@ -553,7 +553,7 @@ class RSASignatureTest extends TestCase
     public function testLoadJWSJSONSerialization()
     {
         $loader = $this->getLoader();
-        $verifier = $this->getVerifier();
+        //$verifier = $this->getVerifier();
 
         $result = $loader->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","signatures":[{"protected":"eyJhbGciOiJSUzI1NiJ9","header":{"kid":"2010-12-29"},"signature":"cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw"},{"protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}]}');
 
@@ -582,8 +582,8 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('RS256', $result[0]->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result[1]->getProtectedHeader('alg'));
 
-        $this->assertTrue($verifier->verify($result[0], null, 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
-        $this->assertTrue($verifier->verify($result[1], null, 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $this->assertTrue($verifier->verify($result[0], $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $this->assertTrue($verifier->verify($result[1], $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
     }
 
     /**

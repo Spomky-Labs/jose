@@ -55,7 +55,7 @@ interface JWKInterface extends \JsonSerializable
      *
      * @return \Jose\Object\JWKInterface
      */
-    public function withValue($key, $value);
+    public function with($key, $value);
 
     /**
      * Unset values of the JWK object.
@@ -64,5 +64,5 @@ interface JWKInterface extends \JsonSerializable
      *
      * @return \Jose\Object\JWKInterface
      */
-    public function withoutValue($key);
+    public function without($key);
 }

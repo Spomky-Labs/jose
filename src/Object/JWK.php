@@ -77,7 +77,7 @@ final class JWK implements JWKInterface
     /**
      * {@inheritdoc}
      */
-    public function withValue($key, $value)
+    public function with($key, $value)
     {
         $jwk = clone $this;
         $jwk->values[$key] = $value;
@@ -88,9 +88,9 @@ final class JWK implements JWKInterface
     /**
      * {@inheritdoc}
      */
-    public function withoutValue($key)
+    public function without($key)
     {
-        if (!array_key_exists($key, $this->values)) {
+        if (!$this->has($key)) {
             return $this;
         }
         $jwk = clone $this;

@@ -240,12 +240,15 @@ class SignerTest extends TestCase
          */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
-        foreach ($loaded as $jws) {
-            $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
-            $this->assertEquals('Je suis Charlie', $jws->getPayload());
-            $this->assertTrue($verifier->verify($jws));
-        }
+
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[0]);
+        $this->assertEquals('Je suis Charlie', $loaded[0]->getPayload());
+        $this->assertTrue($verifier->verify($loaded[0], $this->getSymmetricKeySet()));
         $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
+
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[1]);
+        $this->assertEquals('Je suis Charlie', $loaded[1]->getPayload());
+        $this->assertTrue($verifier->verify($loaded[1], $this->getPublicKeySet()));
         $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
 
@@ -333,12 +336,15 @@ class SignerTest extends TestCase
          */
         $this->assertTrue(is_array($loaded));
         $this->assertEquals(2, count($loaded));
-        foreach ($loaded as $jws) {
-            $this->assertInstanceOf('\Jose\Object\JWSInterface', $jws);
-            $this->assertEquals($this->getKeyset(), $jws->getPayload());
-            $this->assertTrue($verifier->verify($jws));
-        }
+
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[0]);
+        $this->assertEquals($this->getKeyset(), $loaded[0]->getPayload());
+        $this->assertTrue($verifier->verify($loaded[0], $this->getSymmetricKeySet()));
         $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
+
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[1]);
+        $this->assertEquals($this->getKeyset(), $loaded[1]->getPayload());
+        $this->assertTrue($verifier->verify($loaded[1], $this->getPublicKeySet()));
         $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
 

@@ -55,7 +55,7 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals('FOO', $loaded->getPayload());
@@ -89,7 +89,7 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
@@ -232,7 +232,7 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals($this->getKeyToEncrypt(), $loaded->getPayload());
@@ -313,7 +313,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getSymmetricKeySet());
 
         $this->assertTrue($result);
         $this->assertEquals($this->getKeySetToEncrypt(), $loaded->getPayload());
@@ -327,7 +327,6 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -412,7 +411,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertTrue(is_string($loaded->getPayload()));
@@ -443,7 +442,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertTrue(is_string($loaded->getPayload()));
@@ -484,7 +483,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertTrue(is_string($loaded->getPayload()));
@@ -527,7 +526,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded[0]->hasHeader('zip'));
         $this->assertNull($loaded[0]->getPayload());
 
-        $result = $decrypter->decrypt($loaded[0]);
+        $result = $decrypter->decrypt($loaded[0], $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertTrue(is_string($loaded[0]->getPayload()));
@@ -539,7 +538,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded[1]->hasHeader('zip'));
         $this->assertNull($loaded[1]->getPayload());
 
-        $result = $decrypter->decrypt($loaded[1]);
+        $result = $decrypter->decrypt($loaded[1], $this->getPrivateKeySet());
 
         $this->assertTrue($result);
         $this->assertTrue(is_string($loaded[1]->getPayload()));

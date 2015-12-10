@@ -21,15 +21,12 @@ use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
-use Jose\Behaviour\HasJWKFinderManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
-use Jose\Finder\JWKFinderManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
-use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 
@@ -39,7 +36,6 @@ final class Decrypter implements DecrypterInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasJWKFinderManager;
     use HasCheckerManager;
     use HasPayloadConverter;
     use HasCompressionManager;
@@ -48,20 +44,17 @@ final class Decrypter implements DecrypterInterface
      * Loader constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Finder\JWKFinderManagerInterface         $jwk_finder_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        JWKFinderManagerInterface $jwk_finder_manager,
         PayloadConverterManagerInterface $payload_converter_manager,
         CompressionManagerInterface $compression_manager,
         CheckerManagerInterface $checker_manager)
     {
         $this->setJWAManager($jwa_manager);
-        $this->setJWKFinderManager($jwk_finder_manager);
         $this->setPayloadConverter($payload_converter_manager);
         $this->setCompressionManager($compression_manager);
         $this->setCheckerManager($checker_manager);
@@ -70,16 +63,9 @@ final class Decrypter implements DecrypterInterface
     /**
      * {@inheritdoc}
      */
-    public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set = null)
+    public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
         $this->checkCompleteHeader($jwe->getHeaders());
-
-        if (null === $jwk_set) {
-            $jwk_set = $this->getKeysFromCompleteHeader(
-                $jwe->getHeaders(),
-                JWKFinderManagerInterface::KEY_TYPE_PRIVATE | JWKFinderManagerInterface::KEY_TYPE_DIRECT | JWKFinderManagerInterface::KEY_TYPE_SYMMETRIC
-            );
-        }
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe->getHeader('enc'));
 
@@ -100,7 +86,7 @@ final class Decrypter implements DecrypterInterface
                         return true;
                     }
                 }
-            } catch (\InvalidArgumentException $e) {
+            } catch (\Exception $e) {
                 //We do nothing, we continue with other keys
             }
         }
@@ -234,19 +220,5 @@ final class Decrypter implements DecrypterInterface
         }
 
         return $compression_method;
-    }
-
-    /**
-     * @param array $header
-     * @param int   $key_type
-     *
-     * @return \Jose\Object\JWKSetInterface
-     */
-    private function getKeysFromCompleteHeader(array $header, $key_type)
-    {
-        $keys = $this->getJWKFinderManager()->findJWK($header, $key_type);
-        $jwkset = new JWKSet($keys);
-
-        return $jwkset;
     }
 }
