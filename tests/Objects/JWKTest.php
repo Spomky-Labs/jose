@@ -30,13 +30,13 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'use'     => 'sign',
             'key_ops' => ['sign'],
             'alg'     => 'ES256',
-            'bar'     => 'plic'
+            'bar'     => 'plic',
         ]);
         $jwk2 = $jwk->with('kid', '0123456789');
         $jwk2 = $jwk2->without('foo');
         $jwk2 = $jwk2->without('bar');
 
-        $this->assertEquals(['kty','crv','x','y','use','key_ops','alg','bar'], $jwk->getKeys());
+        $this->assertEquals(['kty', 'crv', 'x', 'y', 'use', 'key_ops', 'alg', 'bar'], $jwk->getKeys());
         $this->assertEquals('EC', $jwk->get('kty'));
         $this->assertEquals('ES256', $jwk->get('alg'));
         $this->assertEquals('sign', $jwk->get('use'));
@@ -69,7 +69,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'use'     => 'sign',
             'key_ops' => ['sign'],
             'alg'     => 'ES256',
-            'bar'     => 'plic'
+            'bar'     => 'plic',
         ]);
 
         $jwk->get('ABCD');
