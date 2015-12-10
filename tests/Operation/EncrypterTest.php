@@ -538,9 +538,9 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded[1]->hasHeader('zip'));
         $this->assertNull($loaded[1]->getPayload());
 
-        $result = $decrypter->decrypt($loaded[1], $this->getPrivateKeySet());
-
-        $this->assertTrue($result);
+        $this->assertFalse($decrypter->decrypt($loaded[1], new JWKSet()));
+        $this->assertFalse($decrypter->decrypt($loaded[1], $this->getSymmetricKeySet()));
+        $this->assertTrue($decrypter->decrypt($loaded[1], $this->getPrivateKeySet()));
         $this->assertTrue(is_string($loaded[1]->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded[1]->getPayload());
     }

@@ -339,6 +339,8 @@ class SignerTest extends TestCase
 
         $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded[0]);
         $this->assertEquals($this->getKeyset(), $loaded[0]->getPayload());
+        $this->assertFalse($verifier->verify($loaded[0], new JWKSet()));
+        $this->assertFalse($verifier->verify($loaded[0], $this->getPublicKeySet()));
         $this->assertTrue($verifier->verify($loaded[0], $this->getSymmetricKeySet()));
         $this->assertEquals('HS512', $loaded[0]->getHeader('alg'));
 

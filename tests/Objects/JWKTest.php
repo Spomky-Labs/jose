@@ -36,6 +36,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $jwk2 = $jwk2->without('foo');
         $jwk2 = $jwk2->without('bar');
 
+        $this->assertEquals(['kty','crv','x','y','use','key_ops','alg','bar'], $jwk->getKeys());
         $this->assertEquals('EC', $jwk->get('kty'));
         $this->assertEquals('ES256', $jwk->get('alg'));
         $this->assertEquals('sign', $jwk->get('use'));
@@ -52,6 +53,26 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","bar":"plic"}', json_encode($jwk));
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk2));
         $this->assertNotSame($jwk, $jwk2);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The value identified by "ABCD" does not exist.
+     */
+    public function testBadCall()
+    {
+        $jwk = new JWK([
+            'kty'     => 'EC',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'use'     => 'sign',
+            'key_ops' => ['sign'],
+            'alg'     => 'ES256',
+            'bar'     => 'plic'
+        ]);
+
+        $jwk->get('ABCD');
     }
 
     /**
@@ -96,6 +117,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $jwkset->key());
 
         $this->assertEquals('9876543210', $jwkset->getKey(1)->get('kid'));
+        $jwkset = $jwkset->removeKey(1);
         $jwkset = $jwkset->removeKey(1);
 
         $this->assertEquals(1, count($jwkset));

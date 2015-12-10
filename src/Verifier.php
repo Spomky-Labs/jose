@@ -99,13 +99,13 @@ final class Verifier implements VerifierInterface
     private function getAlgorithm(array $header)
     {
         if (!array_key_exists('alg', $header)) {
-            throw new \InvalidArgumentException("No 'alg' parameter set in the header or the key.");
+            throw new \InvalidArgumentException("No 'alg' parameter set in the header.");
         }
         $alg = $header['alg'];
 
         $algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$algorithm instanceof SignatureInterface) {
-            throw new \RuntimeException("The algorithm '$alg' is not supported or does not implement SignatureInterface.");
+            throw new \RuntimeException(sprintf('The algorithm "$alg" is not supported or does not implement SignatureInterface.', $alg));
         }
 
         return $algorithm;
