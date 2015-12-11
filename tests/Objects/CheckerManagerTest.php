@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Object\JWT;
+use Jose\Object\JWS;
 use Jose\Test\TestCase;
 
 /**
@@ -23,7 +23,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTWithBadIssuer()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'foo',
@@ -42,7 +42,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTWithBadAudience()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
@@ -61,7 +61,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckExpiredJWT()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() - 10000,
             'iss' => 'ISS1',
@@ -80,7 +80,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTIssuedInTheFutur()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
@@ -99,7 +99,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTNotYetUsable()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
@@ -118,7 +118,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTWithBadSubject()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
             'iss' => 'ISS1',
@@ -137,7 +137,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testCheckJWTWithMissingCriticalParameters()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withProtectedHeader('crit', ['exp', 'iss', 'foo']);
         $jwt = $jwt->withPayload([
             'exp' => time() + 10000,
@@ -153,7 +153,7 @@ class CheckerManagerTest extends TestCase
 
     public function testCheckValidJWT()
     {
-        $jwt = new JWT();
+        $jwt = new JWS();
         $jwt = $jwt->withProtectedHeader('crit', ['exp', 'iss', 'foo']);
         $jwt = $jwt->withPayload([
                 'exp' => time() + 10000,

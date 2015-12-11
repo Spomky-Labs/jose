@@ -12,7 +12,7 @@
 use Jose\JSONSerializationModes;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Jose\Object\JWT;
+use Jose\Object\JWS;
 use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
@@ -260,7 +260,7 @@ class SignerTest extends TestCase
     {
         $checker = $this->getCheckerManager();
 
-        $jws = new JWT();
+        $jws = new JWS();
         $jws = $jws->withPayload(['exp' => time() - 1]);
 
         $checker->checkJWT($jws);
@@ -274,7 +274,7 @@ class SignerTest extends TestCase
     {
         $checker = $this->getCheckerManager();
 
-        $jws = new JWT();
+        $jws = new JWS();
         $jws = $jws->withPayload(['nbf' => time() + 1000]);
 
         $checker->checkJWT($jws);
@@ -288,7 +288,7 @@ class SignerTest extends TestCase
     {
         $checker = $this->getCheckerManager();
 
-        $jws = new JWT();
+        $jws = new JWS();
         $jws = $jws->withPayload(['iat' => time() + 1000]);
 
         $checker->checkJWT($jws);
@@ -302,7 +302,7 @@ class SignerTest extends TestCase
     {
         $checker = $this->getCheckerManager();
 
-        $jws = new JWT();
+        $jws = new JWS();
         $jws = $jws->withProtectedHeader('crit', [
             'exp',
             'nbf',

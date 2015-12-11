@@ -14,7 +14,6 @@ use Jose\JSONSerializationModes;
 use Jose\Object\EncryptionInstruction;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Jose\Object\JWT;
 use Jose\Test\TestCase;
 
 /**
@@ -33,13 +32,10 @@ class EncrypterTest extends TestCase
         $loader = $this->getLoader();
         $decrypter = $this->getDecrypter();
 
-        $input = new JWT();
-        $input = $input->withPayload('FOO');
-
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
         $encrypted = $encrypter->encrypt(
-            $input,
+            'FOO',
             [$instruction],
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],

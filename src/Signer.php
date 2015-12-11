@@ -18,8 +18,6 @@ use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Object\JWKInterface;
-use Jose\Object\JWT;
-use Jose\Object\JWTInterface;
 use Jose\Object\SignatureInstructionInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
@@ -47,32 +45,15 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param $input
-     */
-    private function checkInput(&$input)
-    {
-        if ($input instanceof JWTInterface) {
-            return;
-        }
-
-        $header = [];
-        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
-
-        $jwt = new JWT();
-        $jwt = $jwt->withPayload($payload);
-        $jwt = $jwt->withProtectedHeaders($header);
-        $input = $jwt;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $detached_signature = false, &$detached_payload = null)
     {
-        $this->checkInput($input);
+        $additional_header = [];
+        $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
         $this->checkInstructions($instructions, $serialization);
 
-        $jwt_payload = Base64Url::encode($input->getPayload());
+        $jwt_payload = Base64Url::encode($input);
 
         $signatures = [
             'payload'    => $jwt_payload,
@@ -80,7 +61,7 @@ final class Signer implements SignerInterface
         ];
 
         foreach ($instructions as $instruction) {
-            $signatures['signatures'][] = $this->computeSignature($instruction, $input, $jwt_payload);
+            $signatures['signatures'][] = $this->computeSignature($instruction, $jwt_payload, $additional_header);
         }
 
         if (true === $detached_signature) {
@@ -95,15 +76,15 @@ final class Signer implements SignerInterface
 
     /**
      * @param \Jose\Object\SignatureInstructionInterface $instruction
-     * @param \Jose\Object\JWTInterface                  $input
      * @param string                                     $jwt_payload
+     * @param array                                      $additional_header
      *
      * @return array
      */
-    protected function computeSignature(SignatureInstructionInterface $instruction, JWTInterface $input, $jwt_payload)
+    protected function computeSignature(SignatureInstructionInterface $instruction, $jwt_payload, array $additional_header)
     {
-        $protected_header = array_merge($input->getProtectedHeaders(), $instruction->getProtectedHeader());
-        $unprotected_header = array_merge($input->getUnprotectedHeaders(), $instruction->getUnprotectedHeader());
+        $protected_header = array_merge($instruction->getProtectedHeader(), $additional_header);
+        $unprotected_header = $instruction->getUnprotectedHeader();
         $complete_header = array_merge($protected_header, $protected_header);
 
         $jwt_protected_header = empty($protected_header) ? null : Base64Url::encode(json_encode($protected_header));

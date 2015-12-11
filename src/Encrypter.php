@@ -24,8 +24,6 @@ use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\EncryptionInstructionInterface;
-use Jose\Object\JWT;
-use Jose\Object\JWTInterface;
 use Jose\Payload\PayloadConverterManagerInterface;
 use Jose\Util\Converter;
 
@@ -67,30 +65,29 @@ final class Encrypter implements EncrypterInterface
      */
     public function encrypt($input, array $instructions, array $shared_protected_header = [], array $shared_unprotected_header = [], $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
     {
-        $this->checkInput($input);
+        $additional_header = [];
+        $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
         $this->checkInstructions($instructions, $serialization);
 
-        $protected_header = array_merge($input->getProtectedHeaders(), $shared_protected_header);
-        $unprotected_header = array_merge($input->getUnprotectedHeaders(), $shared_unprotected_header);
+        $protected_header = array_merge($shared_protected_header, $additional_header);
 
         // We check if key management mode is OK
-        $key_management_mode = $this->getKeyManagementMode($instructions, $protected_header, $unprotected_header);
+        $key_management_mode = $this->getKeyManagementMode($instructions, $protected_header, $shared_unprotected_header);
 
         // We get the content encryption algorithm
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($instructions, $protected_header, $unprotected_header);
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($instructions, $protected_header, $shared_unprotected_header);
 
         // CEK
-        $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $unprotected_header, $content_encryption_algorithm->getCEKSize());
+        $cek = $this->determineCEK($key_management_mode, $instructions, $protected_header, $shared_unprotected_header, $content_encryption_algorithm->getCEKSize());
 
         $recipients = ['recipients' => []];
         foreach ($instructions as $instruction) {
-            $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
+            $recipients['recipients'][] = $this->computeRecipient($instruction, $protected_header, $shared_unprotected_header, $cek, $content_encryption_algorithm->getCEKSize(), $serialization);
         }
 
         // We prepare the payload and compress it if required
-        $payload = $input->getPayload();
-        $compression_method = $this->findCompressionMethod($instructions, $protected_header, $unprotected_header);
-        $this->compressPayload($payload, $compression_method);
+        $compression_method = $this->findCompressionMethod($instructions, $protected_header, $shared_unprotected_header);
+        $this->compressPayload($input, $compression_method);
 
         // We compute the initialization vector
         $iv = null;
@@ -103,7 +100,7 @@ final class Encrypter implements EncrypterInterface
 
         // We encrypt the payload and get the tag
         $tag = null;
-        $ciphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $jwt_shared_protected_header, $tag);
+        $ciphertext = $content_encryption_algorithm->encryptContent($input, $cek, $iv, $aad, $jwt_shared_protected_header, $tag);
 
         // JWT Ciphertext
         $jwt_ciphertext = Base64Url::encode($ciphertext);
@@ -120,7 +117,7 @@ final class Encrypter implements EncrypterInterface
         $values = [
             'ciphertext'  => $jwt_ciphertext,
             'protected'   => $jwt_shared_protected_header,
-            'unprotected' => $unprotected_header,
+            'unprotected' => $shared_unprotected_header,
             'iv'          => $jwt_iv,
             'tag'         => $jwt_tag,
             'aad'         => $jwt_aad,
@@ -530,23 +527,5 @@ final class Encrypter implements EncrypterInterface
         } else {
             return openssl_random_pseudo_bytes($length);
         }
-    }
-
-    /**
-     * @param $input
-     */
-    private function checkInput(&$input)
-    {
-        if ($input instanceof JWTInterface) {
-            return;
-        }
-
-        $header = [];
-        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
-
-        $jwt = new JWT();
-        $jwt = $jwt->withPayload($payload);
-        $jwt = $jwt->withProtectedHeaders($header);
-        $input = $jwt;
     }
 }

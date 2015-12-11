@@ -216,15 +216,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompleteRS256Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'RS256');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty' => 'RSA',
-                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'   => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -237,10 +228,20 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'RS256',
+                'jwk'=> [
+                    'kty' => 'RSA',
+                    'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'   => 'AQAB',
+                ],
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.j8Ixg1CtPKdjn_nQbzRuFfX2I5i13uOLXDW1bPDMG4glp9ZW7mBi5_8ISnir-JVl93MpveppJo2adN_YkmmQjAgIYBgqO64Z1ltvjT5BwtS54SXCV4_YQDK-Tgy-IM6oG-T7zRz1GL_HowkkcUs9TenmakP3EDHL3MOsK6yo2HKhXgTvQ3ud0zKacdo4RQ_OQBoAle3Dr2rnTBVaF_4YRem2YrdFMzOHN9Luo7RxQJQcQTv99KTUNGih5mZug4k6W4YZPHi9lWfqzSTrlhKnnIc-EkecSsgjgWJzXjH2JQkd5rlKLWB96Al1iGjiGmsanmqcnETjnYZQAK0Hy73Lgw', $signature);
         $loader = $this->getLoader();
@@ -295,15 +296,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompleteRS384Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'RS384');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty' => 'RSA',
-                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'   => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -316,10 +308,20 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'RS384',
+                'jwk' => [
+                    'kty' => 'RSA',
+                    'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'   => 'AQAB',
+                ],
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $this->assertEquals('eyJhbGciOiJSUzM4NCIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.hITAAg42Vdp6y-3TdaCU939bMNgN4XlJ0YDKrCgexIvqYPorMjLEnldMnq-0-Xp4T7CrXJd_2Abbv1216gqRGwmtXIeWXWaZ8jaEejtdiRIAsxN2HLCDdX8ofmXMzvJC0uO4MP6hAgxBpDtL2Czc37kh4D7b8hHIvaXq0RbtP2fF62Db9mMJijjDLmxzWaElAcr8ks49aI-xfXgKnDw7LxVKjnEbjQubHnrbqsaonGagWc2SwDPzMrRebCplcf1UAv0daGXj4KZoL00grT-fpUyDYTFlH4ihuCHSFyo7_EmVFSfttaa8OcBo7xKOPrrc1hZw8GzkA5QHLFPaWERBmg', $signature);
         $loader = $this->getLoader();
@@ -335,15 +337,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompleteRS512Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'RS512');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty' => 'RSA',
-                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'   => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -356,10 +349,20 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'RS512',
+                'jwk' => [
+                    'kty' => 'RSA',
+                    'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'   => 'AQAB',
+                ],
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $this->assertEquals('eyJhbGciOiJSUzUxMiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.iOFHV9kmm5Sx6fVhSLpoJRUnfGftKLO8QKvG6b1yiUGg8EPolw4uKcF7e9jlNFPSkB_oF8vTLkdIXQ-ux7VIfVwV5XocU7--tWP69UqfqLcBpVe01TNeKBXE82uILYoo599LiLE-pLIM0nXjD43KVUv7_D2jJ5xd2TJdfdgU-3CLFit-5wiJ_ut1hByX_YT7KZwM6soIBoqedfPfe99mlENJ1FbqNuK9weQQeotKU4EvOFVMRRm4ZAAZHWcimUfLIJmH3pcOL0p4LXj93rJtHkUzK1XZGkff1WQkCq_6GTToPhhC8xRO8uV2np3NFxQuPNx6fBkJsQjWGGum0d3MOA', $signature);
 
@@ -376,16 +379,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompletePS256Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'PS256');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty'     => 'RSA',
-                'key_ops' => ['verify'],
-                'n'       => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'       => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty'     => 'RSA',
                 'key_ops' => ['sign'],
@@ -399,10 +392,21 @@ class RSASignatureTest extends TestCase
                 'qi'      => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'PS256',
+                'jwk' => [
+                    'kty'     => 'RSA',
+                    'key_ops' => ['verify'],
+                    'n'       => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'       => 'AQAB',
+                ]
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $loader = $this->getLoader();
         $result = $loader->load($signature);
@@ -417,15 +421,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompletePS384Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'PS384');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty' => 'RSA',
-                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'   => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -438,10 +433,20 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'PS384',
+                'jwk' => [
+                    'kty' => 'RSA',
+                    'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'   => 'AQAB',
+                ]
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $loader = $this->getLoader();
         $result = $loader->load($signature);
@@ -456,15 +461,6 @@ class RSASignatureTest extends TestCase
      */
     public function testCompletePS512Sign()
     {
-        $input = new JWT();
-        $input = $input->withProtectedHeader('alg', 'PS512');
-        $input = $input->withProtectedHeader('jwk', [
-                'kty' => 'RSA',
-                'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
-                'e'   => 'AQAB',
-              ]);
-        $input = $input->withPayload('Je suis Charlie');
-
         $key = new JWK([
                 'kty' => 'RSA',
                 'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
@@ -477,10 +473,20 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $instruction = new SignatureInstruction($key);
+        $instruction = new SignatureInstruction(
+            $key,
+            [
+                'alg' => 'PS512',
+                'jwk' => [
+                    'kty' => 'RSA',
+                    'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
+                    'e'   => 'AQAB',
+                ]
+            ]
+        );
 
         $signer = $this->getSigner();
-        $signature = $signer->sign($input, [$instruction]);
+        $signature = $signer->sign('Je suis Charlie', [$instruction]);
 
         $loader = $this->getLoader();
         $result = $loader->load($signature);

@@ -14,7 +14,7 @@ namespace Jose\Object;
 /**
  * Class JWT.
  */
-class JWT implements JWTInterface
+abstract class JWT implements JWTInterface
 {
     /**
      * @var string|null
