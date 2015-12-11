@@ -141,7 +141,7 @@ class JWT implements JWTInterface
         if ($this->hasProtectedHeader($key)) {
             return $this->protected_headers[$key];
         }
-        throw new \InvalidArgumentException(sprintf('The protected header "%" does not exist', $key));
+        throw new \InvalidArgumentException(sprintf('The protected header "%s" does not exist', $key));
     }
 
     /**
@@ -174,7 +174,7 @@ class JWT implements JWTInterface
         if ($this->hasUnprotectedHeader($key)) {
             return $this->unprotected_headers[$key];
         }
-        throw new \InvalidArgumentException(sprintf('The unprotected header "%" does not exist', $key));
+        throw new \InvalidArgumentException(sprintf('The unprotected header "%s" does not exist', $key));
     }
 
     /**
@@ -217,7 +217,7 @@ class JWT implements JWTInterface
         } elseif ($this->hasUnprotectedHeader($key)) {
             return $this->getUnprotectedHeader($key);
         }
-        throw new \InvalidArgumentException(sprintf('The protected or unprotected headers do not contain header "%"', $key));
+        throw new \InvalidArgumentException(sprintf('The protected or unprotected headers do not contain header "%s"', $key));
     }
 
     /**
@@ -238,7 +238,7 @@ class JWT implements JWTInterface
         } elseif ($this->hasClaim($key)) {
             return $this->getClaim($key);
         }
-        throw new \InvalidArgumentException(sprintf('The header or claim do not contain value with key "%"', $key));
+        throw new \InvalidArgumentException(sprintf('The header or claim do not contain value with key "%s"', $key));
     }
 
     /**
@@ -257,7 +257,7 @@ class JWT implements JWTInterface
         if ($this->hasClaim($key)) {
             return $this->payload[$key];
         }
-        throw new \InvalidArgumentException(sprintf('The payload does not contain claim "%"', $key));
+        throw new \InvalidArgumentException(sprintf('The payload does not contain claim "%s"', $key));
     }
 
     /**
@@ -325,9 +325,4 @@ class JWT implements JWTInterface
 
         return $jwt;
     }
-
-    /*public function __clone()
-    {
-        $this->input = null;
-    }*/
 }

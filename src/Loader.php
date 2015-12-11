@@ -82,7 +82,7 @@ final class Loader implements LoaderInterface
      */
     private function loadSerializedJsonJWS(array $data, $input)
     {
-        $encoded_payload = isset($data['payload']) ? $data['payload'] : '';
+        $encoded_payload = array_key_exists('payload', $data) ? $data['payload'] : null;
         $payload = Base64Url::decode($encoded_payload);
 
         $jws = [];
@@ -97,7 +97,6 @@ final class Loader implements LoaderInterface
             $unprotected_header = isset($signature['header']) ? $signature['header'] : [];
 
             $result = $this->createJWS($input, $encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
-            //$result = $result->withInput($input);
             $jws[] = $result;
         }
 
@@ -143,7 +142,7 @@ final class Loader implements LoaderInterface
     {
         $result = [];
         foreach ($data['recipients'] as $recipient) {
-            $encoded_protected_header = array_key_exists('protected', $data) ? $data['protected'] : '';
+            $encoded_protected_header = array_key_exists('protected', $data) ? $data['protected'] : null;
             $protected_header = empty($encoded_protected_header) ? [] : json_decode(Base64Url::decode($encoded_protected_header), true);
             $unprotected_header = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : [];

@@ -114,13 +114,4 @@ final class JWE extends JWT implements JWEInterface
     {
         return $this->encoded_protected_header;
     }
-
-    /*public function __clone()
-    {
-        $this->ciphertext = null;
-        $this->encrypted_key = null;
-        $this->iv = null;
-        $this->aad = null;
-        $this->tag = null;
-    }*/
 }

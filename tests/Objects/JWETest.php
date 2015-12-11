@@ -13,9 +13,115 @@ use Jose\Object\JWE;
 
 /**
  * Class JWETest.
+ *
+ * @group JWE
  */
 class JWETest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected header "foo" does not exist
+     */
+    public function testProtectedHeaderDoesNotExist()
+    {
+        $jwe = new JWE();
+        $jwe->getProtectedHeader('foo');
+    }
+
+    /**
+     *
+     */
+    public function testRemoveProtectedHeader()
+    {
+        $jwe = new JWE();
+        $jwe = $jwe->withProtectedHeader('foo', 'bar');
+        $this->assertTrue($jwe->hasProtectedHeader('foo'));
+        $this->assertEquals('bar', $jwe->getProtectedHeader('foo'));
+        $jwe = $jwe->withoutProtectedHeader('foo');
+        $jwe = $jwe->withoutProtectedHeader('foo');
+        $this->assertFalse($jwe->hasProtectedHeader('foo'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The unprotected header "foo" does not exist
+     */
+    public function testUnprotectedHeaderDoesNotExist()
+    {
+        $jwe = new JWE();
+        $jwe->getUnprotectedHeader('foo');
+    }
+
+    /**
+     *
+     */
+    public function testRemoveUnprotectedHeader()
+    {
+        $jwe = new JWE();
+        $jwe = $jwe->withUnprotectedHeader('foo', 'bar');
+        $this->assertTrue($jwe->hasUnprotectedHeader('foo'));
+        $this->assertEquals('bar', $jwe->getUnprotectedHeader('foo'));
+        $jwe = $jwe->withoutUnprotectedHeader('foo');
+        $jwe = $jwe->withoutUnprotectedHeader('foo');
+        $this->assertFalse($jwe->hasUnprotectedHeader('foo'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected or unprotected headers do not contain header "foo"
+     */
+    public function testHeaderDoesNotExist()
+    {
+        $jwe = new JWE();
+        $jwe->getHeader('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The header or claim do not contain value with key "foo"
+     */
+    public function testHeaderOrClaimDoesNotExist()
+    {
+        $jwe = new JWE();
+        $jwe->getHeaderOrClaim('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The payload does not contain claim "foo"
+     */
+    public function testClaimDoesNotExist()
+    {
+        $jwe = new JWE();
+        $jwe->getClaim('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The payload does not contain claims
+     */
+    public function testPayloadHasNoClaim()
+    {
+        $jwe = new JWE();
+        $jwe->getClaims();
+    }
+
+    /**
+     *
+     */
+    public function testHeaderOrClaimExists()
+    {
+        $jwe = new JWE();
+        $jwe = $jwe->withProtectedHeader('foo', 'bar');
+        $jwe = $jwe->withClaim('bas', 'baz');
+        $this->assertEquals('bar', $jwe->getHeaderOrClaim('foo'));
+        $this->assertEquals('baz', $jwe->getHeaderOrClaim('bas'));
+        $this->assertEquals(['bas' => 'baz'], $jwe->getClaims());
+        $jwe = $jwe->withoutClaim('bas');
+        $jwe = $jwe->withoutClaim('bas');
+        $this->assertFalse($jwe->hasClaim('bas'));
+    }
+
     /**
      *
      */

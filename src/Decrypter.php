@@ -65,7 +65,7 @@ final class Decrypter implements DecrypterInterface
      */
     public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
-        $this->checkCompleteHeader($jwe->getHeaders());
+        $this->checkCompleteHeader($jwe);
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe->getHeader('enc'));
 
@@ -156,14 +156,14 @@ final class Decrypter implements DecrypterInterface
     }
 
     /**
-     * @param array $complete_header
+     * @param \Jose\Object\JWEInterface $jwe
      *
      * @throws \InvalidArgumentException
      */
-    private function checkCompleteHeader(array $complete_header)
+    private function checkCompleteHeader($jwe)
     {
         foreach (['enc', 'alg'] as $key) {
-            if (!array_key_exists($key, $complete_header)) {
+            if (!$jwe->hasHeader($key)) {
                 throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
             }
         }

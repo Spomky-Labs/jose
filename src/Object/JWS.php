@@ -67,11 +67,4 @@ final class JWS extends JWT implements JWSInterface
     {
         return $this->signature;
     }
-
-    /*public function __clone()
-    {
-        $this->signature = null;
-        $this->encoded_payload = null;
-        $this->encoded_protected_header = null;
-    }*/
 }
