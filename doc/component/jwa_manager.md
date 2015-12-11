@@ -53,19 +53,19 @@ This library supports the following algorithms:
 # The manager
 
 The JWA manager is really easy to use.
-You just have to create an instance of `Jose\JWAManager` and add each algorithm you want to use.
+You just have to create an instance of `Jose\Algorithm\JWAManager` and add each algorithm you want to use.
 
 ```php
 <?php
 
-use Jose\JWAManager;
+use Jose\Algorithm\JWAManager;
 use Jose\Algorithm\Signature\HS256;
 use Jose\Algorithm\KeyEncryption\A256CBCHS512;
 use Jose\Algorithm\ContentEncryption\PBES2HS512A256KW;
 
 $jwa_manager = new JWAManager();
 
-$jwa_manager->addAlgorithm(new HS256())
-    ->addAlgorithm(new A256CBCHS512())
-    ->addAlgorithm(new PBES2HS512A256KW());
+$jwa_manager->addAlgorithm(new HS256());
+$jwa_manager->addAlgorithm(new A256CBCHS512());
+$jwa_manager->addAlgorithm(new PBES2HS512A256KW());
 ```

@@ -55,48 +55,6 @@ final class Encrypter implements EncrypterInterface
         $this->setCompressionManager($compression_manager);
     }
 
-    protected function createCEK($size)
-    {
-        return $this->generateRandomString($size / 8);
-    }
-
-    protected function createIV($size)
-    {
-        return $this->generateRandomString($size / 8);
-    }
-
-    /**
-     * @param int $length
-     *
-     * @return string
-     */
-    private function generateRandomString($length)
-    {
-        if (function_exists('random_bytes')) {
-            return random_bytes($length);
-        } else {
-            return openssl_random_pseudo_bytes($length);
-        }
-    }
-
-    /**
-     * @param $input
-     */
-    private function checkInput(&$input)
-    {
-        if ($input instanceof JWTInterface) {
-            return;
-        }
-
-        $header = [];
-        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
-
-        $jwt = new JWT();
-        $jwt = $jwt->withPayload($payload);
-        $jwt = $jwt->withProtectedHeaders($header);
-        $input = $jwt;
-    }
-
     /**
      * @param array|\Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface|\Jose\Object\JWTInterface|string $input
      * @param array                                                                                         $instructions
@@ -190,7 +148,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return array
      */
-    protected function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
+    private function computeRecipient(EncryptionInstructionInterface $instruction, &$protected_header, $unprotected_header, $cek, $cek_size, $serialization)
     {
         if (!$this->checkKeyUsage($instruction->getRecipientKey(), 'encryption')) {
             throw new \InvalidArgumentException('Key cannot be used to encrypt');
@@ -216,9 +174,6 @@ final class Encrypter implements EncrypterInterface
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->wrapAgreementKey($instruction->getSenderKey(), $instruction->getRecipientKey(), $cek, $cek_size, $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            if (null === $instruction->getSenderKey()) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
             $additional_header_values = [];
             $jwt_cek = Base64Url::encode($key_encryption_algorithm->getAgreementKey($cek_size, $instruction->getSenderKey(), $instruction->getRecipientKey(), $complete_header, $additional_header_values));
             $this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
@@ -241,7 +196,7 @@ final class Encrypter implements EncrypterInterface
      * @param array  $recipient_header
      * @param string $serialization
      */
-    protected function updateHeader(array $additional_header_values, array &$protected_header, array &$recipient_header, $serialization)
+    private function updateHeader(array $additional_header_values, array &$protected_header, array &$recipient_header, $serialization)
     {
         if (JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
             $protected_header = array_merge($protected_header, $additional_header_values);
@@ -257,7 +212,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function getKeyManagementMode(array $instructions, $protected_header, $unprotected_header)
+    private function getKeyManagementMode(array $instructions, $protected_header, $unprotected_header)
     {
         $mode = null;
         foreach ($instructions as $instruction) {
@@ -283,7 +238,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return bool
      */
-    protected function areKeyManagementModeAuthorized($mode1, $mode2)
+    private function areKeyManagementModeAuthorized($mode1, $mode2)
     {
         if ($mode1 > $mode2) {
             $temp = $mode1;
@@ -307,7 +262,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function getKeyManagementMode2($complete_header)
+    private function getKeyManagementMode2($complete_header)
     {
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
 
@@ -333,7 +288,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function determineCEK($key_management_mode, array $instructions, $protected_header, $unprotected_header, $cek_size)
+    private function determineCEK($key_management_mode, array $instructions, $protected_header, $unprotected_header, $cek_size)
     {
         switch ($key_management_mode) {
             case 'enc':
@@ -355,7 +310,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function getDirectKey(array $instructions, $protected_header, $unprotected_header)
+    private function getDirectKey(array $instructions, $protected_header, $unprotected_header)
     {
         $cek = null;
         foreach ($instructions as $instruction) {
@@ -388,7 +343,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function getAgreementKey(array $instructions, $protected_header, $unprotected_header, $cek_size)
+    private function getAgreementKey(array $instructions, $protected_header, $unprotected_header, $cek_size)
     {
         $cek = null;
         foreach ($instructions as $instruction) {
@@ -422,7 +377,7 @@ final class Encrypter implements EncrypterInterface
      * @param string $payload
      * @param string $method
      */
-    protected function compressPayload(&$payload, $method = null)
+    private function compressPayload(&$payload, $method = null)
     {
         if (null !== $method) {
             $compression_method = $this->getCompressionMethod($method);
@@ -440,7 +395,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    protected function findCompressionMethod(array $instructions, $protected_header, $unprotected_header)
+    private function findCompressionMethod(array $instructions, $protected_header, $unprotected_header)
     {
         $method = null;
         $first = true;
@@ -467,7 +422,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return \Jose\Compression\CompressionInterface
      */
-    protected function getCompressionMethod($method)
+    private function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
         if (null === $compression_method) {
@@ -481,7 +436,7 @@ final class Encrypter implements EncrypterInterface
      * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param string                                        $serialization
      */
-    protected function checkInstructions(array $instructions, $serialization)
+    private function checkInstructions(array $instructions, $serialization)
     {
         if (empty($instructions)) {
             throw new \InvalidArgumentException('No instruction.');
@@ -501,7 +456,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return \Jose\Algorithm\KeyEncryption\DirectEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface
      */
-    protected function getKeyEncryptionAlgorithm($complete_header)
+    private function getKeyEncryptionAlgorithm($complete_header)
     {
         if (!array_key_exists('alg', $complete_header)) {
             throw new \InvalidArgumentException('Parameter "alg" is missing.');
@@ -527,7 +482,7 @@ final class Encrypter implements EncrypterInterface
      *
      * @return \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface
      */
-    protected function getContentEncryptionAlgorithm(array $instructions, array $protected_header = [], array $unprotected_header = [])
+    private function getContentEncryptionAlgorithm(array $instructions, array $protected_header = [], array $unprotected_header = [])
     {
         $algorithm = null;
         foreach ($instructions as $instruction) {
@@ -551,5 +506,47 @@ final class Encrypter implements EncrypterInterface
         }
 
         return $content_encryption_algorithm;
+    }
+
+    private function createCEK($size)
+    {
+        return $this->generateRandomString($size / 8);
+    }
+
+    private function createIV($size)
+    {
+        return $this->generateRandomString($size / 8);
+    }
+
+    /**
+     * @param int $length
+     *
+     * @return string
+     */
+    private function generateRandomString($length)
+    {
+        if (function_exists('random_bytes')) {
+            return random_bytes($length);
+        } else {
+            return openssl_random_pseudo_bytes($length);
+        }
+    }
+
+    /**
+     * @param $input
+     */
+    private function checkInput(&$input)
+    {
+        if ($input instanceof JWTInterface) {
+            return;
+        }
+
+        $header = [];
+        $payload = $this->getPayloadConverter()->convertPayloadToString($header, $input);
+
+        $jwt = new JWT();
+        $jwt = $jwt->withPayload($payload);
+        $jwt = $jwt->withProtectedHeaders($header);
+        $input = $jwt;
     }
 }

@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\JSONSerializationModes;
 use Jose\Test\TestCase;
-
 /**
  * Class JWETest.
  *
@@ -27,5 +27,17 @@ class OtherTest extends TestCase
         $jwa_manager = $this->getJWAManager();
 
         $jwa_manager->removeAlgorithm([]);
+    }
+
+    public function testOutputModes()
+    {
+        $this->assertEquals(
+            [
+                JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+                JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+                JSONSerializationModes::JSON_SERIALIZATION,
+            ],
+            JSONSerializationModes::getSupportedSerializationModes()
+        );
     }
 }

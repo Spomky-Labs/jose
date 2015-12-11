@@ -11,10 +11,15 @@ Your encryption instruction will be passed to the `Encrypter` object.
 ```php
 use Jose\EncryptionInstruction;
 
-$instruction  = new EncryptionInstruction();
-$instruction->setRecipientKey($recipient_public_key)
-    ->setSenderKey($sender_private_key)
-    ->setUnprotectedHeader([
-        'foo' => 'bar',
-    ]);
+$instruction  = new EncryptionInstruction(
+    $recipient_public_key,
+    $sender_private_key,
+    [
+        'alg' => 'ECDH-ES',
+        'enc' => 'A256CBC-HS512',
+    ],
+    [
+        'unprotected' => 'foo',
+    ]
+);
 ```

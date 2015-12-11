@@ -270,7 +270,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key type must be 'EC'
+     * @expectedExceptionMessage The key type must be "EC"
      */
     public function testNotAnECKey()
     {
@@ -283,6 +283,28 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
         $sender = new JWK([
             'kty' => 'dir',
+            'dir' => Base64Url::encode('ABCD'),
+        ]);
+
+        $ecdh_es = new ECDHES();
+        $ecdh_es->getAgreementKey(256, $sender, $receiver);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Key components ("x", "y" or "crv") missing
+     */
+    public function testECKeyHasMissingParameters()
+    {
+        $receiver = new JWK([
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+        ]);
+
+        $sender = new JWK([
+            'kty' => 'EC',
             'dir' => Base64Url::encode('ABCD'),
         ]);
 
@@ -348,7 +370,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Curve P-192 is not supported
+     * @expectedExceptionMessage Curve "P-192" is not supported
      */
     public function testUnsupportedCurve()
     {

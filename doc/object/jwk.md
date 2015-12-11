@@ -3,7 +3,9 @@ The JWK object
 
 The JWK object represents a key. Depending on the key properties, it can be used to sign, verify a signature, encrypt or decrypt.
 
-A JWK object is also serializable. You can call `json_encode($jwk)` to display the key as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
+A JWK object is serializable. You can call `json_encode($jwk)` to display the key as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
+
+This object is also immutable. It means that if you modify a key/value pair you will obtain a new object.
 
 # Create a `JWK` object
 
@@ -19,18 +21,6 @@ $jwk = new JWK([
 ]);
 ```
 
-or 
-
-```php
-use Jose\JWK;
-
-$jwk = new JWK();
-$jwk->setValues([
-    'kid' => 'My First Key',
-    'kty' => 'oct',
-    'k' => 'abcdef',
-]);
-```
 
 # Key values
 
@@ -166,16 +156,19 @@ You can indicate the scope of the key and the allowed algorithms for this key
 
 A `JWK` object implements the interface `Jose\JWKInterface` and provides the following methods:
 
-* `getValues()`: all values
-* `setValues(array $values)`: set values of the key 
-* `getValue($key)`:  the value with key `$key`. Returns null if the value does not exist.
-* `setValue($key, $value)`: set the value `$value` at key `$key`
-* `getKeyType()`: returns the key type. This method is a convenient method for `getValue('kty')`
-* `getPublicKeyUse()`: returns the key type. This method is a convenient method for `getValue('use')`
-* `getKeyOperations()`: returns the key type. This method is a convenient method for `getValue('key_ops')`
-* `getAlgorithm()`: returns the key type. This method is a convenient method for `getValue('alg')`
-* `getKeyID()`: returns the key type. This method is a convenient method for `getValue('kid')`
-* `getX509Url()`: returns the key type. This method is a convenient method for `getValue('x5u')`
-* `getX509CertificateChain()`: returns the key type. This method is a convenient method for `getValue('x5c')`
-* `getX509CertificateSha1Thumbprint()`: returns the key type. This method is a convenient method for `getValue('x5t')`
-* `getX509CertificateSha256Thumbprint()`: returns the key type. This method is a convenient method for `getValue('x5t#256')`
+* `getAll()`: all values
+* `get($key)`:  the value with key `$key`. Returns null if the value does not exist.
+* `with($key, value)`:  set the `$key` with value `$value`.
+* `without($key)`:  remove the key/value pair identified by `$key`.
+
+```php
+use Jose\JWK;
+
+$jwk = new JWK([
+    'kty' => 'oct',
+    'k'   => 'abcdef',
+]);
+
+$jwk = $jwk->with('kid', 'My First Key');
+$jwk = $jwk->without('kid');
+```

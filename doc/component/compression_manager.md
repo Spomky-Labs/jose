@@ -13,7 +13,8 @@ This library supports the following algorithms:
     * GZ: `Jose\Compression\GZip`,
     * ZLIB: `Jose\Compression\ZLib`
 
-*Note: only DEF is described in the [RFC 7516](http://tools.ietf.org/html/rfc7516).*
+*Note: only `DEF` is described in the [RFC 7516](http://tools.ietf.org/html/rfc7516).*
+*Others method should only used if both issuer and audience know how to use them*
 
 # The manager
 
@@ -30,8 +31,8 @@ $compression_manager = new CompressionManager();
 $compression_manager->addCompressionAlgorithm(new Deflate());
 ```
 
-By default, all compression methods provided set the compression level to -1 (auto).
-You can set a custom value between 0 (no compression) and 9 (maximum).
+By default, all compression methods provided set the compression level to `-1` (auto).
+You can set a custom value between `0` (no compression) and `9` (maximum).
 
 ```php
 <?php
@@ -41,8 +42,5 @@ use Jose\Compression\Deflate;
 
 $compression_manager = new CompressionManager();
 
-$deflate = new Deflate();
-$deflate->setCompressionLevel(6);
-
-$compression_manager->addCompressionAlgorithm($deflate);
+$compression_manager->addCompressionAlgorithm(new Deflate(6));
 ```

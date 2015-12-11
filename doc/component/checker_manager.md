@@ -31,18 +31,11 @@ use Jose\CheckerManager\ExpirationChecker;
 
 $checker_manager = new CheckerManager();
 
-$checker_manager->addChecker(new AudienceChecker('My server'))
-    ->addChecker(new ExpirationChecker());
+$checker_manager->addChecker(new AudienceChecker('My server'));
+$checker_manager->addChecker(new ExpirationChecker());
 ```
 
-This manager is called when you call the method `verify` of the `loader`.
-You can also call the method `checkJWT` manually at any time.
-
-```php
-<?php
-
-$checker_manager->checkJWT($jwt);
-```
+This manager is called when you call the method `verify` from the `virifier` or  `decrypt` from the `decrypter`.
 
 # Create my own checker
 
@@ -50,7 +43,7 @@ If you need to verify a custom claim, you can create your own checker and add it
 Your checker must implements `Jose\Checker\CheckerInterface`.
 
 Hereafter an example. Our animal checker will verify if the protected header contains the key `animal`.
-If this key exists, it verifies the animal is in the provided list.
+If this key exists, it verifies the claim `animal` is in the provided list.
 
 ```php
 <?php
@@ -61,11 +54,10 @@ class AnimalChecker implements CheckerInterface
 {
     public function checkJWT(JWTInterface $jwt)
     {
-        $animal = $jwt->getProtectedHeader('animal');
-        if (is_null($animal)) {
+        if (!$jwt->hasClaim('animal')) {
             return;
         }
-        if (!in_array($animal, ['owl', 'cat', 'dog', 'rat', 'mouse']) {
+        if (!in_array($jwt->getClaim('animal'), ['owl', 'cat', 'dog', 'rat', 'mouse']) {
             throw new \Exception('Unauthorized animal.');
         }
     }

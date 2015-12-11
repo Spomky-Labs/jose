@@ -19,7 +19,46 @@ final class JWS extends JWT implements JWSInterface
     /**
      * @var string|null
      */
+    protected $encoded_payload = null;
+
+    /**
+     * @var string|null
+     */
+    protected $encoded_protected_header = null;
+
+    /**
+     * @var string|null
+     */
     protected $signature = null;
+
+    /**
+     * JWS constructor.
+     *
+     * @param string $signature
+     */
+    public function __construct($input = null, $signature = null, $encoded_payload = null, $encoded_protected_header = null)
+    {
+        parent::__construct($input);
+        $this->encoded_payload = $encoded_payload;
+        $this->encoded_protected_header = $encoded_protected_header;
+        $this->signature = $signature;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEncodedPayload()
+    {
+        return $this->encoded_payload;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEncodedProtectedHeader()
+    {
+        return $this->encoded_protected_header;
+    }
 
     /**
      * {@inheritdoc}
@@ -29,14 +68,10 @@ final class JWS extends JWT implements JWSInterface
         return $this->signature;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function withSignature($signature)
+    /*public function __clone()
     {
-        $jws = clone $this;
-        $jws->signature = $signature;
-
-        return $jws;
-    }
+        $this->signature = null;
+        $this->encoded_payload = null;
+        $this->encoded_protected_header = null;
+    }*/
 }

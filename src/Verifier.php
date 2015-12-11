@@ -64,7 +64,7 @@ final class Verifier implements VerifierInterface
         if (null !== $detached_payload && !empty($jws->getPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
         }
-        $input = $jws->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
+        $input = $jws->getEncodedProtectedHeader().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 
         if (0 === count($jwk_set)) {
             return false;

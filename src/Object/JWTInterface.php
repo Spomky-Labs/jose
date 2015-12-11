@@ -234,43 +234,4 @@ interface JWTInterface
      * @return string|null
      */
     public function getInput();
-
-    /**
-     * @param string $input
-     *
-     * @return \Jose\Object\JWTInterface
-     */
-    public function withInput($input);
-
-    /**
-     * Returns the protected header encoded as represented in serialization.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string
-     */
-    public function getEncodedProtectedHeaders();
-
-    /**
-     * @param string $encoded_protected_header
-     *                                         Note: This method is used internally and should not be used directly.
-     *
-     * @return \Jose\Object\JWTInterface
-     */
-    public function withEncodedProtectedHeaders($encoded_protected_header);
-
-    /**
-     * Returns the payload encoded as represented in serialization.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string
-     */
-    public function getEncodedPayload();
-
-    /**
-     * @param string $encoded_payload
-     *                                Note: This method is used internally and should not be used directly.
-     *
-     * @return \Jose\Object\JWTInterface
-     */
-    public function withEncodedPayload($encoded_payload);
 }

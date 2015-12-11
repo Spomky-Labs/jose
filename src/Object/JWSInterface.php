@@ -17,17 +17,23 @@ interface JWSInterface extends JWTInterface
      * Returns the signature associated with the loaded JWS.
      * Note: This method is used internally and should not be used directly.
      *
-     * @return string
+     * @return string|null
      */
     public function getSignature();
 
     /**
-     * Set the signature associated with the loaded JWS.
+     * Returns the encoded payload associated with the loaded JWS.
      * Note: This method is used internally and should not be used directly.
      *
-     * @param string $signature The signature
-     *
-     * @return \Jose\Object\JWSInterface
+     * @return string|null
      */
-    public function withSignature($signature);
+    public function getEncodedPayload();
+
+    /**
+     * Returns the encoded protected header associated with the loaded JWS.
+     * Note: This method is used internally and should not be used directly.
+     *
+     * @return string|null
+     */
+    public function getEncodedProtectedHeader();
 }

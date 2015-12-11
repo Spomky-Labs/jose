@@ -127,7 +127,7 @@ final class ECDHES implements KeyAgreementInterface
     private function checkKey(JWKInterface $key, $is_private)
     {
         if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
-            throw new \InvalidArgumentException("The key type must be 'EC'");
+            throw new \InvalidArgumentException('The key type must be "EC"');
         }
         if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
             throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
@@ -156,7 +156,7 @@ final class ECDHES implements KeyAgreementInterface
             case 'P-521':
                 return EccFactory::getNistCurves()->generator521();
             default:
-                throw new \InvalidArgumentException("Curve $crv is not supported");
+                throw new \InvalidArgumentException(sprintf('Curve "%s" is not supported', $crv));
         }
     }
 

@@ -20,7 +20,7 @@ final class JSONSerializationModes
     const JSON_COMPACT_SERIALIZATION = 'JSON Compact Serialization';
     const JSON_FLATTENED_SERIALIZATION = 'JSON Flattened Serialization';
 
-    public function getSupportedSerializationModes()
+    public static function getSupportedSerializationModes()
     {
         return [
             self::JSON_COMPACT_SERIALIZATION,

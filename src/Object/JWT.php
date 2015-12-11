@@ -17,19 +17,9 @@ namespace Jose\Object;
 class JWT implements JWTInterface
 {
     /**
-     * @var string
-     */
-    private $encoded_protected_header = '';
-
-    /**
-     * @var string
+     * @var string|null
      */
     private $input = null;
-
-    /**
-     * @var string
-     */
-    private $encoded_payload = '';
 
     /**
      * @var array
@@ -47,11 +37,13 @@ class JWT implements JWTInterface
     private $payload = null;
 
     /**
-     * {@inheritdoc}
+     * JWT constructor.
+     *
+     * @param string $input
      */
-    public function getEncodedProtectedHeaders()
+    public function __construct($input = null)
     {
-        return $this->encoded_protected_header;
+        $this->input = $input;
     }
 
     /**
@@ -60,14 +52,6 @@ class JWT implements JWTInterface
     public function getInput()
     {
         return $this->input;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEncodedPayload()
-    {
-        return $this->encoded_payload;
     }
 
     /**
@@ -92,39 +76,6 @@ class JWT implements JWTInterface
     public function getPayload()
     {
         return $this->payload;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withInput($input)
-    {
-        $jwt = clone $this;
-        $jwt->input = $input;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withEncodedProtectedHeaders($encoded_protected_header)
-    {
-        $jwt = clone $this;
-        $jwt->encoded_protected_header = $encoded_protected_header;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withEncodedPayload($encoded_payload)
-    {
-        $jwt = clone $this;
-        $jwt->encoded_payload = $encoded_payload;
-
-        return $jwt;
     }
 
     /**
@@ -374,4 +325,9 @@ class JWT implements JWTInterface
 
         return $jwt;
     }
+
+    /*public function __clone()
+    {
+        $this->input = null;
+    }*/
 }

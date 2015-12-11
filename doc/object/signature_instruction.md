@@ -10,12 +10,13 @@ Your instruction will be passed to the `Signer` object.
 ```php
 use Jose\SignatureInstruction;
 
-$instruction  = new SignatureInstruction();
-$instruction->setKey($my_private_key)
-    ->setProtectedHeader([
+$instruction  = new SignatureInstruction(
+    $my_private_key,
+    [
         'alg' => 'HS512',
-    ])
-    ->setUnprotectedHeader([
-        'foo' => 'bar',
-    ]);
+    ],
+    [
+        'unprotected' => 'bar',
+    ]
+);
 ```

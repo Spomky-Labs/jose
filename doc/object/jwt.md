@@ -1,7 +1,9 @@
 The JWT object
 ==============
 
-The JWT object can be used as input and is the base of output objects after loading (see [JWS](jws.md) and [JWE](jwe.md).
+The JWT object is the base of output objects after loading (see [JWS](jws.md) and [JWE](jwe.md).
+
+Important note: A JWT object is immutable. It means that if you modify a claim or a header value, you will obtain a new object.
 
 This object provides the following methods:
 
@@ -35,11 +37,8 @@ This object provides the following methods:
 * `getX509CertificateSha256Thumbprint()`: Convenient method for `getHeaderValue('x5t#256')`.
 * `getCritical()`: Convenient method for `getProtectedHeaderValue('crit')`.
 
-Internally, the library uses the following methods. You should not use these methods directly.
+Internally, the library uses the following methods:
 
 * `getEncodedProtectedHeader()`: Returns the protected header as displayed in the JWT representation
-* `setEncodedProtectedHeader($header)`: Sets the protected header as displayed in the JWT representation
 * `getEncodedPayload()`: Returns the payload as displayed in the JWT representation
-* `setEncodedPayload($payload)`: Sets the payload as displayed in the JWT representation
 *  `getInput()`: Returns the input as passed to the `Loader` object
-*  `setInput($input)`: Sets the input

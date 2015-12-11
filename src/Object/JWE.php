@@ -39,7 +39,33 @@ final class JWE extends JWT implements JWEInterface
     /**
      * @var string|null
      */
-    private $tag = null;
+    private $tag;
+
+    /**
+     * @var string|null
+     */
+    protected $encoded_protected_header = null;
+
+    /**
+     * JWE constructor.
+     *
+     * @param string|null $ciphertext
+     * @param string|null $encrypted_key
+     * @param string|null $iv
+     * @param string|null $aad
+     * @param string|null $tag
+     * @param string|null $encoded_protected_header
+     */
+    public function __construct($input = null, $ciphertext = null, $encrypted_key = null, $iv = null, $aad = null, $tag = null, $encoded_protected_header = null)
+    {
+        parent::__construct($input);
+        $this->ciphertext = $ciphertext;
+        $this->encrypted_key = $encrypted_key;
+        $this->iv = $iv;
+        $this->aad = $aad;
+        $this->tag = $tag;
+        $this->encoded_protected_header = $encoded_protected_header;
+    }
 
     /**
      * {@inheritdoc}
@@ -47,17 +73,6 @@ final class JWE extends JWT implements JWEInterface
     public function getCiphertext()
     {
         return $this->ciphertext;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withCiphertext($ciphertext)
-    {
-        $jwe = clone $this;
-        $jwe->ciphertext = $ciphertext;
-
-        return $jwe;
     }
 
     /**
@@ -71,31 +86,9 @@ final class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function withEncryptedKey($encrypted_key)
-    {
-        $jwe = clone $this;
-        $jwe->encrypted_key = $encrypted_key;
-
-        return $jwe;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getAAD()
     {
         return $this->aad;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withAAD($aad)
-    {
-        $jwe = clone $this;
-        $jwe->aad = $aad;
-
-        return $jwe;
     }
 
     /**
@@ -109,17 +102,6 @@ final class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function withIV($iv)
-    {
-        $jwe = clone $this;
-        $jwe->iv = $iv;
-
-        return $jwe;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getTag()
     {
         return $this->tag;
@@ -128,11 +110,17 @@ final class JWE extends JWT implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function withTag($tag)
+    public function getEncodedProtectedHeader()
     {
-        $jwe = clone $this;
-        $jwe->tag = $tag;
-
-        return $jwe;
+        return $this->encoded_protected_header;
     }
+
+    /*public function __clone()
+    {
+        $this->ciphertext = null;
+        $this->encrypted_key = null;
+        $this->iv = null;
+        $this->aad = null;
+        $this->tag = null;
+    }*/
 }

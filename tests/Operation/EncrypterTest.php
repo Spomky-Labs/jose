@@ -327,13 +327,14 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
         $loader = $this->getLoader();
+        $decrypter = $this->getDecrypter();
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => time()+3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
 
         $loaded = $loader->load($encrypted);
 
@@ -343,11 +344,12 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        /*$result = $decrypter->decrypt($loaded);
+        $result = $decrypter->decrypt($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
-        $this->assertTrue(is_array($loaded->getPayload()));
-        $this->assertEquals(['user_id' => '1234', 'exp' => 3600], $loaded->getPayload());*/
+        $this->assertTrue($loaded->hasClaims());
+        $this->assertTrue($loaded->hasClaim('user_id'));
+        $this->assertEquals('1234', $loaded->getClaim('user_id'));
     }
 
     /**
@@ -358,9 +360,11 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
+        $instruction = new EncryptionInstruction(
+            $this->getECDHRecipientPublicKey()
+        );
 
-        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypter->encrypt(['user_id' => '1234', 'exp' => time()+3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
     }
 
     /**

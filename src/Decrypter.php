@@ -132,7 +132,7 @@ final class Decrypter implements DecrypterInterface
             $cek,
             $jwe->getIV(),
             $jwe->getAAD(),
-            $jwe->getEncodedProtectedHeaders(),
+            $jwe->getEncodedProtectedHeader(),
             $jwe->getTag()
         );
 
