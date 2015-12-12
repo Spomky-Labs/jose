@@ -61,7 +61,7 @@ final class Verifier implements VerifierInterface
      */
     public function verify(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
     {
-        if (null !== $detached_payload && !empty($jws->getPayload())) {
+        if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload');
         }
         $input = $jws->getEncodedProtectedHeader().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
@@ -70,7 +70,7 @@ final class Verifier implements VerifierInterface
             return false;
         }
         foreach ($jwk_set->getKeys() as $jwk) {
-            $algorithm = $this->getAlgorithm($jws->getHeaders());
+            $algorithm = $this->getAlgorithm($jws);
             if (!$this->checkKeyUsage($jwk, 'verification')) {
                 continue;
             }
@@ -78,7 +78,7 @@ final class Verifier implements VerifierInterface
                 continue;
             }
             try {
-                if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
+                   if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
                     $this->getCheckerManager()->checkJWT($jws);
 
                     return true;
@@ -92,20 +92,20 @@ final class Verifier implements VerifierInterface
     }
 
     /**
-     * @param array $header
+     * @param \Jose\Object\JWSInterface $jws
      *
-     * @return \Jose\Algorithm\Signature\SignatureInterface|null
+     * @return \Jose\Algorithm\Signature\SignatureInterface
      */
-    private function getAlgorithm(array $header)
+    private function getAlgorithm(JWSInterface $jws)
     {
-        if (!array_key_exists('alg', $header)) {
-            throw new \InvalidArgumentException("No 'alg' parameter set in the header.");
+        if (!$jws->hasHeader('alg')) {
+            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
         }
-        $alg = $header['alg'];
+        $alg = $jws->getHeader('alg');
 
         $algorithm = $this->getJWAManager()->getAlgorithm($alg);
         if (!$algorithm instanceof SignatureInterface) {
-            throw new \RuntimeException(sprintf('The algorithm "$alg" is not supported or does not implement SignatureInterface.', $alg));
+            throw new \RuntimeException(sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $alg));
         }
 
         return $algorithm;
