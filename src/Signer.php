@@ -36,10 +36,7 @@ final class Signer implements SignerInterface
      * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      */
-    public function __construct(
-        JWAManagerInterface $jwa_manager,
-        PayloadConverterManagerInterface $payload_converter_manager
-    ) {
+    public function __construct(JWAManagerInterface $jwa_manager, PayloadConverterManagerInterface $payload_converter_manager) {
         $this->setJWAManager($jwa_manager);
         $this->setPayloadConverter($payload_converter_manager);
     }
@@ -69,9 +66,7 @@ final class Signer implements SignerInterface
             unset($signatures['payload']);
         }
 
-        $prepared = Converter::convert($signatures, $serialization);
-
-        return is_array($prepared) ? current($prepared) : $prepared;
+        return Converter::convert($signatures, $serialization);
     }
 
     /**
@@ -136,20 +131,22 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
-     * @param string                                        $serialization
+     * @param array $instructions
+     * @param       $serialization
+     *
+     * @throws \InvalidArgumentException
      */
     protected function checkInstructions(array $instructions, $serialization)
     {
         if (empty($instructions)) {
             throw new \InvalidArgumentException('No instruction.');
         }
-        if (count($instructions) > 1 && JSONSerializationModes::JSON_SERIALIZATION !== $serialization) {
-            throw new \InvalidArgumentException('Only one instruction authorized when Compact or Flattened Serialization Overview is selected.');
-        }
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof SignatureInstructionInterface) {
                 throw new \InvalidArgumentException('Bad instruction. Must implement SignatureInstructionInterface.');
+            }
+            if (!empty($instruction->getUnprotectedHeader()) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+                throw new \InvalidArgumentException('Cannot create Compact Json Serialization representation: unprotected header cannot be kept');
             }
         }
     }

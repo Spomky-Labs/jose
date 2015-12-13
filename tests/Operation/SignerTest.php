@@ -138,8 +138,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     *
      */
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
@@ -149,12 +148,16 @@ class SignerTest extends TestCase
 
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
-        $signer->sign('FOO', [$instruction1, $instruction2], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+        $jws = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+
+        $this->assertTrue(is_array($jws));
+        $this->assertEquals(2, count($jws));
+        $this->assertEquals('eyJhbGciOiJIUzUxMiJ9.SmUgc3VpcyBDaGFybGll.di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA', $jws[0]);
+        $this->assertEquals('eyJhbGciOiJSUzUxMiJ9.SmUgc3VpcyBDaGFybGll.JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg', $jws[1]);
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     *
      */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
@@ -164,7 +167,12 @@ class SignerTest extends TestCase
 
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
-        $signer->sign('FOO', [$instruction1, $instruction2], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $jws = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+
+        $this->assertTrue(is_array($jws));
+        $this->assertEquals(2, count($jws));
+        $this->assertEquals('{"payload":"SmUgc3VpcyBDaGFybGll","signature":"di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA","protected":"eyJhbGciOiJIUzUxMiJ9"}', $jws[0]);
+        $this->assertEquals('{"payload":"SmUgc3VpcyBDaGFybGll","signature":"JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg","protected":"eyJhbGciOiJSUzUxMiJ9"}', $jws[1]);
     }
 
     /**
