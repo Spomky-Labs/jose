@@ -558,18 +558,21 @@ class RSASignatureTest extends TestCase
     public function testLoadJWSJSONSerialization()
     {
         $loader = $this->getLoader();
-        //$verifier = $this->getVerifier();
 
         $result = $loader->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","signatures":[{"protected":"eyJhbGciOiJSUzI1NiJ9","header":{"kid":"2010-12-29"},"signature":"cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw"},{"protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}]}');
 
         $this->assertTrue(is_array($result));
         $this->assertInstanceOf('Jose\Object\JWSInterface', $result[0]);
         $this->assertEquals(['iss' => 'joe', 'exp' => 1300819380, 'http://example.com/is_root' => true], $result[0]->getPayload());
+        $this->assertTrue($result[0]->hasHeader('alg'));
         $this->assertEquals('RS256', $result[0]->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result[1]->getProtectedHeader('alg'));
 
-        /*$this->assertTrue($verifier->verify($result[0]));
-        $this->assertTrue($verifier->verify($result[1]));*/
+        $this->assertTrue($result[0]->hasClaims());
+        $this->assertTrue($result[0]->hasClaim('iss'));
+        $this->assertEquals('joe', $result[0]->getClaim('iss'));
+        $this->assertEquals('joe', $result[0]->getHeaderOrClaim('iss'));
+        $this->assertEquals('RS256', $result[0]->getHeaderOrClaim('alg'));
     }
 
     /**
@@ -586,7 +589,6 @@ class RSASignatureTest extends TestCase
         $this->assertInstanceOf('Jose\Object\JWSInterface', $result[0]);
         $this->assertEquals('RS256', $result[0]->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result[1]->getProtectedHeader('alg'));
-
         $this->assertTrue($verifier->verify($result[0], $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
         $this->assertTrue($verifier->verify($result[1], $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
     }

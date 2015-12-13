@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Object;
+use Base64Url\Base64Url;
 
 /**
  * Class JWS.
@@ -34,14 +35,20 @@ final class JWS extends JWT implements JWSInterface
     /**
      * JWS constructor.
      *
-     * @param string $signature
+     * @param null  $input
+     * @param null  $signature
+     * @param null  $encoded_payload
+     * @param null  $payload
+     * @param null  $encoded_protected_header
+     * @param array $unprotected_headers
      */
-    public function __construct($input = null, $signature = null, $encoded_payload = null, $encoded_protected_header = null)
+    public function __construct($input, $signature, $encoded_payload = null, $payload = null, $encoded_protected_header = null, array $unprotected_headers = [])
     {
-        parent::__construct($input);
+        $protected_header = empty($encoded_protected_header)?[]:json_decode(Base64Url::decode($encoded_protected_header), true);
+        parent::__construct($input, $protected_header, $unprotected_headers, $payload);
+        $this->signature = $signature;
         $this->encoded_payload = $encoded_payload;
         $this->encoded_protected_header = $encoded_protected_header;
-        $this->signature = $signature;
     }
 
     /**

@@ -83,7 +83,7 @@ final class Loader implements LoaderInterface
     private function loadSerializedJsonJWS(array $data, $input)
     {
         $encoded_payload = array_key_exists('payload', $data) ? $data['payload'] : null;
-        $payload = Base64Url::decode($encoded_payload);
+        $payload = null === $encoded_payload?null:Base64Url::decode($encoded_payload);
 
         $jws = [];
         foreach ($data['signatures'] as $signature) {
@@ -95,41 +95,24 @@ final class Loader implements LoaderInterface
                 $protected_header = [];
             }
             $unprotected_header = isset($signature['header']) ? $signature['header'] : [];
+            $tmp = $this->getPayloadConverter()->convertStringToPayload(
+                array_merge($protected_header, $unprotected_header),
+                $payload
+            );
 
-            $result = $this->createJWS($input, $encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
+            $result = new JWS(
+                $input,
+                Base64Url::decode($signature['signature']),
+                $encoded_payload,
+                $tmp,
+                $encoded_protected_header,
+                $unprotected_header
+            );
+            //$result = $this->createJWS($input, $encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
             $jws[] = $result;
         }
 
         return count($jws) > 1 ? $jws : current($jws);
-    }
-
-    /**
-     * @param string $input
-     * @param string $encoded_protected_header
-     * @param string $encoded_payload
-     * @param array  $protected_header
-     * @param array  $unprotected_header
-     * @param string $payload
-     * @param string $signature
-     *
-     * @throws \Exception
-     *
-     * @return \Jose\Object\JWSInterface
-     */
-    private function createJWS($input, $encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, $signature)
-    {
-        $complete_header = array_merge($protected_header, $unprotected_header);
-        $payload = $this->getPayloadConverter()->convertStringToPayload($complete_header, $payload);
-        $jws = new JWS($input, $signature, $encoded_payload, $encoded_protected_header);
-        $jws = $jws->withPayload($payload);
-        if (!empty($protected_header)) {
-            $jws = $jws->withProtectedHeaders($protected_header);
-        }
-        if (!empty($unprotected_header)) {
-            $jws = $jws->withUnprotectedHeaders($unprotected_header);
-        }
-
-        return $jws;
     }
 
     /**
@@ -143,7 +126,6 @@ final class Loader implements LoaderInterface
         $result = [];
         foreach ($data['recipients'] as $recipient) {
             $encoded_protected_header = array_key_exists('protected', $data) ? $data['protected'] : null;
-            $protected_header = empty($encoded_protected_header) ? [] : json_decode(Base64Url::decode($encoded_protected_header), true);
             $unprotected_header = array_key_exists('unprotected', $data) ? $data['unprotected'] : [];
             $header = array_key_exists('header', $recipient) ? $recipient['header'] : [];
 
@@ -154,10 +136,9 @@ final class Loader implements LoaderInterface
                 array_key_exists('iv', $data) ? Base64Url::decode($data['iv']) : null,
                 array_key_exists('aad', $data) ? Base64Url::decode($data['aad']) : null,
                 array_key_exists('tag', $data) ? Base64Url::decode($data['tag']) : null,
-                $encoded_protected_header
+                $encoded_protected_header,
+                array_merge($unprotected_header, $header)
             );
-            $jwe = $jwe->withProtectedHeaders($protected_header);
-            $jwe = $jwe->withUnprotectedHeaders(array_merge($unprotected_header, $header));
             $result[] = $jwe;
         }
 

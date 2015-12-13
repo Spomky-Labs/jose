@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Object;
+use Base64Url\Base64Url;
 
 /**
  * Class JWE.
@@ -49,16 +50,20 @@ final class JWE extends JWT implements JWEInterface
     /**
      * JWE constructor.
      *
-     * @param string|null $ciphertext
-     * @param string|null $encrypted_key
-     * @param string|null $iv
-     * @param string|null $aad
-     * @param string|null $tag
-     * @param string|null $encoded_protected_header
+     * @param null  $input
+     * @param null  $ciphertext
+     * @param null  $encrypted_key
+     * @param null  $iv
+     * @param null  $aad
+     * @param null  $tag
+     * @param null  $encoded_protected_header
+     * @param array $unprotected_header
+     * @param null  $payload
      */
-    public function __construct($input = null, $ciphertext = null, $encrypted_key = null, $iv = null, $aad = null, $tag = null, $encoded_protected_header = null)
+    public function __construct($input, $ciphertext, $encrypted_key = null, $iv = null, $aad = null, $tag = null, $encoded_protected_header = null, $unprotected_header = [], $payload = null)
     {
-        parent::__construct($input);
+        $protected_header = empty($encoded_protected_header)?[]:json_decode(Base64Url::decode($encoded_protected_header), true);
+        parent::__construct($input, $protected_header, $unprotected_header, $payload);
         $this->ciphertext = $ciphertext;
         $this->encrypted_key = $encrypted_key;
         $this->iv = $iv;

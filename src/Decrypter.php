@@ -25,6 +25,7 @@ use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
+use Jose\Object\JWE;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
@@ -150,7 +151,20 @@ final class Decrypter implements DecrypterInterface
 
         $payload = $this->getPayloadConverter()->convertStringToPayload($jwe->getHeaders(), $payload);
 
-        $jwe = $jwe->withPayload($payload);
+        $result = new JWE(
+            $jwe->getInput(),
+            $jwe->getCiphertext(),
+            $jwe->getEncryptedKey(),
+            $jwe->getIV(),
+            $jwe->getAAD(),
+            $jwe->getTag(),
+            $jwe->getEncodedProtectedHeader(),
+            $jwe->getUnprotectedHeaders(),
+            $payload
+        );
+
+        $jwe = $result;
+        //jwe = $jwe->withPayload($payload);
 
         return true;
     }

@@ -39,11 +39,17 @@ abstract class JWT implements JWTInterface
     /**
      * JWT constructor.
      *
-     * @param string $input
+     * @param mixed|null $input
+     * @param array      $protected_headers
+     * @param array      $unprotected_headers
+     * @param null       $payload
      */
-    public function __construct($input = null)
+    public function __construct($input, array $protected_headers = [], array $unprotected_headers = [], $payload = null)
     {
         $this->input = $input;
+        $this->payload = $payload;
+        $this->protected_headers = $protected_headers;
+        $this->unprotected_headers = $unprotected_headers;
     }
 
     /**
@@ -81,61 +87,6 @@ abstract class JWT implements JWTInterface
     /**
      * {@inheritdoc}
      */
-    public function withProtectedHeaders(array $values)
-    {
-        $jwt = clone $this;
-        $jwt->protected_headers = $values;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withUnprotectedHeaders(array $values)
-    {
-        $jwt = clone $this;
-        $jwt->unprotected_headers = $values;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withProtectedHeader($key, $value)
-    {
-        $jwt = clone $this;
-        $jwt->protected_headers[$key] = $value;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withUnprotectedHeader($key, $value)
-    {
-        $jwt = clone $this;
-        $jwt->unprotected_headers[$key] = $value;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withPayload($payload)
-    {
-        $jwt = clone $this;
-        $jwt->payload = $payload;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getProtectedHeader($key)
     {
         if ($this->hasProtectedHeader($key)) {
@@ -150,20 +101,6 @@ abstract class JWT implements JWTInterface
     public function hasProtectedHeader($key)
     {
         return array_key_exists($key, $this->protected_headers);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withoutProtectedHeader($key)
-    {
-        if (!$this->hasProtectedHeader($key)) {
-            return $this;
-        }
-        $jwt = clone $this;
-        unset($jwt->protected_headers[$key]);
-
-        return $jwt;
     }
 
     /**
@@ -188,23 +125,9 @@ abstract class JWT implements JWTInterface
     /**
      * {@inheritdoc}
      */
-    public function withoutUnprotectedHeader($key)
-    {
-        if (!$this->hasUnprotectedHeader($key)) {
-            return $this;
-        }
-        $jwt = clone $this;
-        unset($jwt->unprotected_headers[$key]);
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getHeaders()
     {
-        return array_merge($this->protected_headers, $this->unprotected_headers);
+        return array_merge($this->getProtectedHeaders(), $this->getUnprotectedHeaders());
     }
 
     /**
@@ -285,44 +208,5 @@ abstract class JWT implements JWTInterface
     public function hasClaims()
     {
         return is_array($this->payload);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withClaim($key, $value)
-    {
-        $jwt = clone $this;
-        if (!is_array($jwt->payload)) {
-            $jwt->payload = [];
-        }
-        $jwt->payload[$key] = $value;
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withoutClaim($key)
-    {
-        if (!$this->hasClaim($key)) {
-            return $this;
-        }
-        $jwt = clone $this;
-        unset($jwt->payload[$key]);
-
-        return $jwt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withClaims(array $claims)
-    {
-        $jwt = clone $this;
-        $jwt->payload = $claims;
-
-        return $jwt;
     }
 }

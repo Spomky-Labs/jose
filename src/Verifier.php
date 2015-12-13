@@ -78,7 +78,7 @@ final class Verifier implements VerifierInterface
                 continue;
             }
             try {
-                   if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
+                if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
                     $this->getCheckerManager()->checkJWT($jws);
 
                     return true;
