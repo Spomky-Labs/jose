@@ -21,18 +21,17 @@ final class Converter
      *
      * @param array|string $input    The JWS/JWE to convert
      * @param string       $mode     Output mode
-     * @param bool         $toString If true, the output is serialized, else, an array is returned
      *
-     * @return array|string
+     * @return string|string[]
      */
-    public static function convert($input, $mode, $toString = true)
+    public static function convert($input, $mode)
     {
         $prepared = self::getPreparedInput($input);
         switch ($mode) {
             case JSONSerializationModes::JSON_SERIALIZATION:
-                return $toString ? json_encode($prepared) : $prepared;
+                return json_encode($prepared);
             case JSONSerializationModes::JSON_FLATTENED_SERIALIZATION:
-                return self::fromSerializationToFlattenedSerialization($prepared, $toString);
+                return self::fromSerializationToFlattenedSerialization($prepared);
             case JSONSerializationModes::JSON_COMPACT_SERIALIZATION:
                 return self::fromSerializationToCompactSerialization($prepared);
             default:
@@ -189,26 +188,24 @@ final class Converter
 
     /**
      * @param array $input
-     * @param $toString
      *
-     * @return array
+     * @return string|string[]
      */
-    private static function fromSerializationToFlattenedSerialization($input, $toString)
+    private static function fromSerializationToFlattenedSerialization($input)
     {
         if (array_key_exists('signatures', $input)) {
-            return self::fromSerializationSignatureToFlattenedSerialization($input, $toString);
+            return self::fromSerializationSignatureToFlattenedSerialization($input);
         }
 
-        return self::fromSerializationRecipientToFlattenedSerialization($input, $toString);
+        return self::fromSerializationRecipientToFlattenedSerialization($input);
     }
 
     /**
      * @param array $input
-     * @param bool  $toString
      *
-     * @return array
+     * @return string|string[]
      */
-    private static function fromSerializationSignatureToFlattenedSerialization($input, $toString)
+    private static function fromSerializationSignatureToFlattenedSerialization($input)
     {
         $signatures = [];
         foreach ($input['signatures'] as $signature) {
@@ -223,7 +220,7 @@ final class Converter
                     $temp[$key] = $signature[$key];
                 }
             }
-            $signatures[] = $toString ? json_encode($temp) : $temp;
+            $signatures[] = json_encode($temp);
         }
         if (1 === count($signatures)) {
             $signatures = current($signatures);
@@ -234,11 +231,10 @@ final class Converter
 
     /**
      * @param array $input
-     * @param bool  $toString
      *
-     * @return array
+     * @return string|string[]
      */
-    private static function fromSerializationRecipientToFlattenedSerialization($input, $toString)
+    private static function fromSerializationRecipientToFlattenedSerialization($input)
     {
         $recipients = [];
         foreach ($input['recipients'] as $recipient) {
@@ -253,7 +249,7 @@ final class Converter
                     $temp[$key] = $recipient[$key];
                 }
             }
-            $recipients[] = $toString ? json_encode($temp) : $temp;
+            $recipients[] = json_encode($temp);
         }
         if (1 === count($recipients)) {
             $recipients = current($recipients);
@@ -265,7 +261,7 @@ final class Converter
     /**
      * @param array $input
      *
-     * @return array
+     * @return string|string[]
      */
     private static function fromSerializationToCompactSerialization($input)
     {
@@ -279,7 +275,7 @@ final class Converter
     /**
      * @param array $input
      *
-     * @return array
+     * @return string|string[]
      */
     private static function fromSerializationSignatureToCompactSerialization($input)
     {
@@ -308,7 +304,7 @@ final class Converter
     /**
      * @param array $input
      *
-     * @return array
+     * @return string|string[]
      */
     private static function fromSerializationRecipientToCompactSerialization($input)
     {

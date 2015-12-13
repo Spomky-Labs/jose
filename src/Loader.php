@@ -62,7 +62,7 @@ final class Loader implements LoaderInterface
      */
     public function load($input)
     {
-        $json = Converter::convert($input, JSONSerializationModes::JSON_SERIALIZATION, false);
+        $json = json_decode(Converter::convert($input, JSONSerializationModes::JSON_SERIALIZATION), true);
         if (is_array($json)) {
             if (array_key_exists('signatures', $json)) {
                 return $this->loadSerializedJsonJWS($json, $input);

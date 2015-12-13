@@ -112,8 +112,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
         ];
 
-        $this->assertEquals($expected_general_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION, false));
-        $this->assertEquals($expected_flattened_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION, false));
+        $this->assertEquals($expected_general_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION), true));
+        $this->assertEquals($expected_flattened_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION), true));
         $this->assertEquals($compact_serialization, Converter::convert($expected_flattened_serialization, JSONSerializationModes::JSON_COMPACT_SERIALIZATION));
     }
 
@@ -151,8 +151,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
         ];
 
-        $this->assertEquals($expected_general_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION, false));
-        $this->assertEquals($expected_flattened_serialization, Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION, false));
+        $this->assertEquals($expected_general_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION), true));
+        $this->assertEquals($expected_flattened_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION), true));
         $this->assertEquals($compact_serialization, Converter::convert($expected_flattened_serialization, JSONSerializationModes::JSON_COMPACT_SERIALIZATION));
     }
 }
