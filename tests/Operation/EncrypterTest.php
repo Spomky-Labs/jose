@@ -330,7 +330,7 @@ class EncrypterTest extends TestCase
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => time()+3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => time() + 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
 
         $loaded = $loader->load($encrypted);
 
@@ -360,7 +360,7 @@ class EncrypterTest extends TestCase
             $this->getECDHRecipientPublicKey()
         );
 
-        $encrypter->encrypt(['user_id' => '1234', 'exp' => time()+3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypter->encrypt(['user_id' => '1234', 'exp' => time() + 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
     }
 
     /**

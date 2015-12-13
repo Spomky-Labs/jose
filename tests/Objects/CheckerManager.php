@@ -17,7 +17,7 @@ use Jose\Test\TestCase;
  */
 class CheckerManager extends TestCase
 {
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage Issuer not allowed.
      */
@@ -36,7 +36,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage Bad audience.
      */
@@ -55,7 +55,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage The JWT has expired.
      */
@@ -74,7 +74,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage The JWT is issued in the futur.
      */
@@ -93,7 +93,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage Can not use this JWT yet.
      */
@@ -112,7 +112,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage Invalid subject.
      */
@@ -131,7 +131,7 @@ class CheckerManager extends TestCase
         $this->getCheckerManager()->checkJWT($jwt);
     }*/
 
-    /**
+    /*
      * @expectedException \Exception
      * @expectedExceptionMessage The claim/header 'foo' is marked as critical but value is not set.
      */

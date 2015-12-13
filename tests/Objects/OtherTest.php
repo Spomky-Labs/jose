@@ -11,6 +11,7 @@
 
 use Jose\JSONSerializationModes;
 use Jose\Test\TestCase;
+
 /**
  * Class JWETest.
  *

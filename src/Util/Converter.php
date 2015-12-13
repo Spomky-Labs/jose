@@ -19,8 +19,8 @@ final class Converter
      * This function will try to convert JWS/JWE from a serialization mode into an other.
      * It always returns an array:.
      *
-     * @param array|string $input    The JWS/JWE to convert
-     * @param string       $mode     Output mode
+     * @param array|string $input The JWS/JWE to convert
+     * @param string       $mode  Output mode
      *
      * @return string|string[]
      */

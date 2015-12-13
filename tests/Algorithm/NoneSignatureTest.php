@@ -11,7 +11,6 @@
 
 use Jose\Algorithm\Signature\None;
 use Jose\Object\JWK;
-use Jose\Object\JWT;
 use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
