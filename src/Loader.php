@@ -83,7 +83,7 @@ final class Loader implements LoaderInterface
     private function loadSerializedJsonJWS(array $data, $input)
     {
         $encoded_payload = array_key_exists('payload', $data) ? $data['payload'] : null;
-        $payload = null === $encoded_payload?null:Base64Url::decode($encoded_payload);
+        $payload = null === $encoded_payload ? null : Base64Url::decode($encoded_payload);
 
         $jws = [];
         foreach ($data['signatures'] as $signature) {
