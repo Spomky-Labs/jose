@@ -12,7 +12,6 @@
 use Jose\JSONSerializationModes;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Jose\Object\JWS;
 use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
@@ -259,68 +258,6 @@ class SignerTest extends TestCase
         $this->assertTrue($verifier->verify($loaded[1], $this->getPublicKeySet()));
         $this->assertEquals('RS512', $loaded[1]->getHeader('alg'));
     }
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage The JWT has expired.
-     */
-    /*public function testExpiredJWS()
-    {
-        $checker = $this->getCheckerManager();
-
-        $jws = new JWS();
-        $jws = $jws->withPayload(['exp' => time() - 1]);
-
-        $checker->checkJWT($jws);
-    }*/
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage Can not use this JWT yet.
-     */
-    /*public function testInvalidNotBeforeJWS()
-    {
-        $checker = $this->getCheckerManager();
-
-        $jws = new JWS();
-        $jws = $jws->withPayload(['nbf' => time() + 1000]);
-
-        $checker->checkJWT($jws);
-    }*/
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage The JWT is issued in the futur.
-     */
-    /*public function testInvalidIssuedAtJWS()
-    {
-        $checker = $this->getCheckerManager();
-
-        $jws = new JWS();
-        $jws = $jws->withPayload(['iat' => time() + 1000]);
-
-        $checker->checkJWT($jws);
-    }*/
-
-    /**
-     * @expectedException \Exception
-     * @expectedExceptionMessage The claim/header 'aud' is marked as critical but value is not set.
-     */
-    /*public function testInvalidCriticalJWS()
-    {
-        $checker = $this->getCheckerManager();
-
-        $jws = new JWS();
-        $jws = $jws->withProtectedHeader('crit', [
-            'exp',
-            'nbf',
-            'aud',
-        ]);
-        $jws = $jws->withProtectedHeader('nbf', time() - 100);
-        $jws = $jws->withUnprotectedHeader('exp', time() + 100);
-
-        $checker->checkJWT($jws);
-    }*/
 
     /**
      *

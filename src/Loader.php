@@ -108,7 +108,6 @@ final class Loader implements LoaderInterface
                 $encoded_protected_header,
                 $unprotected_header
             );
-            //$result = $this->createJWS($input, $encoded_protected_header, $encoded_payload, $protected_header, $unprotected_header, $payload, Base64Url::decode($signature['signature']));
             $jws[] = $result;
         }
 

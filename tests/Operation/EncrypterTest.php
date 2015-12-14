@@ -113,10 +113,39 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     *
      */
     public function testMultipleInstructionsNotAllowedWithCompactSerialization()
+    {
+        $encrypter = $this->getEncrypter();
+
+        $instruction1 = new EncryptionInstruction(
+            $this->getRSARecipientKeyWithAlgorithm()
+        );
+
+        $instruction2 = new EncryptionInstruction(
+            $this->getRSARecipientKey()
+        );
+
+        $result = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction1, $instruction2],
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP'
+            ],
+            [],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION
+        );
+
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
+    }
+
+    /**
+     *
+     */
+    public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
     {
         $encrypter = $this->getEncrypter();
 
@@ -132,31 +161,36 @@ class EncrypterTest extends TestCase
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
-        $encrypter->encrypt(
+        $result = $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
             ['enc' => 'A256CBC-HS512'],
             [],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION
+        );
+
+        $this->assertTrue(is_array($result));
+        $this->assertEquals(2, count($result));
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Only one instruction authorized when Compact or Flattened Serialization Overview is selected.
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage Foreign key management mode forbidden.
      */
-    public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
+    public function testMultipleInstructionsNotAllowedWithFlattenedSerialization2()
     {
         $encrypter = $this->getEncrypter();
 
         $instruction1 = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']);
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
+        );
 
         $instruction2 = new EncryptionInstruction(
-            $this->getRSARecipientKey(),
+            $this->getDirectKey(),
             null,
-            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
+            ['kid' => 'DIR_1', 'alg' => 'dir']
         );
 
         $encrypter->encrypt(
@@ -164,7 +198,8 @@ class EncrypterTest extends TestCase
             [$instruction1, $instruction2],
             ['enc' => 'A256CBC-HS512'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION
+        );
     }
 
     /**
@@ -189,7 +224,7 @@ class EncrypterTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Key is only allowed for algorithm "RSA-OAEP-256".
+     * @expectedExceptionMessage Key is only allowed for algorithm "RSA-OAEP".
      */
     public function testAlgorithmNotAllowedForTheKey()
     {

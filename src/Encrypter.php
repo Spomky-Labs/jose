@@ -68,6 +68,12 @@ final class Encrypter implements EncrypterInterface
         $additional_header = [];
         $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
         $this->checkInstructions($instructions, $serialization);
+        if (!empty($shared_unprotected_header) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+            throw new \InvalidArgumentException('Cannot create Compact Json Serialization representation: shared unprotected header cannot be kept');
+        }
+        if (!empty($aad) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+            throw new \InvalidArgumentException('Cannot create Compact Json Serialization representation: AAD cannot be kept');
+        }
 
         $protected_header = array_merge($shared_protected_header, $additional_header);
 
@@ -128,9 +134,7 @@ final class Encrypter implements EncrypterInterface
             }
         }
 
-        $prepared = Converter::convert($recipients, $serialization);
-
-        return is_array($prepared) ? current($prepared) : $prepared;
+        return Converter::convert($recipients, $serialization);
     }
 
     /**
@@ -157,7 +161,7 @@ final class Encrypter implements EncrypterInterface
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_header);
 
         if (!$this->checkKeyAlgorithm($instruction->getRecipientKey(), $key_encryption_algorithm->getAlgorithmName())) {
-            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $key_encryption_algorithm->getAlgorithmName()));
+            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $instruction->getRecipientKey()->get('alg')));
         }
 
         $jwt_cek = null;
@@ -438,12 +442,12 @@ final class Encrypter implements EncrypterInterface
         if (empty($instructions)) {
             throw new \InvalidArgumentException('No instruction.');
         }
-        if (count($instructions) > 1 && JSONSerializationModes::JSON_SERIALIZATION !== $serialization) {
-            throw new \InvalidArgumentException('Only one instruction authorized when Compact or Flattened Serialization Overview is selected.');
-        }
         foreach ($instructions as $instruction) {
             if (!$instruction instanceof EncryptionInstructionInterface) {
                 throw new \InvalidArgumentException('Bad instruction. Must implement EncryptionInstructionInterface.');
+            }
+            if (!empty($instruction->getRecipientUnprotectedHeader()) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
+                throw new \InvalidArgumentException('Cannot create Compact Json Serialization representation: recipient unprotected header cannot be kept');
             }
         }
     }
