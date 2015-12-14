@@ -5,9 +5,6 @@ The JWE object is usually the output after a JWE string has been loaded.
 
 This object provides the same methods as [JWT](jwt.md) and is also immutable.
 
-* `getHeader('enc')`
-* `getHeader('zip')`
-
 Internally, the library uses the following methods:
 
 * `getCiphertext()`: Returns the cipher text as displayed in the serialization representation.
@@ -16,4 +13,4 @@ Internally, the library uses the following methods:
 * `getIV()`: Returns the IV as displayed in the serialization representation.
 * `getTag()`: Returns the tag as displayed in the serialization representation.
 
-Note that the payload (method `getPayload()`) is only available when it has been decrypted.
+Note that the methods `getPayload()`, `getClaims()`, `getClaim($key)` and `hasClaim($key)` are only available when it has been decrypted.

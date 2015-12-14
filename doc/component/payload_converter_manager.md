@@ -6,10 +6,9 @@ The Payload Converter Manager
 This library is able to use any kind of input:
 * a number: 3.14159265359
 * a string: "Live long and prosper"
-* an array:  `["iss"=>"my.example.com","sub"=>"me@example.com","is_admin"=>true]`
+* an array: `["iss"=>"my.example.com","sub"=>"me@example.com","is_admin"=>true]`
 * a key ([JWK](../object/jwk.md) object)
 * a key set ([JWKSet](../object/jwk_set.md) object)
-* a [JWT](../object/jwt.md), [JWS](../object/jws.md) or [JWE](../object/jwe.md) object.
 * objects supported by `json_encode` and `json_decode` methods or that implement `JsonSerializable`
 * objects supported by a custom payload converter.
 
@@ -20,7 +19,7 @@ If you want to use classes as payload of a JWE or JWS, you have to options:
 * You have a custom converter and it is enabled
 
 In most cases, you will prefer to implement `JsonSerializable` because it is easy to implement and reliable.
-But you may need a converter because
+But you may need a custom payload converter because
 * You cannot modify the class
 * You want to perform actions during conversion (database queries, log...).
 * You want to set protected header parameters.

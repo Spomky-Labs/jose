@@ -77,5 +77,5 @@ $merged = Converter::merge(
     $signature4
 );
 
-// If succeded, $merged will contain all signatures
+// If succeeded, $merged will contain all signatures
 ```
