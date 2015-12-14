@@ -28,6 +28,10 @@ Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are partially 
 
 # Important note
 
+> Note 1: this library is still in development. The first stable release will be tagged as v1.0.x. All tags v0.x.y must be considered as unstable.
+
+> Note 2: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
+
 This library provides all objects and components to perform signature, verification, encryption and decryption according to the RFCs listed above.
 
 Some of classes provided are abstract and you must implement the missing methods.
