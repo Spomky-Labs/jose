@@ -39,10 +39,10 @@ abstract class JWT implements JWTInterface
     /**
      * JWT constructor.
      *
-     * @param mixed|null $input
-     * @param array      $protected_headers
-     * @param array      $unprotected_headers
-     * @param null       $payload
+     * @param mixed|null  $input
+     * @param array       $protected_headers
+     * @param array       $unprotected_headers
+     * @param string|null $payload
      */
     public function __construct($input, array $protected_headers = [], array $unprotected_headers = [], $payload = null)
     {

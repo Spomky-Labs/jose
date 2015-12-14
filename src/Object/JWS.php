@@ -36,12 +36,12 @@ final class JWS extends JWT implements JWSInterface
     /**
      * JWS constructor.
      *
-     * @param null  $input
-     * @param null  $signature
-     * @param null  $encoded_payload
-     * @param null  $payload
-     * @param null  $encoded_protected_header
-     * @param array $unprotected_headers
+     * @param string      $input
+     * @param string      $signature
+     * @param string|null $encoded_payload
+     * @param string|null $payload
+     * @param string|null $encoded_protected_header
+     * @param array       $unprotected_headers
      */
     public function __construct($input, $signature, $encoded_payload = null, $payload = null, $encoded_protected_header = null, array $unprotected_headers = [])
     {

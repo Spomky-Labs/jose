@@ -51,15 +51,15 @@ final class JWE extends JWT implements JWEInterface
     /**
      * JWE constructor.
      *
-     * @param null  $input
-     * @param null  $ciphertext
-     * @param null  $encrypted_key
-     * @param null  $iv
-     * @param null  $aad
-     * @param null  $tag
-     * @param null  $encoded_protected_header
-     * @param array $unprotected_header
-     * @param null  $payload
+     * @param string       $input
+     * @param string       $ciphertext
+     * @param string|null  $encrypted_key
+     * @param string|null  $iv
+     * @param string|null  $aad
+     * @param string|null  $tag
+     * @param string|null  $encoded_protected_header
+     * @param string|array $unprotected_header
+     * @param string|null  $payload
      */
     public function __construct($input, $ciphertext, $encrypted_key = null, $iv = null, $aad = null, $tag = null, $encoded_protected_header = null, $unprotected_header = [], $payload = null)
     {
