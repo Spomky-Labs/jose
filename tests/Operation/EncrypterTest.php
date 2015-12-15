@@ -133,7 +133,7 @@ class EncrypterTest extends TestCase
             JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
             [
                 'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP'
+                'alg' => 'RSA-OAEP',
             ],
             []
         );
