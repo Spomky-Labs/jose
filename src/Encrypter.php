@@ -63,9 +63,10 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    public function encrypt($input, array $instructions, array $shared_protected_header = [], array $shared_unprotected_header = [], $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null)
+    public function encrypt($input, array $instructions, $serialization, array $shared_protected_header = [], array $shared_unprotected_header = [], $aad = null)
     {
         $additional_header = [];
+        $this->checkSerializationMode($serialization);
         $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
         $this->checkInstructions($instructions, $serialization);
         if (!empty($shared_unprotected_header) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
@@ -434,6 +435,18 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
+     * @param string $serialization
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function checkSerializationMode($serialization)
+    {
+        if (!in_array($serialization, JSONSerializationModes::getSupportedSerializationModes())) {
+            throw new \InvalidArgumentException(sprintf('The serialization method "%s" is not supported.', $serialization));
+        }
+    }
+
+    /**
      * @param \Jose\Object\EncryptionInstructionInterface[] $instructions
      * @param string                                        $serialization
      */
@@ -509,11 +522,21 @@ final class Encrypter implements EncrypterInterface
         return $content_encryption_algorithm;
     }
 
+    /**
+     * @param int $size
+     *
+     * @return string
+     */
     private function createCEK($size)
     {
         return $this->generateRandomString($size / 8);
     }
 
+    /**
+     * @param int $size
+     *
+     * @return string
+     */
     private function createIV($size)
     {
         return $this->generateRandomString($size / 8);

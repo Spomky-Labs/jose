@@ -5,7 +5,7 @@ The JWK object represents a key. Depending on the key properties, it can be used
 
 A JWK object is serializable. You can call `json_encode($jwk)` to display the key as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
 
-This object is also immutable. It means that if you modify a key/value pair you will obtain a new object.
+This object is immutable.
 
 # Create a `JWK` object
 
@@ -21,6 +21,7 @@ $jwk = new JWK([
 ]);
 ```
 
+*Please note that the parameter `kty` is mandatory*
 
 # Key values
 
@@ -157,9 +158,8 @@ You can indicate the scope of the key and the allowed algorithms for this key
 A `JWK` object implements the interface `Jose\JWKInterface` and provides the following methods:
 
 * `getAll()`: all values
-* `get($key)`:  the value with key `$key`. Returns null if the value does not exist.
-* `with($key, value)`:  set the `$key` with value `$value`.
-* `without($key)`:  remove the key/value pair identified by `$key`.
+* `has($key)`: returns true if the JWK object has a value identified by the key `$key`, else false.
+* `get($key)`: the value with key `$key`. Throws an exception if the key `$key` does not exist.
 
 ```php
 use Jose\JWK;
@@ -169,6 +169,7 @@ $jwk = new JWK([
     'k'   => 'abcdef',
 ]);
 
-$jwk = $jwk->with('kid', 'My First Key');
-$jwk = $jwk->without('kid');
+$this->has('kty'); // Return true
+$this->has('foo'); // Return false
+$this->get('kty'); // Return 'oct'
 ```

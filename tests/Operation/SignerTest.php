@@ -30,7 +30,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $signer->sign($input, []);
+        $signer->sign($input, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
@@ -41,7 +41,7 @@ class SignerTest extends TestCase
     {
         $resource = fopen(__FILE__, 'r');
         $signer = $this->getSigner();
-        $signer->sign($resource, []);
+        $signer->sign($resource, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
@@ -54,7 +54,7 @@ class SignerTest extends TestCase
 
         $input = $this->getKey3();
 
-        $signer->sign($input, ['Bad instruction']);
+        $signer->sign($input, ['Bad instruction'], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
@@ -69,7 +69,7 @@ class SignerTest extends TestCase
 
         $instruction = new SignatureInstruction($this->getKey1());
 
-        $signer->sign($input, [$instruction]);
+        $signer->sign($input, [$instruction], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
@@ -84,12 +84,12 @@ class SignerTest extends TestCase
 
         $instruction = new SignatureInstruction($this->getKey1(), ['alg' => 'foo']);
 
-        $signer->sign($input, [$instruction]);
+        $signer->sign($input, [$instruction], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The serialization method 'foo_serialization' is not supported.
+     * @expectedExceptionMessage The serialization method "foo_serialization" is not supported.
      */
     public function testSerializationIsNotSupported()
     {

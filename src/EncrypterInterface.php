@@ -33,5 +33,5 @@ interface EncrypterInterface
      *
      * @return string|string[] The JSON (Compact/Flattened) Serialized representation
      */
-    public function encrypt($input, array $instructions, array $shared_protected_header = [], array $shared_unprotected_header = [], $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $aad = null);
+    public function encrypt($input, array $instructions, $serialization, array $shared_protected_header = [], array $shared_unprotected_header = [], $aad = null);
 }

@@ -46,23 +46,4 @@ interface JWKInterface extends \JsonSerializable
      * @return bool
      */
     public function has($key);
-
-    /**
-     * Set values of the JWK object.
-     *
-     * @param string $key   Key
-     * @param mixed  $value Value to store
-     *
-     * @return \Jose\Object\JWKInterface
-     */
-    public function with($key, $value);
-
-    /**
-     * Unset values of the JWK object.
-     *
-     * @param string $key Key
-     *
-     * @return \Jose\Object\JWKInterface
-     */
-    public function without($key);
 }

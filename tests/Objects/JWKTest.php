@@ -32,16 +32,12 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'alg'     => 'ES256',
             'bar'     => 'plic',
         ]);
-        $jwk2 = $jwk->with('kid', '0123456789');
-        $jwk2 = $jwk2->without('foo');
-        $jwk2 = $jwk2->without('bar');
 
         $this->assertEquals(['kty', 'crv', 'x', 'y', 'use', 'key_ops', 'alg', 'bar'], $jwk->getKeys());
         $this->assertEquals('EC', $jwk->get('kty'));
         $this->assertEquals('ES256', $jwk->get('alg'));
         $this->assertEquals('sign', $jwk->get('use'));
         $this->assertFalse($jwk->has('kid'));
-        $this->assertEquals('0123456789', $jwk2->get('kid'));
         $this->assertEquals(['sign'], $jwk->get('key_ops'));
         $this->assertEquals('P-256', $jwk->get('crv'));
         $this->assertFalse($jwk->has('x5u'));
@@ -51,8 +47,15 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU', $jwk->get('x'));
         $this->assertEquals('x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0', $jwk->get('y'));
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","bar":"plic"}', json_encode($jwk));
-        $this->assertEquals('{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"}', json_encode($jwk2));
-        $this->assertNotSame($jwk, $jwk2);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The parameter "kty" is mandatory.
+     */
+    public function testBadConstruction()
+    {
+        new JWK([]);
     }
 
     /**

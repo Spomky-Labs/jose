@@ -67,7 +67,7 @@ class NoneSignatureTest extends TestCase
         $signer = $this->getSigner();
         $loader = $this->getLoader();
 
-        $signed = $signer->sign('Je suis Charlie', [$instruction1]);
+        $signed = $signer->sign('Je suis Charlie', [$instruction1], \Jose\JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
 
         $this->assertTrue(is_string($signed));
 

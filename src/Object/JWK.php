@@ -28,6 +28,9 @@ final class JWK implements JWKInterface
      */
     public function __construct(array $values = [])
     {
+        if (!array_key_exists('kty', $values)) {
+            throw new \InvalidArgumentException('The parameter "kty" is mandatory.');
+        }
         $this->values = $values;
     }
 
@@ -72,30 +75,5 @@ final class JWK implements JWKInterface
     public function getAll()
     {
         return $this->values;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function with($key, $value)
-    {
-        $jwk = clone $this;
-        $jwk->values[$key] = $value;
-
-        return $jwk;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function without($key)
-    {
-        if (!$this->has($key)) {
-            return $this;
-        }
-        $jwk = clone $this;
-        unset($jwk->values[$key]);
-
-        return $jwk;
     }
 }

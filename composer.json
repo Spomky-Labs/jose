@@ -35,12 +35,10 @@
     },
     "require-dev": {
         "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6",
-        "ext-curl": "*"
+        "satooshi/php-coveralls": "~0.6"
     },
    "suggest":{
-        "ext-crypto": "Required to use AES GCM based algorithms.",
-        "ext-curl": "Required to retrieve keys from URL."
+        "ext-crypto": "Required to use AES GCM based algorithms."
    },
     "extra": {
         "branch-alias": {

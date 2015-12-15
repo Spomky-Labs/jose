@@ -29,5 +29,5 @@ interface SignerInterface
      *
      * @return string|string[] The JSON (Compact/Flattened) Serialized representation
      */
-    public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $detached_signature = false, &$detached_payload = null);
+    public function sign($input, array $instructions, $serialization, $detached_signature = false, &$detached_payload = null);
 }

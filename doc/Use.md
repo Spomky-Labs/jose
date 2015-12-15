@@ -49,27 +49,25 @@ $instruction2->setProtectedHeader(['alg'=>'ES384'])
 Then, you can sign your input:
 
 ```php
+use Jose\JSONSerializationModes;
 $input = 'The input to sign';
 $instructions = [$instruction1, $instruction2];
 
-$output = $signer->sign($input, $instructions);
+$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
 ```
 
 ### Output
 
+The supported serialization modes can be found in [the Compact Serialization mode page](OutputModes.md).
+
 The output depends on the output format you set and the number of instructions. It could be:
 
-| Output Mode \ Number of instruction |   1    |       2+        |
-|-------------------------------------|--------|-----------------|
-| Compact JSON Serialization          | string | not authorized  |
-| Flattened JSON Serialization        | string | not authorized  |
-| JSON Serialization                  | string | array or string |
+| Output Mode \ Number of instruction |   1    |        2+        |
+|-------------------------------------|--------|------------------|
+| Compact JSON Serialization          | string | array of strings |
+| Flattened JSON Serialization        | string | array of strings |
+| JSON Serialization                  | string | string           |
 
-By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
-
-```php
-$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_SERIALIZATION);
-```
 
 ### Detached payload
 
@@ -127,24 +125,59 @@ $shared_protected_header = [
 ];
 $shared_unprotected_header = [];
 
-$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header);
+$output = $encrypter->encrypt($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $shared_protected_header, $shared_unprotected_header);
 ```
+
+#### Important note
+
+With this library, you can create encrypt an input using multiple instructions.
+In this case, the Key Management Mode is determined according to the used algorithms.
+
+You cannot create multiple encryptions if the Key Management Mode are not compatible.
+Hereafter, a table with algorithms and associated Key Management Mode.
+
+| Algorithm \ Key Management Mode | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
+|---------------------------------|----------------|--------------|----------------------|---------------------------------|-------------------|
+| dir                             |                |              |                      |                                 |        X          |
+| A128KW                          |                |      X       |                      |                                 |                   |
+| A192KW                          |                |      X       |                      |                                 |                   |
+| A256KW                          |                |      X       |                      |                                 |                   |
+| ECDH-ES                         |                |              |         X            |                                 |                   |
+| ECDH-ES+A128KW                  |                |              |                      |                X                |                   |
+| ECDH-ES+A192KW                  |                |              |                      |                X                |                   |
+| ECDH-ES+A256KW                  |                |              |                      |                X                |                   |
+| PBES2-HS256+A128KW              |                |      X       |                      |                                 |                   |
+| PBES2-HS384+A192KW              |                |      X       |                      |                                 |                   |
+| PBES2-HS512+A256KW              |                |      X       |                      |                                 |                   |
+| RSA1_5                          |      X         |              |                      |                                 |                   |
+| RSA-OAEP                        |      X         |              |                      |                                 |                   |
+| RSA-OAEP-256                    |      X         |              |                      |                                 |                   |
+| A128GCMKW                       |                |      X       |                      |                                 |                   |
+| A192GCMKW                       |                |      X       |                      |                                 |                   |
+| A256GCMKW                       |                |      X       |                      |                                 |                   |
+
+And a compatibility table between Key Management Modes:
+
+|        Key Management Mode      | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
+|---------------------------------|----------------|--------------|----------------------|---------------------------------|-------------------|
+| Key Encryption                  |     YES        |     YES      |        NO            |            YES                  |       NO          |
+| Key Wrapping                    |     YES        |     YES      |        NO            |            YES                  |       NO          |
+| Direct Key Agreement            |     NO         |     NO       |        YES           |            NO                   |       NO          |
+| Key Agreement with Key Wrapping |     YES        |     YES      |        NO            |            YES                  |       NO          |
+| Direct Encryption               |     NO         |     NO       |        NO            |            NO                   |       YES         |
 
 ### Output
 
+The supported serialization modes can be found in [the Compact Serialization mode page](OutputModes.md).
+
 The output depends on the output format you set and the number of instructions. It could be:
 
-| Output Mode \ Number of instruction |   1    |       2+        |
-|-------------------------------------|--------|-----------------|
-| Compact JSON Serialization          | string | not authorized  |
-| Flattened JSON Serialization        | string | not authorized  |
-| JSON Serialization                  | string | array or string |
+| Output Mode \ Number of instruction |   1    |        2+        |
+|-------------------------------------|--------|------------------|
+| Compact JSON Serialization          | string | array of strings |
+| Flattened JSON Serialization        | string | array of strings |
+| JSON Serialization                  | string | string           |
 
-By default, the output is in [Compact Serialization mode](OutputModes.md). You can choose another mode if needed:
-
-```php
-$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header, JSONSerializationModes::JSON_SERIALIZATION);
-```
 
 ### Additional Authenticated Data
 
@@ -168,6 +201,12 @@ If you want to load data, you must initialize:
 * [A checker manager](component/checker_manager.md)
 * [The loader itself](component/loader.md)
 
-### Load JWS or JWE
+### Load a JWS or JWE
 
-...
+```php
+$output = $loader->load($input);
+```
+
+### Verify a JWS
+
+### Decrypt a JWE

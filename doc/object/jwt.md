@@ -7,21 +7,22 @@ Important note: A JWT object is immutable and you cannot modify it.
 
 This object provides the following methods:
 
-* `getHeaders()`: Returns the protected header value with key $key`, else null.
-* `hasHeader($key)`: Returns the protected header value with key $key`, else null.
-* `getHeader($key)`: Returns the protected header value with key $key`, else null.
-* `getProtectedHeaders()`: Returns the protected header value with key $key`, else null.
-* `hasProtectedHeader($key)`: Returns the protected header value with key $key`, else null.
-* `getProtectedHeader($key)`: Returns the protected header value with key $key`, else null.
-* `getUnprotectedHeaders()`: Returns the unprotected header value with key $key`, else null.
-* `hasUnprotectedHeader($key)`: Returns the unprotected header value with key $key`, else null.
-* `getUnprotectedHeader($key)`: Returns the unprotected header value with key $key`, else null.
-* `hasHeaderOrClaim($key)`: Returns the header (protected or unprotected) or payload value with key $key`, else null.
-* `getHeaderOrClaim($key)`: Returns the header (protected or unprotected) or payload value with key $key`, else null.
-* `getClaims()`: Returns the value of the payload.
-* `hasClaim($key)`: Returns the value of the payload.
-* `getClaim($key)`: Returns the value of the payload.
-* `getPayload()`: Returns the value of the payload.
+* `getHeaders()`: Returns the headers of the JWT object (protected and unprotected).
+* `hasHeader($key)`: Returns true if the header (protected or unprotected) identified by `$key` exists, else false.
+* `getHeader($key)`: Returns the header (protected or unprotected) identified by the key `$key`. If the header does not exists, an exception is thrown.
+* `getProtectedHeaders()`: Returns the protected headers of the JWT object.
+* `hasProtectedHeader($key)`: Returns true if the protected header identified by `$key` exists, else false.
+* `getProtectedHeader($key)`: Returns the protected header identified by the key `$key`. If the header does not exists, an exception is thrown.
+* `getUnprotectedHeaders()`: Returns the unprotected headers of the JWT object.
+* `hasUnprotectedHeader($key)`: Returns true if the unprotected header identified by `$key` exists, else false.
+* `getUnprotectedHeader($key)`: Returns the unprotected header identified by the key `$key`. If the header does not exists, an exception is thrown.
+* `hasHeaderOrClaim($key)`: Returns true if the JWT object contains a header or a claim identified by the key `$key`, else false.
+* `getHeaderOrClaim($key)`: Returns the header or the claim identified by the key `$key`. If it does not exists, an exception is thrown.
+* `hasClaims()`: Returns true if the payload may contain claims (i.e. the payload is an array).
+* `getClaims()`: Returns all claims. This method throws an exception if the payload is not an array.
+* `hasClaim($key)`: Returns true if the claim identified by the key `$key` exists, else false.
+* `getClaim($key)`: Returns the claim identified by the key `$key`. If it does not exists, an exception is thrown.
+* `getPayload()`: Returns the payload.
 
 
 Internally, the library uses the following methods:

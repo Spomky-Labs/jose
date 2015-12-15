@@ -45,9 +45,10 @@ final class Signer implements SignerInterface
     /**
      * {@inheritdoc}
      */
-    public function sign($input, array $instructions, $serialization = JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $detached_signature = false, &$detached_payload = null)
+    public function sign($input, array $instructions, $serialization, $detached_signature = false, &$detached_payload = null)
     {
         $additional_header = [];
+        $this->checkSerializationMode($serialization);
         $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
         $this->checkInstructions($instructions, $serialization);
 
@@ -132,8 +133,20 @@ final class Signer implements SignerInterface
     }
 
     /**
-     * @param array $instructions
-     * @param       $serialization
+     * @param string $serialization
+     *
+     * @throws \InvalidArgumentException
+     */
+    protected function checkSerializationMode($serialization)
+    {
+        if (!in_array($serialization, JSONSerializationModes::getSupportedSerializationModes())) {
+            throw new \InvalidArgumentException(sprintf('The serialization method "%s" is not supported.', $serialization));
+        }
+    }
+
+    /**
+     * @param array  $instructions
+     * @param string $serialization
      *
      * @throws \InvalidArgumentException
      */

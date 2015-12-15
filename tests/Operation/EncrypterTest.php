@@ -37,9 +37,9 @@ class EncrypterTest extends TestCase
         $encrypted = $encrypter->encrypt(
             'FOO',
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
         );
 
@@ -71,9 +71,9 @@ class EncrypterTest extends TestCase
         $encrypted = $encrypter->encrypt(
             $this->getKeyToEncrypt(),
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
         );
 
@@ -105,9 +105,9 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt(
             'FOO',
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'FIP'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
         );
     }
@@ -130,12 +130,12 @@ class EncrypterTest extends TestCase
         $result = $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
             [
                 'enc' => 'A256CBC-HS512',
                 'alg' => 'RSA-OAEP'
             ],
-            [],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION
+            []
         );
 
         $this->assertTrue(is_array($result));
@@ -164,9 +164,9 @@ class EncrypterTest extends TestCase
         $result = $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['enc' => 'A256CBC-HS512'],
-            [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION
+            []
         );
 
         $this->assertTrue(is_array($result));
@@ -196,9 +196,9 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction1, $instruction2],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['enc' => 'A256CBC-HS512'],
-            [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION
+            []
         );
     }
 
@@ -215,9 +215,9 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt(
             'FOO',
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
         );
     }
@@ -235,9 +235,9 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt(
             'FOO',
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => '123456789', 'use' => 'enc', 'enc' => 'A256CBC-HS512', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz'
         );
     }
@@ -253,7 +253,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
-        $encrypted = $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypted = $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
@@ -281,7 +287,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
-        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => '123456789', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'],
+            []
+        );
     }
 
     /**
@@ -294,7 +306,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
-        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            []
+        );
     }
 
     /**
@@ -307,7 +325,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
-        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'A128CBC-HS256', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => '123456789', 'alg' => 'A128CBC-HS256', 'enc' => 'A128CBC-HS256', 'zip' => 'DEF'],
+            []
+        );
     }
 
     /**
@@ -320,7 +344,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
-        $encrypter->encrypt($this->getKeyToEncrypt(), [$instruction], ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'enc' => 'RSA-OAEP-256', 'zip' => 'DEF'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypter->encrypt(
+            $this->getKeyToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => '123456789', 'alg' => 'RSA-OAEP-256', 'enc' => 'RSA-OAEP-256', 'zip' => 'DEF'],
+            []
+        );
     }
 
     /**
@@ -334,7 +364,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getDirectKey());
 
-        $encrypted = $encrypter->encrypt($this->getKeySetToEncrypt(), [$instruction], ['kid' => 'DIR_1', 'enc' => 'A192CBC-HS384', 'alg' => 'dir'], []);
+        $encrypted = $encrypter->encrypt(
+            $this->getKeySetToEncrypt(),
+            [$instruction],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'DIR_1', 'enc' => 'A192CBC-HS384', 'alg' => 'dir'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
@@ -365,7 +401,13 @@ class EncrypterTest extends TestCase
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(['user_id' => '1234', 'exp' => time() + 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypted = $encrypter->encrypt(
+            ['user_id' => '1234', 'exp' => time() + 3600],
+            [$instruction],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
@@ -395,7 +437,13 @@ class EncrypterTest extends TestCase
             $this->getECDHRecipientPublicKey()
         );
 
-        $encrypter->encrypt(['user_id' => '1234', 'exp' => time() + 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'], []);
+        $encrypter->encrypt(
+            ['user_id' => '1234', 'exp' => time() + 3600],
+            [$instruction],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'],
+            []
+        );
     }
 
     /**
@@ -408,7 +456,13 @@ class EncrypterTest extends TestCase
 
         $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
 
-        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'], []);
+        $encrypter->encrypt(
+            ['user_id' => '1234', 'exp' => 3600],
+            [$instruction],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'],
+            []
+        );
     }
 
     /**
@@ -419,7 +473,13 @@ class EncrypterTest extends TestCase
     {
         $encrypter = $this->getEncrypter();
 
-        $encrypter->encrypt(['user_id' => '1234', 'exp' => 3600], [], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'], []);
+        $encrypter->encrypt(
+            ['user_id' => '1234', 'exp' => 3600],
+            [],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'],
+            []
+        );
     }
 
     /**
@@ -436,7 +496,13 @@ class EncrypterTest extends TestCase
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'], []);
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction],
+            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
@@ -467,7 +533,13 @@ class EncrypterTest extends TestCase
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction], ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'], [], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
+            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
@@ -504,9 +576,9 @@ class EncrypterTest extends TestCase
         $encrypted = $encrypter->encrypt(
             'Je suis Charlie',
             [$instruction],
+            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256GCM', 'alg' => 'ECDH-ES+A256KW'],
             [],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
             'foo,bar,baz');
 
         $loaded = $loader->load($encrypted);
@@ -546,7 +618,13 @@ class EncrypterTest extends TestCase
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
-        $encrypted = $encrypter->encrypt('Je suis Charlie', [$instruction1, $instruction2], ['enc' => 'A256CBC-HS512'], [], JSONSerializationModes::JSON_SERIALIZATION);
+        $encrypted = $encrypter->encrypt(
+            'Je suis Charlie',
+            [$instruction1, $instruction2],
+            JSONSerializationModes::JSON_SERIALIZATION,
+            ['enc' => 'A256CBC-HS512'],
+            []
+        );
 
         $loaded = $loader->load($encrypted);
 
