@@ -31,8 +31,8 @@ final class Verifier implements VerifierInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
+     * @param \Jose\Algorithm\JWAManagerInterface   $jwa_manager
+     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
