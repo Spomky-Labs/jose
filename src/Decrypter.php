@@ -69,7 +69,7 @@ final class Decrypter implements DecrypterInterface
         $this->checkCompleteHeader($jwe);
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe->getHeader('enc'));
-
+        $decrypted = false;
         foreach ($jwk_set as $jwk) {
             if (!$this->checkKeyUsage($jwk, 'decryption')) {
                 continue;
@@ -81,14 +81,16 @@ final class Decrypter implements DecrypterInterface
                 $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $jwe->getHeaders());
 
                 if (null !== $cek) {
-                    if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm)) {
-                        $this->getCheckerManager()->checkJWT($jwe);
-
-                        return true;
-                    }
+                    $decrypted = $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
                 }
             } catch (\Exception $e) {
                 //We do nothing, we continue with other keys
+                continue;
+            }
+            if (true === $decrypted) {
+                $this->getCheckerManager()->checkJWT($jwe);
+
+                return true;
             }
         }
 
@@ -124,7 +126,7 @@ final class Decrypter implements DecrypterInterface
      * @param string                                                       $cek
      * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
      *
-     * @return \Jose\Object\JWEInterface
+     * @return bool
      */
     private function decryptPayload(JWEInterface &$jwe, $cek, $content_encryption_algorithm)
     {
@@ -164,7 +166,6 @@ final class Decrypter implements DecrypterInterface
         );
 
         $jwe = $result;
-        //jwe = $jwe->withPayload($payload);
 
         return true;
     }

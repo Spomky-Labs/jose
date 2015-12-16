@@ -57,6 +57,7 @@ final class Verifier implements VerifierInterface
         if (0 === count($jwk_set)) {
             return false;
         }
+        $verified = false;
         foreach ($jwk_set->getKeys() as $jwk) {
             $algorithm = $this->getAlgorithm($jws);
             if (!$this->checkKeyUsage($jwk, 'verification')) {
@@ -66,13 +67,15 @@ final class Verifier implements VerifierInterface
                 continue;
             }
             try {
-                if (true === $algorithm->verify($jwk, $input, $jws->getSignature())) {
-                    $this->getCheckerManager()->checkJWT($jws);
-
-                    return true;
-                }
+                $verified = $algorithm->verify($jwk, $input, $jws->getSignature());
             } catch (\Exception $e) {
                 //We do nothing, we continue with other keys
+                continue;
+            }
+            if (true === $verified) {
+                $this->getCheckerManager()->checkJWT($jws);
+
+                return true;
             }
         }
 
