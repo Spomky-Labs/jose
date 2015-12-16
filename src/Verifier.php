@@ -14,15 +14,11 @@ namespace Jose;
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\Signature\SignatureInterface;
 use Jose\Behaviour\HasCheckerManager;
-use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
-use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Jose\Payload\PayloadConverterManagerInterface;
 
 /**
  */
@@ -31,26 +27,18 @@ final class Verifier implements VerifierInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasCheckerManager;
-    use HasPayloadConverter;
-    use HasCompressionManager;
 
     /**
      * Loader constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
-     * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        PayloadConverterManagerInterface $payload_converter_manager,
-        CompressionManagerInterface $compression_manager,
         CheckerManagerInterface $checker_manager)
     {
         $this->setJWAManager($jwa_manager);
-        $this->setPayloadConverter($payload_converter_manager);
-        $this->setCompressionManager($compression_manager);
         $this->setCheckerManager($checker_manager);
     }
 

@@ -82,9 +82,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getLoader()
     {
         $loader = new Loader(
-            $this->getJWAManager(),
             $this->getPayloadConverterManager(),
-            $this->getCompressionManager(),
             $this->getCheckerManager()
         );
 
@@ -113,8 +111,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         $loader = new Verifier(
             $this->getJWAManager(),
-            $this->getPayloadConverterManager(),
-            $this->getCompressionManager(),
             $this->getCheckerManager()
         );
 
