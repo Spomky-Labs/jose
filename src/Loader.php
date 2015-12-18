@@ -12,9 +12,7 @@
 namespace Jose;
 
 use Base64Url\Base64Url;
-use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasPayloadConverter;
-use Jose\Checker\CheckerManagerInterface;
 use Jose\Object\JWE;
 use Jose\Object\JWS;
 use Jose\Payload\PayloadConverterManagerInterface;
@@ -26,21 +24,16 @@ use Jose\Util\Converter;
  */
 final class Loader implements LoaderInterface
 {
-    use HasCheckerManager;
     use HasPayloadConverter;
 
     /**
      * Loader constructor.
      *
      * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
-     * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
      */
-    public function __construct(
-        PayloadConverterManagerInterface $payload_converter_manager,
-        CheckerManagerInterface $checker_manager)
+    public function __construct(PayloadConverterManagerInterface $payload_converter_manager)
     {
         $this->setPayloadConverter($payload_converter_manager);
-        $this->setCheckerManager($checker_manager);
     }
 
     /**

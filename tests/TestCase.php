@@ -81,10 +81,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
      */
     protected function getLoader()
     {
-        $loader = new Loader(
-            $this->getPayloadConverterManager(),
-            $this->getCheckerManager()
-        );
+        $loader = new Loader($this->getPayloadConverterManager());
 
         return $loader;
     }
