@@ -9,6 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\LoaderFactory;
+use Jose\Factory\SignerFactory;
 use Jose\JSONSerializationModes;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
@@ -26,8 +28,8 @@ class LoaderTest extends TestCase
      */
     public function testPayloadIsNotAJWK()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
+        $signer = SignerFactory::createSigner(['HS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['cty' => 'jwk+json', 'alg'   => 'HS512']);
 
@@ -43,8 +45,8 @@ class LoaderTest extends TestCase
      */
     public function testPayloadIsNotAJWKSet()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
+        $signer = SignerFactory::createSigner(['HS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['cty' => 'jwkset+json', 'alg'   => 'HS512']);
 

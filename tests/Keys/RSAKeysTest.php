@@ -36,7 +36,7 @@ class RSAKeysTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Hash algorithm "foo" is not supported' contains 'Unsupported input
+     * @expectedExceptionMessage Hash algorithm "foo" is not supported
      */
     public function testHashAlgorithmNotSupported()
     {

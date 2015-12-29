@@ -19,17 +19,6 @@ use Jose\Test\TestCase;
  */
 class OtherTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Argument must be a string or a JWAInterface object.
-     */
-    public function testCannotRemoveAlgorithm()
-    {
-        $jwa_manager = $this->getJWAManager();
-
-        $jwa_manager->removeAlgorithm([]);
-    }
-
     public function testOutputModes()
     {
         $this->assertEquals(

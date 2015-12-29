@@ -9,6 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\SignerFactory;
+use Jose\Factory\LoaderFactory;
 use Jose\Algorithm\Signature\None;
 use Jose\Object\JWK;
 use Jose\Object\SignatureInstruction;
@@ -64,8 +66,8 @@ class NoneSignatureTest extends TestCase
 
         $instruction1 = new SignatureInstruction($jwk, ['alg' => 'none']);
 
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
+        $signer = SignerFactory::createSigner(['none'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $signed = $signer->sign('Je suis Charlie', [$instruction1], \Jose\JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
 

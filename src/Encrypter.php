@@ -516,7 +516,7 @@ final class Encrypter implements EncrypterInterface
 
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
         if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
-            throw new \RuntimeException(sprintf('The algorithm "%s" does not implement ContentEncryptionInterface.', $algorithm));
+            throw new \RuntimeException(sprintf('The algorithm "%s" is not enabled or does not implement ContentEncryptionInterface.', $algorithm));
         }
 
         return $content_encryption_algorithm;

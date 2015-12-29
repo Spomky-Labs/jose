@@ -9,6 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\DecrypterFactory;
+use Jose\Factory\EncrypterFactory;
+use Jose\Factory\LoaderFactory;
 use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use Jose\Object\EncryptionInstruction;
@@ -28,9 +31,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithJWTInput()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -62,9 +65,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadFlattenedWithAAD()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -98,7 +101,7 @@ class EncrypterTest extends TestCase
      */
     public function testCompressionAlgorithmNotSupported()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -117,7 +120,7 @@ class EncrypterTest extends TestCase
      */
     public function testMultipleInstructionsNotAllowedWithCompactSerialization()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction1 = new EncryptionInstruction(
             $this->getRSARecipientKeyWithAlgorithm()
@@ -147,7 +150,7 @@ class EncrypterTest extends TestCase
      */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction1 = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -179,7 +182,7 @@ class EncrypterTest extends TestCase
      */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization2()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['dir', 'ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction1 = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -208,7 +211,7 @@ class EncrypterTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getSigningKey());
 
@@ -228,7 +231,7 @@ class EncrypterTest extends TestCase
      */
     public function testAlgorithmNotAllowedForTheKey()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKeyWithAlgorithm());
 
@@ -247,9 +250,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadFlattenedWithDeflateCompression()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A128CBC-HS256'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A128CBC-HS256'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -283,7 +286,8 @@ class EncrypterTest extends TestCase
      */
     public function testAlgParameterIsMissing()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['A128CBC-HS256'], $this->getPayloadConverters(), ['DEF' => 0]);
+
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -302,7 +306,7 @@ class EncrypterTest extends TestCase
      */
     public function testEncParameterIsMissing()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -321,7 +325,7 @@ class EncrypterTest extends TestCase
      */
     public function testNotAKeyEncryptionAlgorithm()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['A128CBC-HS256'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -336,11 +340,11 @@ class EncrypterTest extends TestCase
 
     /**
      * @expectedException \RuntimeException
-     * @expectedExceptionMessage The algorithm "RSA-OAEP-256" does not implement ContentEncryptionInterface.
+     * @expectedExceptionMessage The algorithm "RSA-OAEP-256" is not enabled or does not implement ContentEncryptionInterface.
      */
     public function testNotAContentEncryptionAlgorithm()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
@@ -358,9 +362,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactWithDirectKeyEncryption()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['dir', 'A192CBC-HS384'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['dir', 'A192CBC-HS384'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction($this->getDirectKey());
 
@@ -392,9 +396,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreement()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A192CBC-HS384'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -431,7 +435,7 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithAgreementAlgorithm()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey()
@@ -452,7 +456,7 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithAgreementKeyWrapAlgorithm()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['A192CBC-HS384', 'ECDH-ES+A128KW'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
 
@@ -471,7 +475,7 @@ class EncrypterTest extends TestCase
      */
     public function testNoInstruction()
     {
-        $encrypter = $this->getEncrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['A192CBC-HS384', 'ECDH-ES+A128KW'], $this->getPayloadConverters(), ['DEF' => 0]);
 
         $encrypter->encrypt(
             ['user_id' => '1234', 'exp' => 3600],
@@ -487,9 +491,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrappingCompact()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -524,9 +528,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrappingFlattened()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
@@ -566,8 +570,10 @@ class EncrypterTest extends TestCase
 
             return;
         }
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
+
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+
         $instruction = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
@@ -582,7 +588,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz');
 
         $loaded = $loader->load($encrypted);
-        $decrypter = $this->getDecrypter();
+        $decrypter = DecrypterFactory::createDecrypter(['A256GCM', 'ECDH-ES+A256KW'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getHeader('alg'));
@@ -602,9 +608,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
     {
-        $encrypter = $this->getEncrypter();
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $instruction1 = new EncryptionInstruction(
             $this->getECDHRecipientPublicKey(),

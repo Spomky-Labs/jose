@@ -9,6 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\LoaderFactory;
+use Jose\Factory\SignerFactory;
+use Jose\Factory\VerifierFactory;
 use Jose\JSONSerializationModes;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
@@ -26,8 +29,7 @@ class SignerTest extends TestCase
      */
     public function testNoInstruction()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner([]);
         $input = $this->getKey3();
 
         $signer->sign($input, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
@@ -40,7 +42,7 @@ class SignerTest extends TestCase
     public function testUnsupportedInputType()
     {
         $resource = fopen(__FILE__, 'r');
-        $signer = $this->getSigner();
+        $signer = SignerFactory::createSigner([]);
         $signer->sign($resource, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
@@ -50,8 +52,7 @@ class SignerTest extends TestCase
      */
     public function testBadInstruction()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner([]);
         $input = $this->getKey3();
 
         $signer->sign($input, ['Bad instruction'], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
@@ -63,8 +64,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsMissing()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner([]);
         $input = $this->getKey3();
 
         $instruction = new SignatureInstruction($this->getKey1());
@@ -78,8 +78,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsNotSupported()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner([]);
         $input = $this->getKey3();
 
         $instruction = new SignatureInstruction($this->getKey1(), ['alg' => 'foo']);
@@ -93,8 +92,7 @@ class SignerTest extends TestCase
      */
     public function testSerializationIsNotSupported()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner(['HS512']);
         $input = $this->getKey3();
 
         $instruction = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
@@ -107,13 +105,12 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadCompact()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $input = $this->getKey3();
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
-
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign($input, [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
@@ -141,10 +138,9 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
-        $signer = $this->getSigner();
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
-
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $jws = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
@@ -160,10 +156,9 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
-        $signer = $this->getSigner();
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
-
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $jws = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_FLATTENED_SERIALIZATION);
@@ -180,7 +175,7 @@ class SignerTest extends TestCase
      */
     public function testAlgorithmNotAllowedForTheKey()
     {
-        $signer = $this->getSigner();
+        $signer = SignerFactory::createSigner([]);
 
         $instruction = new SignatureInstruction($this->getKey4(), ['alg' => 'RS512']);
 
@@ -193,8 +188,7 @@ class SignerTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $signer = $this->getSigner();
-
+        $signer = SignerFactory::createSigner(['PS512'], $this->getPayloadConverters());
         $instruction = new SignatureInstruction($this->getKey4(), ['alg' => 'PS512']);
 
         $signer->sign('FOO', [$instruction], JSONSerializationModes::JSON_SERIALIZATION);
@@ -205,8 +199,8 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadFlattened()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
+        $signer = SignerFactory::createSigner(['HS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
 
@@ -229,12 +223,11 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoad()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
-        $verifier = $this->getVerifier();
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
-
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
 
         $signatures = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
@@ -264,9 +257,9 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadJWKSet()
     {
-        $signer = $this->getSigner();
-        $loader = $this->getLoader();
-        $verifier = $this->getVerifier();
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);

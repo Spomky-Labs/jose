@@ -9,6 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\DecrypterFactory;
+use Jose\Factory\LoaderFactory;
 use Jose\Test\TestCase;
 
 /**
@@ -21,8 +23,8 @@ class FlattenedTest extends TestCase
      */
     public function testLoadFlattenedJWE()
     {
-        $loader = $this->getLoader();
-        $decrypter = $this->getDecrypter();
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128CBC-HS256'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
 
         $loaded = $loader->load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ","iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
 
@@ -42,7 +44,7 @@ class FlattenedTest extends TestCase
      */
     public function testLoadFlattenedJWS()
     {
-        $loader = $this->getLoader();
+        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $loaded = $loader->load('{"payload":"eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ","protected":"eyJhbGciOiJFUzI1NiJ9","header":{"kid":"e9bc097a-ce51-4036-9562-d2ade882db0d"},"signature":"DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q"}');
 
