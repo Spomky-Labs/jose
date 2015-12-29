@@ -9,10 +9,10 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
 use Jose\Factory\EncrypterFactory;
 use Jose\Factory\LoaderFactory;
-use Base64Url\Base64Url;
 use Jose\JSONSerializationModes;
 use Jose\Object\EncryptionInstruction;
 use Jose\Object\JWK;
@@ -287,7 +287,6 @@ class EncrypterTest extends TestCase
     public function testAlgParameterIsMissing()
     {
         $encrypter = EncrypterFactory::createEncrypter(['A128CBC-HS256'], $this->getPayloadConverters(), ['DEF' => 0]);
-
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 

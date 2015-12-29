@@ -9,9 +9,9 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\SignerFactory;
-use Jose\Factory\LoaderFactory;
 use Jose\Algorithm\Signature\None;
+use Jose\Factory\LoaderFactory;
+use Jose\Factory\SignerFactory;
 use Jose\Object\JWK;
 use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;

@@ -11,7 +11,6 @@
 
 namespace Jose\Factory;
 
-
 use Jose\Loader;
 
 final class LoaderFactory
