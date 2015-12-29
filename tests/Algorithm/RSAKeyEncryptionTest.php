@@ -9,12 +9,12 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\LoaderFactory;
 use Base64Url\Base64Url;
 use Jose\Algorithm\KeyEncryption\RSA15;
 use Jose\Algorithm\KeyEncryption\RSAOAEP;
 use Jose\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\Factory\DecrypterFactory;
+use Jose\Factory\LoaderFactory;
 use Jose\Object\JWK;
 use Jose\Test\TestCase;
 
@@ -169,7 +169,6 @@ class RSAKeyEncryptionTest extends TestCase
      */
     public function testLoadJWK2()
     {
-
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'A128CBC-HS256'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
@@ -191,7 +190,6 @@ class RSAKeyEncryptionTest extends TestCase
      */
     public function testLoadJWK3()
     {
-
         $decrypter = DecrypterFactory::createDecrypter(['A128CBC-HS256', 'A128KW'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 

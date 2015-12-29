@@ -9,10 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\SignerFactory;
-use Jose\Factory\LoaderFactory;
-use Jose\Factory\VerifierFactory;
 use Base64Url\Base64Url;
 use Jose\Algorithm\Signature\PS256;
 use Jose\Algorithm\Signature\PS384;
@@ -20,6 +16,10 @@ use Jose\Algorithm\Signature\PS512;
 use Jose\Algorithm\Signature\RS256;
 use Jose\Algorithm\Signature\RS384;
 use Jose\Algorithm\Signature\RS512;
+use Jose\Factory\DecrypterFactory;
+use Jose\Factory\LoaderFactory;
+use Jose\Factory\SignerFactory;
+use Jose\Factory\VerifierFactory;
 use Jose\JSONSerializationModes;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;

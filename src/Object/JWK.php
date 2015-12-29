@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Object;
+
 use Base64Url\Base64Url;
 
 /**
