@@ -28,7 +28,7 @@ final class CompressionManagerFactory
         foreach ($methods as $key => $value) {
             if ($value instanceof CompressionInterface) {
                 $compression_manager->addCompressionAlgorithm($value);
-            } else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $class = self::getMethodClass($value);
                 $compression_manager->addCompressionAlgorithm(new $class());
             } else {
