@@ -46,4 +46,17 @@ interface JWKInterface extends \JsonSerializable
      * @return bool
      */
     public function has($key);
+
+    /**
+     * Returns the thumbprint of the key.
+     *
+     * @see https://tools.ietf.org/html/rfc7638
+     *
+     * @param string $hash_algorithm
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
+    public function thumbprint($hash_algorithm);
 }

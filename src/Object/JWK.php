@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Object;
+use Base64Url\Base64Url;
 
 /**
  * Class JWK.
@@ -75,5 +76,18 @@ final class JWK implements JWKInterface
     public function getAll()
     {
         return $this->values;
+    }
+
+    public function thumbprint($hash_algorithm)
+    {
+        if (false === in_array($hash_algorithm, hash_algos())) {
+            throw new \InvalidArgumentException(sprintf('Hash algorithm "%s" is not supported', $hash_algorithm));
+        }
+
+        $values = array_intersect_key($this->getAll(), array_flip(['kty', 'n', 'e', 'crv', 'x', 'y', 'k']));
+        ksort($values);
+        $input = json_encode($values);
+
+        return Base64Url::encode(hash($hash_algorithm, $input, true));
     }
 }

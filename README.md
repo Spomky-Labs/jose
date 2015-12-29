@@ -26,6 +26,8 @@ This library aims to provide an implementation of:
 
 Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are partially implemented.
 
+This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
+
 # Important note
 
 > Note 1: this library is still in development. The first stable release will be tagged as v1.0.x. All tags v0.x.y must be considered as unstable.
