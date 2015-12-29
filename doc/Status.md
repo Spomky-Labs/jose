@@ -66,4 +66,5 @@ Status of the implementation
 
 # JWK and JWKSet #
 
-JWK and JWKSet are fully supported
+JWK and JWKSet are fully supported.
+JWK (keys) supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).

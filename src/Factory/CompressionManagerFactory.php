@@ -11,12 +11,13 @@
 
 namespace Jose\Factory;
 
+use Jose\Compression\CompressionInterface;
 use Jose\Compression\CompressionManager;
 
 final class CompressionManagerFactory
 {
     /**
-     * @param string[] $methods
+     * @param array $methods
      *
      * @return \Jose\Compression\CompressionManagerInterface
      */
@@ -24,13 +25,16 @@ final class CompressionManagerFactory
     {
         $compression_manager = new CompressionManager();
 
-        foreach ($methods as $method => $compression_level) {
-            if (is_string($compression_level)) {
-                $method = $compression_level;
-                $compression_level = -1;
+        foreach ($methods as $key => $value) {
+            if ($value instanceof CompressionInterface) {
+                $compression_manager->addCompressionAlgorithm($value);
+            } else if (is_string($value)) {
+                $class = self::getMethodClass($value);
+                $compression_manager->addCompressionAlgorithm(new $class());
+            } else {
+                $class = self::getMethodClass($key);
+                $compression_manager->addCompressionAlgorithm(new $class($value));
             }
-            $class = self::getMethodClass($method);
-            $compression_manager->addCompressionAlgorithm(new $class($compression_level));
         }
 
         return $compression_manager;

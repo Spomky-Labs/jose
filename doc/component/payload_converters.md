@@ -1,9 +1,9 @@
-The Payload Converter Manager
-=============================
+Payload Converters
+==================
 
 # Payload types
 
-This library is able to use any kind of input:
+By default, this library is able to use types of inputs that can be encoded and decoded in JSON:
 * a number: 3.14159265359
 * a string: "Live long and prosper"
 * an array: `["iss"=>"my.example.com","sub"=>"me@example.com","is_admin"=>true]`
@@ -12,7 +12,15 @@ This library is able to use any kind of input:
 * objects supported by `json_encode` and `json_decode` methods or that implement `JsonSerializable`
 * objects supported by a custom payload converter.
 
-# Payload converters
+# Official converters
+
+This library provides two converters you may need:
+* JWK: `Jose\Payload\JWKConverter`
+* JWKSet: `Jose\Payload\JWKSetConverter`
+
+These converters will convert the payload into JWK or JWKSet and add the associated header.
+
+# Custom Payload converters
 
 If you want to use classes as payload of a JWE or JWS, you have to options:
 * Your class implements `JsonSerializable`
@@ -26,9 +34,7 @@ But you may need a custom payload converter because
 
 This page will show you how to create a custom converter.
 
-## A custom payload converter
-
-### Our class
+## Our class
 
 We create a small class that represents a user.
 
@@ -68,7 +74,7 @@ class User
 }
 ```
 
-### Our converter
+## Our converter
 
 We will create a converter that accepts `User` class. This converter will add content type header (`cty`) to `acme-user+json`.
 This converter must implements `Jose\Payload\PayloadConverterInterface`.
@@ -131,33 +137,4 @@ class UserConverter implements PayloadConverterInterface
 }
 ```
 
-# The converter manager
-
-This library provides a converter manager: `Jose\Payload\PayloadConverterManager`.
-
-```php
-<?php 
-
-use Jose\Payload\PayloadConverterManager;
-
-
-$converter_manager = new PayloadConverterManager();
-```
-
-Some converters are already enabled:
-* JWK converter
-* JWKSet converter
-
-To add a converter to this manager, just instantiate your converter and call method `addConverter`:
-
-```php
-<?php 
-
-use Acme\UserConverter;
-
-$my_converter = new UserConverter($database);
-
-$converter_manager->addConverter($my_converter);
-```
-
-Now, all JWS/JWE created or loaded will support `User` object as payload.
+Then, we just need to pass this converter to factories that need it.

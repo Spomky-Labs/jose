@@ -11,12 +11,13 @@
 
 namespace Jose\Factory;
 
+use Jose\Algorithm\JWAInterface;
 use Jose\Algorithm\JWAManager;
 
 final class AlgorithmManagerFactory
 {
     /**
-     * @param string[] $algorithms
+     * @param array $algorithms
      *
      * @return \Jose\Algorithm\JWAManagerInterface
      */
@@ -25,8 +26,12 @@ final class AlgorithmManagerFactory
         $jwa_manager = new JWAManager();
 
         foreach ($algorithms as $algorithm) {
-            $class = self::getAlgorithmClass($algorithm);
-            $jwa_manager->addAlgorithm(new $class());
+            if ($algorithm instanceof JWAInterface) {
+                $jwa_manager->addAlgorithm($algorithm);
+            } else {
+                $class = self::getAlgorithmClass($algorithm);
+                $jwa_manager->addAlgorithm(new $class());
+            }
         }
 
         return $jwa_manager;

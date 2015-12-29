@@ -160,6 +160,7 @@ A `JWK` object implements the interface `Jose\JWKInterface` and provides the fol
 * `getAll()`: all values
 * `has($key)`: returns true if the JWK object has a value identified by the key `$key`, else false.
 * `get($key)`: the value with key `$key`. Throws an exception if the key `$key` does not exist.
+* `thumbprint($hash_algorithm)`: the key thumbprint with hash algorithm `$hash_algorithm`. Throws an exception if the hash algorithm is not supported.
 
 ```php
 use Jose\JWK;
@@ -172,4 +173,5 @@ $jwk = new JWK([
 $this->has('kty'); // Return true
 $this->has('foo'); // Return false
 $this->get('kty'); // Return 'oct'
+$this->thumbprint('sha256'); // Return 'iBLRjibnjP0qSVQ2TnyD_CYLXSNz5hjwjLMdUkY-JQg'
 ```

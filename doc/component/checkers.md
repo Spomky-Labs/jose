@@ -18,31 +18,12 @@ This library provides the following checkers:
 * 'Not Before' Checker: verifies if the JWT can be used (`nbf` parameter)
 * 'Subject' Checker: verifies the subject (`sub` parameter)
 
-# The manager
-
-You just have to create an instance of `Jose\Checker\CheckerManager` and add each checker you want to use.
-
-```php
-<?php
-
-use Jose\Checker\CheckerManager;
-use Jose\CheckerManager\AudienceChecker;
-use Jose\CheckerManager\ExpirationChecker;
-
-$checker_manager = new CheckerManager();
-
-$checker_manager->addChecker(new AudienceChecker('My server'));
-$checker_manager->addChecker(new ExpirationChecker());
-```
-
-This manager is called when you call the method `verify` from the `virifier` or  `decrypt` from the `decrypter`.
-
 # Create my own checker
 
 If you need to verify a custom claim, you can create your own checker and add it to the manager.
 Your checker must implements `Jose\Checker\CheckerInterface`.
 
-Hereafter an example. Our animal checker will verify if the protected header contains the key `animal`.
+Hereafter a stupid example. Our custom checker will verify if the protected header contains the key `animal`.
 If this key exists, it verifies the claim `animal` is in the provided list.
 
 ```php
