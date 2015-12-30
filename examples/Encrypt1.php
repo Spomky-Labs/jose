@@ -66,4 +66,3 @@ $jwe = $encrypter->encrypt(
 
 // Now the variable $jwe contains a string with our JWE
 // Please read example Load3.php to know how to load this string and to decrypt the content.
-var_dump($jwe);
