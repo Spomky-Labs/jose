@@ -59,4 +59,9 @@ interface JWKInterface extends \JsonSerializable
      * @return string
      */
     public function thumbprint($hash_algorithm);
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function toPublic();
 }

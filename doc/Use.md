@@ -22,14 +22,6 @@ Depending on operations you want to perform, you have to initialize required com
 
 ## How To Sign
 
-### Initialize components
-
-If you want to sign data, you must initialize:
-
-* [A JWA manager](component/jwa_manager.md)
-* [A payload converter manager](component/payload_converter_manager.md)
-* [The signer itself](component/signer.md)
-
 ### Create a JWS
 
 First, you must create a [signature instruction](object/signature_instruction.md) for each signature you want to create:
@@ -82,15 +74,6 @@ The output now contains all signatures but no payload. The payload is set in the
 Note that your payload is encoded in Base 64.
 
 ## How To Encrypt
-
-### Initialize components
-
-If you want to encrypt data, you must initialize:
-
-* [A compression manager](component/compression_manager.md)
-* [A JWA manager](component/jwa_manager.md)
-* [A payload converter manager](component/payload_converter_manager.md)
-* [The encrypter itself](component/encrypter.md)
 
 ### Create a JWE
 
@@ -190,16 +173,6 @@ $output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $
 ```
 
 ## How To Load
-
-### Initialize components
-
-If you want to load data, you must initialize:
-
-* [A compression manager](component/compression_manager.md)
-* [A JWA manager](component/jwa_manager.md)
-* [A payload converter manager](component/payload_converter_manager.md)
-* [A checker manager](component/checker_manager.md)
-* [The loader itself](component/loader.md)
 
 ### Load a JWS or JWE
 

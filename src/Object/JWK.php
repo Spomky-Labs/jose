@@ -91,4 +91,15 @@ final class JWK implements JWKInterface
 
         return Base64Url::encode(hash($hash_algorithm, $input, true));
     }
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function toPublic()
+    {
+        $values = $this->getAll();
+        $values = array_diff_key($values,array_flip(['p', 'd', 'q', 'dp', 'dq', 'qi']));
+
+        return new JWK($values);
+    }
 }
