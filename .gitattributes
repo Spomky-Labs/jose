@@ -1,6 +1,7 @@
 * text=auto
 
 /doc export-ignore
+/examples export-ignore
 /tests export-ignore
 /.coveralls.yml export-ignore
 /.scrutinizer.yml export-ignore
