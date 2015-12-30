@@ -98,8 +98,8 @@ final class JWK implements JWKInterface
     public function toPublic()
     {
         $values = $this->getAll();
-        $values = array_diff_key($values,array_flip(['p', 'd', 'q', 'dp', 'dq', 'qi']));
+        $values = array_diff_key($values, array_flip(['p', 'd', 'q', 'dp', 'dq', 'qi']));
 
-        return new JWK($values);
+        return new self($values);
     }
 }
