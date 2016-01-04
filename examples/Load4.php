@@ -1,9 +1,18 @@
 <?php
 
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2015 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Jose\Factory\LoaderFactory;
 use Jose\Factory\DecrypterFactory;
+use Jose\Factory\LoaderFactory;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
@@ -25,7 +34,6 @@ $keyset = $keyset->addKey($shared_key);
 
 //The JWE
 $input = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwia2lkIjoiTXkgU2hhcmVkIEtleSJ9..gqkq-9muWfQd3AHD.kg_fCtrkId7poGRCUP9ARO4KQ4m0R6lU5rwNS8Mm8nLFMy_X3nBC1VkL_zDehO4K6eEliZ9ISBEE7fFM6aFppfTCwFd_q-qikoOy7zsSeOOEawDZX2qMMdZYnaZs1HZTezdgS7HmoNK1J1TfE1PNrmhjrIZEbTANWw.Hxy5fTBX8X10_bz5UuDeBQ';
-
 
 /******************/
 /*    SERVICES    */
