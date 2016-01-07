@@ -64,7 +64,6 @@ Please consider the following optional requirements:
 It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM`.
 
 Please note that `AxxxGCM` and `AxxxGCMKW` tests are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
-Anyway, as the this library should work fine.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
@@ -88,7 +87,7 @@ composer require spomky-labs/jose --prefer-source
 
 # How to use
 
-Your classes are ready to use? Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
+Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
 # Unsecured JWS
 
