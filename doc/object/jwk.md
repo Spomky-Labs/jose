@@ -5,7 +5,7 @@ The JWK object represents a key. Depending on the key properties, it can be used
 
 A JWK object is serializable. You can call `json_encode($jwk)` to display the key as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
 
-This object is immutable.
+**This object is immutable. It means that you cannot change any of its values.**
 
 # Create a `JWK` object
 
@@ -44,7 +44,7 @@ $jwk = new JWK([
 ]);
 ```
 
-The value of `k` is your binary key encoded in base 64 url safe:
+The value of `k` is your binary key encoded in base 64 url safe. This value is mandatory.
 
 ```php
 use Base64Url\Base64Url;
@@ -64,14 +64,15 @@ $jwk = new JWK([
 ]);
 ```
 
-The value of `dir` is your binary key encoded in base 64 url safe
+The value of `dir` is your binary key encoded in base 64 url safe. This value is mandatory.
 
 ## Symmetric key
 
 ### RSA key
 
 `RSA` public and private keys are very similar. The difference is that a public key only contains `n` (modulus) and `e` (exponent) values.
-A private key contains other values includes primes.
+The values `n` and `e` are mandatory.
+The key is considered as private when it contains a `d` value.
 
 ```php
 // A public key
@@ -95,11 +96,10 @@ $jwk = new JWK([
 ]);
 ```
 
-You can consider that a `RSA` key is private when it contains a `d` value.
-
 ### ECC key
 
 As `RSA` keys, `EC` public and private keys are very similar. The difference is that a public key only contains `x` and `y` (coordinates) values.
+The values `x` and `y` are mandatory.
 A private key contains a `d` value.
 
 ```php
@@ -123,35 +123,29 @@ $jwk = new JWK([
 ]);
 ```
 
-You can consider that an `EC` key is private when it contains a `d` value.
+## Other key key/value pairs
 
-# Key conversion
+Depending on your needs, you may use other key/value pairs.
 
-If you have `RSA` or `EC` keys stored in a file (X509 certificate, PEM key or DER key), you can easily load your key and
-extract values using the `Jose\Util\KeyConverter` object we provide.
+We recommend you to use:
+
+* `kid`: the ID of the key
+* `use`: the usage of the key (`sig` for signature or `enc` for encryption operations)
+* `alg`: the algorithm allowed for this key
+
+More details on [the JWK specification](http://tools.ietf.org/html/rfc7517#section-4).
+
+You can use custom key/value pairs:
 
 ```php
-use Jose\Util\KeyConverter;
-
-$values = KeyConverter::loadKeyFromCertificate('path/to/my/certificate');
-$jwk = new JWK($values);
+$jwk = new JWK([
+    'kid' => 'MY_KEY_#1',
+    'alg' => 'HS256',
+    'kty' => 'oct',
+    'k'   => 'GawgguFyGrWKav7AX4VKUg',
+    'foo' => 'bar',
+]);
 ```
-
-This tool provides the following static methods:
-
-* `KeyConverter::loadKeyFromCertificate($file)`: load values from a X509 certificate
-* `KeyConverter::loadKeyFromX509Resource($resource)`: load values from a X509 resource
-* `KeyConverter::loadKeyFromFile($file, $password = null)`: load values from a key file (encrypted keys supported)
-* `KeyConverter::loadKeyFromPEM($pem, $password = null)`: load values from a PEM string (encrypted PEM supported)
-* `KeyConverter::loadKeyFromDER($der, $password = null)`: load values from a DER string (encrypted DER supported)
-
-# Key use and allowed algorithm
-
-You can indicate the scope of the key and the allowed algorithms for this key
-
-## Key use
-
-## Allowed algorithm
 
 # Available methods
 
@@ -175,3 +169,48 @@ $this->has('foo'); // Return false
 $this->get('kty'); // Return 'oct'
 $this->thumbprint('sha256'); // Return 'iBLRjibnjP0qSVQ2TnyD_CYLXSNz5hjwjLMdUkY-JQg'
 ```
+
+# Key Factory
+
+Your keys may be stored in a file (X509 certificate, PEM key or DER key) or are available through an URL.
+You can easily load and create keys from several sources using the `Jose\Factory\KeyFactory` factory provided with this library.
+
+## Create a Key from Values
+
+You may need this method to create keys when you already have values (symmetric keys):
+
+```php
+use Jose\Factory\KeyFactory;
+
+$jwk = KeyFactory::createFromValues([
+    'kty' => 'oct',
+    'k'   => 'GawgguFyGrWKav7AX4VKUg',
+]);
+```
+
+## Create a Key from a X509 Certificate File
+
+Use this method to load a certificate an convert it into a JWK object.
+The second argument allow you to add key/value pairs.
+
+```php
+use Jose\Factory\KeyFactory;
+
+$jwk = KeyFactory::createFromCertificateFile('/path/to/the/certificate', ['use' => 'sig', 'alg'=> 'RS256']);
+```
+
+*Please note that at this moment, only X509 Certificate in PEM format are supported*
+
+## Create a Key from a X509 Certificate
+
+You can create a key file with an already loaded certificate file.
+
+```php
+use Jose\Factory\KeyFactory;
+
+$jwk = KeyFactory::createFromCertificateFile('-----BEGIN CERTIFICATE-----
+MIICpzCCAhACAg4AMA0GCSqGSIb3DQEBBQUAMIGbMQswCQYDVQQGEw.....', ['use' => 'sig', 'alg'=> 'RS256']);
+```
+
+*Please note that at this moment, only X509 Certificate in PEM format are supported*
+
