@@ -27,15 +27,15 @@
     "require": {
         "php": ">=5.5.9",
         "lib-openssl": "*",
-        "spomky-labs/base64url": "~1.0.0",
-        "spomky-labs/pbkdf2": "~1.0",
-        "spomky-labs/aes-key-wrap": "~2.0",
+        "spomky-labs/base64url": "^1.0",
+        "spomky-labs/pbkdf2": "^1.0",
+        "spomky-labs/aes-key-wrap": "^2.0",
         "mdanter/ecc": "0.3",
-        "phpseclib/phpseclib": "~2.0.0"
+        "phpseclib/phpseclib": "^2.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "~4.5",
-        "satooshi/php-coveralls": "~0.6"
+        "phpunit/phpunit": "^4.5|^5.0",
+        "satooshi/php-coveralls": "^1.0"
     },
    "suggest":{
         "ext-crypto": "Required to use AES GCM based algorithms."
