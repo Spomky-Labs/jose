@@ -10,6 +10,7 @@
  */
 
 use Base64Url\Base64Url;
+use Jose\Compression\GZip;
 use Jose\Factory\DecrypterFactory;
 use Jose\Factory\EncrypterFactory;
 use Jose\Factory\LoaderFactory;
@@ -31,9 +32,9 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithJWTInput()
     {
-        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0]);
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF' => 0, new GZip()]);
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
-        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF'], $this->getCheckers());
+        $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], $this->getPayloadConverters(), ['DEF', new GZip()], $this->getCheckers());
 
         $instruction = new EncryptionInstruction($this->getRSARecipientKey());
 
