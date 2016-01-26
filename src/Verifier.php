@@ -12,11 +12,13 @@
 namespace Jose;
 
 use Jose\Algorithm\JWAManagerInterface;
-use Jose\Algorithm\Signature\SignatureAlgorithmInterface;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Checker\CheckerManagerInterface;
+use Jose\Object\JWKInterface;
+use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\SignatureInterface;
@@ -48,7 +50,20 @@ final class Verifier implements VerifierInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function verify(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
+    public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null)
+    {
+        $jwk_set = new JWKSet();
+        $jwk_set = $jwk_set->addKey($jwk);
+
+        return $this->verifyWithKeySet($jws, $jwk_set, $detached_payload);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
     {
         if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload.');
@@ -85,7 +100,7 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\SignatureInterface $signature
      *
-     * @return \Jose\Algorithm\Signature\SignatureAlgorithmInterface|null
+     * @return \Jose\Algorithm\SignatureAlgorithmInterface|null
      */
     private function getAlgorithm(SignatureInterface $signature)
     {

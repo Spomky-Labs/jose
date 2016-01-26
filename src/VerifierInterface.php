@@ -11,6 +11,7 @@
 
 namespace Jose;
 
+use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 
@@ -23,11 +24,23 @@ interface VerifierInterface
      * Verify the signature of the input.
      * The input must be a valid JWS. This method is usually called after the "load" method.
      *
+     * @param \Jose\Object\JWSInterface $input            A JWS object.
+     * @param \Jose\Object\JWKInterface $jwk              The signature will be verified using keys in the key set
+     * @param null|string               $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
+     *
+     * @return bool True if the signature has been verified, else false
+     */
+    public function verifyWithKey(JWSInterface $input, JWKInterface $jwk, $detached_payload = null);
+
+    /**
+     * Verify the signature of the input.
+     * The input must be a valid JWS. This method is usually called after the "load" method.
+     *
      * @param \Jose\Object\JWSInterface    $input            A JWS object.
      * @param \Jose\Object\JWKSetInterface $jwk_set          The signature will be verified using keys in the key set
      * @param null|string                  $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
      *
      * @return bool True if the signature has been verified, else false
      */
-    public function verify(JWSInterface $input, JWKSetInterface $jwk_set, $detached_payload = null);
+    public function verifyWithKeySet(JWSInterface $input, JWKSetInterface $jwk_set, $detached_payload = null);
 }
