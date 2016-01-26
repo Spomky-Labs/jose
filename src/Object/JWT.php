@@ -14,67 +14,12 @@ namespace Jose\Object;
 /**
  * Class JWT.
  */
-abstract class JWT implements JWTInterface
+trait JWT
 {
-    /**
-     * @var string|null
-     */
-    private $input = null;
-
-    /**
-     * @var array
-     */
-    private $protected_headers = [];
-
-    /**
-     * @var array
-     */
-    private $unprotected_headers = [];
-
     /**
      * @var mixed|null
      */
     private $payload = null;
-
-    /**
-     * JWT constructor.
-     *
-     * @param mixed|null  $input
-     * @param array       $protected_headers
-     * @param array       $unprotected_headers
-     * @param string|null $payload
-     */
-    public function __construct($input, array $protected_headers = [], array $unprotected_headers = [], $payload = null)
-    {
-        $this->input = $input;
-        $this->payload = $payload;
-        $this->protected_headers = $protected_headers;
-        $this->unprotected_headers = $unprotected_headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getInput()
-    {
-        return $this->input;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getProtectedHeaders()
-    {
-        return $this->protected_headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUnprotectedHeaders()
-    {
-        return $this->unprotected_headers;
-    }
 
     /**
      * {@inheritdoc}
@@ -87,89 +32,12 @@ abstract class JWT implements JWTInterface
     /**
      * {@inheritdoc}
      */
-    public function getProtectedHeader($key)
+    public function withPayload($payload)
     {
-        if ($this->hasProtectedHeader($key)) {
-            return $this->protected_headers[$key];
-        }
-        throw new \InvalidArgumentException(sprintf('The protected header "%s" does not exist', $key));
-    }
+        $jwt = clone $this;
+        $jwt->payload = $payload;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function hasProtectedHeader($key)
-    {
-        return array_key_exists($key, $this->protected_headers);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUnprotectedHeader($key)
-    {
-        if ($this->hasUnprotectedHeader($key)) {
-            return $this->unprotected_headers[$key];
-        }
-        throw new \InvalidArgumentException(sprintf('The unprotected header "%s" does not exist', $key));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasUnprotectedHeader($key)
-    {
-        return array_key_exists($key, $this->unprotected_headers);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeaders()
-    {
-        return array_merge($this->getProtectedHeaders(), $this->getUnprotectedHeaders());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeader($key)
-    {
-        if ($this->hasProtectedHeader($key)) {
-            return $this->getProtectedHeader($key);
-        } elseif ($this->hasUnprotectedHeader($key)) {
-            return $this->getUnprotectedHeader($key);
-        }
-        throw new \InvalidArgumentException(sprintf('The protected or unprotected headers do not contain header "%s"', $key));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasHeader($key)
-    {
-        return $this->hasProtectedHeader($key) || $this->hasUnprotectedHeader($key);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getHeaderOrClaim($key)
-    {
-        if ($this->hasHeader($key)) {
-            return $this->getHeader($key);
-        } elseif ($this->hasClaim($key)) {
-            return $this->getClaim($key);
-        }
-        throw new \InvalidArgumentException(sprintf('The header or claim do not contain value with key "%s"', $key));
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function hasHeaderOrClaim($key)
-    {
-        return $this->hasHeader($key) || $this->hasClaim($key);
+        return $jwt;
     }
 
     /**

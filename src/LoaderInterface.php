@@ -25,5 +25,5 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface|\Jose\Object\JWSInterface[]|\Jose\Object\JWEInterface[]|null If the data has been loaded.
      */
-    public function load($input);
+    public static function load($input);
 }

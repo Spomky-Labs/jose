@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Jose\Object\JWEInterface;
+use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 
 /**
@@ -20,14 +21,18 @@ use Jose\Object\JWKSetInterface;
 interface DecrypterInterface
 {
     /**
-     * Load data and try to return a JWSInterface object, a JWEInterface object or a list of these objects.
-     * If the result is a JWE, nothing is decrypted and method `decrypt` must be executed
-     * If the result is a JWS, no signature is verified and method `verifySignature` must be executed.
+     * @param \Jose\Object\JWEInterface $input A JWE object to decrypt
+     * @param \Jose\Object\JWKInterface $jwk   The key used to decrypt the input
      *
+     * @return bool Returns true if the JWE has been populated with decrypted values, else false.
+     */
+    public function decryptUsingKey(JWEInterface &$input, JWKInterface $jwk);
+
+    /**
      * @param \Jose\Object\JWEInterface    $input   A JWE object to decrypt
      * @param \Jose\Object\JWKSetInterface $jwk_set The key set used to decrypt the input
      *
      * @return bool Returns true if the JWE has been populated with decrypted values, else false.
      */
-    public function decrypt(JWEInterface &$input, JWKSetInterface $jwk_set);
+    public function decryptUsingKeySet(JWEInterface &$input, JWKSetInterface $jwk_set);
 }

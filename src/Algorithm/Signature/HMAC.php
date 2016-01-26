@@ -12,13 +12,14 @@
 namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
 /**
  * This class handles signatures using HMAC.
  * It supports algorithms HS256, HS384 and HS512;.
  */
-abstract class HMAC implements SignatureInterface
+abstract class HMAC implements SignatureAlgorithmInterface
 {
     /**
      * {@inheritdoc}
@@ -53,8 +54,8 @@ abstract class HMAC implements SignatureInterface
         if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         }
-        $safeLen = strlen($safe);
-        $userLen = strlen($user);
+        $safeLen =  StringUtil::strlen($safe);
+        $userLen =  StringUtil::strlen($user);
 
         if ($userLen !== $safeLen) {
             return false;

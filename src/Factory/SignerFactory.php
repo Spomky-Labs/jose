@@ -16,16 +16,21 @@ use Jose\Signer;
 final class SignerFactory
 {
     /**
-     * @param string[]                                  $algorithms
-     * @param \Jose\Payload\PayloadConverterInterface[] $payload_converters
+     * SignerFactory constructor.
+     *
+     * This factory is not supposed to be instantiated
+     */
+    private function __construct() {}
+
+    /**
+     * @param string[] $algorithms
      *
      * @return \Jose\SignerInterface
      */
-    public static function createSigner(array $algorithms, array $payload_converters = [])
+    public static function createSigner(array $algorithms)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
-        $payload_converter_manager = PayloadConverterFactory::createPayloadConverter($payload_converters);
 
-        return new Signer($algorithm_manager, $payload_converter_manager);
+        return new Signer($algorithm_manager);
     }
 }

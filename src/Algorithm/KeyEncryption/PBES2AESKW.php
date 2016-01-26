@@ -64,11 +64,19 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_WRAP;
+    }
+
+    /**
      * @param JWKInterface $key
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

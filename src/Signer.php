@@ -13,14 +13,12 @@ namespace Jose;
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\JWAManagerInterface;
-use Jose\Algorithm\Signature\SignatureInterface;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasPayloadConverter;
 use Jose\Object\JWKInterface;
-use Jose\Object\SignatureInstructionInterface;
-use Jose\Payload\PayloadConverterManagerInterface;
-use Jose\Util\Converter;
+use Jose\Object\JWSInterface;
+use Jose\Object\Signature;
 
 /**
  */
@@ -28,140 +26,75 @@ final class Signer implements SignerInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasPayloadConverter;
 
     /**
      * Signer constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
+     * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
      */
-    public function __construct(JWAManagerInterface $jwa_manager, PayloadConverterManagerInterface $payload_converter_manager)
+    public function __construct(JWAManagerInterface $jwa_manager)
     {
         $this->setJWAManager($jwa_manager);
-        $this->setPayloadConverter($payload_converter_manager);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function sign($input, array $instructions, $serialization, $detached_signature = false, &$detached_payload = null)
+    public function addSignatureWithDetachedPayload(JWSInterface $jws, JWKInterface $key, $detached_payload, array $protected_headers = [], array $headers = [])
     {
-        $additional_header = [];
-        $this->checkSerializationMode($serialization);
-        $input = $this->getPayloadConverter()->convertPayloadToString($additional_header, $input);
-        $this->checkInstructions($instructions, $serialization);
-
-        $jwt_payload = Base64Url::encode($input);
-
-        $signatures = [
-            'payload'    => $jwt_payload,
-            'signatures' => [],
-        ];
-
-        foreach ($instructions as $instruction) {
-            $signatures['signatures'][] = $this->computeSignature($instruction, $jwt_payload, $additional_header);
+        $signature = new Signature();
+        if (!empty($protected_headers)) {
+            $signature = $signature->withProtectedHeaders($protected_headers);
+        }
+        if (!empty($headers)) {
+            $signature = $signature->withHeaders($headers);
         }
 
-        if (true === $detached_signature) {
-            $detached_payload = $signatures['payload'];
-            unset($signatures['payload']);
-        }
+        $signature_algorithm = $this->getSignatureAlgorithm($signature->getAllHeaders(), $key);
+        $value = Base64Url::encode($signature_algorithm->sign($key, $signature->getEncodedProtectedHeaders().'.'.$detached_payload));
 
-        return Converter::convert($signatures, $serialization);
+        $signature = $signature->withSignature($value);
+
+        $jws = $jws->addSignature($signature);
+
+        return $jws;
     }
 
     /**
-     * @param \Jose\Object\SignatureInstructionInterface $instruction
-     * @param string                                     $jwt_payload
-     * @param array                                      $additional_header
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    protected function computeSignature(SignatureInstructionInterface $instruction, $jwt_payload, array $additional_header)
+    public function addSignature(JWSInterface $jws, JWKInterface $key, array $protected_headers = [], array $headers = [])
     {
-        $protected_header = array_merge($instruction->getProtectedHeader(), $additional_header);
-        $unprotected_header = $instruction->getUnprotectedHeader();
-        $complete_header = array_merge($protected_header, $protected_header);
-
-        $jwt_protected_header = empty($protected_header) ? null : Base64Url::encode(json_encode($protected_header));
-
-        $signature_algorithm = $this->getSignatureAlgorithm($complete_header, $instruction->getKey());
-
-        if (!$this->checkKeyUsage($instruction->getKey(), 'signature')) {
+        if (null === $jws->getEncodedPayload()) {
+            throw new \InvalidArgumentException('No payload.');
+        }
+        if (!$this->checkKeyUsage($key, 'signature')) {
             throw new \InvalidArgumentException('Key cannot be used to sign');
         }
 
-        $signature = $signature_algorithm->sign($instruction->getKey(), $jwt_protected_header.'.'.$jwt_payload);
-
-        $jwt_signature = Base64Url::encode($signature);
-
-        $result = [
-            'signature' => $jwt_signature,
-        ];
-        if (null !== $protected_header) {
-            $result['protected'] = $jwt_protected_header;
-        }
-        if (!empty($unprotected_header)) {
-            $result['header'] = $unprotected_header;
-        }
-
-        return $result;
+        return $this->addSignatureWithDetachedPayload($jws, $key, $jws->getEncodedPayload(), $protected_headers, $headers);
     }
 
     /**
      * @param array                     $complete_header The complete header
      * @param \Jose\Object\JWKInterface $key
      *
-     * @return \Jose\Algorithm\Signature\SignatureInterface
+     * @return \Jose\Algorithm\SignatureAlgorithmInterface
      */
-    protected function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
+    private function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $complete_header)) {
-            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
+            throw new \InvalidArgumentException('No "alg" parameter in the header.');
         }
         if ($key->has('alg') && $key->get('alg') !== $complete_header['alg']) {
             throw new \InvalidArgumentException(sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg']));
         }
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
-        if (!$signature_algorithm instanceof SignatureInterface) {
+        if (!$signature_algorithm instanceof SignatureAlgorithmInterface) {
             throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));
         }
 
         return $signature_algorithm;
-    }
-
-    /**
-     * @param string $serialization
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function checkSerializationMode($serialization)
-    {
-        if (!in_array($serialization, JSONSerializationModes::getSupportedSerializationModes())) {
-            throw new \InvalidArgumentException(sprintf('The serialization method "%s" is not supported.', $serialization));
-        }
-    }
-
-    /**
-     * @param array  $instructions
-     * @param string $serialization
-     *
-     * @throws \InvalidArgumentException
-     */
-    protected function checkInstructions(array $instructions, $serialization)
-    {
-        if (empty($instructions)) {
-            throw new \InvalidArgumentException('No instruction.');
-        }
-        foreach ($instructions as $instruction) {
-            if (!$instruction instanceof SignatureInstructionInterface) {
-                throw new \InvalidArgumentException('Bad instruction. Must implement SignatureInstructionInterface.');
-            }
-            if (!empty($instruction->getUnprotectedHeader()) && JSONSerializationModes::JSON_COMPACT_SERIALIZATION === $serialization) {
-                throw new \InvalidArgumentException('Cannot create Compact Json Serialization representation: unprotected header cannot be kept');
-            }
-        }
     }
 }

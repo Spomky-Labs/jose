@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Algorithm\Signature;
+namespace Jose\Algorithm;
 
 use Jose\Algorithm\JWAInterface;
 use Jose\Object\JWKInterface;
@@ -17,7 +17,7 @@ use Jose\Object\JWKInterface;
 /**
  * This interface is used by algorithms that have capabilities to sign data and verify a signature.
  */
-interface SignatureInterface extends JWAInterface
+interface SignatureAlgorithmInterface extends JWAInterface
 {
     /**
      * Sign the input.

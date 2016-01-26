@@ -102,6 +102,14 @@ final class ECDHES implements KeyAgreementInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_AGREEMENT;
+    }
+
+    /**
      * @param array $complete_header
      *
      * @return \Jose\Object\JWKInterface
@@ -126,7 +134,7 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
+        if ('EC' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key type must be "EC"');
         }
         if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {

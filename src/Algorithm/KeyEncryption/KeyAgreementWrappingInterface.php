@@ -11,13 +11,13 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
-use Jose\Algorithm\EncryptionInterface;
+use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
 /**
  *
  */
-interface KeyAgreementWrappingInterface extends EncryptionInterface
+interface KeyAgreementWrappingInterface extends KeyEncryptionAlgorithmInterface
 {
     /**
      * Wrap the agreement key.

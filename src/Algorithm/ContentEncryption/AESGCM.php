@@ -12,11 +12,12 @@
 namespace Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
+use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
 
 /**
  *
  */
-abstract class AESGCM implements ContentEncryptionInterface
+abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 {
     /**
      * {@inheritdoc}

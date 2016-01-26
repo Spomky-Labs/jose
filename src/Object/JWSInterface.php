@@ -14,26 +14,47 @@ namespace Jose\Object;
 interface JWSInterface extends JWTInterface
 {
     /**
-     * Returns the signature associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string|null
-     */
-    public function getSignature();
-
-    /**
-     * Returns the encoded payload associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string|null
+     * @return null|string
      */
     public function getEncodedPayload();
 
     /**
-     * Returns the encoded protected header associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
+     * Returns the number of signature associated with the JWS.
      *
-     * @return string|null
+     * @return int
      */
-    public function getEncodedProtectedHeader();
+    public function countSignatures();
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return \Jose\Object\JWSInterface
+     */
+    public function addSignature(SignatureInterface $signature);
+
+    /**
+     * Returns the signature associated with the JWS.
+     *
+     * @return \Jose\Object\SignatureInterface[]
+     */
+    public function getSignatures();
+
+    /**
+     * @param int $signature
+     *
+     * @return string
+     */
+    public function toCompactJSON($signature);
+
+    /**
+     * @param int $signature
+     *
+     * @return string
+     */
+    public function toFlattenedJSON($signature);
+
+    /**
+     * @return string
+     */
+    public function toJSON();
 }

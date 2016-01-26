@@ -16,6 +16,13 @@ use Jose\Decrypter;
 final class DecrypterFactory
 {
     /**
+     * DecrypterFactory constructor.
+     *
+     * This factory is not supposed to be instantiated
+     */
+    private function __construct() {}
+
+    /**
      * @param string[]                                  $algorithms
      * @param \Jose\Payload\PayloadConverterInterface[] $payload_converters
      * @param string[]                                  $compression_methods

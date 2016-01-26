@@ -17,7 +17,7 @@ use Jose\Object\JWKInterface;
 /**
  *
  */
-interface KeyEncryptionInterface extends KeyEncryptionAlgorithmInterface
+interface KeyWrappingInterface extends KeyEncryptionAlgorithmInterface
 {
     /**
      * Encrypt the CEK.
@@ -30,7 +30,7 @@ interface KeyEncryptionInterface extends KeyEncryptionAlgorithmInterface
      *
      * @return string The encrypted CEK
      */
-    public function encryptKey(JWKInterface $key, $cek, array &$header);
+    public function wrapKey(JWKInterface $key, $cek, array &$header);
 
     /**
      * Decrypt de CEK.
@@ -43,5 +43,5 @@ interface KeyEncryptionInterface extends KeyEncryptionAlgorithmInterface
      *
      * @return string The decrypted CEK
      */
-    public function decryptKey(JWKInterface $key, $encryted_cek, array $header);
+    public function unwrapKey(JWKInterface $key, $encryted_cek, array $header);
 }

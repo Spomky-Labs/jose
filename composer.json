@@ -30,19 +30,20 @@
         "spomky-labs/base64url": "^1.0",
         "spomky-labs/pbkdf2": "^1.0",
         "spomky-labs/aes-key-wrap": "^2.0",
-        "mdanter/ecc": "0.3",
         "phpseclib/phpseclib": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.5|^5.0",
-        "satooshi/php-coveralls": "^1.0"
+        "satooshi/php-coveralls": "^1.0",
+        "mdanter/ecc": "0.3"
     },
    "suggest":{
-        "ext-crypto": "Required to use AES GCM based algorithms."
+        "ext-crypto": "Required to use AES GCM based algorithms.",
+        "mdanter/ecc": "Required to use ECC based algorithms (use v0.3 only)."
    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.0.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }

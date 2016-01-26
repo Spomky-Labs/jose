@@ -14,9 +14,17 @@ namespace Jose\Factory;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Util\StringUtil;
 
-final class KeyFactory
+final class JWKFactory
 {
+    /**
+     * KeyFactory constructor.
+     *
+     * This factory is not supposed to be instantiated
+     */
+    private function __construct() {}
+
     /**
      * @param array $values
      *
@@ -227,7 +235,7 @@ final class KeyFactory
         if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
             throw new \InvalidArgumentException('Invalid URL.');
         }
-        if (false === $allow_unsecured_connection && 'https://' !== substr($url, 0, 8)) {
+        if (false === $allow_unsecured_connection && 'https://' !==  StringUtil::substr($url, 0, 8)) {
             throw new \InvalidArgumentException('Unsecured connection.');
         }
 

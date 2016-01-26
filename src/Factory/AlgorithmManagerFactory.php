@@ -17,6 +17,13 @@ use Jose\Algorithm\JWAManager;
 final class AlgorithmManagerFactory
 {
     /**
+     * AlgorithmManagerFactory constructor.
+     *
+     * This factory is not supposed to be instantiated
+     */
+    private function __construct() {}
+
+    /**
      * @param array $algorithms
      *
      * @return \Jose\Algorithm\JWAManagerInterface

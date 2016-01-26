@@ -11,12 +11,13 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
 /**
  * This class is an abstract class that implements the none algorithm (plaintext).
  */
-final class None implements SignatureInterface
+final class None implements SignatureAlgorithmInterface
 {
     /**
      * {@inheritdoc}

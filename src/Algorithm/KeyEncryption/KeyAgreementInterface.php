@@ -11,13 +11,13 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
-use Jose\Algorithm\EncryptionInterface;
+use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
 /**
  *
  */
-interface KeyAgreementInterface extends EncryptionInterface
+interface KeyAgreementInterface extends KeyEncryptionAlgorithmInterface
 {
     /**
      * @param int                       $encryption_key_length    Size of the key expected for the algorithm used for data encryption

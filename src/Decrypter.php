@@ -11,7 +11,7 @@
 
 namespace Jose;
 
-use Jose\Algorithm\ContentEncryption\ContentEncryptionInterface;
+use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
 use Jose\Algorithm\JWAInterface;
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
@@ -28,8 +28,8 @@ use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWE;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
+use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
-use Jose\Payload\PayloadConverterManagerInterface;
 
 /**
  */
@@ -45,18 +45,15 @@ final class Decrypter implements DecrypterInterface
      * Loader constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Payload\PayloadConverterManagerInterface $payload_converter_manager
      * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
      * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        PayloadConverterManagerInterface $payload_converter_manager,
         CompressionManagerInterface $compression_manager,
         CheckerManagerInterface $checker_manager)
     {
         $this->setJWAManager($jwa_manager);
-        $this->setPayloadConverter($payload_converter_manager);
         $this->setCompressionManager($compression_manager);
         $this->setCheckerManager($checker_manager);
     }
@@ -64,7 +61,18 @@ final class Decrypter implements DecrypterInterface
     /**
      * {@inheritdoc}
      */
-    public function decrypt(JWEInterface &$jwe, JWKSetInterface $jwk_set)
+    public function decryptUsingKey(JWEInterface &$jwe, JWKInterface $jwk)
+    {
+        $jwk_set = new JWKSet();
+        $jwk_set = $jwk_set->addKey($jwk);
+
+        return $this->decryptUsingKeySet($jwe, $jwk_set);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
         $this->checkCompleteHeader($jwe);
         $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
@@ -98,18 +106,18 @@ final class Decrypter implements DecrypterInterface
     }
 
     /**
-     * @param \Jose\Algorithm\JWAInterface                                 $key_encryption_algorithm
-     * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
-     * @param \Jose\Object\JWKInterface                                    $key
-     * @param string|null                                                  $encrypted_cek
-     * @param array                                                        $header
+     * @param \Jose\Algorithm\JWAInterface                        $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $key
+     * @param string|null                                         $encrypted_cek
+     * @param array                                               $header
      *
      * @return string|null
      */
-    private function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    private function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
-            return $key_encryption_algorithm->getCEK($key, $header);
+            return $key_encryption_algorithm->getCEK($key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
             return $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $key, null, $header);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
@@ -122,13 +130,13 @@ final class Decrypter implements DecrypterInterface
     }
 
     /**
-     * @param \Jose\Object\JWEInterface                                    $jwe
-     * @param string                                                       $cek
-     * @param \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWEInterface                           $jwe
+     * @param string                                              $cek
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      *
      * @return bool
      */
-    private function decryptPayload(JWEInterface &$jwe, $cek, $content_encryption_algorithm)
+    private function decryptPayload(JWEInterface &$jwe, $cek, ContentEncryptionAlgorithmInterface $content_encryption_algorithm)
     {
         $payload = $content_encryption_algorithm->decryptContent(
             $jwe->getCiphertext(),
@@ -150,8 +158,6 @@ final class Decrypter implements DecrypterInterface
                 throw new \RuntimeException('Decompression failed');
             }
         }
-
-        $payload = $this->getPayloadConverter()->convertStringToPayload($jwe->getHeaders(), $payload);
 
         $result = new JWE(
             $jwe->getInput(),
@@ -208,12 +214,12 @@ final class Decrypter implements DecrypterInterface
     /**
      * @param $algorithm
      *
-     * @return \Jose\Algorithm\ContentEncryption\ContentEncryptionInterface
+     * @return \Jose\Algorithm\ContentEncryptionAlgorithmInterface
      */
     private function getContentEncryptionAlgorithm($algorithm)
     {
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
-        if (!$content_encryption_algorithm instanceof ContentEncryptionInterface) {
+        if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
             throw new \RuntimeException("The algorithm '".$algorithm."' does not implement ContentEncryptionInterface.");
         }
 

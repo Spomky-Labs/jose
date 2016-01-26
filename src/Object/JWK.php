@@ -21,7 +21,7 @@ final class JWK implements JWKInterface
     /**
      * @var array
      */
-    protected $values = [];
+    private $values = [];
 
     /**
      * JWK constructor.

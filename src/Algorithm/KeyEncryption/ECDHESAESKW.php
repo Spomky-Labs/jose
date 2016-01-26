@@ -45,6 +45,14 @@ abstract class ECDHESAESKW implements KeyAgreementWrappingInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_WRAP;
+    }
+
+    /**
      * @return \AESKW\A128KW|\AESKW\A192KW|\AESKW\A256KW
      */
     abstract protected function getWrapper();

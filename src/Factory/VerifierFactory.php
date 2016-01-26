@@ -16,6 +16,13 @@ use Jose\Verifier;
 final class VerifierFactory
 {
     /**
+     * VerifierFactory constructor.
+     *
+     * This factory is not supposed to be instantiated
+     */
+    private function __construct() {}
+
+    /**
      * @param string[]                         $algorithms
      * @param \Jose\Checker\CheckerInterface[] $checker_managers
      *

@@ -65,6 +65,14 @@ abstract class RSA implements KeyEncryptionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_ENCRYPT;
+    }
+
+    /**
      * @param array $values
      *
      * @return \phpseclib\Crypt\RSA

@@ -10,69 +10,142 @@
  */
 
 namespace Jose\Object;
-
 use Base64Url\Base64Url;
 
 /**
  * Class JWS.
  */
-final class JWS extends JWT implements JWSInterface
+final class JWS implements JWSInterface
 {
-    /**
-     * @var string|null
-     */
-    protected $encoded_payload = null;
+    use JWT;
 
     /**
-     * @var string|null
+     * @var \Jose\Object\SignatureInterface[]
      */
-    protected $encoded_protected_header = null;
-
-    /**
-     * @var string|null
-     */
-    protected $signature = null;
-
-    /**
-     * JWS constructor.
-     *
-     * @param string      $input
-     * @param string      $signature
-     * @param string|null $encoded_payload
-     * @param string|null $payload
-     * @param string|null $encoded_protected_header
-     * @param array       $unprotected_headers
-     */
-    public function __construct($input, $signature, $encoded_payload = null, $payload = null, $encoded_protected_header = null, array $unprotected_headers = [])
-    {
-        $protected_header = empty($encoded_protected_header) ? [] : json_decode(Base64Url::decode($encoded_protected_header), true);
-        parent::__construct($input, $protected_header, $unprotected_headers, $payload);
-        $this->signature = $signature;
-        $this->encoded_payload = $encoded_payload;
-        $this->encoded_protected_header = $encoded_protected_header;
-    }
+    private $signatures = [];
 
     /**
      * {@inheritdoc}
      */
     public function getEncodedPayload()
     {
-        return $this->encoded_payload;
+        return is_string($this->getPayload())?Base64Url::encode($this->getPayload()):null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getEncodedProtectedHeader()
+    public function getSignatures()
     {
-        return $this->encoded_protected_header;
+        return $this->signatures;
     }
 
     /**
-     * {@inheritdoc}
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return \Jose\Object\JWSInterface
      */
-    public function getSignature()
+    public function addSignature(SignatureInterface $signature)
     {
-        return $this->signature;
+        $jws = clone $this;
+        $jws->signatures[] = $signature;
+
+        return $jws;
+    }
+
+
+    /**
+     * Returns the number of signature associated with the JWS.
+     *
+     * @return int
+     */
+    public function countSignatures()
+    {
+        return count($this->signatures);
+    }
+
+    /**
+     * @param int $signature
+     *
+     * @return string
+     */
+    public function toCompactJSON($signature)
+    {
+        if (!isset($this->signatures[$signature])) {
+            throw new \InvalidArgumentException('The signature does not exist.');
+        }
+
+        if (!empty($this->signatures[$signature]->getHeaders())) {
+            throw new \InvalidArgumentException('The signature contains unprotected headers and cannot be converted into compact JSON');
+        }
+
+        return sprintf(
+            '%s.%s.%s',
+            $this->signatures[$signature]->getEncodedProtectedHeaders(),
+            $this->getEncodedPayload(),
+            Base64Url::encode($this->signatures[$signature]->getSignature())
+        );
+    }
+
+    /**
+     * @param int $signature
+     *
+     * @return string
+     */
+    public function toFlattenedJSON($signature)
+    {
+        if (!isset($this->signatures[$signature])) {
+            throw new \InvalidArgumentException('The signature does not exist.');
+        }
+
+        $data = [];
+        $values = [
+            'payload' => $this->getEncodedPayload(),
+            'protected' => $this->signatures[$signature]->getEncodedProtectedHeaders(),
+            'header' => $this->signatures[$signature]->getHeaders(),
+        ];
+
+        foreach ($values as $key=>$value) {
+            if (!empty($value)) {
+                $data[$key] = $value;
+            }
+        }
+        $data['signature'] = $this->signatures[$signature]->getSignature();
+
+        return json_encode($data);
+    }
+
+    /**
+     * @return string
+     */
+    public function toJSON()
+    {
+        if (0 === $this->countSignatures()) {
+            throw new \BadMethodCallException('No signature.');
+        }
+
+        $data = [];
+        if (!empty($this->getEncodedPayload())) {
+            $data['payload'] = $this->getEncodedPayload();
+        }
+
+        $data['signatures'] = [];
+        foreach ($this->getSignatures() as $signature) {
+
+            $tmp = ['signature' => $signature->getSignature()];
+            $values = [
+                'protected' => $signature->getEncodedProtectedHeaders(),
+                'header' => $signature->getHeaders(),
+            ];
+
+            foreach ($values as $key => $value) {
+                if (!empty($value)) {
+                    $tmp[$key] = $value;
+                }
+            }
+            $data['signatures'][] = $tmp;
+        }
+
+        return json_encode($data);
     }
 }

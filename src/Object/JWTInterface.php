@@ -14,94 +14,6 @@ namespace Jose\Object;
 interface JWTInterface
 {
     /**
-     * Returns the protected header of the JWT.
-     *
-     * @return array
-     */
-    public function getProtectedHeaders();
-
-    /**
-     * Returns the unprotected header of the JWT.
-     *
-     * @return array
-     */
-    public function getUnprotectedHeaders();
-
-    /**
-     * Returns the value of the protected header of the specified key.
-     *
-     * @param string $key The key
-     *
-     * @return mixed|null Header value
-     */
-    public function getProtectedHeader($key);
-
-    /**
-     * @param string $key The key
-     *
-     * @return bool
-     */
-    public function hasProtectedHeader($key);
-
-    /**
-     * Returns the value of the unprotected header of the specified key.
-     *
-     * @param string $key The key
-     *
-     * @return mixed|null Header value
-     */
-    public function getUnprotectedHeader($key);
-
-    /**
-     * @param string $key The key
-     *
-     * @return bool
-     */
-    public function hasUnprotectedHeader($key);
-
-    /**
-     * Returns the value of the headers (protected or unprotected).
-     *     *.
-     *
-     * @return array Header values
-     */
-    public function getHeaders();
-
-    /**
-     * Returns the value of the header (protected or unprotected) of the specified key.
-     *
-     * @param string $key The key
-     *
-     * @return mixed|null Header value
-     */
-    public function getHeader($key);
-
-    /**
-     * @param string $key The key
-     *
-     * @return bool
-     */
-    public function hasHeader($key);
-
-    /**
-     * Returns the value of the header (protected or unprotected) or the payload of the specified key.
-     *
-     * @param string $key The key
-     *
-     * @return mixed|null Header value
-     *
-     * @see https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-31#section-5.3
-     */
-    public function getHeaderOrClaim($key);
-
-    /**
-     * @param string $key The key
-     *
-     * @return bool
-     */
-    public function hasHeaderOrClaim($key);
-
-    /**
      * Returns the payload of the JWT.
      *
      * @return string                       Payload
@@ -111,6 +23,13 @@ interface JWTInterface
      * @return mixed                        Payload
      */
     public function getPayload();
+
+    /**
+     * @param mixed  $payload
+     *
+     * @return \Jose\Object\JWTInterface
+     */
+    public function withPayload($payload);
 
     /**
      * Returns the value of the payload of the specified key.
@@ -124,7 +43,7 @@ interface JWTInterface
     /**
      * Returns the claims.
      *
-     * @return mixed|null Payload value
+     * @return array Payload value
      */
     public function getClaims();
 
@@ -139,12 +58,4 @@ interface JWTInterface
      * @return bool
      */
     public function hasClaims();
-
-    /**
-     * Returns the complete input.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string|null
-     */
-    public function getInput();
 }
