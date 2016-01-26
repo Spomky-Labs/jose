@@ -201,7 +201,6 @@ final class JWE implements JWEInterface
     {
         $jwe = clone $this;
         $jwe->shared_protected_headers = $shared_protected_headers;
-        $jwe->encoded_shared_protected_headers = Base64Url::encode(json_encode($shared_protected_headers));
 
         return $jwe;
     }
@@ -339,7 +338,7 @@ final class JWE implements JWEInterface
             $json['header'] = $this->recipients[$recipient]->getHeaders();
         }
         if (!empty($this->recipients[$recipient]->getEncryptedKey())) {
-            $json['header'] = Base64Url::encode($this->recipients[$recipient]->getEncryptedKey());
+            $json['encrypted_key'] = Base64Url::encode($this->recipients[$recipient]->getEncryptedKey());
         }
 
         return json_encode($json);
@@ -373,10 +372,10 @@ final class JWE implements JWEInterface
 
             $temp = [];
             if (!empty($recipient->getHeaders())) {
-                $temp[] = $recipient->getHeaders();
+                $temp['header'] = $recipient->getHeaders();
             }
             if (!empty($recipient->getEncryptedKey())) {
-                $temp[] = Base64Url::encode($recipient->getEncryptedKey());
+                $temp['encrypted_key'] = Base64Url::encode($recipient->getEncryptedKey());
             }
             $json['recipients'][] = $temp;
         }

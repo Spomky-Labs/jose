@@ -18,18 +18,19 @@ use Jose\Algorithm\KeyEncryption\DirectEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
+use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
+use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
 use Jose\Behaviour\HasCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasPayloadConverter;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
-use Jose\Object\JWE;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
+use Jose\Object\RecipientInterface;
 
 /**
  */
@@ -38,7 +39,6 @@ final class Decrypter implements DecrypterInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasCheckerManager;
-    use HasPayloadConverter;
     use HasCompressionManager;
 
     /**
@@ -74,31 +74,35 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
-        $this->checkCompleteHeader($jwe);
-        $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($jwe->getHeader('alg'));
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe->getHeader('enc'));
-        $decrypted = false;
-        foreach ($jwk_set as $jwk) {
-            if (!$this->checkKeyUsage($jwk, 'decryption')) {
-                continue;
-            }
-            if (!$this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName())) {
-                continue;
-            }
-            try {
-                $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $jwe->getEncryptedKey(), $jwe->getHeaders());
+        foreach ($jwe->getRecipients() as $recipient) {
+            $complete_headers = array_merge(
+                $jwe->getSharedProtectedHeaders(),
+                $jwe->getSharedHeaders(),
+                $recipient->getHeaders()
+            );
+            $this->checkCompleteHeader($complete_headers);
 
-                if (null !== $cek) {
-                    $decrypted = $this->decryptPayload($jwe, $cek, $content_encryption_algorithm);
+            $key_encryption_algorithm = $this->getKeyEncryptionAlgorithm($complete_headers);
+            $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_headers);
+
+            foreach ($jwk_set as $jwk) {
+                if (!$this->checkKeyUsage($jwk, 'decryption')) {
+                    continue;
                 }
-            } catch (\Exception $e) {
-                //We do nothing, we continue with other keys
-                continue;
-            }
-            if (true === $decrypted) {
-                $this->getCheckerManager()->checkJWT($jwe);
-
-                return true;
+                if (!$this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName())) {
+                    continue;
+                }
+                try {
+                    $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $recipient, $complete_headers);
+                    if (null !== $cek) {
+                        if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
+                            return true;
+                        };
+                    }
+                } catch (\Exception $e) {
+                    //We do nothing, we continue with other keys
+                    continue;
+                }
             }
         }
 
@@ -109,21 +113,41 @@ final class Decrypter implements DecrypterInterface
      * @param \Jose\Algorithm\JWAInterface                        $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      * @param \Jose\Object\JWKInterface                           $key
-     * @param string|null                                         $encrypted_cek
-     * @param array                                               $header
+     * @param \Jose\Object\RecipientInterface                     $recipient
+     * @param array                                               $complete_headers
      *
-     * @return string|null
+     * @return null|string
      */
-    private function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $key, $encrypted_cek, array $header)
+    private function decryptCEK(JWAInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $key, RecipientInterface $recipient, array $complete_headers)
     {
         if ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            return $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $key, null, $header);
+            return $key_encryption_algorithm->getAgreementKey(
+                $content_encryption_algorithm->getCEKSize(),
+                $key,
+                null,
+                $complete_headers
+            );
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            return $key_encryption_algorithm->unwrapAgreementKey($key, $encrypted_cek, $content_encryption_algorithm->getCEKSize(), $header);
+            return $key_encryption_algorithm->unwrapAgreementKey(
+                $key,
+                $recipient->getEncryptedKey(),
+                $content_encryption_algorithm->getCEKSize(),
+                $complete_headers
+            );
         } elseif ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
-            return $key_encryption_algorithm->decryptKey($key, $encrypted_cek, $header);
+            return $key_encryption_algorithm->decryptKey(
+                $key,
+                $recipient->getEncryptedKey(),
+                $complete_headers
+            );
+        } elseif ($key_encryption_algorithm instanceof KeyWrappingInterface) {
+            return $key_encryption_algorithm->unwrapKey(
+                $key,
+                $recipient->getEncryptedKey(),
+                $complete_headers
+            );
         } else {
             throw new \RuntimeException('Unsupported CEK generation');
         }
@@ -133,17 +157,18 @@ final class Decrypter implements DecrypterInterface
      * @param \Jose\Object\JWEInterface                           $jwe
      * @param string                                              $cek
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param array                                               $complete_headers
      *
      * @return bool
      */
-    private function decryptPayload(JWEInterface &$jwe, $cek, ContentEncryptionAlgorithmInterface $content_encryption_algorithm)
+    private function decryptPayload(JWEInterface &$jwe, $cek, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array $complete_headers)
     {
         $payload = $content_encryption_algorithm->decryptContent(
             $jwe->getCiphertext(),
             $cek,
             $jwe->getIV(),
             $jwe->getAAD(),
-            $jwe->getEncodedProtectedHeader(),
+            $jwe->getEncodedSharedProtectedHeaders(),
             $jwe->getTag()
         );
 
@@ -151,76 +176,60 @@ final class Decrypter implements DecrypterInterface
             return false;
         }
 
-        if ($jwe->hasHeader('zip')) {
-            $compression_method = $this->getCompressionMethod($jwe->getHeader('zip'));
+        if (array_key_exists('zip', $complete_headers)) {
+            $compression_method = $this->getCompressionMethod($complete_headers['zip']);
             $payload = $compression_method->uncompress($payload);
             if (!is_string($payload)) {
                 throw new \RuntimeException('Decompression failed');
             }
         }
 
-        $result = new JWE(
-            $jwe->getInput(),
-            $jwe->getCiphertext(),
-            $jwe->getEncryptedKey(),
-            $jwe->getIV(),
-            $jwe->getAAD(),
-            $jwe->getTag(),
-            $jwe->getEncodedProtectedHeader(),
-            $jwe->getUnprotectedHeaders(),
-            $payload
-        );
-
-        $jwe = $result;
+        $jwe = $jwe->withContentEncryptionKey($cek);
+        $jwe = $jwe->withPayload($payload);
 
         return true;
     }
 
     /**
-     * @param \Jose\Object\JWEInterface $jwe
+     * @param array $complete_headers
      *
      * @throws \InvalidArgumentException
      */
-    private function checkCompleteHeader($jwe)
+    private function checkCompleteHeader(array $complete_headers)
     {
         foreach (['enc', 'alg'] as $key) {
-            if (!$jwe->hasHeader($key)) {
+            if (!array_key_exists($key, $complete_headers)) {
                 throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
             }
         }
     }
 
     /**
-     * @param string $algorithm
+     * @param array $complete_headers
      *
-     * @return \Jose\Algorithm\KeyEncryption\DirectEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface
+     * @return \Jose\Algorithm\KeyEncryptionAlgorithmInterface
      */
-    private function getKeyEncryptionAlgorithm($algorithm)
+    private function getKeyEncryptionAlgorithm(array $complete_headers)
     {
-        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
-        foreach ([
-                     '\Jose\Algorithm\KeyEncryption\DirectEncryptionInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyAgreementInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface',
-                 ] as $class) {
-            if ($key_encryption_algorithm instanceof $class) {
-                return $key_encryption_algorithm;
-            }
+        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
+
+        if (!$key_encryption_algorithm instanceof KeyEncryptionAlgorithmInterface) {
+            throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or does not implement KeyEncryptionAlgorithmInterface.", $complete_headers['alg']));
         }
-        throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or not a key encryption algorithm instance.", $algorithm));
+
+        RETURN $key_encryption_algorithm;
     }
 
     /**
-     * @param $algorithm
+     * @param array $complete_headers
      *
      * @return \Jose\Algorithm\ContentEncryptionAlgorithmInterface
      */
-    private function getContentEncryptionAlgorithm($algorithm)
+    private function getContentEncryptionAlgorithm(array $complete_headers)
     {
-        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($algorithm);
+        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['enc']);
         if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
-            throw new \RuntimeException("The algorithm '".$algorithm."' does not implement ContentEncryptionInterface.");
+            throw new \RuntimeException(sprintf('The algorithm "%s" does not exist or does not implement ContentEncryptionInterface."', $complete_headers['enc']));
         }
 
         return $content_encryption_algorithm;

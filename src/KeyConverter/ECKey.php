@@ -160,14 +160,14 @@ final class ECKey extends Sequence
 
         $bits = $children[1]->getContent();
 
-        if ( StringUtil::substr($bits, 0, 2) !== '04') {
+        if ( substr($bits, 0, 2) !== '04') {
             throw new \Exception('Unsupported key type');
         }
 
         $this->values['kty'] = 'EC';
         $this->values['crv'] = $this->getCurve($sub[1]->getContent());
-        $this->values['x'] = Base64Url::encode(hex2bin( StringUtil::substr($bits, 2, ( StringUtil::strlen($bits) - 2) / 2)));
-        $this->values['y'] = Base64Url::encode(hex2bin( StringUtil::substr($bits, ( StringUtil::strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
+        $this->values['x'] = Base64Url::encode(hex2bin( substr($bits, 2, ( strlen($bits) - 2) / 2)));
+        $this->values['y'] = Base64Url::encode(hex2bin( substr($bits, ( strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
     }
 
     /**
@@ -200,12 +200,12 @@ final class ECKey extends Sequence
 
         $bits = $children->getContent()->getContent();
 
-        if ( StringUtil::substr($bits, 0, 2) !== '04') {
+        if ( substr($bits, 0, 2) !== '04') {
             throw new \Exception('Unsupported key type');
         }
 
-        $x =  StringUtil::substr($bits, 2, ( StringUtil::strlen($bits) - 2) / 2);
-        $y =  StringUtil::substr($bits, ( StringUtil::strlen($bits) - 2) / 2 + 2, ( StringUtil::strlen($bits) - 2) / 2);
+        $x =  substr($bits, 2, ( strlen($bits) - 2) / 2);
+        $y =  substr($bits, ( strlen($bits) - 2) / 2 + 2, ( strlen($bits) - 2) / 2);
     }
 
     /**

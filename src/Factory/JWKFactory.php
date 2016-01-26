@@ -235,7 +235,7 @@ final class JWKFactory
         if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
             throw new \InvalidArgumentException('Invalid URL.');
         }
-        if (false === $allow_unsecured_connection && 'https://' !==  StringUtil::substr($url, 0, 8)) {
+        if (false === $allow_unsecured_connection && 'https://' !==  substr($url, 0, 8)) {
             throw new \InvalidArgumentException('Unsecured connection.');
         }
 

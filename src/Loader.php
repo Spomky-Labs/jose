@@ -91,7 +91,8 @@ final class Loader implements LoaderInterface
             $jwe = $jwe->withTag(Base64Url::decode($data['tag']));
         }
         if (array_key_exists('protected', $data)) {
-            $jwe = $jwe->withEncodedSharedProtectedHeaders($data['tag']);
+            $jwe = $jwe->withEncodedSharedProtectedHeaders($data['protected']);
+            $jwe = $jwe->withSharedProtectedHeaders(json_decode(Base64Url::decode($data['protected']), true));
         }
         if (array_key_exists('unprotected', $data)) {
             $jwe = $jwe->withSharedHeaders($data['unprotected']);
@@ -102,7 +103,7 @@ final class Loader implements LoaderInterface
                 $object = $object->withHeaders($recipient['header']);
             }
             if (array_key_exists('encrypted_key', $recipient)) {
-                $object = $object->withEncryptedKey($recipient['encrypted_key']);
+                $object = $object->withEncryptedKey(Base64Url::decode($recipient['encrypted_key']));
             }
 
             $jwe = $jwe->addRecipient($object);

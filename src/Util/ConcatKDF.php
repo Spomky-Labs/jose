@@ -36,14 +36,14 @@ final class ConcatKDF
         $encryption_segments = [
             self::toInt32Bits(1),                                                   // Round number 1
             $Z,                                                                     // Z (shared secret)
-            self::toInt32Bits(StringUtil::strlen($encryption_algorithm)).$encryption_algorithm, // Size of algorithm's name and algorithm
-            self::toInt32Bits(StringUtil::strlen($apu)).$apu,                                   // PartyUInfo
-            self::toInt32Bits(StringUtil::strlen($apv)).$apv,                                   // PartyVInfo
+            self::toInt32Bits(strlen($encryption_algorithm)).$encryption_algorithm, // Size of algorithm's name and algorithm
+            self::toInt32Bits(strlen($apu)).$apu,                                   // PartyUInfo
+            self::toInt32Bits(strlen($apv)).$apv,                                   // PartyVInfo
             self::toInt32Bits($encryption_key_size),                                // SuppPubInfo (the encryption key size)
             '',                                                                     // SuppPrivInfo
         ];
 
-        return  StringUtil::substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size / 8);
+        return  substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size / 8);
     }
 
     /**

@@ -74,6 +74,10 @@ final class Encrypter implements EncrypterInterface
         if (null === $jwe->getCiphertext()) {
             // the content is not yet encrypted (no recipient)
 
+            if (!empty($jwe->getSharedProtectedHeaders())) {
+                $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
+            }
+
             // CEK
             $content_encryption_key = $this->getCEK(
                 $complete_headers,
@@ -93,6 +97,7 @@ final class Encrypter implements EncrypterInterface
             // We encrypt the payload and get the tag
             $tag = null;
             $payload = $this->compressPayloadIfNeeded($jwe->getPayload(), $complete_headers);
+
             $ciphertext = $content_encryption_algorithm->encryptContent(
                 $payload,
                 $content_encryption_key,
@@ -144,7 +149,7 @@ final class Encrypter implements EncrypterInterface
     private function compressPayloadIfNeeded($payload, array $complete_headers)
     {
         if (!array_key_exists('zip', $complete_headers)) {
-            return;
+            return $payload;
         }
 
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($complete_headers['zip']);
@@ -157,49 +162,6 @@ final class Encrypter implements EncrypterInterface
         }
 
         return $compressed_payload;
-    }
-
-    /**
-     * @param array $complete_header
-     *
-     * @return \Jose\Algorithm\KeyEncryption\DirectEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementInterface|\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface
-     */
-    private function getKeyEncryptionAlgorithm($complete_header)
-    {
-        if (!array_key_exists('alg', $complete_header)) {
-            throw new \InvalidArgumentException('Parameter "alg" is missing.');
-        }
-        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
-        foreach ([
-                     '\Jose\Algorithm\KeyEncryption\DirectEncryptionInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyEncryptionInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyAgreementInterface',
-                     '\Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface',
-                 ] as $class) {
-            if ($key_encryption_algorithm instanceof $class) {
-                return $key_encryption_algorithm;
-            }
-        }
-        throw new \RuntimeException(sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_header['alg']));
-    }
-
-    /**
-     * @param array $complete_headers
-     *
-     * @return \Jose\Algorithm\ContentEncryptionAlgorithmInterface
-     */
-    private function getContentEncryptionAlgorithm($complete_headers)
-    {
-        if (!array_key_exists('enc', $complete_headers)) {
-            throw new \InvalidArgumentException('Parameter "enc" is missing.');
-        }
-
-        $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['enc']);
-        if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
-            throw new \RuntimeException(sprintf('The algorithm "%s" is not enabled or does not implement ContentEncryptionAlgorithmInterface.', $complete_headers['enc']));
-        }
-
-        return $content_encryption_algorithm;
     }
 
     private function getEncryptedKey(array $complete_headers, $cek, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
