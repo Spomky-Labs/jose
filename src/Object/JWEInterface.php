@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -132,7 +132,6 @@ interface JWEInterface extends JWTInterface
     public function withEncodedSharedProtectedHeaders($encoded_shared_protected_headers);
 
     /**
-     *
      * @return array
      */
     public function getSharedProtectedHeaders();
@@ -167,7 +166,6 @@ interface JWEInterface extends JWTInterface
     public function hasSharedProtectedHeader($key);
 
     /**
-     *
      * @return array
      */
     public function getSharedHeaders();
@@ -205,6 +203,7 @@ interface JWEInterface extends JWTInterface
      * @return string|null
      */
     public function getContentEncryptionKey();
+
     /**
      * @param string $content_encryption_key
      *

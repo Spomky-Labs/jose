@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -74,15 +74,15 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if ( strlen($signature) !== 2 * $part_length) {
+        if (strlen($signature) !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec( substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec( substr($signature, $part_length));
+        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
+        $S = $this->convertHexToDec(substr($signature, $part_length));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
