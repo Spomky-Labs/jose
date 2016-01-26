@@ -23,7 +23,7 @@ interface LoaderInterface
      *
      * @param string $input A string that represents a JSON Web Token message
      *
-     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface|\Jose\Object\JWSInterface[]|\Jose\Object\JWEInterface[]|null If the data has been loaded.
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
      */
     public static function load($input);
 }

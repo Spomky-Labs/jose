@@ -18,8 +18,6 @@ use Jose\Checker\ExpirationChecker;
 use Jose\Checker\IssuedAtChecker;
 use Jose\Checker\NotBeforeChecker;
 use Jose\Object\JWKSet;
-use Jose\Payload\JWKConverter;
-use Jose\Payload\JWKSetConverter;
 use Jose\Test\Stub\IssuerChecker;
 use Jose\Test\Stub\SubjectChecker;
 
@@ -41,17 +39,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
             new IssuedAtChecker(),
             new IssuerChecker(),
             new SubjectChecker(),
-        ];
-    }
-
-    /**
-     * @return \Jose\Payload\PayloadConverterInterface[]
-     */
-    protected function getPayloadConverters()
-    {
-        return [
-            new JWKConverter(),
-            new JWKSetConverter(),
         ];
     }
 

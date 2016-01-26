@@ -64,6 +64,14 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_WRAP;
+    }
+
+    /**
      * @param JWKInterface $key
      */
     protected function checkKey(JWKInterface $key)

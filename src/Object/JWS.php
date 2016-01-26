@@ -41,9 +41,19 @@ final class JWS implements JWSInterface
     }
 
     /**
-     * @param \Jose\Object\SignatureInterface $signature
-     *
-     * @return \Jose\Object\JWSInterface
+     * {@inheritdoc}
+     */
+    public function getSignature($id)
+    {
+        if (isset($this->signatures[$id])) {
+
+            return $this->signatures[$id];
+        }
+        throw new \InvalidArgumentException('The signature does not exist.');
+    }
+
+    /**
+     * {@inheritdoc}
      */
     public function addSignature(SignatureInterface $signature)
     {
@@ -53,11 +63,8 @@ final class JWS implements JWSInterface
         return $jws;
     }
 
-
     /**
-     * Returns the number of signature associated with the JWS.
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function countSignatures()
     {
@@ -65,44 +72,36 @@ final class JWS implements JWSInterface
     }
 
     /**
-     * @param int $signature
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function toCompactJSON($signature)
+    public function toCompactJSON($id)
     {
-        if (!isset($this->signatures[$signature])) {
-            throw new \InvalidArgumentException('The signature does not exist.');
-        }
+        $signature = $this->getSignature($id);
 
-        if (!empty($this->signatures[$signature]->getHeaders())) {
+        if (!empty($signature->getHeaders())) {
             throw new \InvalidArgumentException('The signature contains unprotected headers and cannot be converted into compact JSON');
         }
 
         return sprintf(
             '%s.%s.%s',
-            $this->signatures[$signature]->getEncodedProtectedHeaders(),
+            $signature->getEncodedProtectedHeaders(),
             $this->getEncodedPayload(),
-            Base64Url::encode($this->signatures[$signature]->getSignature())
+            Base64Url::encode($signature->getSignature())
         );
     }
 
     /**
-     * @param int $signature
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function toFlattenedJSON($signature)
+    public function toFlattenedJSON($id)
     {
-        if (!isset($this->signatures[$signature])) {
-            throw new \InvalidArgumentException('The signature does not exist.');
-        }
+        $signature = $this->getSignature($id);
 
         $data = [];
         $values = [
             'payload' => $this->getEncodedPayload(),
-            'protected' => $this->signatures[$signature]->getEncodedProtectedHeaders(),
-            'header' => $this->signatures[$signature]->getHeaders(),
+            'protected' => $signature->getEncodedProtectedHeaders(),
+            'header' => $signature->getHeaders(),
         ];
 
         foreach ($values as $key=>$value) {
@@ -110,13 +109,13 @@ final class JWS implements JWSInterface
                 $data[$key] = $value;
             }
         }
-        $data['signature'] = $this->signatures[$signature]->getSignature();
+        $data['signature'] = Base64Url::encode($signature->getSignature());
 
         return json_encode($data);
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function toJSON()
     {
@@ -132,7 +131,7 @@ final class JWS implements JWSInterface
         $data['signatures'] = [];
         foreach ($this->getSignatures() as $signature) {
 
-            $tmp = ['signature' => $signature->getSignature()];
+            $tmp = ['signature' => Base64Url::encode($signature->getSignature())];
             $values = [
                 'protected' => $signature->getEncodedProtectedHeaders(),
                 'header' => $signature->getHeaders(),

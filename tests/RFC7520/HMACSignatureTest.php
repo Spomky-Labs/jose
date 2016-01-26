@@ -13,9 +13,8 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Algorithm\Signature\HS256;
-use Jose\JSONSerializationModes;
+use Jose\Loader;
 use Jose\Object\JWK;
-use Jose\Util\Converter;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.4
@@ -97,24 +96,25 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'payload'    => 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4',
             'signatures' => [
                [
+                   'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                    'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
-                    'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                ],
             ],
         ];
+        $jws = Loader::load(json_encode($expected_general_serialization));
 
         /*
          * Figure 36
          */
         $expected_flattened_serialization = [
             'payload'   => 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4',
-            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
             'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
         ];
 
-        $this->assertEquals($expected_general_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION), true));
-        $this->assertEquals($expected_flattened_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION), true));
-        $this->assertEquals($compact_serialization, Converter::convert($expected_flattened_serialization, JSONSerializationModes::JSON_COMPACT_SERIALIZATION));
+        $this->assertEquals($expected_general_serialization, json_decode($jws->toJSON(), true));
+        $this->assertEquals($expected_flattened_serialization, json_decode($jws->toFlattenedJSON(0), true));
+        $this->assertEquals($compact_serialization, $jws->toCompactJSON(0));
     }
 
     /**
@@ -137,22 +137,23 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_general_serialization = [
             'signatures' => [
                [
+                   'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                    'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
-                    'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                ],
             ],
         ];
+        $jws = Loader::load(json_encode($expected_general_serialization));
 
         /*
          * Figure 36
          */
         $expected_flattened_serialization = [
-            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
             'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
         ];
 
-        $this->assertEquals($expected_general_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_SERIALIZATION), true));
-        $this->assertEquals($expected_flattened_serialization, json_decode(Converter::convert($compact_serialization, JSONSerializationModes::JSON_FLATTENED_SERIALIZATION), true));
-        $this->assertEquals($compact_serialization, Converter::convert($expected_flattened_serialization, JSONSerializationModes::JSON_COMPACT_SERIALIZATION));
+        $this->assertEquals($expected_general_serialization, json_decode($jws->toJSON(), true));
+        $this->assertEquals($expected_flattened_serialization, json_decode($jws->toFlattenedJSON(0), true));
+        $this->assertEquals($compact_serialization, $jws->toCompactJSON(0));
     }
 }

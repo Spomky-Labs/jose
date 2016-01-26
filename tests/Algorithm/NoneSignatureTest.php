@@ -10,10 +10,9 @@
  */
 
 use Jose\Algorithm\Signature\None;
-use Jose\Factory\LoaderFactory;
 use Jose\Factory\SignerFactory;
+use Jose\Loader;
 use Jose\Object\JWK;
-use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**
@@ -64,20 +63,19 @@ class NoneSignatureTest extends TestCase
             'kty' => 'none',
         ]);
 
-        $instruction1 = new SignatureInstruction($jwk, ['alg' => 'none']);
+        $signer = SignerFactory::createSigner(['none']);
 
-        $signer = SignerFactory::createSigner(['none'], $this->getPayloadConverters());
-        $loader = LoaderFactory::createLoader($this->getPayloadConverters());
+        $jws = \Jose\Factory\JWSFactory::createJWS('Je suis Charlie');
 
-        $signed = $signer->sign('Je suis Charlie', [$instruction1], \Jose\JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+        $signed = $signer->addSignature($jws, $jwk, ['alg' => 'none']);
 
         $this->assertTrue(is_string($signed));
 
-        $result = $loader->load($signed);
+        $result = Loader::load($signed);
 
         $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
 
         $this->assertEquals('Je suis Charlie', $result->getPayload());
-        $this->assertEquals('none', $result->getHeader('alg'));
+        $this->assertEquals(1, $result->countSignatures());
     }
 }

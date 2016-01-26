@@ -40,18 +40,25 @@ interface JWSInterface extends JWTInterface
     public function getSignatures();
 
     /**
-     * @param int $signature
+     * @param int $id
      *
-     * @return string
+     * @return \Jose\Object\SignatureInterface
      */
-    public function toCompactJSON($signature);
+    public function getSignature($id);
 
     /**
-     * @param int $signature
+     * @param int $id
      *
      * @return string
      */
-    public function toFlattenedJSON($signature);
+    public function toCompactJSON($id);
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public function toFlattenedJSON($id);
 
     /**
      * @return string

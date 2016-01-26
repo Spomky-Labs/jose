@@ -94,6 +94,17 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
+    public function getRecipient($id)
+    {
+        if (!isset($this->recipients[$id])) {
+            throw new \InvalidArgumentException('The recipient does not exist.');
+        }
+        return $this->recipients[$id];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getCiphertext()
     {
         return $this->ciphertext;
@@ -287,11 +298,10 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function toCompactJSON($recipient)
+    public function toCompactJSON($id)
     {
-        if (!isset($this->recipients[$recipient])) {
-            throw new \InvalidArgumentException('The recipient does not exist.');
-        }
+        $recipient = $this->getRecipient($id);
+
         if (empty($this->getSharedProtectedHeaders())) {
             throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
         }
@@ -300,7 +310,7 @@ final class JWE implements JWEInterface
         return sprintf(
             '%s.%s.%s.%s.%s',
             $this->getEncodedSharedProtectedHeaders(),
-            Base64Url::encode(null === $this->recipients[$recipient]->getEncryptedKey()?'':$this->recipients[$recipient]->getEncryptedKey()),
+            Base64Url::encode(null === $recipient->getEncryptedKey()?'':$recipient->getEncryptedKey()),
             Base64Url::encode(null === $this->getIV()?'':$this->getIV()),
             Base64Url::encode($this->getCiphertext()),
             Base64Url::encode(null === $this->getTag()?'':$this->getTag())
@@ -310,11 +320,9 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function toFlattenedJSON($recipient)
+    public function toFlattenedJSON($id)
     {
-        if (!isset($this->recipients[$recipient])) {
-            throw new \InvalidArgumentException('The recipient does not exist.');
-        }
+        $recipient = $this->getRecipient($id);
 
         $json = [
             'ciphertext' => Base64Url::encode($this->getCiphertext()),
@@ -334,11 +342,11 @@ final class JWE implements JWEInterface
         if (!empty($this->getSharedHeaders())) {
             $json['unprotected'] = $this->getSharedHeaders();
         }
-        if (!empty($this->recipients[$recipient]->getHeaders())) {
-            $json['header'] = $this->recipients[$recipient]->getHeaders();
+        if (!empty($recipient->getHeaders())) {
+            $json['header'] = $recipient->getHeaders();
         }
-        if (!empty($this->recipients[$recipient]->getEncryptedKey())) {
-            $json['encrypted_key'] = Base64Url::encode($this->recipients[$recipient]->getEncryptedKey());
+        if (!empty($recipient->getEncryptedKey())) {
+            $json['encrypted_key'] = Base64Url::encode($recipient->getEncryptedKey());
         }
 
         return json_encode($json);
