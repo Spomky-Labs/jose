@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -40,8 +40,8 @@ final class Encrypter implements EncrypterInterface
     /**
      * Encrypter constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
+     * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
+     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
@@ -544,9 +544,7 @@ final class Encrypter implements EncrypterInterface
             );
 
             $jwt_cek = $this->getEncryptedKey($cek, $key_encryption_algorithm);
-
         } else {
-
         }
 
         // Si déjà chiffré
@@ -560,8 +558,6 @@ final class Encrypter implements EncrypterInterface
         // - insérer le ciphertextt
 
         // We get the content encryption algorithm
-
-
 
         $recipient = new Recipient();
         $recipient = $recipient->withHeaders($recipient_headers);

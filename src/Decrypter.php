@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -44,9 +44,9 @@ final class Decrypter implements DecrypterInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface            $jwa_manager
-     * @param \Jose\Compression\CompressionManagerInterface  $compression_manager
-     * @param \Jose\Checker\CheckerManagerInterface          $checker_manager
+     * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
+     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
+     * @param \Jose\Checker\CheckerManagerInterface         $checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
@@ -217,7 +217,7 @@ final class Decrypter implements DecrypterInterface
             throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or does not implement KeyEncryptionAlgorithmInterface.", $complete_headers['alg']));
         }
 
-        RETURN $key_encryption_algorithm;
+        return $key_encryption_algorithm;
     }
 
     /**

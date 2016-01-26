@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -12,7 +12,6 @@
 namespace Jose\KeyConverter;
 
 use Base64Url\Base64Url;
-use Jose\Util\StringUtil;
 use phpseclib\Crypt\RSA;
 
 /**
@@ -219,7 +218,7 @@ final class KeyConverter
             $element = self::getElement($key);
             $value = strtr($value, '-_', '+/');
 
-            switch ( strlen($value) % 4) {
+            switch (strlen($value) % 4) {
                 case 0:
                     break; // No pad chars in this case
                 case 2:
@@ -276,8 +275,8 @@ final class KeyConverter
             throw new \InvalidArgumentException('Password required for encrypted keys.');
         }
         $iv = pack('H*', trim($matches[2]));
-        $symkey = pack('H*', md5($password. substr($iv, 0, 8)));
-        $symkey .= pack('H*', md5($symkey.$password. substr($iv, 0, 8)));
+        $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
+        $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
         $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
         $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
 

@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -54,8 +54,8 @@ abstract class HMAC implements SignatureAlgorithmInterface
         if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         }
-        $safeLen =  strlen($safe);
-        $userLen =  strlen($user);
+        $safeLen = strlen($safe);
+        $userLen = strlen($user);
 
         if ($userLen !== $safeLen) {
             return false;

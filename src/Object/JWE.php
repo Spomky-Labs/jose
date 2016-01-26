@@ -3,13 +3,14 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
  */
 
 namespace Jose\Object;
+
 use Base64Url\Base64Url;
 
 /**
@@ -296,14 +297,13 @@ final class JWE implements JWEInterface
             throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
         }
 
-
         return sprintf(
             '%s.%s.%s.%s.%s',
             $this->getEncodedSharedProtectedHeaders(),
-            Base64Url::encode(null === $this->recipients[$recipient]->getEncryptedKey()?'':$this->recipients[$recipient]->getEncryptedKey()),
-            Base64Url::encode(null === $this->getIV()?'':$this->getIV()),
+            Base64Url::encode(null === $this->recipients[$recipient]->getEncryptedKey() ? '' : $this->recipients[$recipient]->getEncryptedKey()),
+            Base64Url::encode(null === $this->getIV() ? '' : $this->getIV()),
             Base64Url::encode($this->getCiphertext()),
-            Base64Url::encode(null === $this->getTag()?'':$this->getTag())
+            Base64Url::encode(null === $this->getTag() ? '' : $this->getTag())
         );
     }
 
@@ -369,7 +369,6 @@ final class JWE implements JWEInterface
         }
         $json['recipients'] = [];
         foreach ($this->getRecipients() as $recipient) {
-
             $temp = [];
             if (!empty($recipient->getHeaders())) {
                 $temp['header'] = $recipient->getHeaders();
