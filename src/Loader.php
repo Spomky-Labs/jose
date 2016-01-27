@@ -54,7 +54,12 @@ final class Loader implements LoaderInterface
     {
         $jws = new JWS();
         if (array_key_exists('payload', $data)) {
-            $jws = $jws->withPayload(Base64Url::decode($data['payload']));
+            $payload = Base64Url::decode($data['payload']);
+            $json = json_decode($payload, true);
+            if (null !== $json && !empty($payload)) {
+                $payload = $json;
+            }
+            $jws = $jws->withPayload($payload);
         }
 
         foreach ($data['signatures'] as $signature) {

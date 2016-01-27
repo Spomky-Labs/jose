@@ -11,6 +11,6 @@ tools:
     php_sim: false
     php_cpd: true
     php_pdepend:
-        excluded_dirs: [vendor/*, doc/*, tests/*]
+        excluded_dirs: [vendor/*, doc/*]
 filter:
-    excluded_paths: [vendor/*, doc/*, tests/*]
+    excluded_paths: [vendor/*, doc/*]

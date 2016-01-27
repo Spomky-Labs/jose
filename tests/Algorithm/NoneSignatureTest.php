@@ -17,6 +17,8 @@ use Jose\Test\TestCase;
 
 /**
  * Class NoneSignatureTest.
+ *
+ * @group None
  */
 class NoneSignatureTest extends TestCase
 {
@@ -69,13 +71,18 @@ class NoneSignatureTest extends TestCase
 
         $signed = $signer->addSignature($jws, $jwk, ['alg' => 'none']);
 
-        $this->assertTrue(is_string($signed));
+        $this->assertEquals(1, $signed->countSignatures());
 
-        $result = Loader::load($signed);
+        $compact = $signed->toCompactJSON(0);
+        $this->assertTrue(is_string($compact));
+
+        $result = Loader::load($compact);
 
         $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
 
         $this->assertEquals('Je suis Charlie', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
+        $this->assertTrue($result->getSignature(0)->hasProtectedHeader('alg'));
+        $this->assertEquals('none', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 }

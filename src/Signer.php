@@ -51,7 +51,7 @@ final class Signer implements SignerInterface
         }
 
         $signature_algorithm = $this->getSignatureAlgorithm($signature->getAllHeaders(), $key);
-        $value = Base64Url::encode($signature_algorithm->sign($key, $signature->getEncodedProtectedHeaders().'.'.$detached_payload));
+        $value = $signature_algorithm->sign($key, $signature->getEncodedProtectedHeaders().'.'.$detached_payload);
 
         $signature = $signature->withSignature($value);
 

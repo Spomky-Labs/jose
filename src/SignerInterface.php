@@ -36,7 +36,7 @@ interface SignerInterface
      * @param array                     $protected_headers
      * @param array                     $headers
      *
-     * @return mixed
+     * @return \Jose\Object\JWSInterface
      */
     public function addSignature(JWSInterface $jws, JWKInterface $key, array $protected_headers = [], array $headers = []);
 }

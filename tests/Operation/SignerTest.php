@@ -9,13 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\LoaderFactory;
 use Jose\Factory\SignerFactory;
 use Jose\Factory\VerifierFactory;
-use Jose\JSONSerializationModes;
+use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Jose\Object\SignatureInstruction;
 use Jose\Test\TestCase;
 
 /**
@@ -25,18 +23,6 @@ class SignerTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage No instruction.
-     */
-    public function testNoInstruction()
-    {
-        $signer = SignerFactory::createSigner([]);
-        $input = $this->getKey3();
-
-        $signer->sign($input, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Unsupported input type.
      */
     public function testUnsupportedInputType()
@@ -44,18 +30,6 @@ class SignerTest extends TestCase
         $resource = fopen(__FILE__, 'r');
         $signer = SignerFactory::createSigner([]);
         $signer->sign($resource, [], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Bad instruction. Must implement SignatureInstructionInterface.
-     */
-    public function testBadInstruction()
-    {
-        $signer = SignerFactory::createSigner([]);
-        $input = $this->getKey3();
-
-        $signer->sign($input, ['Bad instruction'], JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
     }
 
     /**
@@ -105,7 +79,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadCompact()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $input = $this->getKey3();
@@ -120,7 +94,7 @@ class SignerTest extends TestCase
         /*
          * @var \Jose\Object\JWSInterface[]
          */
-        $loaded = $loader->load($signatures);
+        $loaded = Loader::load($signatures);
 
         $this->assertEquals(2, count($loaded));
 
@@ -138,7 +112,7 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
@@ -156,7 +130,7 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg' => 'HS512']);
         $instruction2 = new SignatureInstruction($this->getKey2(), ['alg' => 'RS512']);
@@ -188,7 +162,7 @@ class SignerTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $signer = SignerFactory::createSigner(['PS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['PS512']);
         $instruction = new SignatureInstruction($this->getKey4(), ['alg' => 'PS512']);
 
         $signer->sign('FOO', [$instruction], JSONSerializationModes::JSON_SERIALIZATION);
@@ -199,7 +173,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadFlattened()
     {
-        $signer = SignerFactory::createSigner(['HS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512']);
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
 
         $instruction1 = new SignatureInstruction($this->getKey1(), ['alg'   => 'HS512'], ['foo' => 'bar']);
@@ -211,7 +185,7 @@ class SignerTest extends TestCase
         /*
          * @var \Jose\Object\JWSInterface
          */
-        $loaded = $loader->load($signatures);
+        $loaded = Loader::load($signatures);
 
         $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
         $this->assertTrue(is_array($loaded->getPayload()));
@@ -223,7 +197,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoad()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
@@ -233,7 +207,7 @@ class SignerTest extends TestCase
         $signatures = $signer->sign('Je suis Charlie', [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
         $this->assertTrue(is_string($signatures));
 
-        $loaded = $loader->load($signatures);
+        $loaded = Loader::load($signatures);
 
         /*
          * @var \Jose\Object\JWSInterface[] $loaded
@@ -257,7 +231,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadJWKSet()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getPayloadConverters());
+        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
         $loader = LoaderFactory::createLoader($this->getPayloadConverters());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
@@ -267,7 +241,7 @@ class SignerTest extends TestCase
         $signatures = $signer->sign($this->getKeyset(), [$instruction1, $instruction2], JSONSerializationModes::JSON_SERIALIZATION);
         $this->assertTrue(is_string($signatures));
 
-        $loaded = $loader->load($signatures);
+        $loaded = Loader::load($signatures);
 
         /*
          * @var \Jose\Object\JWSInterface[] $loaded
@@ -289,7 +263,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWK
+     * @return \Jose\Object\JWKInterface
      */
     protected function getKey1()
     {
@@ -302,7 +276,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWK
+     * @return \Jose\Object\JWKInterface
      */
     protected function getKey2()
     {
@@ -324,7 +298,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWK
+     * @return \Jose\Object\JWKInterface
      */
     protected function getKey3()
     {
@@ -342,7 +316,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWK
+     * @return \Jose\Object\JWKInterface
      */
     protected function getKey4()
     {
@@ -364,7 +338,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWK
+     * @return \Jose\Object\JWKInterface
      */
     protected function getKey5()
     {
@@ -386,7 +360,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @return JWKSet
+     * @return \Jose\Object\JWKSetInterface
      */
     protected function getKeyset()
     {
