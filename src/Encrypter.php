@@ -96,7 +96,7 @@ final class Encrypter implements EncrypterInterface
 
             // We encrypt the payload and get the tag
             $tag = null;
-            $payload = $this->compressPayloadIfNeeded($jwe->getPayload(), $complete_headers);
+            $payload = $this->preparePayload($jwe->getPayload(), $complete_headers);
 
             $ciphertext = $content_encryption_algorithm->encryptContent(
                 $payload,
@@ -146,17 +146,22 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    private function compressPayloadIfNeeded($payload, array $complete_headers)
+    private function preparePayload($payload, array $complete_headers)
     {
+        $prepared = is_string($payload)?$payload:json_encode($payload);
+
+        if(null === $prepared) {
+            throw new \InvalidArgumentException('The payload is empty or cannot encoded into JSON.');
+        }
         if (!array_key_exists('zip', $complete_headers)) {
-            return $payload;
+            return $prepared;
         }
 
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($complete_headers['zip']);
         if (null === $compression_method) {
             throw new \RuntimeException(sprintf('Compression method "%s" not supported', $complete_headers['zip']));
         }
-        $compressed_payload = $compression_method->compress($payload);
+        $compressed_payload = $compression_method->compress($prepared);
         if (!is_string($compressed_payload)) {
             throw new \RuntimeException('Compression failed.');
         }
@@ -221,7 +226,7 @@ final class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionAlgorithmInterface) {
             return $key_encryption_algorithm;
         }
-        throw new \RuntimeException(sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_headers['alg']));
+        throw new \InvalidArgumentException(sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_headers['alg']));
     }
 
     /**

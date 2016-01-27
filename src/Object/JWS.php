@@ -30,7 +30,17 @@ final class JWS implements JWSInterface
      */
     public function getEncodedPayload()
     {
-        return is_string($this->getPayload()) ? Base64Url::encode($this->getPayload()) : null;
+        $payload = $this->getPayload();
+        if (null === $payload) {
+            return null;
+        } elseif (is_string($payload)) {
+            return Base64Url::encode($payload);
+        }
+        $encoded = json_encode($payload);
+        if (null === $encoded) {
+            throw new \InvalidArgumentException('Unsupported payload.');
+        }
+        return Base64Url::encode($encoded);
     }
 
     /**

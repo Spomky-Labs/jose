@@ -84,7 +84,7 @@ final class Signer implements SignerInterface
     private function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
         if (!array_key_exists('alg', $complete_header)) {
-            throw new \InvalidArgumentException('No "alg" parameter in the header.');
+            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
         }
         if ($key->has('alg') && $key->get('alg') !== $complete_header['alg']) {
             throw new \InvalidArgumentException(sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg']));

@@ -149,7 +149,7 @@ final class Decrypter implements DecrypterInterface
                 $complete_headers
             );
         } else {
-            throw new \RuntimeException('Unsupported CEK generation');
+            throw new \InvalidArgumentException('Unsupported CEK generation');
         }
     }
 
@@ -180,12 +180,14 @@ final class Decrypter implements DecrypterInterface
             $compression_method = $this->getCompressionMethod($complete_headers['zip']);
             $payload = $compression_method->uncompress($payload);
             if (!is_string($payload)) {
-                throw new \RuntimeException('Decompression failed');
+                throw new \InvalidArgumentException('Decompression failed');
             }
         }
 
         $jwe = $jwe->withContentEncryptionKey($cek);
-        $jwe = $jwe->withPayload($payload);
+
+        $decoded = json_decode($payload, true);
+        $jwe = $jwe->withPayload(null === $decoded?$payload:$decoded);
 
         return true;
     }
@@ -214,7 +216,7 @@ final class Decrypter implements DecrypterInterface
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
 
         if (!$key_encryption_algorithm instanceof KeyEncryptionAlgorithmInterface) {
-            throw new \RuntimeException(sprintf("The key encryption algorithm '%s' is not supported or does not implement KeyEncryptionAlgorithmInterface.", $complete_headers['alg']));
+            throw new \InvalidArgumentException(sprintf("The key encryption algorithm '%s' is not supported or does not implement KeyEncryptionAlgorithmInterface.", $complete_headers['alg']));
         }
 
         return $key_encryption_algorithm;
@@ -229,7 +231,7 @@ final class Decrypter implements DecrypterInterface
     {
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['enc']);
         if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
-            throw new \RuntimeException(sprintf('The algorithm "%s" does not exist or does not implement ContentEncryptionInterface."', $complete_headers['enc']));
+            throw new \InvalidArgumentException(sprintf('The algorithm "%s" does not exist or does not implement ContentEncryptionInterface."', $complete_headers['enc']));
         }
 
         return $content_encryption_algorithm;
