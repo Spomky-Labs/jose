@@ -12,10 +12,10 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Jose\Factory\DecrypterFactory;
-use Jose\Factory\LoaderFactory;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Loader;
 
 /******************/
 /*   INPUT DATA   */
@@ -39,9 +39,6 @@ $input = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwia2lkIjoiTXkgU2hhcmVkIEtleSJ9..
 /*    SERVICES    */
 /******************/
 
-// The loader. This service will load the input and convert it into a JWS or JWE object
-$loader = LoaderFactory::createLoader();
-
 // The decrypter will try to decrypt a JWE object using private, shared or direct keys in the keyset
 // We indicate the algorithms we want to use
 $decrypter = DecrypterFactory::createDecrypter(
@@ -56,7 +53,7 @@ $decrypter = DecrypterFactory::createDecrypter(
 /******************/
 
 // We load the input
-$jwe = $loader->load($input);
+$jwe = Loader::load($input);
 
 if (!$jwe instanceof JWEInterface) {
     throw new \RuntimeException('Something went wrong');
@@ -64,7 +61,7 @@ if (!$jwe instanceof JWEInterface) {
 
 // At this time the payload is null.
 // We have to decrypt it
-$is_decrypted = $decrypter->decrypt($jwe, $keyset);
+$is_decrypted = $decrypter->decryptUsingKeySet($jwe, $keyset);
 
 // The variable $is_decrypted contains a boolean that indicates the decryption succeeded or not.
 // Now the $jwe object has a payload
