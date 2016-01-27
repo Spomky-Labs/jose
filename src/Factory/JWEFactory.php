@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -20,11 +20,13 @@ final class JWEFactory
      *
      * This factory is not supposed to be instantiated
      */
-    private function __construct() {}
+    private function __construct()
+    {
+    }
 
     /**
-     * @param mixed                                     $payload
-     * @param null|string                               $aad
+     * @param mixed       $payload
+     * @param null|string $aad
      *
      * @return \Jose\Object\JWEInterface
      */

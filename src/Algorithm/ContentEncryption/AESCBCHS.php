@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\ContentEncryption;
 
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use Jose\Util\StringUtil;
+
 /**
  *
  */
@@ -23,7 +23,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
-        $k =  substr($cek,  strlen($cek) / 2);
+        $k = substr($cek, strlen($cek) / 2);
 
         $cyphertext = AESOpenSSL::encrypt($data, $k, $iv);
 
@@ -49,7 +49,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
             return;
         }
 
-        $k =  substr($cek, strlen($cek) / 2);
+        $k = substr($cek, strlen($cek) / 2);
 
         return AESOpenSSL::decrypt($data, $k, $iv);
     }
@@ -69,8 +69,8 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key =  substr($cek, 0,  strlen($cek) / 2);
-        $auth_data_length =  strlen($encoded_header);
+        $mac_key = substr($cek, 0, strlen($cek) / 2);
+        $auth_data_length = strlen($encoded_header);
 
         $secured_input = implode('', [
             $calculated_aad,
@@ -80,7 +80,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         ]);
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
-        return  substr($hash, 0,  strlen($hash) / 2);
+        return  substr($hash, 0, strlen($hash) / 2);
     }
 
     /**
