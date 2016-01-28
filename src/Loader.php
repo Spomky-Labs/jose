@@ -48,7 +48,7 @@ final class Loader implements LoaderInterface
     /**
      * @param array $data
      *
-     * @return \Jose\Object\JWSInterface|\Jose\Object\JWSInterface[]
+     * @return \Jose\Object\JWSInterface
      */
     private static function loadSerializedJsonJWS(array $data)
     {
@@ -82,7 +82,7 @@ final class Loader implements LoaderInterface
      * @param array  $data
      * @param string $input
      *
-     * @return \Jose\Object\JWEInterface|\Jose\Object\JWEInterface[]
+     * @return \Jose\Object\JWEInterface
      */
     private static function loadSerializedJsonJWE(array $data, $input)
     {
@@ -119,6 +119,11 @@ final class Loader implements LoaderInterface
         return $jwe;
     }
 
+    /**
+     * @param $input
+     *
+     * @return array
+     */
     private static function convert($input)
     {
         if (is_array($data = json_decode($input, true))) {
