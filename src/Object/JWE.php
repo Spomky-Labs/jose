@@ -351,7 +351,7 @@ final class JWE implements JWEInterface
 
         $json = $this->getJSONBase();
         $json['recipients'] = [];
-        
+
         foreach ($this->getRecipients() as $recipient) {
             $temp = [];
             if (!empty($recipient->getHeaders())) {
