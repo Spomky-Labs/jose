@@ -13,7 +13,6 @@ namespace Jose\Test;
 
 use Base64Url\Base64Url;
 use Jose\Checker\AudienceChecker;
-use Jose\Checker\CriticalChecker;
 use Jose\Checker\ExpirationChecker;
 use Jose\Checker\IssuedAtChecker;
 use Jose\Checker\NotBeforeChecker;
@@ -33,7 +32,6 @@ class TestCase extends \PHPUnit_Framework_TestCase
     {
         return [
             new AudienceChecker('My service'),
-            new CriticalChecker(),
             new ExpirationChecker(),
             new NotBeforeChecker(),
             new IssuedAtChecker(),

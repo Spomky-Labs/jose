@@ -65,12 +65,9 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
     {
-        if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
-            throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload.');
-        }
-        if (0 === count($jwk_set)) {
-            throw new \InvalidArgumentException('No key in the key set.');
-        }
+        $this->checkPayload($jws, $detached_payload);
+        $this->checkJWKSet($jwk_set);
+
         foreach ($jws->getSignatures() as $signature) {
             $input = $signature->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 
@@ -80,6 +77,8 @@ final class Verifier implements VerifierInterface
                     $this->checkKeyUsage($jwk, 'verification');
                     $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
                     if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
+                        $this->getCheckerManager()->checkJWT($jws);
+
                         return true;
                     }
                 } catch (\Exception $e) {
@@ -90,6 +89,27 @@ final class Verifier implements VerifierInterface
         }
 
         return false;
+    }
+
+    /**
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     */
+    private function checkJWKSet(JWKSetInterface $jwk_set)
+    {
+        if (0 === count($jwk_set)) {
+            throw new \InvalidArgumentException('No key in the key set.');
+        }
+    }
+
+    /**
+     * @param \Jose\Object\JWSInterface $jws
+     * @param null                      $detached_payload
+     */
+    private function checkPayload(JWSInterface $jws, $detached_payload = null)
+    {
+        if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
+            throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload.');
+        }
     }
 
     /**
