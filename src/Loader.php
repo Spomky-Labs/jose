@@ -79,7 +79,7 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param array  $data
+     * @param array $data
      *
      * @return \Jose\Object\JWEInterface
      */
