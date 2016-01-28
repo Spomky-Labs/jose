@@ -40,7 +40,7 @@ final class Loader implements LoaderInterface
             return self::loadSerializedJsonJWS($json);
         }
         if (array_key_exists('recipients', $json)) {
-            return self::loadSerializedJsonJWE($json, $input);
+            return self::loadSerializedJsonJWE($json);
         }
         throw new \InvalidArgumentException('Unable to load the input');
     }
@@ -80,11 +80,10 @@ final class Loader implements LoaderInterface
 
     /**
      * @param array  $data
-     * @param string $input
      *
      * @return \Jose\Object\JWEInterface
      */
-    private static function loadSerializedJsonJWE(array $data, $input)
+    private static function loadSerializedJsonJWE(array $data)
     {
         $jwe = new JWE();
         $jwe = $jwe->withCiphertext(Base64Url::decode($data['ciphertext']));
