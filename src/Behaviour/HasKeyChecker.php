@@ -37,43 +37,44 @@ trait HasKeyChecker
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Key cannot be used to sign or verify a signature');
                 case 'encryption':
                 case 'decryption':
                     if ('enc' === $use) {
                         return true;
                     }
 
-                    return false;
+                throw new \InvalidArgumentException('Key cannot be used to encrypt or decrypt');
                 default:
                     throw new \InvalidArgumentException('Unsupported key usage.');
             }
         } elseif ($key->has('key_ops') && is_array($ops = $key->get('key_ops'))) {
+
             switch ($usage) {
                 case 'verification':
                     if (in_array('verify', $ops)) {
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Key cannot be used to verify a signature');
                 case 'signature':
                     if (in_array('sign', $ops)) {
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Key cannot be used to sign');
                 case 'encryption':
                     if (in_array('encrypt', $ops) || in_array('wrapKey', $ops)) {
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Key cannot be used to encrypt');
                 case 'decryption':
                     if (in_array('decrypt', $ops) || in_array('unwrapKey', $ops)) {
                         return true;
                     }
 
-                    return false;
+                    throw new \InvalidArgumentException('Key cannot be used to decrypt');
                 default:
                     throw new \InvalidArgumentException('Unsupported key usage.');
             }
@@ -86,14 +87,16 @@ trait HasKeyChecker
      * @param \Jose\Object\JWKInterface $key
      * @param string                    $algorithm
      *
-     * @return bool
+     * @throws \InvalidArgumentException
      */
     private function checkKeyAlgorithm(JWKInterface $key, $algorithm)
     {
         if (!$key->has('alg')) {
-            return true;
+            return;
         }
 
-        return $key->get('alg') === $algorithm;
+        if ($key->get('alg') !== $algorithm) {
+            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $key->get('alg')));
+        }
     }
 }

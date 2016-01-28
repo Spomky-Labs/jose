@@ -76,13 +76,9 @@ final class Verifier implements VerifierInterface
 
             foreach ($jwk_set->getKeys() as $jwk) {
                 $algorithm = $this->getAlgorithm($signature);
-                if (!$this->checkKeyUsage($jwk, 'verification')) {
-                    continue;
-                }
-                if (!$this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName())) {
-                    continue;
-                }
                 try {
+                    $this->checkKeyUsage($jwk, 'verification');
+                    $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
                     if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
                         return true;
                     }

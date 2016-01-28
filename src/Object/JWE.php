@@ -306,6 +306,12 @@ final class JWE implements JWEInterface
         if (empty($this->getSharedProtectedHeaders())) {
             throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
         }
+        if (!empty($this->getSharedHeaders()) || !empty($this->getRecipient($id)->getHeaders())) {
+            throw new \InvalidArgumentException('This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.');
+        }
+        if (!empty($this->getAAD())) {
+            throw new \InvalidArgumentException('This JWE has AAD and cannot be converted into Compact JSON.');
+        }
 
         return sprintf(
             '%s.%s.%s.%s.%s',

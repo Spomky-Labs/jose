@@ -68,6 +68,13 @@ final class Encrypter implements EncrypterInterface
 
         $key_encryption_algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
 
+        $this->checkKeyUsage($recipient_key, 'encryption');
+        $this->checkKeyAlgorithm($recipient_key, $key_encryption_algorithm->getAlgorithmName());
+        if ($sender_key instanceof JWKInterface) {
+            $this->checkKeyUsage($sender_key, 'encryption');
+            $this->checkKeyAlgorithm($sender_key, $key_encryption_algorithm->getAlgorithmName());
+        }
+
         // Content Encryption Algorithm
         $content_encryption_algorithm = $this->findContentEncryptionAlgorithm($complete_headers);
 
@@ -112,32 +119,135 @@ final class Encrypter implements EncrypterInterface
             if (null !== $tag) {
                 $jwe = $jwe->withTag($tag);
             }
-            // JWT Ciphertext
-        } else {
-            // On vérifie le jey managmenet mode
 
-            // On vérifie si le CEK est disponible.
-            // - si dispo on quitte le if
-            // - sinon on ne peut pas aller plus loin. Le JWE doit être décrypté avant
+            $recipient = $this->computeRecipient(
+                $jwe,
+                $key_encryption_algorithm,
+                $content_encryption_algorithm,
+                $complete_headers,
+                $recipient_headers,
+                $recipient_key,
+                $sender_key
+            );
+
+            $jwe = $jwe->addRecipient($recipient);
+        } else {
+            if (0 === $jwe->countRecipients()) {
+                throw new \InvalidArgumentException('Invalid JWE. The payload is encrypted but no recipient is available.');
+            }
+            if (null === $jwe->getContentEncryptionKey()) {
+                throw new \InvalidArgumentException('Unable to add a recipient. The JWE must be decrypted first.');
+            }
+            $current_key_management_mode = $this->getCurrentKeyManagementMode($jwe);
+
+            if (false === $this->areKeyManagementModesCompatible($current_key_management_mode, $key_encryption_algorithm->getKeyManagementMode())) {
+                throw new \InvalidArgumentException('Foreign key management mode forbidden.');
+            }
+
+            $recipient = $this->computeRecipient(
+                $jwe,
+                $key_encryption_algorithm,
+                $content_encryption_algorithm,
+                $complete_headers,
+                $recipient_headers,
+                $recipient_key,
+                $sender_key
+            );
+
+            $jwe = $jwe->addRecipient($recipient);
         }
 
+        return $jwe;
+    }
+
+    /**
+     * @param \Jose\Object\JWEInterface $jwe
+     *
+     * @return string
+     */
+    private function getCurrentKeyManagementMode(JWEInterface $jwe)
+    {
+        $complete_headers = array_merge(
+            $jwe->getSharedProtectedHeaders(),
+            $jwe->getSharedHeaders(),
+            $jwe->getRecipient(0)->getHeaders()
+        );
+        $key_encryption_algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
+
+        return $key_encryption_algorithm->getKeyManagementMode();
+    }
+
+    /**
+     * @param \Jose\Object\JWEInterface                           $jwe
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param array                                               $complete_headers
+     * @param array                                               $recipient_headers
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
+     *
+     * @return \Jose\Object\RecipientInterface
+     */
+    private function computeRecipient(JWEInterface $jwe, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array $complete_headers, array $recipient_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    {
         $recipient = new Recipient();
         $recipient = $recipient->withHeaders($recipient_headers);
 
+        $additional_headers = [];
         $encrypted_content_encryption_key = $this->getEncryptedKey(
             $complete_headers,
             $jwe->getContentEncryptionKey(),
             $key_encryption_algorithm,
             $content_encryption_algorithm,
+            $additional_headers,
             $recipient_key,
             $sender_key
         );
+        if (!empty($additional_headers)) {
+            foreach ($additional_headers as $key=>$value) {
+                $recipient = $recipient->withHeader($key, $value);
+            }
+        }
         if (null !== $encrypted_content_encryption_key) {
             $recipient = $recipient->withEncryptedKey($encrypted_content_encryption_key);
         }
-        $jwe = $jwe->addRecipient($recipient);
 
-        return $jwe;
+        return $recipient;
+    }
+
+    /**
+     * @param $current
+     * @param $new
+     *
+     * @return bool
+     */
+    private function areKeyManagementModesCompatible($current, $new)
+    {
+        $agree = KeyEncryptionAlgorithmInterface::MODE_AGREEMENT;
+        $dir = KeyEncryptionAlgorithmInterface::MODE_DIRECT;
+        $enc = KeyEncryptionAlgorithmInterface::MODE_ENCRYPT;
+        $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
+        switch ($current.$new) {
+            case $agree.$enc:
+            case $agree.$wrap:
+            case $dir.$enc:
+            case $dir.$wrap:
+            case $enc.$enc:
+            case $enc.$wrap:
+            case $wrap.$enc:
+            case $wrap.$wrap:
+                return true;
+            case $agree.$agree:
+            case $agree.$dir:
+            case $dir.$agree:
+            case $dir.$dir:
+            case $enc.$agree:
+            case $enc.$dir:
+            case $wrap.$agree:
+            case $wrap.$dir:
+            default:
+                return false;
+        }
     }
 
     /**
@@ -169,7 +279,18 @@ final class Encrypter implements EncrypterInterface
         return $compressed_payload;
     }
 
-    private function getEncryptedKey(array $complete_headers, $cek, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    /**
+     * @param array                                               $complete_headers
+     * @param string                                              $cek
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
+     * @param array                                               $additional_headers
+     *
+     * @return string
+     */
+    private function getEncryptedKey(array $complete_headers, $cek, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $key_encryption_algorithm->encryptKey(
@@ -187,13 +308,13 @@ final class Encrypter implements EncrypterInterface
             if (!$sender_key instanceof JWKInterface) {
                 throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
             }
-            $additional_header_values = [];
-            $jwt_cek = $key_encryption_algorithm->wrapAgreementKey($sender_key, $recipient_key, $cek, $content_encryption_algorithm->getCEKSize(), $complete_headers, $additional_header_values);
-            //$this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
+            $jwt_cek = $key_encryption_algorithm->wrapAgreementKey($sender_key, $recipient_key, $cek, $content_encryption_algorithm->getCEKSize(), $complete_headers, $additional_headers);
+
+            return $jwt_cek;
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            $additional_header_values = [];
-            $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_header_values);
-            //$this->updateHeader($additional_header_values, $protected_header, $recipient_header, $serialization);
+            $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_headers);
+
+            return $jwt_cek;
         }
     }
 

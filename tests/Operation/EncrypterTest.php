@@ -124,31 +124,27 @@ class EncrypterTest extends TestCase
      */
     public function testMultipleInstructionsNotAllowedWithCompactSerialization()
     {
-        $this->markTestIncomplete('Should be OK now');
+        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP', 'RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP', 'A256CBC-HS512'], ['DEF' => 0]);
+        $jwe = JWEFactory::createJWE('Je suis Charlie');
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'enc' => 'A256CBC-HS512',
+        ]);
 
-        $instruction1 = new EncryptionInstruction(
-            $this->getRSARecipientKeyWithAlgorithm()
+        $jwe = $encrypter->addRecipient(
+            $jwe,
+            $this->getRSARecipientKeyWithAlgorithm(),
+            null,
+            ['alg' => 'RSA-OAEP',]
+        );
+        $jwe = $encrypter->addRecipient(
+            $jwe,
+            $this->getRSARecipientKey(),
+            null,
+            ['alg' => 'RSA-OAEP-256',]
         );
 
-        $instruction2 = new EncryptionInstruction(
-            $this->getRSARecipientKey()
-        );
-
-        $result = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction1, $instruction2],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP',
-            ],
-            []
-        );
-
-        $this->assertTrue(is_array($result));
-        $this->assertEquals(2, count($result));
+        $this->assertEquals(2, $jwe->countRecipients());
     }
 
     /**
@@ -156,62 +152,55 @@ class EncrypterTest extends TestCase
      */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
     {
-        $this->markTestIncomplete('Should be OK now');
-
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $instruction1 = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE('Je suis Charlie');
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'enc' => 'A256CBC-HS512',
+        ]);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
 
-        $instruction2 = new EncryptionInstruction(
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getRSARecipientKey(),
             null,
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
-        $result = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction1, $instruction2],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
-            ['enc' => 'A256CBC-HS512'],
-            []
-        );
-
-        $this->assertTrue(is_array($result));
-        $this->assertEquals(2, count($result));
+        $this->assertEquals(2, $jwe->countRecipients());
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Foreign key management mode forbidden.
      */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization2()
     {
-        $this->markTestIncomplete('Should be OK now');
-
         $encrypter = EncrypterFactory::createEncrypter(['dir', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $instruction1 = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE('Je suis Charlie');
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'enc' => 'A256CBC-HS512',
+        ]);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
 
-        $instruction2 = new EncryptionInstruction(
+        $encrypter->addRecipient(
+            $jwe,
             $this->getDirectKey(),
             null,
             ['kid' => 'DIR_1', 'alg' => 'dir']
-        );
-
-        $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction1, $instruction2],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
-            ['enc' => 'A256CBC-HS512'],
-            []
         );
     }
 
@@ -221,8 +210,6 @@ class EncrypterTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
         $jwe = JWEFactory::createJWE('Foo', 'foo,bar,baz');
@@ -240,12 +227,10 @@ class EncrypterTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Key is only allowed for algorithm "RSA-OAEP-256".
+     * @expectedExceptionMessage Key is only allowed for algorithm "RSA-OAEP".
      */
     public function testAlgorithmNotAllowedForTheKey()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
         $jwe = JWEFactory::createJWE('FOO', 'foo,bar,baz');
@@ -427,30 +412,28 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreement()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], ['DEF' => 0]);
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A192CBC-HS384'], ['DEF'], $this->getCheckers());
 
-        $instruction = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE(['user_id' => '1234', 'exp' => time() + 3600]);
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            'enc' => 'A192CBC-HS384',
+            'alg' => 'ECDH-ES',
+        ]);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(
-            ['user_id' => '1234', 'exp' => time() + 3600],
-            [$instruction],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'],
-            []
-        );
-
-        $loaded = Loader::load($encrypted);
+        $loaded = Loader::load($jwe->toFlattenedJSON(0));
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        $this->assertEquals('ECDH-ES', $loaded->getHeader('alg'));
-        $this->assertEquals('A192CBC-HS384', $loaded->getHeader('enc'));
-        $this->assertFalse($loaded->hasHeader('zip'));
+        $this->assertEquals('ECDH-ES', $loaded->getSharedProtectedHeader('alg'));
+        $this->assertEquals('A192CBC-HS384', $loaded->getSharedProtectedHeader('enc'));
+        $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
@@ -467,20 +450,18 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithAgreementAlgorithm()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], ['DEF' => 0]);
 
-        $instruction = new EncryptionInstruction(
-            $this->getECDHRecipientPublicKey()
-        );
+        $jwe = JWEFactory::createJWE(['user_id' => '1234', 'exp' => time() + 3600]);
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            'enc' => 'A192CBC-HS384',
+            'alg' => 'ECDH-ES',
+        ]);
 
-        $encrypter->encrypt(
-            ['user_id' => '1234', 'exp' => time() + 3600],
-            [$instruction],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES'],
-            []
+        $encrypter->addRecipient(
+            $jwe,
+            $this->getECDHRecipientPublicKey()
         );
     }
 
@@ -490,37 +471,18 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptWithAgreementKeyWrapAlgorithm()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['A192CBC-HS384', 'ECDH-ES+A128KW'], ['DEF' => 0]);
 
-        $instruction = new EncryptionInstruction($this->getECDHRecipientPublicKey());
+        $jwe = JWEFactory::createJWE(['user_id' => '1234', 'exp' => time() + 3600]);
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            'enc' => 'A192CBC-HS384',
+            'alg' => 'ECDH-ES+A128KW',
+        ]);
 
-        $encrypter->encrypt(
-            ['user_id' => '1234', 'exp' => 3600],
-            [$instruction],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'],
-            []
-        );
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage No instruction
-     */
-    public function testNoInstruction()
-    {
-        $this->markTestIncomplete('To be fixed');
-
-        $encrypter = EncrypterFactory::createEncrypter(['A192CBC-HS384', 'ECDH-ES+A128KW'], ['DEF' => 0]);
-
-        $encrypter->encrypt(
-            ['user_id' => '1234', 'exp' => 3600],
-            [],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A192CBC-HS384', 'alg' => 'ECDH-ES+A128KW'],
-            []
+        $encrypter->addRecipient(
+            $jwe,
+            $this->getECDHRecipientPublicKey()
         );
     }
 
@@ -529,68 +491,29 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrappingCompact()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF' => 0]);
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], $this->getCheckers());
 
-        $instruction = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE('Je suis Charlie');
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            'enc' => 'A256CBC-HS512',
+            'alg' => 'ECDH-ES+A256KW',
+        ]);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction],
-            JSONSerializationModes::JSON_COMPACT_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'],
-            []
-        );
-
-        $loaded = Loader::load($encrypted);
+        $loaded = Loader::load($jwe->toFlattenedJSON(0));
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        $this->assertEquals('ECDH-ES+A256KW', $loaded->getHeader('alg'));
-        $this->assertEquals('A256CBC-HS512', $loaded->getHeader('enc'));
-        $this->assertFalse($loaded->hasHeader('zip'));
-        $this->assertNull($loaded->getPayload());
-
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
-
-        $this->assertTrue($result);
-        $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
-    }
-
-    /**
-     *
-     */
-    public function testEncryptAndLoadCompactKeyAgreementWithWrappingFlattened()
-    {
-        $this->markTestIncomplete('To be fixed');
-
-        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF' => 0]);
-        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], $this->getCheckers());
-
-        $instruction = new EncryptionInstruction(
-            $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey()
-        );
-
-        $encrypted = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256CBC-HS512', 'alg' => 'ECDH-ES+A256KW'],
-            []
-        );
-
-        $loaded = Loader::load($encrypted);
-
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        $this->assertEquals('ECDH-ES+A256KW', $loaded->getHeader('alg'));
-        $this->assertEquals('A256CBC-HS512', $loaded->getHeader('enc'));
-        $this->assertFalse($loaded->hasHeader('zip'));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getSharedProtectedHeader('alg'));
+        $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
+        $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
+        $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
@@ -605,8 +528,6 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadWithGCMAndAAD()
     {
-        $this->markTestIncomplete('To be fixed');
-
         if (!$this->isCryptooExtensionInstalled()) {
             $this->markTestSkipped('Crypto extension not available');
 
@@ -615,26 +536,28 @@ class EncrypterTest extends TestCase
 
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], ['DEF' => 0]);
 
-        $instruction = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE('Je suis Charlie', 'foo,bar,baz');
+        $jwe = $jwe->withSharedProtectedHeaders([
+            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+            'enc' => 'A256GCM',
+            'alg' => 'ECDH-ES+A256KW',
+        ]);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
         );
 
-        $encrypted = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction],
-            JSONSerializationModes::JSON_FLATTENED_SERIALIZATION,
-            ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'enc' => 'A256GCM', 'alg' => 'ECDH-ES+A256KW'],
-            [],
-            'foo,bar,baz');
+        $loaded = Loader::load($jwe->toFlattenedJSON(0));
 
-        $loaded = Loader::load($encrypted);
         $decrypter = DecrypterFactory::createDecrypter(['A256GCM', 'ECDH-ES+A256KW'], ['DEF'], $this->getCheckers());
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        $this->assertEquals('ECDH-ES+A256KW', $loaded->getHeader('alg'));
-        $this->assertEquals('A256GCM', $loaded->getHeader('enc'));
-        $this->assertFalse($loaded->hasHeader('zip'));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getSharedProtectedHeader('alg'));
+        $this->assertEquals('A256GCM', $loaded->getSharedProtectedHeader('enc'));
+        $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
+        $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
@@ -649,61 +572,42 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
     {
-        $this->markTestIncomplete('To be fixed');
-
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF' => 0]);
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], $this->getCheckers());
 
-        $instruction1 = new EncryptionInstruction(
+        $jwe = JWEFactory::createJWE('Je suis Charlie');
+        $jwe = $jwe->withSharedProtectedHeaders(['enc' => 'A256CBC-HS512']);
+
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
-
-        $instruction2 = new EncryptionInstruction(
+        $jwe = $encrypter->addRecipient(
+            $jwe,
             $this->getRSARecipientKey(),
             null,
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
-        $encrypted = $encrypter->encrypt(
-            'Je suis Charlie',
-            [$instruction1, $instruction2],
-            JSONSerializationModes::JSON_SERIALIZATION,
-            ['enc' => 'A256CBC-HS512'],
-            []
-        );
+        $loaded = Loader::load($jwe->toJSON());
 
-        $loaded = Loader::load($encrypted);
+        $this->assertEquals(2, $loaded->countRecipients());
 
-        /*
-         * @var \Jose\Object\JWEInterface[] $loaded
-         */
-        $this->assertEquals(2, count($loaded));
-
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded[0]);
-        $this->assertEquals('ECDH-ES+A256KW', $loaded[0]->getHeader('alg'));
-        $this->assertEquals('A256CBC-HS512', $loaded[0]->getHeader('enc'));
-        $this->assertFalse($loaded[0]->hasHeader('zip'));
-        $this->assertNull($loaded[0]->getPayload());
+        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
+        $this->assertEquals('ECDH-ES+A256KW', $loaded->getRecipient(0)->getHeader('alg'));
+        $this->assertEquals('RSA-OAEP-256', $loaded->getRecipient(1)->getHeader('alg'));
+        $this->assertFalse($loaded->hasSharedHeader('zip'));
+        $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
+        $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
         $this->assertTrue($result);
-        $this->assertTrue(is_string($loaded[0]->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded[0]->getPayload());
-
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded[1]);
-        $this->assertEquals('RSA-OAEP-256', $loaded[1]->getHeader('alg'));
-        $this->assertEquals('A256CBC-HS512', $loaded[1]->getHeader('enc'));
-        $this->assertFalse($loaded[1]->hasHeader('zip'));
-        $this->assertNull($loaded[1]->getPayload());
-
-        $this->assertFalse($decrypter->decryptUsingKeySet($loaded[1], new JWKSet()));
-        $this->assertFalse($decrypter->decryptUsingKeySet($loaded[1], $this->getSymmetricKeySet()));
-        $this->assertTrue($decrypter->decryptUsingKeySet($loaded[1], $this->getPrivateKeySet()));
-        $this->assertTrue(is_string($loaded[1]->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded[1]->getPayload());
+        $this->assertTrue(is_string($loaded->getPayload()));
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
 
     /**

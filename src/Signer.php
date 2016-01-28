@@ -68,9 +68,7 @@ final class Signer implements SignerInterface
         if (null === $jws->getEncodedPayload()) {
             throw new \InvalidArgumentException('No payload.');
         }
-        if (!$this->checkKeyUsage($key, 'signature')) {
-            throw new \InvalidArgumentException('Key cannot be used to sign');
-        }
+        $this->checkKeyUsage($key, 'signature');
 
         return $this->addSignatureWithDetachedPayload($jws, $key, $jws->getEncodedPayload(), $protected_headers, $headers);
     }

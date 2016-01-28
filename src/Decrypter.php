@@ -86,13 +86,9 @@ final class Decrypter implements DecrypterInterface
             $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($complete_headers);
 
             foreach ($jwk_set as $jwk) {
-                if (!$this->checkKeyUsage($jwk, 'decryption')) {
-                    continue;
-                }
-                if (!$this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName())) {
-                    continue;
-                }
                 try {
+                    $this->checkKeyUsage($jwk, 'decryption');
+                    $this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName());
                     $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $recipient, $complete_headers);
                     if (null !== $cek) {
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
