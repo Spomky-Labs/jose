@@ -120,7 +120,7 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param $input
+     * @param string $input
      *
      * @return array
      */
@@ -192,7 +192,7 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param $input
+     * @param string $input
      *
      * @return array
      */
