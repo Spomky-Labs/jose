@@ -1,10 +1,9 @@
 # PHP JOSE Library
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/Spomky-Labs/jose/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=v2.0.x)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=v2.0.x)
+[![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=v2.0.x)](https://coveralls.io/github/Spomky-Labs/jose?branch=v2.0.x)
 
-[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=master)](https://travis-ci.org/Spomky-Labs/jose)
-[![StyleCI](https://styleci.io/repos/22874677/shield)](https://styleci.io/repos/22874677)
+[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=v2.0.x)](https://travis-ci.org/Spomky-Labs/jose)
 
 [![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/jose.png)](http://hhvm.h4cc.de/package/Spomky-Labs/jose)
 [![PHP 7 ready](http://php7ready.timesplinter.ch/Spomky-Labs/jose/badge.svg)](https://travis-ci.org/Spomky-Labs/jose)
@@ -30,18 +29,11 @@ This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org
 
 # Important note
 
-> Note 1: this library is still in development. The first stable release will be tagged as v1.0.x. All tags v0.x.y must be considered as unstable.
+> Note 1: this library is still in development. All tags v0.x.y must be considered as unstable.
 
-> Note 2: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
+> Note 2: version 1.0.x is quite stable (beta) but really hard to use. A version 2.0.x is in developpement and will be easier to use with the same functionnalities
 
-This library provides all objects and components to perform signature, verification, encryption and decryption according to the RFCs listed above.
-You will have to create a `Signer`, `Verifier`, `Encrypter` `Decrypter` or `Loader` object to execute all these operation.
-
-You will be afraid of all of this and you will think that this library is very complicated to use. AND YOU ARE RIGHT!
-
-Fortunately, we created factories to ease your life and we highly recommend to use them.
-
-Finally, this library and all these projects are still in active development. Do not hesitate to send us your feedback!
+> Note 3: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
 
 # Status of implementations
 
@@ -63,13 +55,13 @@ Please consider the following optional requirements:
 
 It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM`.
 
-Please note that `AxxxGCM` and `AxxxGCMKW` tests are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
+Please note that tests using algorithms `AxxxGCM` and `AxxxGCMKW` are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
 Coding Standards are verified by [StyleCI](https://styleci.io/repos/22874677).
 
-Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-Labs/jose). 
+Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-Labs/jose).
 
 # Installation
 
