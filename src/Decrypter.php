@@ -93,7 +93,7 @@ final class Decrypter implements DecrypterInterface
                     if (null !== $cek) {
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
                             $this->getCheckerManager()->checkJWT($jwe);
-                            
+
                             return true;
                         };
                     }

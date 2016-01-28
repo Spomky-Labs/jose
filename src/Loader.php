@@ -15,9 +15,11 @@ use Base64Url\Base64Url;
 use Jose\Object\JWE;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWS;
+use Jose\Object\JWSInterface;
 use Jose\Object\Recipient;
 use Jose\Object\RecipientInterface;
 use Jose\Object\Signature;
+use Jose\Object\SignatureInterface;
 
 /**
  * Class able to load JWS or JWE.
@@ -55,6 +57,50 @@ final class Loader implements LoaderInterface
     private static function loadSerializedJsonJWS(array $data)
     {
         $jws = new JWS();
+
+        self::populatePayload($jws, $data);
+
+        foreach ($data['signatures'] as $signature) {
+            $object = new Signature();
+            $object = $object->withSignature(Base64Url::decode($signature['signature']));
+
+            self::populateProtectedHeaders($object, $signature);
+            self::populateHeaders($object, $signature);
+
+            $jws = $jws->addSignature($object);
+        }
+
+        return $jws;
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     * @param array                           $data
+     */
+    private static function populateProtectedHeaders(SignatureInterface &$signature, array $data)
+    {
+        if (array_key_exists('protected', $data)) {
+            $signature = $signature->withEncodedProtectedHeaders($data['protected']);
+        }
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     * @param array                           $data
+     */
+    private static function populateHeaders(SignatureInterface &$signature, array $data)
+    {
+        if (array_key_exists('header', $data)) {
+            $signature = $signature->withHeaders($data['header']);
+        }
+    }
+
+    /**
+     * @param \Jose\Object\JWSInterface $jws
+     * @param array                     $data
+     */
+    private static function populatePayload(JWSInterface &$jws, array $data)
+    {
         if (array_key_exists('payload', $data)) {
             $payload = Base64Url::decode($data['payload']);
             $json = json_decode($payload, true);
@@ -63,21 +109,6 @@ final class Loader implements LoaderInterface
             }
             $jws = $jws->withPayload($payload);
         }
-
-        foreach ($data['signatures'] as $signature) {
-            $object = new Signature();
-            $object = $object->withSignature(Base64Url::decode($signature['signature']));
-            if (array_key_exists('protected', $signature)) {
-                $object = $object->withEncodedProtectedHeaders($signature['protected']);
-            }
-            if (array_key_exists('header', $signature)) {
-                $object = $object->withHeaders($signature['header']);
-            }
-
-            $jws = $jws->addSignature($object);
-        }
-
-        return $jws;
     }
 
     /**

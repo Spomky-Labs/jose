@@ -304,15 +304,9 @@ final class JWE implements JWEInterface
     {
         $recipient = $this->getRecipient($id);
 
-        if (empty($this->getSharedProtectedHeaders())) {
-            throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
-        }
-        if (!empty($this->getSharedHeaders()) || !empty($this->getRecipient($id)->getHeaders())) {
-            throw new \InvalidArgumentException('This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.');
-        }
-        if (!empty($this->getAAD())) {
-            throw new \InvalidArgumentException('This JWE has AAD and cannot be converted into Compact JSON.');
-        }
+        $this->checkHasNoAAD();
+        $this->checkHasSharedProtectedHeaders();
+        $this->checkRecipientHasNoHeaders($id);
 
         return sprintf(
             '%s.%s.%s.%s.%s',
@@ -322,6 +316,36 @@ final class JWE implements JWEInterface
             Base64Url::encode($this->getCiphertext()),
             Base64Url::encode(null === $this->getTag() ? '' : $this->getTag())
         );
+    }
+
+    /**
+     *
+     */
+    private function checkHasNoAAD()
+    {
+        if (!empty($this->getAAD())) {
+            throw new \InvalidArgumentException('This JWE has AAD and cannot be converted into Compact JSON.');
+        }
+    }
+
+    /**
+     * @param int $id
+     */
+    private function checkRecipientHasNoHeaders($id)
+    {
+        if (!empty($this->getSharedHeaders()) || !empty($this->getRecipient($id)->getHeaders())) {
+            throw new \InvalidArgumentException('This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.');
+        }
+    }
+
+    /**
+     *
+     */
+    private function checkHasSharedProtectedHeaders()
+    {
+        if (empty($this->getSharedProtectedHeaders())) {
+            throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
+        }
     }
 
     /**

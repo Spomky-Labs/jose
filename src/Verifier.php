@@ -103,7 +103,7 @@ final class Verifier implements VerifierInterface
 
     /**
      * @param \Jose\Object\JWSInterface $jws
-     * @param null                      $detached_payload
+     * @param null|string               $detached_payload
      */
     private function checkPayload(JWSInterface $jws, $detached_payload = null)
     {
