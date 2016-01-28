@@ -227,27 +227,31 @@ final class Encrypter implements EncrypterInterface
         $dir = KeyEncryptionAlgorithmInterface::MODE_DIRECT;
         $enc = KeyEncryptionAlgorithmInterface::MODE_ENCRYPT;
         $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
-        switch ($current.$new) {
-            case $agree.$enc:
-            case $agree.$wrap:
-            case $dir.$enc:
-            case $dir.$wrap:
-            case $enc.$enc:
-            case $enc.$wrap:
-            case $wrap.$enc:
-            case $wrap.$wrap:
-                return true;
-            case $agree.$agree:
-            case $agree.$dir:
-            case $dir.$agree:
-            case $dir.$dir:
-            case $enc.$agree:
-            case $enc.$dir:
-            case $wrap.$agree:
-            case $wrap.$dir:
-            default:
-                return false;
+
+        $supported_key_management_mode_combinations = [
+            $agree.$enc => true,
+            $agree.$wrap => true,
+            $dir.$enc => true,
+            $dir.$wrap => true,
+            $enc.$enc => true,
+            $enc.$wrap => true,
+            $wrap.$enc => true,
+            $wrap.$wrap => true,
+            $agree.$agree => false,
+            $agree.$dir => false,
+            $dir.$agree => false,
+            $dir.$dir => false,
+            $enc.$agree => false,
+            $enc.$dir => false,
+            $wrap.$agree => false,
+            $wrap.$dir => false,
+        ];
+
+        if (array_key_exists($current.$new, $supported_key_management_mode_combinations)) {
+            return $supported_key_management_mode_combinations[$current.$new];
         }
+
+        return false;
     }
 
     /**
@@ -288,39 +292,109 @@ final class Encrypter implements EncrypterInterface
      * @param \Jose\Object\JWKInterface|null                      $sender_key
      * @param array                                               $additional_headers
      *
-     * @return string
+     * @return string|null
      */
     private function getEncryptedKey(array $complete_headers, $cek, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
-            return $key_encryption_algorithm->encryptKey(
-                    $recipient_key,
-                    $cek,
-                    $complete_headers
-                );
+
+            return $this->getEncryptedKeyFroKeyEncryptionAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key);
         } elseif ($key_encryption_algorithm instanceof KeyWrappingInterface) {
-            return $key_encryption_algorithm->wrapKey(
-                $recipient_key,
-                $cek,
-                $complete_headers
-            );
+
+            return $this->getEncryptedKeyFroKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-            if (!$sender_key instanceof JWKInterface) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
-            $jwt_cek = $key_encryption_algorithm->wrapAgreementKey($sender_key, $recipient_key, $cek, $content_encryption_algorithm->getCEKSize(), $complete_headers, $additional_headers);
 
-            return $jwt_cek;
+            return $this->getEncryptedKeyFroKeyAgreementAndKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            if (!$sender_key instanceof JWKInterface) {
-                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
-            }
-            $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_headers);
 
-            return $jwt_cek;
+            return $this->getEncryptedKeyFroKeyAgreementAlgorithm($complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         }
     }
 
+    /**
+     * @param array                                               $complete_headers
+     * @param \Jose\Algorithm\KeyEncryption\KeyAgreementInterface $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param array                                               $additional_headers
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
+     *
+     * @return mixed
+     */
+    private function getEncryptedKeyFroKeyAgreementAlgorithm(array $complete_headers, KeyAgreementInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    {
+        if (!$sender_key instanceof JWKInterface) {
+            throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+        }
+        $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_headers);
+
+        return $jwt_cek;
+    }
+
+    /**
+     * @param array                                                       $complete_headers
+     * @param string                                                      $cek
+     * @param \Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface         $content_encryption_algorithm
+     * @param array                                                       $additional_headers
+     * @param \Jose\Object\JWKInterface                                   $recipient_key
+     * @param \Jose\Object\JWKInterface|null                              $sender_key
+     *
+     * @return string
+     */
+    private function getEncryptedKeyFroKeyAgreementAndKeyWrappingAlgorithm(array $complete_headers, $cek, KeyAgreementWrappingInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    {
+        if (!$sender_key instanceof JWKInterface) {
+            throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+        }
+        $jwt_cek = $key_encryption_algorithm->wrapAgreementKey($sender_key, $recipient_key, $cek, $content_encryption_algorithm->getCEKSize(), $complete_headers, $additional_headers);
+
+        return $jwt_cek;
+    }
+
+    /**
+     * @param array                                                $complete_headers
+     * @param string                                               $cek
+     * @param \Jose\Algorithm\KeyEncryption\KeyEncryptionInterface $key_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                            $recipient_key
+     *
+     * @return string
+     */
+    private function getEncryptedKeyFroKeyEncryptionAlgorithm(array $complete_headers, $cek, KeyEncryptionInterface $key_encryption_algorithm, JWKInterface $recipient_key)
+    {
+        return $key_encryption_algorithm->encryptKey(
+            $recipient_key,
+            $cek,
+            $complete_headers
+        );
+    }
+
+    /**
+     * @param array                                              $complete_headers
+     * @param string                                             $cek
+     * @param \Jose\Algorithm\KeyEncryption\KeyWrappingInterface $key_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                          $recipient_key
+     *
+     * @return string
+     */
+    private function getEncryptedKeyFroKeyWrappingAlgorithm(array $complete_headers, $cek, KeyWrappingInterface $key_encryption_algorithm, JWKInterface $recipient_key)
+    {
+        return $key_encryption_algorithm->wrapKey(
+            $recipient_key,
+            $cek,
+            $complete_headers
+        );
+    }
+
+    /**
+     * @param array                                               $complete_headers
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
+     *
+     * @return string
+     */
     private function getCEK(array $complete_headers, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
