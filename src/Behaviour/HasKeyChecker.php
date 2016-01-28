@@ -49,7 +49,6 @@ trait HasKeyChecker
                     throw new \InvalidArgumentException('Unsupported key usage.');
             }
         } elseif ($key->has('key_ops') && is_array($ops = $key->get('key_ops'))) {
-
             switch ($usage) {
                 case 'verification':
                     if (in_array('verify', $ops)) {

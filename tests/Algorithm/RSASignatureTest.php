@@ -556,7 +556,6 @@ class RSASignatureTest extends TestCase
 
         $this->assertTrue($result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
-
     }
 
     /**

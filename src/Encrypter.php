@@ -204,7 +204,7 @@ final class Encrypter implements EncrypterInterface
             $sender_key
         );
         if (!empty($additional_headers)) {
-            foreach ($additional_headers as $key=>$value) {
+            foreach ($additional_headers as $key => $value) {
                 $recipient = $recipient->withHeader($key, $value);
             }
         }
@@ -258,9 +258,9 @@ final class Encrypter implements EncrypterInterface
      */
     private function preparePayload($payload, array $complete_headers)
     {
-        $prepared = is_string($payload)?$payload:json_encode($payload);
+        $prepared = is_string($payload) ? $payload : json_encode($payload);
 
-        if(null === $prepared) {
+        if (null === $prepared) {
             throw new \InvalidArgumentException('The payload is empty or cannot encoded into JSON.');
         }
         if (!array_key_exists('zip', $complete_headers)) {

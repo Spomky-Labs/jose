@@ -37,7 +37,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $jwe = $encrypter->addRecipient(
@@ -73,7 +73,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $jwe = $encrypter->addRecipient(
@@ -110,7 +110,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'FIP'
+            'zip' => 'FIP',
         ]);
 
         $encrypter->addRecipient(
@@ -135,13 +135,13 @@ class EncrypterTest extends TestCase
             $jwe,
             $this->getRSARecipientKeyWithAlgorithm(),
             null,
-            ['alg' => 'RSA-OAEP',]
+            ['alg' => 'RSA-OAEP']
         );
         $jwe = $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
             null,
-            ['alg' => 'RSA-OAEP-256',]
+            ['alg' => 'RSA-OAEP-256']
         );
 
         $this->assertEquals(2, $jwe->countRecipients());
@@ -216,7 +216,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(
@@ -237,7 +237,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(
@@ -259,7 +259,7 @@ class EncrypterTest extends TestCase
             'kid' => '123456789',
             'enc' => 'A128CBC-HS256',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $jwe = $encrypter->addRecipient(
@@ -296,7 +296,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'kid' => '123456789',
             'enc' => 'A256CBC-HS512',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(
@@ -317,7 +317,7 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->withSharedProtectedHeaders([
             'kid' => '123456789',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(
@@ -339,7 +339,7 @@ class EncrypterTest extends TestCase
             'kid' => '123456789',
             'enc' => 'A256CBC-HS512',
             'alg' => 'A256CBC-HS512',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(
@@ -361,7 +361,7 @@ class EncrypterTest extends TestCase
             'kid' => '123456789',
             'enc' => 'RSA-OAEP-256',
             'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF'
+            'zip' => 'DEF',
         ]);
 
         $encrypter->addRecipient(

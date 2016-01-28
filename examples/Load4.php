@@ -12,10 +12,10 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 use Jose\Factory\DecrypterFactory;
+use Jose\Loader;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Jose\Loader;
 
 /******************/
 /*   INPUT DATA   */

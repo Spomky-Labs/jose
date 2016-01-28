@@ -11,7 +11,6 @@
 
 namespace Jose;
 
-use Base64Url\Base64Url;
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;

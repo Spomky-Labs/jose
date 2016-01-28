@@ -32,7 +32,7 @@ final class JWS implements JWSInterface
     {
         $payload = $this->getPayload();
         if (null === $payload) {
-            return null;
+            return;
         } elseif (is_string($payload)) {
             return Base64Url::encode($payload);
         }
@@ -40,6 +40,7 @@ final class JWS implements JWSInterface
         if (null === $encoded) {
             throw new \InvalidArgumentException('Unsupported payload.');
         }
+
         return Base64Url::encode($encoded);
     }
 
@@ -57,7 +58,6 @@ final class JWS implements JWSInterface
     public function getSignature($id)
     {
         if (isset($this->signatures[$id])) {
-
             return $this->signatures[$id];
         }
         throw new \InvalidArgumentException('The signature does not exist.');
@@ -110,9 +110,9 @@ final class JWS implements JWSInterface
 
         $data = [];
         $values = [
-            'payload' => $this->getEncodedPayload(),
+            'payload'   => $this->getEncodedPayload(),
             'protected' => $signature->getEncodedProtectedHeaders(),
-            'header' => $signature->getHeaders(),
+            'header'    => $signature->getHeaders(),
         ];
 
         foreach ($values as $key => $value) {
@@ -141,7 +141,6 @@ final class JWS implements JWSInterface
 
         $data['signatures'] = [];
         foreach ($this->getSignatures() as $signature) {
-
             $tmp = ['signature' => Base64Url::encode($signature->getSignature())];
             $values = [
                 'protected' => $signature->getEncodedProtectedHeaders(),
