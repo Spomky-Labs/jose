@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\SignerFactory;
 use Jose\Factory\JWSFactory;
+use Jose\Factory\SignerFactory;
 use Jose\Factory\VerifierFactory;
 use Jose\Loader;
 use Jose\Object\JWK;

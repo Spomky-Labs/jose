@@ -13,8 +13,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Jose\Factory\DecrypterFactory;
 use Jose\Factory\JWKFactory;
-use Jose\Object\JWKSet;
 use Jose\Loader;
+use Jose\Object\JWKSet;
 
 // In this example, our input is a JWE string in compact serialization format
 // See Encrypt1.php to know to generate such string

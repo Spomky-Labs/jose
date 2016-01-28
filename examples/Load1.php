@@ -15,8 +15,8 @@ use Jose\Checker\IssuedAtChecker;
 use Jose\Checker\NotBeforeChecker;
 use Jose\Factory\JWKFactory;
 use Jose\Factory\VerifierFactory;
-use Jose\Object\JWKSet;
 use Jose\Loader;
+use Jose\Object\JWKSet;
 
 // In this example, our input is a JWS string in compact serialization format
 // See Signature1.php to know to generate such string

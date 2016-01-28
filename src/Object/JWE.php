@@ -100,6 +100,7 @@ final class JWE implements JWEInterface
         if (!isset($this->recipients[$id])) {
             throw new \InvalidArgumentException('The recipient does not exist.');
         }
+
         return $this->recipients[$id];
     }
 

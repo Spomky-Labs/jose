@@ -96,7 +96,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'payload'    => 'SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4',
             'signatures' => [
                [
-                   'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
+                   'signature'  => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                    'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
                ],
             ],
@@ -137,7 +137,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_general_serialization = [
             'signatures' => [
                [
-                   'signature' => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
+                   'signature'  => 's0h6KThzkfBBBkLspW1h84VsJZFTsPPqMDA7g1Md7p0',
                    'protected'  => 'eyJhbGciOiJIUzI1NiIsImtpZCI6IjAxOGMwYWU1LTRkOWItNDcxYi1iZmQ2LWVlZjMxNGJjNzAzNyJ9',
                ],
             ],

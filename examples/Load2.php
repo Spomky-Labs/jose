@@ -13,8 +13,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Jose\Factory\JWKFactory;
 use Jose\Factory\VerifierFactory;
-use Jose\Object\JWKSet;
 use Jose\Loader;
+use Jose\Object\JWKSet;
 
 // In this example, our input is a JWS string in compact serialization format
 // See Signature2.php to know to generate such string
