@@ -216,8 +216,8 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param $current
-     * @param $new
+     * @param string $current
+     * @param string $new
      *
      * @return bool
      */
