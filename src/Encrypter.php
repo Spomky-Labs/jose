@@ -312,6 +312,9 @@ final class Encrypter implements EncrypterInterface
 
             return $jwt_cek;
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
+            if (!$sender_key instanceof JWKInterface) {
+                throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
+            }
             $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_headers);
 
             return $jwt_cek;
