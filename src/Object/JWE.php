@@ -331,24 +331,8 @@ final class JWE implements JWEInterface
     {
         $recipient = $this->getRecipient($id);
 
-        $json = [
-            'ciphertext' => Base64Url::encode($this->getCiphertext()),
-        ];
-        if (null !== $this->getIV()) {
-            $json['iv'] = Base64Url::encode($this->getIV());
-        }
-        if (null !== $this->getTag()) {
-            $json['tag'] = Base64Url::encode($this->getTag());
-        }
-        if (null !== $this->getAAD()) {
-            $json['aad'] = Base64Url::encode($this->getAAD());
-        }
-        if (!empty($this->getSharedProtectedHeaders())) {
-            $json['protected'] = $this->getEncodedSharedProtectedHeaders();
-        }
-        if (!empty($this->getSharedHeaders())) {
-            $json['unprotected'] = $this->getSharedHeaders();
-        }
+        $json = $this->getJSONBase();
+
         if (!empty($recipient->getHeaders())) {
             $json['header'] = $recipient->getHeaders();
         }
@@ -363,6 +347,29 @@ final class JWE implements JWEInterface
      * {@inheritdoc}
      */
     public function toJSON()
+    {
+
+        $json = $this->getJSONBase();
+        $json['recipients'] = [];
+        
+        foreach ($this->getRecipients() as $recipient) {
+            $temp = [];
+            if (!empty($recipient->getHeaders())) {
+                $temp['header'] = $recipient->getHeaders();
+            }
+            if (!empty($recipient->getEncryptedKey())) {
+                $temp['encrypted_key'] = Base64Url::encode($recipient->getEncryptedKey());
+            }
+            $json['recipients'][] = $temp;
+        }
+
+        return json_encode($json);
+    }
+
+    /**
+     * @return array
+     */
+    private function getJSONBase()
     {
         $json = [
             'ciphertext' => Base64Url::encode($this->getCiphertext()),
@@ -382,19 +389,8 @@ final class JWE implements JWEInterface
         if (!empty($this->getSharedHeaders())) {
             $json['unprotected'] = $this->getSharedHeaders();
         }
-        $json['recipients'] = [];
-        foreach ($this->getRecipients() as $recipient) {
-            $temp = [];
-            if (!empty($recipient->getHeaders())) {
-                $temp['header'] = $recipient->getHeaders();
-            }
-            if (!empty($recipient->getEncryptedKey())) {
-                $temp['encrypted_key'] = Base64Url::encode($recipient->getEncryptedKey());
-            }
-            $json['recipients'][] = $temp;
-        }
 
-        return json_encode($json);
+        return $json;
     }
 
     /**
