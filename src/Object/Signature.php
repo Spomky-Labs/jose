@@ -72,7 +72,7 @@ final class Signature implements SignatureInterface
         if (empty($encoded_protected_headers)) {
             $signature->protected_headers = [];
         } else {
-            $decoded = json_decode(Base64Url::decode($encoded_protected_headers), true):
+            $decoded = json_decode(Base64Url::decode($encoded_protected_headers), true);
             if (!is_array($decoded)) {
                 throw new \InvalidArgumentException('The argument does not contain valid encoded protected headers.');
             }
