@@ -11,30 +11,18 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Jose\Factory\KeyFactory;
+use Jose\Factory\JWSFactory;
+use Jose\Factory\JWKFactory;
 use Jose\Factory\SignerFactory;
-use Jose\JSONSerializationModes;
 
 // We create our key object (JWK) using an encrypted RSA key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
-$key = KeyFactory::createFromFile(
-    __DIR__ . '/../tests/Keys/RSA/private.encrypted.key',
+$key = JWKFactory::createFromKeyFile(
+    __DIR__ . '/../tests/Unit/Keys/RSA/private.encrypted.key',
     'tests',
-    false,
     [
         'kid' => 'My Private RSA key',
         'use' => 'sig',
-    ]
-);
-
-// We create a signature instruction.
-// The key we created is used for this instruction (first argument).
-// We also set the protection header (second argument) that indicates we want a RS256 signature.
-// There is no unprotected header (third argument is an empty array by default).
-$instruction = new \Jose\Object\SignatureInstruction(
-    $key,
-    [
-        'alg' => 'RS256',
     ]
 );
 
@@ -49,6 +37,8 @@ $claims = [
     'sub' => 'My friend',
 ];
 
+$jws = JWSFactory::createJWS($claims);
+
 // We create a signer.
 // The first argument is an array of algorithms we will use (we only need 'RS256' for this example).
 // The second argument is an array of payload converters. We do not use them for this example.
@@ -56,13 +46,14 @@ $signer = SignerFactory::createSigner(
     ['RS256']
 );
 
-// Lastly, we sign our claims (first argument) with our instructions (only one instruction).
-// We want a JWS in compact serialization mode (most common mode with three parts separated by dots)
-$jws = $signer->sign(
-    $claims,
-    [$instruction],
-    JSONSerializationModes::JSON_COMPACT_SERIALIZATION
+// Lastly, we sign our claims with our key and we add protected headers.
+$jws = $signer->addSignature(
+    $jws,
+    $key,
+    [
+        'alg' => 'RS256',
+    ]
 );
 
-// Now the variable $jws contains a string with our JWS
+// Now the variable $jws contains a our JWS
 // Please read example Load1.php to know how to load this string and to verify the signature

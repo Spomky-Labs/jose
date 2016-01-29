@@ -146,7 +146,7 @@ This library supports Additional Authenticated Data (AAD).
 With this library, you can create encrypt an input using multiple recipients.
 In this case, the Key Management Mode is determined according to the used algorithms.
 
-You cannot create multiple encryptions if the Key Management Mode are not compatible.
+You cannot create multiple recipients if the Key Management Mode are not compatible.
 Hereafter, a table with algorithms and associated Key Management Mode.
 
 | Algorithm \ Key Management Mode | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
@@ -179,7 +179,7 @@ And a compatibility table between Key Management Modes:
 | Key Agreement with Key Wrapping |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
 | Direct Encryption               |     NO *       |     NO *     |        NO            |            NO *                 |       YES         |
 
-*: Compatibility is possible only if the algorithm for the first recipient is a `Direct Key Agreement` or a `Direct Encryption` algorithm, otherwise it is not possible
+*: Compatibility is possible only if the algorithm for the first recipient is a `Direct Key Agreement` or a `Direct Encryption` algorithm and there is no other recipient using the same algorithms, otherwise it is not possible
 
 ### Important note
 

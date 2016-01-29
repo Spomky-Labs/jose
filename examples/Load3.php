@@ -14,7 +14,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Jose\Factory\DecrypterFactory;
 use Jose\Factory\JWKFactory;
 use Jose\Loader;
-use Jose\Object\JWKSet;
 
 // In this example, our input is a JWE string in compact serialization format
 // See Encrypt1.php to know to generate such string
@@ -24,32 +23,27 @@ $input = 'eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiRE
 $result = Loader::load($input);
 
 // Now the variable $result contains a JWE object
-// At this moment, you can get headers but the payload is still encrypted.
+// At this moment, you can get headers and list recipients but the payload is still encrypted.
 // The call $result->getPayload() will return null
 
-// To decrypt and verify our JWE, we need a JWKSet that contains private keys.
-// We create our key object (JWK) using an encrypted RSA key stored in a file
-// Additional parameters ('kid' and 'use') are set for this key.
-$key = JWKFactory::createFromFile(
-    __DIR__ . '/../tests/Keys/RSA/private.encrypted.key',
+// To decrypt and verify our JWE, we need a JWK (or JWKSet) that contains the private key(s).
+// We create our key object (JWK) using an encrypted RSA key stored in a file.
+// The key is encrypted and the second argument is the password.
+//// Additional parameters ('kid' and 'use') are set for this key.
+$key = JWKFactory::createFromKeyFile(
+    __DIR__ . '/../tests/Unit/Keys/RSA/private.encrypted.key',
     'tests',
-    false,
     [
         'kid' => 'My private RSA key',
         'use' => 'enc',
     ]
 );
 
-// Then we set this key in a keyset (JWKSet object)
-// Be careful, the JWKSet object is immutable. When you add a key, you get a new JWKSet object.
-$keyset = new JWKSet();
-$keyset = $keyset->addKey($key);
 
 // We create our decrypter object with a list of authorized signature algorithms (only 'RSA-OAEP-256' and 'A256CBC-HS512' in this example)
 // We do not add
-// * Payload converters (second argument).
-// * The third argument (enabled compression methods) is ['DEF'] by default.
-// * We do not add checkers (fourth argument).
+// * The second argument (enabled compression methods) is ['DEF'] by default.
+// * We do not add checkers (third argument).
 $decrypter = DecrypterFactory::createDecrypter(
     [
         'RSA-OAEP-256',
@@ -57,7 +51,6 @@ $decrypter = DecrypterFactory::createDecrypter(
     ]
 );
 
-$is_decrypted = $decrypter->decryptUsingKeySet($result, $keyset);
-
+$is_decrypted = $decrypter->decryptUsingKey($result, $key);
 // The variable $is_decrypted contains a boolean that indicates the decryption succeeded or not.
 // If a claim is not verified (e.g. the JWT expired), an exception is thrown.

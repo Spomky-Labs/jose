@@ -38,20 +38,14 @@ $result->hasClaim('iss'); // true
 // To verify a JWS, we need a JWKSet that contains public keys.
 // We create our key object (JWK) using a RSA public key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
-$key = JWKFactory::createFromFile(
-    __DIR__ . '/../tests/Keys/RSA/public.key',
+$key = JWKFactory::createFromKeyFile(
+    __DIR__ . '/../tests/Unit/Keys/RSA/public.key',
     null,
-    false,
     [
         'kid' => 'My public RSA key',
         'use' => 'sig',
     ]
 );
-
-// Then we set this key in a keyset (JWKSet object)
-// Be careful, the JWKSet object is immutable. When you add a key, you get a new JWKSet object.
-$keyset = new JWKSet();
-$keyset = $keyset->addKey($key);
 
 // We create our verifier object with a list of authorized signature algorithms (only 'HS512' in this example)
 // We add some checkers. These checkers will verify claims or headers.
@@ -66,7 +60,7 @@ $verifier = VerifierFactory::createVerifier(
     ]
 );
 
-$is_valid = $verifier->verifyWithKeySet($result, $keyset);
+$is_valid = $verifier->verifyWithKey($result, $key);
 
 // The variable $is_valid contains a boolean that indicates the signature is valid or not.
 // If a claim is not verified (e.g. the JWT expired), an exception is thrown.

@@ -35,17 +35,14 @@ $key = JWKFactory::createFromValues([
     'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
 ]);
 
-// Then we set this key in a keyset (JWKSet object)
-// Be careful, the JWKSet object is immutable. When you add a key, you get a new JWKSet object.
-$keyset = new JWKSet();
-$keyset = $keyset->addKey($key);
-
 // We create our verifier object with a list of authorized signature algorithms (only 'HS512' in this example)
 $verifier = VerifierFactory::createVerifier(
-    ['HS512']
+    [
+        'HS512'
+    ]
 );
 
-$is_valid = $verifier->verifyWithKeySet($result, $keyset, $detached_payload);
+$is_valid = $verifier->verifyWithKey($result, $key, $detached_payload);
 
 // The variable $is_valid contains a boolean that indicates the signature is valid or not.
 // If a claim is not verified (e.g. the JWT expired), an exception is thrown.

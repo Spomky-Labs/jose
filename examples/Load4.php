@@ -27,11 +27,6 @@ $shared_key = new JWK([
     'dir' => 'saH0gFSP4XM_tAP_a5rU9ooHbltwLiJpL4LLLnrqQPw',
 ]);
 
-// We store the key in a JWKSet object.
-// This allow you to use multiple keys
-$keyset = new JWKSet();
-$keyset = $keyset->addKey($shared_key);
-
 //The JWE
 $input = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwia2lkIjoiTXkgU2hhcmVkIEtleSJ9..gqkq-9muWfQd3AHD.kg_fCtrkId7poGRCUP9ARO4KQ4m0R6lU5rwNS8Mm8nLFMy_X3nBC1VkL_zDehO4K6eEliZ9ISBEE7fFM6aFppfTCwFd_q-qikoOy7zsSeOOEawDZX2qMMdZYnaZs1HZTezdgS7HmoNK1J1TfE1PNrmhjrIZEbTANWw.Hxy5fTBX8X10_bz5UuDeBQ';
 
@@ -61,7 +56,7 @@ if (!$jwe instanceof JWEInterface) {
 
 // At this time the payload is null.
 // We have to decrypt it
-$is_decrypted = $decrypter->decryptUsingKeySet($jwe, $keyset);
+$is_decrypted = $decrypter->decryptUsingKey($jwe, $shared_key);
 
 // The variable $is_decrypted contains a boolean that indicates the decryption succeeded or not.
 // Now the $jwe object has a payload
