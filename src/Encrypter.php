@@ -241,22 +241,22 @@ final class Encrypter implements EncrypterInterface
         $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
 
         $supported_key_management_mode_combinations = [
-            $agree.$enc => true,
-            $agree.$wrap => true,
-            $dir.$enc => true,
-            $dir.$wrap => true,
-            $enc.$enc => true,
-            $enc.$wrap => true,
-            $wrap.$enc => true,
-            $wrap.$wrap => true,
+            $agree.$enc   => true,
+            $agree.$wrap  => true,
+            $dir.$enc     => true,
+            $dir.$wrap    => true,
+            $enc.$enc     => true,
+            $enc.$wrap    => true,
+            $wrap.$enc    => true,
+            $wrap.$wrap   => true,
             $agree.$agree => false,
-            $agree.$dir => false,
-            $dir.$agree => false,
-            $dir.$dir => false,
-            $enc.$agree => false,
-            $enc.$dir => false,
-            $wrap.$agree => false,
-            $wrap.$dir => false,
+            $agree.$dir   => false,
+            $dir.$agree   => false,
+            $dir.$dir     => false,
+            $enc.$agree   => false,
+            $enc.$dir     => false,
+            $wrap.$agree  => false,
+            $wrap.$dir    => false,
         ];
 
         if (array_key_exists($current.$new, $supported_key_management_mode_combinations)) {
@@ -309,16 +309,12 @@ final class Encrypter implements EncrypterInterface
     private function getEncryptedKey(array $complete_headers, $cek, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
-
             return $this->getEncryptedKeyFroKeyEncryptionAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key);
         } elseif ($key_encryption_algorithm instanceof KeyWrappingInterface) {
-
             return $this->getEncryptedKeyFroKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
-
             return $this->getEncryptedKeyFroKeyAgreementAndKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-
             return $this->getEncryptedKeyFroKeyAgreementAlgorithm($complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         }
     }
