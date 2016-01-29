@@ -26,13 +26,17 @@ final class JWEFactory
 
     /**
      * @param mixed       $payload
+     * @param array       $shared_protected_headers
+     * @param array       $shared_headers
      * @param null|string $aad
      *
      * @return \Jose\Object\JWEInterface
      */
-    public static function createJWE($payload, $aad = null)
+    public static function createJWE($payload, array $shared_protected_headers = [], array $shared_headers = [], $aad = null)
     {
         $jwe = new JWE();
+        $jwe = $jwe->withSharedProtectedHeaders($shared_protected_headers);
+        $jwe = $jwe->withSharedHeaders($shared_headers);
         $jwe = $jwe->withPayload($payload);
 
         if (null !== $aad) {

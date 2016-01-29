@@ -33,12 +33,16 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF'], $this->getCheckers());
 
-        $jwe = JWEFactory::createJWE('FOO', 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'enc' => 'A256CBC-HS512',
-            'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            'FOO',
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP-256',
+                'zip' => 'DEF',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $jwe = $encrypter->addRecipient(
             $jwe,
@@ -69,12 +73,16 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF'], $this->getCheckers());
 
-        $jwe = JWEFactory::createJWE($this->getKeyToEncrypt(), 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'enc' => 'A256CBC-HS512',
-            'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            $this->getKeyToEncrypt(),
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP-256',
+                'zip' => 'DEF',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $jwe = $encrypter->addRecipient(
             $jwe,
@@ -106,12 +114,16 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $jwe = JWEFactory::createJWE($this->getKeyToEncrypt(), 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'enc' => 'A256CBC-HS512',
-            'alg' => 'RSA-OAEP-256',
-            'zip' => 'FIP',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            $this->getKeyToEncrypt(),
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP-256',
+                'zip' => 'FIP',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $encrypter->addRecipient(
             $jwe,
@@ -212,12 +224,16 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $jwe = JWEFactory::createJWE('Foo', 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'enc' => 'A256CBC-HS512',
-            'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            'Foo',
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP-256',
+                'zip' => 'DEF',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $encrypter->addRecipient(
             $jwe,
@@ -233,12 +249,16 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF' => 0]);
 
-        $jwe = JWEFactory::createJWE('FOO', 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'enc' => 'A256CBC-HS512',
-            'alg' => 'RSA-OAEP-256',
-            'zip' => 'DEF',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            'FOO',
+            [
+                'enc' => 'A256CBC-HS512',
+                'alg' => 'RSA-OAEP-256',
+                'zip' => 'DEF',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $encrypter->addRecipient(
             $jwe,
@@ -536,12 +556,16 @@ class EncrypterTest extends TestCase
 
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], ['DEF' => 0]);
 
-        $jwe = JWEFactory::createJWE('Je suis Charlie', 'foo,bar,baz');
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
-            'enc' => 'A256GCM',
-            'alg' => 'ECDH-ES+A256KW',
-        ]);
+        $jwe = JWEFactory::createJWE(
+            'Je suis Charlie',
+            [
+                'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
+                'enc' => 'A256GCM',
+                'alg' => 'ECDH-ES+A256KW',
+            ],
+            [],
+            'foo,bar,baz'
+        );
 
         $jwe = $encrypter->addRecipient(
             $jwe,
