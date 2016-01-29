@@ -16,15 +16,6 @@ use Jose\Checker\CheckerManager;
 final class CheckerManagerFactory
 {
     /**
-     * CheckerManagerFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param \Jose\Checker\CheckerInterface[] $checker_managers
      *
      * @return \Jose\Checker\CheckerManagerInterface

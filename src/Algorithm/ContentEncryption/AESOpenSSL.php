@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Algorithm\ContentEncryption;
+use Jose\Util\StringUtil;
 
 /**
  */
@@ -46,6 +47,6 @@ final class AESOpenSSL implements AESInterface
      */
     private static function getMode($k)
     {
-        return 'aes-'.(8 *  strlen($k)).'-cbc';
+        return 'aes-'.(8 *  StringUtil::strlen($k)).'-cbc';
     }
 }

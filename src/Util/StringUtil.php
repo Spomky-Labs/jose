@@ -16,10 +16,6 @@ namespace Jose\Util;
  */
 final class StringUtil
 {
-    private function __construct()
-    {
-    }
-
     public static function strlen($string)
     {
         return function_exists('mb_strlen') ? mb_strlen($string, '8bit') : strlen($string);

@@ -14,6 +14,7 @@ namespace Jose\Algorithm\Signature;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
+use Jose\Util\StringUtil;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
@@ -74,15 +75,15 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2 * $part_length) {
+        if (StringUtil::strlen($signature) !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec(substr($signature, $part_length));
+        $R = $this->convertHexToDec(StringUtil::substr($signature, 0, $part_length));
+        $S = $this->convertHexToDec(StringUtil::substr($signature, $part_length));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
@@ -164,7 +165,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
+        if ('EC' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
         if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {

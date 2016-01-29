@@ -42,7 +42,7 @@ final class None implements SignatureAlgorithmInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'none' !== $key->get('kty')) {
+        if ('none' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

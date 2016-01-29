@@ -20,13 +20,6 @@ use Jose\Object\SignatureInterface;
 final class JWSLoader
 {
     /**
-     * Loader constructor.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param array $data
      *
      * @return \Jose\Object\JWSInterface

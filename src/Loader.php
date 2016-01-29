@@ -21,13 +21,6 @@ use Jose\Util\JWSLoader;
 final class Loader implements LoaderInterface
 {
     /**
-     * Loader constructor.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * {@inheritdoc}
      */
     public static function load($input)

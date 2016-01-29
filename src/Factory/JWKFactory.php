@@ -18,15 +18,6 @@ use Jose\Object\JWKSet;
 final class JWKFactory
 {
     /**
-     * KeyFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param array $values
      *
      * @return \Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface

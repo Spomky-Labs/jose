@@ -12,6 +12,7 @@
 namespace Jose\Algorithm\ContentEncryption;
 
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
+use Jose\Util\StringUtil;
 
 /**
  *
@@ -23,7 +24,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
-        $k = substr($cek, strlen($cek) / 2);
+        $k = StringUtil::substr($cek, StringUtil::strlen($cek) / 2);
 
         $cyphertext = AESOpenSSL::encrypt($data, $k, $iv);
 
@@ -49,7 +50,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
             return;
         }
 
-        $k = substr($cek, strlen($cek) / 2);
+        $k = StringUtil::substr($cek, StringUtil::strlen($cek) / 2);
 
         return AESOpenSSL::decrypt($data, $k, $iv);
     }
@@ -69,8 +70,8 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key = substr($cek, 0, strlen($cek) / 2);
-        $auth_data_length = strlen($encoded_header);
+        $mac_key = StringUtil::substr($cek, 0, StringUtil::strlen($cek) / 2);
+        $auth_data_length = StringUtil::strlen($encoded_header);
 
         $secured_input = implode('', [
             $calculated_aad,
@@ -80,7 +81,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         ]);
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
-        return  substr($hash, 0, strlen($hash) / 2);
+        return  StringUtil::substr($hash, 0, StringUtil::strlen($hash) / 2);
     }
 
     /**

@@ -16,15 +16,6 @@ use Jose\Object\JWE;
 final class JWEFactory
 {
     /**
-     * JWEFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param mixed       $payload
      * @param array       $shared_protected_headers
      * @param array       $shared_headers

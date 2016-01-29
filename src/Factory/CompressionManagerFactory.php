@@ -17,15 +17,6 @@ use Jose\Compression\CompressionManager;
 final class CompressionManagerFactory
 {
     /**
-     * CompressionManagerFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param array $methods
      *
      * @return \Jose\Compression\CompressionManagerInterface

@@ -17,15 +17,6 @@ use Jose\Object\JWS;
 final class JWSFactory
 {
     /**
-     * JWSFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param mixed $payload
      *
      * @return \Jose\Object\JWSInterface

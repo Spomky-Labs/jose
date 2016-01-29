@@ -44,7 +44,7 @@ abstract class HMAC implements SignatureAlgorithmInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }
@@ -54,8 +54,8 @@ abstract class HMAC implements SignatureAlgorithmInterface
         if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         }
-        $safeLen = strlen($safe);
-        $userLen = strlen($user);
+        $safeLen = StringUtil::strlen($safe);
+        $userLen = StringUtil::strlen($user);
 
         if ($userLen !== $safeLen) {
             return false;

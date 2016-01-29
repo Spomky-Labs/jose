@@ -16,15 +16,6 @@ use Jose\Decrypter;
 final class DecrypterFactory
 {
     /**
-     * DecrypterFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param string[]                         $algorithms
      * @param string[]                         $compression_methods
      * @param \Jose\Checker\CheckerInterface[] $checker_managers

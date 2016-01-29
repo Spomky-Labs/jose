@@ -20,13 +20,6 @@ use Jose\Object\RecipientInterface;
 final class JWELoader
 {
     /**
-     * Loader constructor.
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param array $data
      *
      * @return \Jose\Object\JWEInterface

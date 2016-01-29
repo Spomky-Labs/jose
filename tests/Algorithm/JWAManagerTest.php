@@ -9,6 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Algorithm\JWAManager;
 use Jose\Algorithm\Signature\ES384;
 use Jose\Factory\AlgorithmManagerFactory;
 use Jose\Test\TestCase;
@@ -47,5 +48,78 @@ class JWAManagerTest extends TestCase
 
         $this->assertNull($jwa_manager->getAlgorithm('HS384'));
         $this->assertEquals([], $jwa_manager->listAlgorithms());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Argument must be a string or a JWAInterface object.
+     */
+    public function testBadArgument()
+    {
+        $jwa_manager = new JWAManager();
+        $jwa_manager->removeAlgorithm(new \StdClass());
+    }
+
+    /**
+     *
+     */
+    public function testAllAlgorithms()
+    {
+        $algorithms = [
+            'HS256',
+            'HS384',
+            'HS512',
+            'ES256',
+            'ES384',
+            'ES512',
+            'RS256',
+            'RS384',
+            'RS512',
+            'PS256',
+            'PS384',
+            'PS512',
+            'dir',
+            'RSA1_5',
+            'RSA-OAEP',
+            'RSA-OAEP-256',
+            'ECDH-ES',
+            'ECDH-ES+A128KW',
+            'ECDH-ES+A192KW',
+            'ECDH-ES+A256KW',
+            'A128KW',
+            'A192KW',
+            'A256KW',
+            'PBES2-HS256+A128KW',
+            'PBES2-HS384+A192KW',
+            'PBES2-HS512+A256KW',
+            'A128CBC-HS256',
+            'A192CBC-HS384',
+            'A256CBC-HS512',
+        ];
+
+        if ($this->isCryptooExtensionInstalled()) {
+            $algorithms = array_merge(
+                $algorithms,
+                [
+                    'A128GCMKW',
+                    'A192GCMKW',
+                    'A256GCMKW',
+                    'A128GCM',
+                    'A192GCM',
+                    'A256GCM',
+                ]
+            );
+        }
+        $jwa_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
+
+        $this->assertEquals($algorithms, $jwa_manager->listAlgorithms());
+    }
+
+    /**
+     * @return bool
+     */
+    private function isCryptooExtensionInstalled()
+    {
+        return class_exists('\Crypto\Cipher');
     }
 }

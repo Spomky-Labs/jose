@@ -16,15 +16,6 @@ use Jose\Encrypter;
 final class EncrypterFactory
 {
     /**
-     * EncrypterFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param string[] $algorithms
      * @param string[] $compression_methods
      *

@@ -16,15 +16,6 @@ use Jose\Signer;
 final class SignerFactory
 {
     /**
-     * SignerFactory constructor.
-     *
-     * This factory is not supposed to be instantiated
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * @param string[] $algorithms
      *
      * @return \Jose\SignerInterface
