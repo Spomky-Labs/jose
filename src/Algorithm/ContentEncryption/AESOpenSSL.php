@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Algorithm\ContentEncryption;
+
 use Jose\Util\StringUtil;
 
 /**

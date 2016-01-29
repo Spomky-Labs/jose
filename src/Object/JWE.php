@@ -372,7 +372,6 @@ final class JWE implements JWEInterface
      */
     public function toJSON()
     {
-
         $json = $this->getJSONBase();
         $json['recipients'] = [];
 
