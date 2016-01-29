@@ -16,6 +16,8 @@ use Jose\Algorithm\ContentEncryption\A256GCM;
 
 /**
  * Class AESGCMContentEncryptionTest.
+ *
+ * @group Unit
  */
 class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {

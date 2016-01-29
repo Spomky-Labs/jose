@@ -76,44 +76,28 @@ final class JWKFactory
     /**
      * @param string      $file
      * @param null|string $password
-     * @param bool        $is_DER
      * @param array       $additional_values
      *
      * @return \Jose\Object\JWKInterface
      */
-    public static function createFromFile($file, $password = null, $is_DER = false, array $additional_values = [])
+    public static function createFromKeyFile($file, $password = null, array $additional_values = [])
     {
-        $values = KeyConverter::loadKeyFromFile($file, $password, $is_DER);
+        $values = KeyConverter::loadFromKeyFile($file, $password);
         $values = array_merge($values, $additional_values);
 
         return new JWK($values);
     }
 
     /**
-     * @param string      $der
+     * @param string      $key
      * @param null|string $password
      * @param array       $additional_values
      *
      * @return \Jose\Object\JWKInterface
      */
-    public static function createFromDER($der, $password = null, array $additional_values = [])
+    public static function createFromKey($key, $password = null, array $additional_values = [])
     {
-        $values = KeyConverter::loadKeyFromDER($der, $password);
-        $values = array_merge($values, $additional_values);
-
-        return new JWK($values);
-    }
-
-    /**
-     * @param string      $pem
-     * @param null|string $password
-     * @param array       $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
-     */
-    public static function createFromPEM($pem, $password = null, array $additional_values = [])
-    {
-        $values = KeyConverter::loadKeyFromPEM($pem, $password);
+        $values = KeyConverter::loadFromKey($key, $password);
         $values = array_merge($values, $additional_values);
 
         return new JWK($values);
@@ -159,7 +143,7 @@ final class JWKFactory
             if (is_string($kid)) {
                 $jwk['kid'] = $kid;
             }
-            $jwkset->addKey(new JWK($jwk));
+            $jwkset = $jwkset->addKey(new JWK($jwk));
         }
 
         return $jwkset;

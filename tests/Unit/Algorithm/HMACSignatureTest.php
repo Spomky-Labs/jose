@@ -18,6 +18,7 @@ use Jose\Object\JWK;
  * Class HMACSignatureTest.
  *
  * @group HMAC
+ * @group Unit
  */
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {

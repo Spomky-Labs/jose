@@ -18,6 +18,7 @@ use Jose\Algorithm\ContentEncryption\A256CBCHS512;
  * Class AESCBC_HSContentEncryptionTest.
  *
  * @group AESCBC
+ * @group Unit
  */
 class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {

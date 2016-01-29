@@ -18,7 +18,7 @@ use Jose\JSONSerializationModes;
 // We create our key object (JWK) using a public EC key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
 $key = KeyFactory::createFromFile(
-    __DIR__.'/../tests/Keys/RSA/public.key',
+    __DIR__ . '/../tests/Keys/RSA/public.key',
     null,
     false,
     [

@@ -91,20 +91,32 @@ final class KeyConverter
     /**
      * @param string      $file
      * @param null|string $password
-     * @param bool        $is_DER
      *
      * @throws \Exception
      *
      * @return array
      */
-    public static function loadKeyFromFile($file, $password = null, $is_DER = false)
+    public static function loadFromKeyFile($file, $password = null)
     {
         $content = file_get_contents($file);
 
-        if (true === $is_DER) {
-            return self::loadKeyFromDER($content, $password);
-        } else {
-            return self::loadKeyFromPEM($content, $password);
+        return self::loadFromKey($content, $password);
+    }
+
+    /**
+     * @param string      $key
+     * @param null|string $password
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public static function loadFromKey($key, $password = null)
+    {
+        try {
+            return self::loadKeyFromDER($key, $password);
+        } catch (\Exception $e) {
+            return self::loadKeyFromPEM($key, $password);
         }
     }
 
@@ -116,7 +128,7 @@ final class KeyConverter
      *
      * @return array
      */
-    public static function loadKeyFromDER($der, $password = null)
+    private static function loadKeyFromDER($der, $password = null)
     {
         $pem = self::convertDerToPem($der);
 
@@ -131,7 +143,7 @@ final class KeyConverter
      *
      * @return array
      */
-    public static function loadKeyFromPEM($pem, $password = null)
+    private static function loadKeyFromPEM($pem, $password = null)
     {
         if (preg_match('#DEK-Info: (.+),(.+)#', $pem, $matches)) {
             $pem = self::decodePEM($pem, $matches, $password);

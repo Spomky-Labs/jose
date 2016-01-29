@@ -20,6 +20,7 @@ use Jose\Object\JWK;
  * @see https://tools.ietf.org/html/rfc7520#section-4.4
  *
  * @group HMAC
+ * @group RFC7520
  */
 class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {

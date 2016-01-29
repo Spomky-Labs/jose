@@ -19,6 +19,7 @@ use Jose\Object\JWK;
  * Class PBES2_HS_AESKWKeyEncryptionTest.
  *
  * @group PBES2HSAESKW
+ * @group Unit
  */
 class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {

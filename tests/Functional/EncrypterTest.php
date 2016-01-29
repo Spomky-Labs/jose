@@ -22,6 +22,7 @@ use Jose\Test\TestCase;
  * Class EncrypterTest.
  *
  * @group Encrypter
+ * @group Functional
  */
 class EncrypterTest extends TestCase
 {

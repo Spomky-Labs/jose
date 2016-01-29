@@ -10,7 +10,11 @@
  */
 
 use Jose\Algorithm\ContentEncryption\AESOpenSSL;
+use Jose\Util\StringUtil;
 
+/**
+ * @group Unit
+ */
 class AESEnginesTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -23,7 +27,7 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
      */
     public function testAES128($K, $iv, $plaintext, $expected_cyphertext)
     {
-        $k = substr($K, strlen($K) / 2);
+        $k = StringUtil::substr($K, StringUtil::strlen($K) / 2);
 
         $openssl_cyphertext = AESOpenSSL::encrypt($plaintext, $k, $iv);
 
@@ -70,7 +74,7 @@ class AESEnginesTest extends \PHPUnit_Framework_TestCase
     private function convertArrayToBinString(array $data)
     {
         foreach ($data as $key => $value) {
-            $data[$key] = str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
+            $data[$key] = StringUtil::str_pad(dechex($value), 2, '0', STR_PAD_LEFT);
         }
 
         return hex2bin(implode('', $data));

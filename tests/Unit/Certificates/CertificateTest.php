@@ -18,6 +18,7 @@ use Jose\KeyConverter\KeyConverter;
  * @see http://fm4dd.com/openssl/certexamples.htm
  *
  * @group Certificate
+ * @group Unit
  */
 class CertificateTest extends \PHPUnit_Framework_TestCase
 {

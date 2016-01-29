@@ -18,7 +18,7 @@ use Jose\JSONSerializationModes;
 // We create our key object (JWK) using an encrypted RSA key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
 $key = KeyFactory::createFromFile(
-    __DIR__.'/../tests/Keys/RSA/private.encrypted.key',
+    __DIR__ . '/../tests/Keys/RSA/private.encrypted.key',
     'tests',
     false,
     [

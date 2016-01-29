@@ -16,6 +16,8 @@ use Jose\Test\TestCase;
 
 /**
  * Class DirAlgorithmTest.
+ *
+ * @group Unit
  */
 class DirAlgorithmTest extends TestCase
 {

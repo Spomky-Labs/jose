@@ -60,8 +60,8 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $part_length = $this->getSignaturePartLength();
 
-        $R = str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
-        $S = str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
+        $R = StringUtil::str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
+        $S = StringUtil::str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
 
         return $this->convertHextoBin($R.$S);
     }

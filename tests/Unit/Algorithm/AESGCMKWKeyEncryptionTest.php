@@ -17,6 +17,7 @@ use Jose\Object\JWK;
 
 /**
  * @group AESGCMKW
+ * @group Unit
  */
 class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {

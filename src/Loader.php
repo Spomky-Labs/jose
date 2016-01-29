@@ -32,7 +32,6 @@ final class Loader implements LoaderInterface
         if (array_key_exists('recipients', $json)) {
             return JWELoader::loadSerializedJsonJWE($json);
         }
-        throw new \InvalidArgumentException('Unable to load the input');
     }
 
     /**

@@ -20,6 +20,8 @@ use Jose\Test\TestCase;
 
 /**
  * Class RSAKeyEncryptionTest.
+ *
+ * @group Unit
  */
 class RSAKeyEncryptionTest extends TestCase
 {

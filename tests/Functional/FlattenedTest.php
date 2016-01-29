@@ -15,6 +15,8 @@ use Jose\Test\TestCase;
 
 /**
  * Class FlattenedTest.
+ *
+ * @group Functional
  */
 class FlattenedTest extends TestCase
 {

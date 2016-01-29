@@ -20,6 +20,7 @@ use Jose\Object\JWK;
  * Class ECDHESKeyAgreementTest.
  *
  * @group ECDHES
+ * @group Unit
  */
 class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 {

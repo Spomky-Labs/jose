@@ -18,6 +18,7 @@ use Jose\Test\TestCase;
  * Class JWAManagerTest.
  *
  * @group JWA
+ * @group Unit
  */
 class JWAManagerTest extends TestCase
 {

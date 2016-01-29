@@ -14,6 +14,8 @@ use Jose\Object\JWKSet;
 
 /**
  * Class JWKTest.
+ *
+ * @group Unit
  */
 class JWKTest extends \PHPUnit_Framework_TestCase
 {

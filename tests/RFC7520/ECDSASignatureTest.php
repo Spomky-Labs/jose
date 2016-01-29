@@ -17,6 +17,8 @@ use Jose\Object\JWK;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.3
+ *
+ * @group RFC7520
  */
 class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {

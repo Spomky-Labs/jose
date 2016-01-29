@@ -19,6 +19,7 @@ use Jose\Test\TestCase;
  * Class NoneSignatureTest.
  *
  * @group None
+ * @group Unit
  */
 class NoneSignatureTest extends TestCase
 {

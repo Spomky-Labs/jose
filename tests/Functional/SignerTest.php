@@ -19,6 +19,7 @@ use Jose\Test\TestCase;
 
 /**
  * @group Signer
+ * @group Functional
  */
 class SignerTest extends TestCase
 {

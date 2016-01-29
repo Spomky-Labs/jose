@@ -16,6 +16,8 @@ use Jose\Compression\ZLib;
 
 /**
  * Class CompressionTest.
+ *
+ * @group Unit
  */
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {

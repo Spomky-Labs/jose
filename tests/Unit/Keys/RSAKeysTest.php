@@ -15,6 +15,7 @@ use Jose\Test\TestCase;
 
 /**
  * @group RSAKeys
+ * @group Unit
  */
 class RSAKeysTest extends TestCase
 {
