@@ -16,6 +16,7 @@ use Jose\Object\JWKSet;
  * Class JWKTest.
  *
  * @group Unit
+ * @group JWK
  */
 class JWKTest extends \PHPUnit_Framework_TestCase
 {
@@ -165,5 +166,33 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $jwkset = $jwkset->addKey($jwk2);
 
         $jwkset->getKey(2);
+    }
+
+    public function testPrivateToPublic()
+    {
+        $private = new JWK([
+            'kty'     => 'EC',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd'       => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
+            'use'     => 'sign',
+            'key_ops' => ['verify'],
+            'alg'     => 'ES256',
+            'kid'     => '9876543210',
+        ]);
+
+        $public = $private->toPublic();
+
+        $this->assertEquals(json_encode([
+            'kty'     => 'EC',
+            'crv'     => 'P-256',
+            'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
+            'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'use'     => 'sign',
+            'key_ops' => ['verify'],
+            'alg'     => 'ES256',
+            'kid'     => '9876543210',
+        ]), json_encode($public));
     }
 }

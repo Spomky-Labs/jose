@@ -1,5 +1,7 @@
 # PHP JOSE Library
 
+[![Join the chat at https://gitter.im/Spomky-Labs/jose](https://badges.gitter.im/Spomky-Labs/jose.svg)](https://gitter.im/Spomky-Labs/jose?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=v2.0.x)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=v2.0.x)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=v2.0.x)](https://coveralls.io/github/Spomky-Labs/jose?branch=v2.0.x)
 

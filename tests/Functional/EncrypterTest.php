@@ -288,7 +288,7 @@ class EncrypterTest extends TestCase
             $this->getRSARecipientKey()
         );
 
-        $encrypted = $jwe->toFlattenedJSON(0);
+        $encrypted = $jwe->toCompactJSON(0);
 
         $loaded = Loader::load($encrypted);
 
