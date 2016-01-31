@@ -193,7 +193,8 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $signature = new Signature();
 
         $signature = $signature->withEncodedProtectedHeaders(Base64Url::encode(json_encode(['foo'=>'bar'])));
+        $signature = $signature->withProtectedHeader('plic', 'ploc');
 
-        $this->assertEquals(['foo'=>'bar'], $signature->getProtectedHeaders());
+        $this->assertEquals(['foo'=>'bar', 'plic' => 'ploc'], $signature->getProtectedHeaders());
     }
 }

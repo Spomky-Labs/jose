@@ -9,7 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Base64Url\Base64Url;
 use Jose\Factory\JWEFactory;
 use Jose\Object\Recipient;
 
@@ -55,5 +54,33 @@ class JWETest extends \PHPUnit_Framework_TestCase
         ]);
 
         $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The shared protected header "plic" does not exist.
+     */
+    public function testAddAndGetSharedProtectedHeader()
+    {
+        $jwe = JWEFactory::createJWE([]);
+        $jwe = $jwe->withSharedProtectedHeader('foo', 'bar');
+
+        $this->assertEquals(['foo'=>'bar'], $jwe->getSharedProtectedHeaders());
+        $this->assertEquals('bar', $jwe->getSharedProtectedHeader('foo'));
+        $this->assertEquals('bar', $jwe->getSharedProtectedHeader('plic'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The shared header "plic" does not exist.
+     */
+    public function testAddSharedProtectedHeader()
+    {
+        $jwe = JWEFactory::createJWE([]);
+        $jwe = $jwe->withSharedHeader('foo', 'bar');
+
+        $this->assertEquals(['foo'=>'bar'], $jwe->getSharedHeaders());
+        $this->assertEquals('bar', $jwe->getSharedHeader('foo'));
+        $this->assertEquals('bar', $jwe->getSharedHeader('plic'));
     }
 }

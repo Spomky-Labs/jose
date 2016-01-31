@@ -39,7 +39,7 @@
     },
    "suggest":{
         "ext-crypto": "Required to use AES GCM based algorithms.",
-        "mdanter/ecc": "Required to use ECC based algorithms (use v0.3 only)."
+        "mdanter/ecc": "Required to use ECC based algorithms (only v0.3 is supported)."
    },
     "extra": {
         "branch-alias": {
