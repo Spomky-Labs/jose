@@ -11,6 +11,7 @@
 
 use Base64Url\Base64Url;
 use Jose\Factory\JWSFactory;
+use Jose\Object\Signature;
 
 /**
  * Class JWSTest.
@@ -97,5 +98,51 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $jws->toJSON();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The payload does not contain claims.
+     */
+    public function testNoClaims()
+    {
+        $jws = JWSFactory::createJWS('Hello');
+
+        $jws->getClaims();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The payload does not contain claim "foo".
+     */
+    public function testClaimDoesNotExist()
+    {
+        $jws = JWSFactory::createJWS([
+            'nbf' => time(),
+            'iat' => time(),
+            'exp' => time() + 3600,
+            'iss' => 'Me',
+            'aud' => 'You',
+            'sub' => 'My friend',
+        ]);
+
+        $jws->getClaim('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The signature contains unprotected headers and cannot be converted into compact JSON
+     */
+    public function testSignatureContainsUnprotectedHeaders()
+    {
+        $jws = JWSFactory::createJWS('Hello');
+        $signature = new Signature();
+        $signature = $signature->withHeader('foo', 'bar');
+
+        $this->assertEquals('bar', $signature->getHeader('foo'));
+
+        $jws = $jws->addSignature($signature);
+
+        $jws->toCompactJSON(0);
     }
 }
