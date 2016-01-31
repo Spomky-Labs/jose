@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -12,13 +12,15 @@
 namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
+use Jose\Util\StringUtil;
 
 /**
  * This class handles signatures using HMAC.
  * It supports algorithms HS256, HS384 and HS512;.
  */
-abstract class HMAC implements SignatureInterface
+abstract class HMAC implements SignatureAlgorithmInterface
 {
     /**
      * {@inheritdoc}
@@ -43,7 +45,7 @@ abstract class HMAC implements SignatureInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }
@@ -53,8 +55,8 @@ abstract class HMAC implements SignatureInterface
         if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         }
-        $safeLen = strlen($safe);
-        $userLen = strlen($user);
+        $safeLen = StringUtil::strlen($safe);
+        $userLen = StringUtil::strlen($user);
 
         if ($userLen !== $safeLen) {
             return false;

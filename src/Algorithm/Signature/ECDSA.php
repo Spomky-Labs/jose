@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -12,7 +12,9 @@
 namespace Jose\Algorithm\Signature;
 
 use Base64Url\Base64Url;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
+use Jose\Util\StringUtil;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
@@ -20,7 +22,7 @@ use Mdanter\Ecc\Random\RandomGeneratorFactory;
 /**
  * Class ECDSA.
  */
-abstract class ECDSA implements SignatureInterface
+abstract class ECDSA implements SignatureAlgorithmInterface
 {
     /**
      * @var \Mdanter\Ecc\Math\MathAdapterInterface
@@ -58,8 +60,8 @@ abstract class ECDSA implements SignatureInterface
 
         $part_length = $this->getSignaturePartLength();
 
-        $R = str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
-        $S = str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
+        $R = StringUtil::str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
+        $S = StringUtil::str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
 
         return $this->convertHextoBin($R.$S);
     }
@@ -73,15 +75,15 @@ abstract class ECDSA implements SignatureInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2 * $part_length) {
+        if (StringUtil::strlen($signature) !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec(substr($signature, $part_length));
+        $R = $this->convertHexToDec(StringUtil::substr($signature, 0, $part_length));
+        $S = $this->convertHexToDec(StringUtil::substr($signature, $part_length));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
@@ -163,7 +165,7 @@ abstract class ECDSA implements SignatureInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'EC' !== $key->get('kty')) {
+        if ('EC' !== $key->get('kty')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
         if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {

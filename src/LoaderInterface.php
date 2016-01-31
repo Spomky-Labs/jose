@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -23,7 +23,7 @@ interface LoaderInterface
      *
      * @param string $input A string that represents a JSON Web Token message
      *
-     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface|\Jose\Object\JWSInterface[]|\Jose\Object\JWEInterface[]|null If the data has been loaded.
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
      */
-    public function load($input);
+    public static function load($input);
 }

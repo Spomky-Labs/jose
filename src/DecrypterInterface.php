@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Jose\Object\JWEInterface;
+use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 
 /**
@@ -20,14 +21,18 @@ use Jose\Object\JWKSetInterface;
 interface DecrypterInterface
 {
     /**
-     * Load data and try to return a JWSInterface object, a JWEInterface object or a list of these objects.
-     * If the result is a JWE, nothing is decrypted and method `decrypt` must be executed
-     * If the result is a JWS, no signature is verified and method `verifySignature` must be executed.
+     * @param \Jose\Object\JWEInterface $input A JWE object to decrypt
+     * @param \Jose\Object\JWKInterface $jwk   The key used to decrypt the input
      *
+     * @return false|int Return false if the JWE has not been decrypted, else an integer that represents the ID of the decrypted recipient
+     */
+    public function decryptUsingKey(JWEInterface &$input, JWKInterface $jwk);
+
+    /**
      * @param \Jose\Object\JWEInterface    $input   A JWE object to decrypt
      * @param \Jose\Object\JWKSetInterface $jwk_set The key set used to decrypt the input
      *
-     * @return bool Returns true if the JWE has been populated with decrypted values, else false.
+     * @return false|int Return false if the JWE has not been decrypted, else an integer that represents the ID of the decrypted recipient
      */
-    public function decrypt(JWEInterface &$input, JWKSetInterface $jwk_set);
+    public function decryptUsingKeySet(JWEInterface &$input, JWKSetInterface $jwk_set);
 }

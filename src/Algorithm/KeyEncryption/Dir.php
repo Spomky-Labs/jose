@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -19,9 +19,9 @@ final class Dir implements DirectEncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function getCEK(JWKInterface $key, array $header)
+    public function getCEK(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'dir' !== $key->get('kty') || !$key->has('dir')) {
+        if ('dir' !== $key->get('kty') || !$key->has('dir')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
 
@@ -34,5 +34,13 @@ final class Dir implements DirectEncryptionInterface
     public function getAlgorithmName()
     {
         return 'dir';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_DIRECT;
     }
 }

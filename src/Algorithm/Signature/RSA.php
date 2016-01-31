@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -11,13 +11,14 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWKInterface;
 
 /**
  * Class RSA.
  */
-abstract class RSA implements SignatureInterface
+abstract class RSA implements SignatureAlgorithmInterface
 {
     /**
      * @return mixed

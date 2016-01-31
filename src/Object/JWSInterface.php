@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -14,26 +14,54 @@ namespace Jose\Object;
 interface JWSInterface extends JWTInterface
 {
     /**
-     * Returns the signature associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string|null
-     */
-    public function getSignature();
-
-    /**
-     * Returns the encoded payload associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
-     *
-     * @return string|null
+     * @return null|string
      */
     public function getEncodedPayload();
 
     /**
-     * Returns the encoded protected header associated with the loaded JWS.
-     * Note: This method is used internally and should not be used directly.
+     * Returns the number of signature associated with the JWS.
      *
-     * @return string|null
+     * @return int
      */
-    public function getEncodedProtectedHeader();
+    public function countSignatures();
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return \Jose\Object\JWSInterface
+     */
+    public function addSignature(SignatureInterface $signature);
+
+    /**
+     * Returns the signature associated with the JWS.
+     *
+     * @return \Jose\Object\SignatureInterface[]
+     */
+    public function getSignatures();
+
+    /**
+     * @param int $id
+     *
+     * @return \Jose\Object\SignatureInterface
+     */
+    public function getSignature($id);
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public function toCompactJSON($id);
+
+    /**
+     * @param int $id
+     *
+     * @return string
+     */
+    public function toFlattenedJSON($id);
+
+    /**
+     * @return string
+     */
+    public function toJSON();
 }

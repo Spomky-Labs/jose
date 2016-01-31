@@ -6,117 +6,196 @@ How to use
 Each operation you will perform with this library uses objects.
 Before to start, you need to know object types provided by this library and the methods you can call.
 
+* [Signed JWT (JWS)](object/jws.md)
+* [Encrypted JWT (JWE)](object/jwe.md)
 * [The keys (JWK)](object/jwk.md)
 * [The key sets (JWKSet)](object/jwkset.md)
-* The Jose:
-    * [JWT](object/jwt.md)
-    * [JWS](object/jws.md)
-    * [JWE](object/jwe.md)
-* The instructions:
-    * [Signature instruction](object/signature_instruction.md)
-    * [Encryption instruction](object/encryption_instruction.md)
 
 # The operations
 
-Depending on operations you want to perform, you have to initialize required components first.
+## How To Add A Signature?
 
-## How To Sign
+To add a signature on a `JWS` object, you will need to create:
 
-### Create a JWS
+* the `JWS` object itself,
+* a key (`JWK` object),
+* a `Signer` object with algorithm you want to use.
 
-First, you must create a [signature instruction](object/signature_instruction.md) for each signature you want to create:
-
-```php
-use Jose\SignatureInstruction;
-
-$instruction1 = new SignatureInstruction();
-$instruction1->setProtectedHeader(['alg'=>'HS512'])
-    ->setKey($my_first_key);
-$instruction2 = new SignatureInstruction();
-$instruction2->setProtectedHeader(['alg'=>'ES384'])
-    ->setUnprotectedHeader('foo'=>'bar')
-    ->setKey($my_second_key);
-```
-
-Then, you can sign your input:
+Example
+-------
 
 ```php
-use Jose\JSONSerializationModes;
-$input = 'The input to sign';
-$instructions = [$instruction1, $instruction2];
+use Jose\Factory\JWSFactory;
+use Jose\Factory\KeyFactory;
+use Jose\Factory\SignerFactory;
 
-$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION);
+// We create our JWS object with claims
+$jws = JWSFactory::createJWS([
+   'iss' => 'https://my-authorization-server.com',
+   'aud' => 'https://your-resource-server.com',
+   'sub' => '0123456789',
+   'exp' => 1456789018,
+   'iat' => 1456780018,
+   'nbf' => 1456780018,
+]);
+
+// We load two keys
+$key1 = KeyFactory::createFromFile('/path/to/my/RSA/private.encrypted.key', 'Password');
+$key2 = KeyFactory::createFromValues([
+    'kty' => 'oct',
+    'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+]);
+
+// We create our Signer service and we declare the algorithms we want to use ('HS512' and 'RS512')
+$signer = SignerFactory::createSigner(['HS512', 'RS512']);
+
+// We add the first signature using our RSA key and algorithm RS512
+$signer->addSignature(
+   $jws,
+   $key1,
+   ['alg' => 'RS512']
+);
+
+// We add the second signature using our shared key and algorithm HS512
+$signer->addSignature(
+   $jws,
+   $key2,
+   ['alg' => 'HS512']
+);
+
+// Now our JWS object contains 2 signatures.
+// We can convert each signature into compact or flattened JSON.
+// We can convert the JWS into JSON with all signatures
+$jws->toCompactJSON(0); // We convert the first signature (#0) into compact JSON
+$jws->toFlattenedJSON(1); // We convert the second signature (#1) into flattened JSON
+$jws->toJSON(); // We convert all signatures into JSON
 ```
 
-### Output
+### Important note
 
-The supported serialization modes can be found in [the Compact Serialization mode page](OutputModes.md).
-
-The output depends on the output format you set and the number of instructions. It could be:
-
-| Output Mode \ Number of instruction |   1    |        2+        |
-|-------------------------------------|--------|------------------|
-| Compact JSON Serialization          | string | array of strings |
-| Flattened JSON Serialization        | string | array of strings |
-| JSON Serialization                  | string | string           |
-
+Please note that if a signature contains unprotected headers, it cannot be converted into Compact JSON Serialization mode.
 
 ### Detached payload
 
-In some cases, you will need to detached the payload. This library is able to perform this task for you.
+In some cases, you will need to detached the payload. This library supports `JWS` with detached payload.
+
+Example
+-------
 
 ```php
-$output = $signer->sign($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION, true, $detached_payload);
+use Jose\Factory\JWSFactory;
+use Jose\Factory\KeyFactory;
+use Jose\Factory\SignerFactory;
+
+// We create our JWS object with claims
+// The method used is 'createJWSWithDetachedPayload'.
+// The second argument will contain the encoded payload
+$jws = JWSFactory::createJWSWithDetachedPayload(
+   [
+      'iss' => 'https://my-authorization-server.com',
+      'aud' => 'https://your-resource-server.com',
+      'sub' => '0123456789',
+      'exp' => 1456789018,
+      'iat' => 1456780018,
+      'nbf' => 1456780018,
+   ],
+   $encoded_payload
+);
+
+// We load two keys
+... See previous example
+
+// We add a signature using our RSA key and algorithm RS512
+// Please note that the method is now 'addSignatureWithDetachedPayload' and the third argument is the detached payload
+$signer->addSignatureWithDetachedPayload(
+   $jws,
+   $key1,
+   $detached_payload,
+   ['alg' => 'RS512']
+);
+
+);
+
+// Now our JWS object contain all signatures, but hte payload is empty.
+// As in the previous example, the signatures can be converted into JSON (including compact and flattened).
+// The payload will not be present.
 ```
 
-The fourth parameter is set to `true` to indicate that the payload is detached.
-The output now contains all signatures but no payload. The payload is set in the last parameter `$detached_payload`.
-Note that your payload is encoded in Base 64.
+## How To Add A Recipient (= encrypt)?
 
-## How To Encrypt
+To add a recipient on a `JWE` object, you will need to create:
 
-### Create a JWE
+* the `JWE` object itself,
+* a key (`JWK` object),
+* an `Encrypter` object with algorithm you want to use.
 
-First, you must create an [encryption instruction](object/encryption_instruction.md) for each encryption you want to create:
+Example
+-------
 
 ```php
-use Jose\EncryptionInstruction;
+use Jose\Factory\JWEFactory;
+use Jose\Factory\KeyFactory;
+use Jose\Factory\EncrypterFactory;
 
-$instruction1 = new EncryptionInstruction();
-$instruction1->setRecipientKey($first_recipient_public_key)
-    ->setUnprotectedHeader([
-        'alg' => 'RSA-OAEP-256',
-    ]);
+// We create our JWE object with claims
+$jws = JWEFactory::createJWE(
+    'My very important information',
+    [
+        'enc' => 'A256CBC-HS512',
+        'zip' => 'DEF',
+    ]
+);
 
-$instruction2 = new EncryptionInstruction();
-$instruction2>setRecipientKey($second_recipient_public_key)
-   ->setSenderKey($my_private_key)
-   ->setUnprotectedHeader([
-        'alg' => 'ECDH-ES',
-        'foo' => 'bar',
-   ]);
+// We load two keys
+$key1 = KeyFactory::createFromFile('/path/to/my/RSA/public.key');
+
+// We create our Encrypter service and we declare the algorithms we want to use ('A256CBC-HS512' and 'RSA-OAEP-256')
+$encrypter = EncrypterFactory::createEncrypter(['A256CBC-HS512', 'RSA-OAEP-256']);
+
+// We add a recipient using our RSA key and algorithm RSA-OAEP-256
+$encrypter->addRecipient(
+   $jwe,                     // The JWE object
+   $key1,                    // The recipient's key
+   null,                     // The sender key (needed using EC based algorithms)
+   ['alg' => 'RSA-OAEP-256'] // The recipient' headers (we only declare the algorithm used for key encryption)
+);
+
+
+// Now our JWE object contains the encrypted payload and 1 recipient.
+// We can convert each recipient into compact or flattened JSON.
+// We can convert the JWE into JSON with all signatures
+$jwe->toCompactJSON(0); // We convert the recipient (#0) into compact JSON
+$jwe->toFlattenedJSON(1); // We convert the recipient (#0) into flattened JSON
+$jwe->toJSON(); // We convert all recipients into JSON
 ```
 
-Then, you can encrypt your input:
+### Additional Authenticated Data
+
+This library supports Additional Authenticated Data (AAD).
 
 ```php
-$input = 'The input to encrypt';
-$instructions = [$instruction1, $instruction2];
-$shared_protected_header = [
-    'enc' => 'A256CBC-HS512',
-    'zip' => 'DEF'
-];
-$shared_unprotected_header = [];
-
-$output = $encrypter->encrypt($input, $instructions, JSONSerializationModes::JSON_COMPACT_SERIALIZATION, $shared_protected_header, $shared_unprotected_header);
+$jws = JWEFactory::createJWE(
+    'My very important information',
+    [
+        'enc' => 'A256CBC-HS512',
+        'zip' => 'DEF',
+    ],
+    [
+        'shared unprotected header' => 'value',
+    ],
+    'This is an AAD'
+);
 ```
 
-#### Important note
+Please note that when a JWE object contains an AAD or unprotected headers (shared or per recipient), the JWE cannot be
+converted into compact JSON.
 
-With this library, you can create encrypt an input using multiple instructions.
+### Multiple recipients support
+
+With this library, you can create encrypt an input using multiple recipients.
 In this case, the Key Management Mode is determined according to the used algorithms.
 
-You cannot create multiple encryptions if the Key Management Mode are not compatible.
+You cannot create multiple recipients if the Key Management Mode are not compatible.
 Hereafter, a table with algorithms and associated Key Management Mode.
 
 | Algorithm \ Key Management Mode | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
@@ -143,43 +222,39 @@ And a compatibility table between Key Management Modes:
 
 |        Key Management Mode      | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
 |---------------------------------|----------------|--------------|----------------------|---------------------------------|-------------------|
-| Key Encryption                  |     YES        |     YES      |        NO            |            YES                  |       NO          |
-| Key Wrapping                    |     YES        |     YES      |        NO            |            YES                  |       NO          |
-| Direct Key Agreement            |     NO         |     NO       |        YES           |            NO                   |       NO          |
-| Key Agreement with Key Wrapping |     YES        |     YES      |        NO            |            YES                  |       NO          |
-| Direct Encryption               |     NO         |     NO       |        NO            |            NO                   |       YES         |
+| Key Encryption                  |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
+| Key Wrapping                    |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
+| Direct Key Agreement            |     NO *       |     NO *     |        YES           |            NO *                 |       NO          |
+| Key Agreement with Key Wrapping |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
+| Direct Encryption               |     NO *       |     NO *     |        NO            |            NO *                 |       YES         |
 
-### Output
+*: Compatibility is possible only if the algorithm for the first recipient is a `Direct Key Agreement` or a `Direct Encryption` algorithm and there is no other recipient using the same algorithms, otherwise it is not possible
 
-The supported serialization modes can be found in [the Compact Serialization mode page](OutputModes.md).
+## How To Load?
 
-The output depends on the output format you set and the number of instructions. It could be:
-
-| Output Mode \ Number of instruction |   1    |        2+        |
-|-------------------------------------|--------|------------------|
-| Compact JSON Serialization          | string | array of strings |
-| Flattened JSON Serialization        | string | array of strings |
-| JSON Serialization                  | string | string           |
-
-
-### Additional Authenticated Data
-
-This library supports Additional Authenticated Data (AAD).
-
-Note that this data is not available when using Compact JSON Serialization mode.
+This library provides a simple JWT loader. This loader will return a JWS or JWE object depending on the input.
+The loader is able to load compact JSON, flattened JSON or JSON representation.
 
 ```php
-$output = $encrypter->encrypt($input, $instructions, $shared_protected_header, $shared_unprotected_header, JSONSerializationModes::JSON_SERIALIZATION, 'foo,bar,baz');
+use Jose\Loader;
+
+$input = 'eyJhbGciOiJSUzI1NiJ9.eyJuYmYiOjE0NTE0NjkwMTcsImlhdCI6MTQ1MTQ2OTAxNywiZXhwIjoxNDUxNDcyNjE3LCJpc3MiOiJNZSIsImF1ZCI6IllvdSIsInN1YiI6Ik15IGZyaWVuZCJ9.mplHfnyXzUdlEkPmykForVM0FstqgiihfDRTd2Zd09j6CZzANBJbZNbisLerjO3lR9waRlYvhnZu_ewIAahDwmVTfpSeKKABbAyoTHXTH2WLgMPLtOAsoausUf584eAAj_kyldIOV8a83Qz1NztZHVD3DbGTiCN0BOj-qnc65yQmEDEYK5cxG1xC22YK5aohZ3xm8ixwNZpxYr8cNOkauASYjPGODbHqY_gjQ-aKA21kxbYgwM6mDYSc3QRej1_3m6bD3jKPsK4jv3yzosVMEXOparf4sEb8q_zCPMDJAJgZZ8VICwJdgYnJkQuIutS-w3_iT-riKl8fkgmJezQVkg';
+
+// We load the input
+$jwt = Loader::load($input);
+
+// The variable $result a valid JWSInterface object.
 ```
 
-## How To Load
+At this stage, no verification or decryption has been performed.
 
-### Load a JWS or JWE
+* If the loaded input is a JWS, you MUST verify it
+* If the loaded input is a JWE, you MUST decrypt it.
 
-```php
-$output = $loader->load($input);
-```
+## How to verify a JWS?
 
-### Verify a JWS
+** To be written **
 
-### Decrypt a JWE
+## How to decrypt a JWE?
+
+** To be written **

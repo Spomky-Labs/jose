@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -64,11 +64,19 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_WRAP;
+    }
+
+    /**
      * @param JWKInterface $key
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
     }

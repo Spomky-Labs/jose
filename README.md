@@ -1,12 +1,13 @@
 # PHP JOSE Library
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
-[![Coverage Status](https://coveralls.io/repos/Spomky-Labs/jose/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
+[![Join the chat at https://gitter.im/Spomky-Labs/jose](https://badges.gitter.im/Spomky-Labs/jose.svg)](https://gitter.im/Spomky-Labs/jose?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=master)](https://travis-ci.org/Spomky-Labs/jose)
-[![StyleCI](https://styleci.io/repos/22874677/shield)](https://styleci.io/repos/22874677)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=v2.0.x)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=v2.0.x)
+[![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=v2.0.x)](https://coveralls.io/github/Spomky-Labs/jose?branch=v2.0.x)
 
-[![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/jose.png)](http://hhvm.h4cc.de/package/Spomky-Labs/jose)
+[![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=v2.0.x)](https://travis-ci.org/Spomky-Labs/jose)
+
+[![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/jose.svg?style=flat)](http://hhvm.h4cc.de/package/Spomky-Labs/jose)
 [![PHP 7 ready](http://php7ready.timesplinter.ch/Spomky-Labs/jose/badge.svg)](https://travis-ci.org/Spomky-Labs/jose)
 
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee/big.png)](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee)
@@ -30,18 +31,11 @@ This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org
 
 # Important note
 
-> Note 1: this library is still in development. The first stable release will be tagged as v1.0.x. All tags v0.x.y must be considered as unstable.
+> Note 1: this library is still in development. All tags v0.x.y must be considered as unstable.
 
-> Note 2: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
+> Note 2: version 1.0.x is quite stable (beta) but really hard to use. A version 2.0.x is in developpement and will be easier to use with the same functionnalities
 
-This library provides all objects and components to perform signature, verification, encryption and decryption according to the RFCs listed above.
-You will have to create a `Signer`, `Verifier`, `Encrypter` `Decrypter` or `Loader` object to execute all these operation.
-
-You will be afraid of all of this and you will think that this library is very complicated to use. AND YOU ARE RIGHT!
-
-Fortunately, we created factories to ease your life and we highly recommend to use them.
-
-Finally, this library and all these projects are still in active development. Do not hesitate to send us your feedback!
+> Note 3: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
 
 # Status of implementations
 
@@ -57,19 +51,20 @@ This library needs at least:
 * ![PHP 5.5.9+](https://img.shields.io/badge/PHP-5.5.9%2B-ff69b4.svg).
 
 Please consider the following optional requirements:
-* AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`).
+* For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`).
+* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only).
 
 # Continuous Integration
 
 It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM`.
 
-Please note that `AxxxGCM` and `AxxxGCMKW` tests are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
+Please note that tests using algorithms `AxxxGCM` and `AxxxGCMKW` are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
 Coding Standards are verified by [StyleCI](https://styleci.io/repos/22874677).
 
-Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-Labs/jose). 
+Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-Labs/jose).
 
 # Installation
 
@@ -89,7 +84,7 @@ composer require spomky-labs/jose --prefer-source
 
 Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
 
-# Unsecured JWS
+# Unsecured JWS 
 
 This library supports unsecured `JWS` (`none` algorithm).
 

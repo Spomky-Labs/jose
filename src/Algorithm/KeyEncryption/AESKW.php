@@ -3,7 +3,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014-2015 Spomky-Labs
+ * Copyright (c) 2014-2016 Spomky-Labs
  *
  * This software may be modified and distributed under the terms
  * of the MIT license.  See the LICENSE file for details.
@@ -13,11 +13,12 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Jose\Object\JWKInterface;
+use Jose\Util\StringUtil;
 
 /**
  * Class AESKW.
  */
-abstract class AESKW implements KeyEncryptionInterface
+abstract class AESKW implements KeyWrappingInterface
 {
     /**
      * @param \Jose\Object\JWKInterface $key
@@ -26,7 +27,7 @@ abstract class AESKW implements KeyEncryptionInterface
      *
      * @return mixed
      */
-    public function encryptKey(JWKInterface $key, $cek, array &$header)
+    public function wrapKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
@@ -41,7 +42,7 @@ abstract class AESKW implements KeyEncryptionInterface
      *
      * @return mixed
      */
-    public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
+    public function unwrapKey(JWKInterface $key, $encryted_cek, array $header)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
@@ -50,14 +51,22 @@ abstract class AESKW implements KeyEncryptionInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getKeyManagementMode()
+    {
+        return self::MODE_WRAP;
+    }
+
+    /**
      * @param \Jose\Object\JWKInterface $key
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'oct' !== $key->get('kty') || !$key->has('k')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
-        if ($this->getKeySize() !== strlen(Base64Url::decode($key->get('k')))) {
+        if ($this->getKeySize() !==  StringUtil::strlen(Base64Url::decode($key->get('k')))) {
             throw new \InvalidArgumentException('The key size is not valid');
         }
     }
