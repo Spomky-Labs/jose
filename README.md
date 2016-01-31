@@ -1,10 +1,10 @@
-# PHP JOSE Library
+PHP JOSE Library
+================
 
 [![Join the chat at https://gitter.im/Spomky-Labs/jose](https://badges.gitter.im/Spomky-Labs/jose.svg)](https://gitter.im/Spomky-Labs/jose?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=v2.0.x)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=v2.0.x)
-[![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=v2.0.x)](https://coveralls.io/github/Spomky-Labs/jose?branch=v2.0.x)
-
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE/?branch=master)
+[![Coverage Status](https://coveralls.io/repos/Spomky-Labs/jose/badge.svg?branch=master&service=github)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
 [![Build Status](https://travis-ci.org/Spomky-Labs/jose.svg?branch=v2.0.x)](https://travis-ci.org/Spomky-Labs/jose)
 
 [![HHVM Status](http://hhvm.h4cc.de/badge/Spomky-Labs/jose.svg?style=flat)](http://hhvm.h4cc.de/package/Spomky-Labs/jose)
@@ -33,9 +33,7 @@ This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org
 
 > Note 1: this library is still in development. All tags v0.x.y must be considered as unstable.
 
-> Note 2: version 1.0.x is quite stable (beta) but really hard to use. A version 2.0.x is in developpement and will be easier to use with the same functionnalities
-
-> Note 3: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
+> Note 2: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
 
 # Status of implementations
 
