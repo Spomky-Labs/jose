@@ -145,4 +145,55 @@ class JWSTest extends \PHPUnit_Framework_TestCase
 
         $jws->toCompactJSON(0);
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The header "foo" does not exist
+     */
+    public function testSignatureDoesNotContainHeader()
+    {
+        $signature = new Signature();
+
+        $signature->getHeader('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected header "foo" does not exist
+     */
+    public function testSignatureDoesNotContainProtectedHeader()
+    {
+        $signature = new Signature();
+
+        $signature->getProtectedHeader('foo');
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The argument does not contain valid encoded protected headers.
+     */
+    public function testBadEncodedProtectedHeader()
+    {
+        $signature = new Signature();
+
+        $signature->withEncodedProtectedHeaders('foo');
+    }
+
+    public function testEmptyEncodedProtectedHeader()
+    {
+        $signature = new Signature();
+
+        $signature->withEncodedProtectedHeaders('');
+
+        $this->assertEquals([], $signature->getProtectedHeaders());
+    }
+
+    public function testEncodedProtectedHeader()
+    {
+        $signature = new Signature();
+
+        $signature = $signature->withEncodedProtectedHeaders(Base64Url::encode(json_encode(['foo'=>'bar'])));
+
+        $this->assertEquals(['foo'=>'bar'], $signature->getProtectedHeaders());
+    }
 }
