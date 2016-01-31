@@ -74,7 +74,12 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
-        foreach ($jwe->getRecipients() as $recipient) {
+        $this->checkJWKSet($jwk_set);
+        $this->checkPayload($jwe);
+        $this->checkRecipients($jwe);
+
+        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
+            $recipient = $jwe->getRecipient($i);
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),
@@ -94,7 +99,7 @@ final class Decrypter implements DecrypterInterface
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
                             $this->getCheckerManager()->checkJWT($jwe);
 
-                            return true;
+                            return $i;
                         };
                     }
                 } catch (\Exception $e) {
@@ -105,6 +110,36 @@ final class Decrypter implements DecrypterInterface
         }
 
         return false;
+    }
+
+    /**
+     * @param \Jose\Object\JWEInterface $jwe
+     */
+    private function checkRecipients(JWEInterface $jwe)
+    {
+        if (0 === $jwe->countRecipients()) {
+            throw new \InvalidArgumentException('The JWE does not contain any recipient.');
+        }
+    }
+
+    /**
+     * @param \Jose\Object\JWEInterface $jwe
+     */
+    private function checkPayload(JWEInterface $jwe)
+    {
+        if (null !== $jwe->getPayload()) {
+            throw new \InvalidArgumentException('The JWE is already decrypted.');
+        }
+    }
+
+    /**
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     */
+    private function checkJWKSet(JWKSetInterface $jwk_set)
+    {
+        if (0 === count($jwk_set)) {
+            throw new \InvalidArgumentException('No key in the key set.');
+        }
     }
 
     /**

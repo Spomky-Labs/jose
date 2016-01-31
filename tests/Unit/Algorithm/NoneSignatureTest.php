@@ -70,11 +70,11 @@ class NoneSignatureTest extends TestCase
 
         $jws = \Jose\Factory\JWSFactory::createJWS('Je suis Charlie');
 
-        $signed = $signer->addSignature($jws, $jwk, ['alg' => 'none']);
+        $signer->addSignature($jws, $jwk, ['alg' => 'none']);
 
-        $this->assertEquals(1, $signed->countSignatures());
+        $this->assertEquals(1, $jws->countSignatures());
 
-        $compact = $signed->toCompactJSON(0);
+        $compact = $jws->toCompactJSON(0);
         $this->assertTrue(is_string($compact));
 
         $result = Loader::load($compact);

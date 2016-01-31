@@ -36,7 +36,7 @@ class FlattenedTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 

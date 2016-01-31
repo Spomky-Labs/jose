@@ -47,7 +47,7 @@ $encrypter = EncrypterFactory::createEncrypter(
 );
 
 // Lastly, we add a recipient for our message.
-$jwe = $encrypter->addRecipient($jwe, $key);
+$encrypter->addRecipient($jwe, $key);
 
 // Now the variable $jwe contains our JWE with one recipient
 // Please read example Load3.php to know how to load this string and to decrypt the content.

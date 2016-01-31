@@ -24,7 +24,7 @@ interface DecrypterInterface
      * @param \Jose\Object\JWEInterface $input A JWE object to decrypt
      * @param \Jose\Object\JWKInterface $jwk   The key used to decrypt the input
      *
-     * @return bool Returns true if the JWE has been populated with decrypted values, else false.
+     * @return false|int Return false if the JWE has not been decrypted, else an integer that represents the ID of the decrypted recipient
      */
     public function decryptUsingKey(JWEInterface &$input, JWKInterface $jwk);
 
@@ -32,7 +32,7 @@ interface DecrypterInterface
      * @param \Jose\Object\JWEInterface    $input   A JWE object to decrypt
      * @param \Jose\Object\JWKSetInterface $jwk_set The key set used to decrypt the input
      *
-     * @return bool Returns true if the JWE has been populated with decrypted values, else false.
+     * @return false|int Return false if the JWE has not been decrypted, else an integer that represents the ID of the decrypted recipient
      */
     public function decryptUsingKeySet(JWEInterface &$input, JWKSetInterface $jwk_set);
 }

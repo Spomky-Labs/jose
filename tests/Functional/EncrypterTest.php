@@ -45,7 +45,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey()
         );
@@ -62,7 +62,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
@@ -85,7 +85,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey()
         );
@@ -102,7 +102,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeyToEncrypt(), new JWK($loaded->getPayload()));
     }
@@ -144,13 +144,13 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKeyWithAlgorithm(),
             null,
             ['alg' => 'RSA-OAEP']
         );
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
             null,
@@ -172,14 +172,14 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
             null,
@@ -202,7 +202,7 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
@@ -283,7 +283,7 @@ class EncrypterTest extends TestCase
             'zip' => 'DEF',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey()
         );
@@ -300,7 +300,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
     }
@@ -406,7 +406,7 @@ class EncrypterTest extends TestCase
             'alg' => 'dir',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getDirectKey()
         );
@@ -423,7 +423,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
     }
@@ -443,7 +443,7 @@ class EncrypterTest extends TestCase
             'alg' => 'ECDH-ES',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
@@ -459,7 +459,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue($loaded->hasClaims());
         $this->assertTrue($loaded->hasClaim('user_id'));
         $this->assertEquals('1234', $loaded->getClaim('user_id'));
@@ -522,7 +522,7 @@ class EncrypterTest extends TestCase
             'alg' => 'ECDH-ES+A256KW',
         ]);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
@@ -539,7 +539,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
@@ -568,7 +568,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey()
@@ -587,7 +587,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
@@ -603,13 +603,13 @@ class EncrypterTest extends TestCase
         $jwe = JWEFactory::createJWE('Je suis Charlie');
         $jwe = $jwe->withSharedProtectedHeaders(['enc' => 'A256CBC-HS512']);
 
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
             $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
-        $jwe = $encrypter->addRecipient(
+        $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
             null,
@@ -630,7 +630,7 @@ class EncrypterTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }

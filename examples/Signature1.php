@@ -47,7 +47,7 @@ $signer = SignerFactory::createSigner(
 );
 
 // Lastly, we sign our claims with our key and we add protected headers.
-$jws = $signer->addSignature(
+$signer->addSignature(
     $jws,
     $key,
     [

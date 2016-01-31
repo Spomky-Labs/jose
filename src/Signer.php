@@ -39,7 +39,7 @@ final class Signer implements SignerInterface
     /**
      * {@inheritdoc}
      */
-    public function addSignatureWithDetachedPayload(JWSInterface $jws, JWKInterface $key, $detached_payload, array $protected_headers = [], array $headers = [])
+    public function addSignatureWithDetachedPayload(JWSInterface &$jws, JWKInterface $key, $detached_payload, array $protected_headers = [], array $headers = [])
     {
         $signature = new Signature();
         if (!empty($protected_headers)) {
@@ -55,21 +55,19 @@ final class Signer implements SignerInterface
         $signature = $signature->withSignature($value);
 
         $jws = $jws->addSignature($signature);
-
-        return $jws;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function addSignature(JWSInterface $jws, JWKInterface $key, array $protected_headers = [], array $headers = [])
+    public function addSignature(JWSInterface &$jws, JWKInterface $key, array $protected_headers = [], array $headers = [])
     {
         if (null === $jws->getEncodedPayload()) {
             throw new \InvalidArgumentException('No payload.');
         }
         $this->checkKeyUsage($key, 'signature');
 
-        return $this->addSignatureWithDetachedPayload($jws, $key, $jws->getEncodedPayload(), $protected_headers, $headers);
+        $this->addSignatureWithDetachedPayload($jws, $key, $jws->getEncodedPayload(), $protected_headers, $headers);
     }
 
     /**

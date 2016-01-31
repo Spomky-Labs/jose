@@ -34,7 +34,7 @@ $signer = SignerFactory::createSigner(
 // Lastly, we sign our claims (first argument) with our instructions (only one instruction).
 // We want a JWS in flattened serialization mode (compact serialization mode cannot be used as an unprotected header is set)
 // We also want to detach the payload. The result will not contain the payload. The payload will be set into the last argument
-$jws = $signer->addSignatureWithDetachedPayload(
+$signer->addSignatureWithDetachedPayload(
     $jws,
     $key,
     $detached_payload,

@@ -51,14 +51,9 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\Object\JWEInterface      $jwe
-     * @param \Jose\Object\JWKInterface      $recipient_key
-     * @param \Jose\Object\JWKInterface|null $sender_key
-     * @param array                          $recipient_headers
-     *
-     * @return \Jose\Object\JWEInterface
+     * {@inheritdoc}
      */
-    public function addRecipient(JWEInterface $jwe, JWKInterface $recipient_key, JWKInterface $sender_key = null, array $recipient_headers = [])
+    public function addRecipient(JWEInterface &$jwe, JWKInterface $recipient_key, JWKInterface $sender_key = null, array $recipient_headers = [])
     {
         $complete_headers = array_merge(
             $jwe->getSharedProtectedHeaders(),
@@ -153,8 +148,6 @@ final class Encrypter implements EncrypterInterface
 
             $jwe = $jwe->addRecipient($recipient);
         }
-
-        return $jwe;
     }
 
     /**

@@ -62,12 +62,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKey3());
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -91,12 +91,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -115,12 +115,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -171,7 +171,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512']);
 
         $jws = JWSFactory::createJWS(['baz', 'ban']);
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512'],
@@ -195,13 +195,13 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -212,8 +212,8 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
+        $this->assertEquals(0, $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $this->assertEquals(1, $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
@@ -228,13 +228,13 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
         $jws = JWSFactory::createJWS($this->getKeyset());
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -244,8 +244,8 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
         $this->assertEquals($this->getKeyset(), new JWKSet($loaded->getPayload()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $this->assertEquals(0, $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $this->assertEquals(1, $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
@@ -261,13 +261,13 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
 
         $jws = JWSFactory::createJWS($this->getKeyset());
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $signer->addSignature(
+        $signer->addSignature(
             $jws,
             $this->getKey2(),
             ['alg' => 'RS512']

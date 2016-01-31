@@ -28,7 +28,7 @@ interface VerifierInterface
      * @param \Jose\Object\JWKInterface $jwk              The signature will be verified using keys in the key set
      * @param null|string               $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
      *
-     * @return bool True if the signature has been verified, else false
+     * @return false|int Return false if the JWS has not been verified, else an integer that represents the ID of the verified signature
      */
     public function verifyWithKey(JWSInterface $input, JWKInterface $jwk, $detached_payload = null);
 
@@ -40,7 +40,7 @@ interface VerifierInterface
      * @param \Jose\Object\JWKSetInterface $jwk_set          The signature will be verified using keys in the key set
      * @param null|string                  $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
      *
-     * @return bool True if the signature has been verified, else false
+     * @return false|int Return false if the JWS has not been verified, else an integer that represents the ID of the verified signature
      */
     public function verifyWithKeySet(JWSInterface $input, JWKSetInterface $jwk_set, $detached_payload = null);
 }

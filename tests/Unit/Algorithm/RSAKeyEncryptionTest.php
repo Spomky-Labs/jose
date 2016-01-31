@@ -155,13 +155,13 @@ class RSAKeyEncryptionTest extends TestCase
         $loaded = Loader::load('eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg.48V1_ALb6US04U3b.5eym8TW_c8SuK0ltJ3rpYIzOeDQz7TALvtu6UG9oMo4vpzs9tX_EFShS8iB7j6jiSdiwkIr3ajwQzaBtQD_A.XFBoMYUZodetZdvTiFvSkQ');
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        //$this->assertEquals('RSA-OAEP', $loaded->getHeader('alg'));
-        //$this->assertEquals('A256GCM', $loaded->getHeader('enc'));
+        $this->assertEquals('RSA-OAEP', $loaded->getSharedProtectedHeader('alg'));
+        $this->assertEquals('A256GCM', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $loaded->getPayload());
     }
 
@@ -181,7 +181,7 @@ class RSAKeyEncryptionTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 
@@ -201,7 +201,7 @@ class RSAKeyEncryptionTest extends TestCase
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
 
-        $this->assertTrue($result);
+        $this->assertEquals(0, $result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 

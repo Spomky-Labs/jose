@@ -67,8 +67,10 @@ final class Verifier implements VerifierInterface
     {
         $this->checkPayload($jws, $detached_payload);
         $this->checkJWKSet($jwk_set);
+        $this->checkSignaturess($jws);
 
-        foreach ($jws->getSignatures() as $signature) {
+        for ($i = 0; $i < $jws->countSignatures(); $i++) {
+            $signature = $jws->getSignature($i);
             $input = $signature->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 
             foreach ($jwk_set->getKeys() as $jwk) {
@@ -79,7 +81,7 @@ final class Verifier implements VerifierInterface
                     if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
                         $this->getCheckerManager()->checkJWT($jws);
 
-                        return true;
+                        return $i;
                     }
                 } catch (\Exception $e) {
                     //We do nothing, we continue with other keys
@@ -89,6 +91,16 @@ final class Verifier implements VerifierInterface
         }
 
         return false;
+    }
+
+    /**
+     * @param \Jose\Object\JWSInterface $jws
+     */
+    private function checkSignaturess(JWSInterface $jws)
+    {
+        if (0 === $jws->countSignatures()) {
+            throw new \InvalidArgumentException('The JWS does not contain any signature.');
+        }
     }
 
     /**
