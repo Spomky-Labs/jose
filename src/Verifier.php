@@ -69,7 +69,9 @@ final class Verifier implements VerifierInterface
         $this->checkJWKSet($jwk_set);
         $this->checkSignaturess($jws);
 
-        for ($i = 0; $i < $jws->countSignatures(); $i++) {
+        $nb_signatures = $jws->countSignatures();
+
+        for ($i = 0; $i < $nb_signatures; $i++) {
             $signature = $jws->getSignature($i);
             $input = $signature->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
 

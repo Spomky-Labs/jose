@@ -78,7 +78,9 @@ final class Decrypter implements DecrypterInterface
         $this->checkPayload($jwe);
         $this->checkRecipients($jwe);
 
-        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
+        $nb_recipients = $jwe->countRecipients();
+
+        for ($i = 0; $i < $nb_recipients; $i++) {
             $recipient = $jwe->getRecipient($i);
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
