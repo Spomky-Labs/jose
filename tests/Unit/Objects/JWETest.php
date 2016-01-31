@@ -65,7 +65,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE([]);
         $jwe = $jwe->withSharedProtectedHeader('foo', 'bar');
 
-        $this->assertEquals(['foo'=>'bar'], $jwe->getSharedProtectedHeaders());
+        $this->assertEquals(['foo' => 'bar'], $jwe->getSharedProtectedHeaders());
         $this->assertEquals('bar', $jwe->getSharedProtectedHeader('foo'));
         $this->assertEquals('bar', $jwe->getSharedProtectedHeader('plic'));
     }
@@ -79,7 +79,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE([]);
         $jwe = $jwe->withSharedHeader('foo', 'bar');
 
-        $this->assertEquals(['foo'=>'bar'], $jwe->getSharedHeaders());
+        $this->assertEquals(['foo' => 'bar'], $jwe->getSharedHeaders());
         $this->assertEquals('bar', $jwe->getSharedHeader('foo'));
         $this->assertEquals('bar', $jwe->getSharedHeader('plic'));
     }
@@ -90,7 +90,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
      */
     public function testCannotGetCompactJSONBecauseAADIsSet()
     {
-        $jwe = JWEFactory::createJWE([],[], [], 'foo');
+        $jwe = JWEFactory::createJWE([], [], [], 'foo');
         $recipient = new Recipient();
         $jwe = $jwe->addRecipient($recipient);
 
@@ -103,7 +103,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
      */
     public function testCannotGetCompactJSONBecauseSharedProtectedHeadersAreNotSet()
     {
-        $jwe = JWEFactory::createJWE([],[], ['foo' => 'bar']);
+        $jwe = JWEFactory::createJWE([], [], ['foo' => 'bar']);
         $recipient = new Recipient();
         $jwe = $jwe->addRecipient($recipient);
 
@@ -116,7 +116,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
      */
     public function testCannotGetCompactJSONBecauseSharedHeadersAreSet()
     {
-        $jwe = JWEFactory::createJWE([],['plic' => 'ploc'], ['foo' => 'bar']);
+        $jwe = JWEFactory::createJWE([], ['plic' => 'ploc'], ['foo' => 'bar']);
         $recipient = new Recipient();
         $jwe = $jwe->addRecipient($recipient);
 
@@ -129,7 +129,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
      */
     public function testCannotGetCompactJSONBecauseRecipientHeadersAreSet()
     {
-        $jwe = JWEFactory::createJWE([],['plic' => 'ploc']);
+        $jwe = JWEFactory::createJWE([], ['plic' => 'ploc']);
         $recipient = new Recipient();
         $recipient = $recipient->withHeaders(['foo' => 'bar']);
         $jwe = $jwe->addRecipient($recipient);
@@ -150,6 +150,5 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $recipient->getHeader('foo'));
         $this->assertEquals('ploc', $recipient->getHeader('plic'));
         $recipient->getHeader('var');
-
     }
 }
