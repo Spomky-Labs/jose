@@ -83,4 +83,73 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('bar', $jwe->getSharedHeader('foo'));
         $this->assertEquals('bar', $jwe->getSharedHeader('plic'));
     }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage This JWE has AAD and cannot be converted into Compact JSON.
+     */
+    public function testCannotGetCompactJSONBecauseAADIsSet()
+    {
+        $jwe = JWEFactory::createJWE([],[], [], 'foo');
+        $recipient = new Recipient();
+        $jwe = $jwe->addRecipient($recipient);
+
+        $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage This JWE does not have shared protected headers and cannot be converted into Compact JSON.
+     */
+    public function testCannotGetCompactJSONBecauseSharedProtectedHeadersAreNotSet()
+    {
+        $jwe = JWEFactory::createJWE([],[], ['foo' => 'bar']);
+        $recipient = new Recipient();
+        $jwe = $jwe->addRecipient($recipient);
+
+        $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.
+     */
+    public function testCannotGetCompactJSONBecauseSharedHeadersAreSet()
+    {
+        $jwe = JWEFactory::createJWE([],['plic' => 'ploc'], ['foo' => 'bar']);
+        $recipient = new Recipient();
+        $jwe = $jwe->addRecipient($recipient);
+
+        $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.
+     */
+    public function testCannotGetCompactJSONBecauseRecipientHeadersAreSet()
+    {
+        $jwe = JWEFactory::createJWE([],['plic' => 'ploc']);
+        $recipient = new Recipient();
+        $recipient = $recipient->withHeaders(['foo' => 'bar']);
+        $jwe = $jwe->addRecipient($recipient);
+
+        $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The header "var" does not exist.
+     */
+    public function testRecipient()
+    {
+        $recipient = new Recipient();
+        $recipient = $recipient->withHeaders(['foo' => 'bar']);
+        $recipient = $recipient->withHeader('plic', 'ploc');
+
+        $this->assertEquals('bar', $recipient->getHeader('foo'));
+        $this->assertEquals('ploc', $recipient->getHeader('plic'));
+        $recipient->getHeader('var');
+
+    }
 }
