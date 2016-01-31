@@ -38,7 +38,7 @@ $key = JWKFactory::createFromValues([
 // We create our verifier object with a list of authorized signature algorithms (only 'HS512' in this example)
 $verifier = VerifierFactory::createVerifier(
     [
-        'HS512'
+        'HS512',
     ]
 );
 

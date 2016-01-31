@@ -31,14 +31,13 @@ $result = Loader::load($input);
 // The key is encrypted and the second argument is the password.
 //// Additional parameters ('kid' and 'use') are set for this key.
 $key = JWKFactory::createFromKeyFile(
-    __DIR__ . '/../tests/Unit/Keys/RSA/private.encrypted.key',
+    __DIR__.'/../tests/Unit/Keys/RSA/private.encrypted.key',
     'tests',
     [
         'kid' => 'My private RSA key',
         'use' => 'enc',
     ]
 );
-
 
 // We create our decrypter object with a list of authorized signature algorithms (only 'RSA-OAEP-256' and 'A256CBC-HS512' in this example)
 // We do not add

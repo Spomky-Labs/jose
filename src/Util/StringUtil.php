@@ -33,6 +33,6 @@ final class StringUtil
 
     private static function mb_pad_str($input, $pad_length, $pad_string = null, $pad_style = null)
     {
-        return str_pad($input, strlen($input)-mb_strlen($input, '8bit')+$pad_length, $pad_string, $pad_style);
+        return str_pad($input, strlen($input) - mb_strlen($input, '8bit') + $pad_length, $pad_string, $pad_style);
     }
 }

@@ -18,7 +18,7 @@ use Jose\Factory\JWKFactory;
 // We create our key object (JWK) using a public EC key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
 $key = JWKFactory::createFromKeyFile(
-    __DIR__ . '/../tests/Unit/Keys/RSA/public.key',
+    __DIR__.'/../tests/Unit/Keys/RSA/public.key',
     null,
     [
         'kid' => 'My Public RSA key',

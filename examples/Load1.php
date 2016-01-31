@@ -39,7 +39,7 @@ $result->hasClaim('iss'); // true
 // We create our key object (JWK) using a RSA public key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.
 $key = JWKFactory::createFromKeyFile(
-    __DIR__ . '/../tests/Unit/Keys/RSA/public.key',
+    __DIR__.'/../tests/Unit/Keys/RSA/public.key',
     null,
     [
         'kid' => 'My public RSA key',
