@@ -13,7 +13,6 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Jose\Object\JWKInterface;
-use PBKDF2\PBKDF2;
 
 /**
  * Class PBES2AESKW.
@@ -38,7 +37,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $header['p2s'] = Base64Url::encode($salt);
         $header['p2c'] = $count;
 
-        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $header['alg']."\x00".$salt, $count, $key_size, true);
+        $derived_key = hash_pbkdf2($hash_algorithm, $password, $header['alg']."\x00".$salt, $count, $key_size*2, true);
 
         return $wrapper->wrap($derived_key, $cek);
     }
@@ -58,7 +57,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $count = $header['p2c'];
         $password = Base64Url::decode($key->get('k'));
 
-        $derived_key = PBKDF2::deriveKey($hash_algorithm, $password, $salt, $count, $key_size, true);
+        $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size*2, true);
 
         return $wrapper->unwrap($derived_key, $encryted_cek);
     }
