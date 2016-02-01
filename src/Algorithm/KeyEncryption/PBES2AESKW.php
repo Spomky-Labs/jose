@@ -13,6 +13,7 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Base64Url\Base64Url;
 use Jose\Object\JWKInterface;
+use Jose\Util\StringUtil;
 
 /**
  * Class PBES2AESKW.
@@ -49,7 +50,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $wrapper = $this->getWrapper();
         $hash_algorithm = $this->getHashAlgorithm();
         $key_size = $this->getKeySize();
-        $salt = openssl_random_pseudo_bytes($this->salt_size / 8);
+        $salt = StringUtil::generateRandomBytes($this->salt_size);
         $password = Base64Url::decode($key->get('k'));
 
         // We set headers parameters
