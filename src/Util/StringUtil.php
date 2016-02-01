@@ -32,7 +32,7 @@ final class StringUtil
         }
         throw new \RuntimeException('Unable to create random bytes.');
     }
-    
+
     /**
      * @param string $string
      * 
