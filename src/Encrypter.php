@@ -27,6 +27,7 @@ use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\Recipient;
+use Jose\Util\StringUtil;
 
 /**
  */
@@ -474,7 +475,7 @@ final class Encrypter implements EncrypterInterface
      */
     private function createCEK($size)
     {
-        return $this->generateRandomString($size / 8);
+        return StringUtil::generateRandomBytes($size / 8);
     }
 
     /**
@@ -484,20 +485,6 @@ final class Encrypter implements EncrypterInterface
      */
     private function createIV($size)
     {
-        return $this->generateRandomString($size / 8);
-    }
-
-    /**
-     * @param int $length
-     *
-     * @return string
-     */
-    private function generateRandomString($length)
-    {
-        if (function_exists('random_bytes')) {
-            return random_bytes($length);
-        } else {
-            return openssl_random_pseudo_bytes($length);
-        }
+        return StringUtil::generateRandomBytes($size / 8);
     }
 }
