@@ -16,6 +16,28 @@ namespace Jose\Util;
  */
 final class StringUtil
 {
+    /**
+     * @param int $size
+     * 
+     * @return string
+     */
+    public static function generateRandomBytes($size)
+    {
+        if (function_exists('random_bytes')) {
+            return random_bytes($size);
+        } elseif (function_exists('openssl_random_pseudo_bytes')) {
+            return openssl_random_pseudo_bytes($size);
+        } elseif (function_exists('mcrypt_create_iv')) {
+            return mcrypt_create_iv($length);
+        }
+        throw new \RuntimeException('Unable to create random bytes.');
+    }
+    
+    /**
+     * @param string $string
+     * 
+     * @return int
+     */
     public static function strlen($string)
     {
         return function_exists('mb_strlen') ? mb_strlen($string, '8bit') : strlen($string);
