@@ -60,8 +60,8 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $part_length = $this->getSignaturePartLength();
 
-        $R = StringUtil::str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
-        $S = StringUtil::str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
+        $R = StringUtil::addPadding($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
+        $S = StringUtil::addPadding($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
 
         return $this->convertHextoBin($R.$S);
     }
@@ -75,15 +75,15 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (StringUtil::strlen($signature) !== 2 * $part_length) {
+        if (StringUtil::getStringLength($signature) !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(StringUtil::substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec(StringUtil::substr($signature, $part_length));
+        $R = $this->convertHexToDec(StringUtil::getSubString($signature, 0, $part_length));
+        $S = $this->convertHexToDec(StringUtil::getSubString($signature, $part_length));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);

@@ -48,6 +48,6 @@ final class AESOpenSSL implements AESInterface
      */
     private static function getMode($k)
     {
-        return 'aes-'.(8 *  StringUtil::strlen($k)).'-cbc';
+        return 'aes-'.(8 *  StringUtil::getStringLength($k)).'-cbc';
     }
 }
