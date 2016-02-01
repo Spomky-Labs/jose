@@ -24,12 +24,12 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
      * @var int
      */
     private $salt_size;
-    
+
     /**
      * @var int
      */
     private $nb_count;
-    
+
     /**
      * @param int $salt_size
      * @param int $nb_count
@@ -39,7 +39,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $this->salt_size = $salt_size;
         $this->nb_count = $nb_count;
     }
-    
+
     /**
      * {@inheritdoc}
      */
