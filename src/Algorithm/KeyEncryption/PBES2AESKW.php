@@ -20,6 +20,26 @@ use Jose\Object\JWKInterface;
 abstract class PBES2AESKW implements KeyEncryptionInterface
 {
     /**
+     * @var int
+     */
+    private $salt_size;
+    
+    /**
+     * @var int
+     */
+    private $nb_count;
+    
+    /**
+     * @param int $salt_size
+     * @param int $nb_count
+     */
+    public function __construct($salt_size = 64, $nb_count = 4096)
+    {
+        $this->salt_size = $salt_size;
+        $this->nb_count = $nb_count;
+    }
+    
+    /**
      * {@inheritdoc}
      */
     public function encryptKey(JWKInterface $key, $cek, array &$header)
@@ -29,15 +49,14 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $wrapper = $this->getWrapper();
         $hash_algorithm = $this->getHashAlgorithm();
         $key_size = $this->getKeySize();
-        $salt = openssl_random_pseudo_bytes($key_size / 8);
-        $count = 4096;
+        $salt = openssl_random_pseudo_bytes($this->salt_size / 8);
         $password = Base64Url::decode($key->get('k'));
 
         // We set headers parameters
         $header['p2s'] = Base64Url::encode($salt);
-        $header['p2c'] = $count;
+        $header['p2c'] = $this->nb_count;
 
-        $derived_key = hash_pbkdf2($hash_algorithm, $password, $header['alg']."\x00".$salt, $count, $key_size*2, true);
+        $derived_key = hash_pbkdf2($hash_algorithm, $password, $header['alg']."\x00".$salt, $this->nb_count, $key_size, true);
 
         return $wrapper->wrap($derived_key, $cek);
     }
@@ -57,7 +76,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $count = $header['p2c'];
         $password = Base64Url::decode($key->get('k'));
 
-        $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size*2, true);
+        $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size, true);
 
         return $wrapper->unwrap($derived_key, $encryted_cek);
     }
