@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-final class NotBeforeChecker implements CheckerInterface
+final class NotBeforeChecker implements ClaimCheckerInterface
 {
     /**
      * {@inheritdoc}

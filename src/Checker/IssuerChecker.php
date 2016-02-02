@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-abstract class IssuerChecker implements CheckerInterface
+abstract class IssuerChecker implements ClaimCheckerInterface
 {
     /**
      * @param string $issuer

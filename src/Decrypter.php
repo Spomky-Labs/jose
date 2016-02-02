@@ -20,11 +20,11 @@ use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
 use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
-use Jose\Behaviour\HasCheckerManager;
+use Jose\Behaviour\HasClaimCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Checker\CheckerManagerInterface;
+use Jose\Checker\ClaimCheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
@@ -38,7 +38,7 @@ final class Decrypter implements DecrypterInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasCheckerManager;
+    use HasClaimCheckerManager;
     use HasCompressionManager;
 
     /**
@@ -46,16 +46,16 @@ final class Decrypter implements DecrypterInterface
      *
      * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
      * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     * @param \Jose\Checker\CheckerManagerInterface         $checker_manager
+     * @param \Jose\Checker\ClaimCheckerManagerInterface    $claim_checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
         CompressionManagerInterface $compression_manager,
-        CheckerManagerInterface $checker_manager)
+        ClaimCheckerManagerInterface $claim_checker_manager)
     {
         $this->setJWAManager($jwa_manager);
         $this->setCompressionManager($compression_manager);
-        $this->setCheckerManager($checker_manager);
+        $this->setClaimCheckerManager($claim_checker_manager);
     }
 
     /**
@@ -74,6 +74,7 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
+        $this->getClaimCheckerManager()->checkJWT($jwe);
         $this->checkJWKSet($jwk_set);
         $this->checkPayload($jwe);
         $this->checkRecipients($jwe);
@@ -99,7 +100,6 @@ final class Decrypter implements DecrypterInterface
                     $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $recipient, $complete_headers);
                     if (null !== $cek) {
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
-                            $this->getCheckerManager()->checkJWT($jwe);
 
                             return $i;
                         };

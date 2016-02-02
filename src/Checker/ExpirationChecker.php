@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-final class ExpirationChecker implements CheckerInterface
+final class ExpirationChecker implements ClaimCheckerInterface
 {
     /**
      * {@inheritdoc}

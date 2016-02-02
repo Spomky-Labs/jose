@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-interface CheckerInterface
+interface ClaimCheckerInterface
 {
     /**
      * @param \Jose\Object\JWTInterface $jwt

@@ -13,12 +13,12 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-interface CheckerManagerInterface
+interface ClaimCheckerManagerInterface
 {
     /**
-     * @param \Jose\Checker\CheckerInterface $checker
+     * @param \Jose\Checker\ClaimCheckerInterface $checker
      */
-    public function addChecker(CheckerInterface $checker);
+    public function addChecker(ClaimCheckerInterface $checker);
 
     /**
      * @param \Jose\Object\JWTInterface $jwt

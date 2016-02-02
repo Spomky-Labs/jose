@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-final class IssuedAtChecker implements CheckerInterface
+final class IssuedAtChecker implements ClaimCheckerInterface
 {
     /**
      * {@inheritdoc}

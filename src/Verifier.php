@@ -13,10 +13,10 @@ namespace Jose;
 
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
-use Jose\Behaviour\HasCheckerManager;
+use Jose\Behaviour\HasClaimCheckerManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Checker\CheckerManagerInterface;
+use Jose\Checker\ClaimCheckerManagerInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
@@ -29,20 +29,20 @@ final class Verifier implements VerifierInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasCheckerManager;
+    use HasClaimCheckerManager;
 
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface   $jwa_manager
-     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param \Jose\Algorithm\JWAManagerInterface        $jwa_manager
+     * @param \Jose\Checker\ClaimCheckerManagerInterface $claim_checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        CheckerManagerInterface $checker_manager)
+        ClaimCheckerManagerInterface $claim_checker_manager)
     {
         $this->setJWAManager($jwa_manager);
-        $this->setCheckerManager($checker_manager);
+        $this->setClaimCheckerManager($claim_checker_manager);
     }
 
     /**
@@ -65,6 +65,7 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
     {
+        $this->getClaimCheckerManager()->checkJWT($jws);
         $this->checkPayload($jws, $detached_payload);
         $this->checkJWKSet($jwk_set);
         $this->checkSignaturess($jws);
@@ -81,7 +82,6 @@ final class Verifier implements VerifierInterface
                     $this->checkKeyUsage($jwk, 'verification');
                     $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
                     if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
-                        $this->getCheckerManager()->checkJWT($jws);
 
                         return $i;
                     }

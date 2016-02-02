@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-final class CheckerManager implements CheckerManagerInterface
+final class CheckerManager implements ClaimCheckerManagerInterface
 {
     /**
      * @var \Jose\Checker\CheckerInterface[]
@@ -33,13 +33,13 @@ final class CheckerManager implements CheckerManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function addChecker(CheckerInterface $checker)
+    public function addChecker(ClaimCheckerInterface $checker)
     {
         $this->checkers[] = $checker;
     }
 
     /**
-     * @return \Jose\Checker\CheckerInterface[]
+     * @return \Jose\Checker\ClaimCheckerInterface[]
      */
     private function getCheckers()
     {

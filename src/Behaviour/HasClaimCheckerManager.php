@@ -11,27 +11,27 @@
 
 namespace Jose\Behaviour;
 
-use Jose\Checker\CheckerManagerInterface;
+use Jose\Checker\ClaimCheckerManagerInterface;
 
-trait HasCheckerManager
+trait HasClaimCheckerManager
 {
     /**
-     * @var \Jose\Checker\CheckerManagerInterface
+     * @var \Jose\Checker\ClaimCheckerManagerInterface
      */
     private $checker_manager;
 
     /**
-     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param \Jose\Checker\ClaimCheckerManagerInterface $checker_manager
      */
-    private function setCheckerManager(CheckerManagerInterface $checker_manager)
+    private function setClaimCheckerManager(ClaimCheckerManagerInterface $checker_manager)
     {
         $this->checker_manager = $checker_manager;
     }
 
     /**
-     * @return \Jose\Checker\CheckerManagerInterface
+     * @return \Jose\Checker\ClaimCheckerManagerInterface
      */
-    private function getCheckerManager()
+    private function getClaimCheckerManager()
     {
         return $this->checker_manager;
     }

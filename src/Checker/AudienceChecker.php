@@ -13,7 +13,7 @@ namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-final class AudienceChecker implements CheckerInterface
+final class AudienceChecker implements ClaimCheckerInterface
 {
     private $audience;
 
