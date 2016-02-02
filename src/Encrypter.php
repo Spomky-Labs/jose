@@ -401,6 +401,8 @@ final class Encrypter implements EncrypterInterface
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $this->createCEK($content_encryption_algorithm->getCEKSize());
+        } elseif ($key_encryption_algorithm instanceof KeyWrappingInterface) {
+            return $this->createCEK($content_encryption_algorithm->getCEKSize());
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $this->createCEK($content_encryption_algorithm->getCEKSize());
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
