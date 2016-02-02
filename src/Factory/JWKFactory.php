@@ -219,7 +219,7 @@ final class JWKFactory
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_URL            => $url,
         ];
-        if (true === $allow_unsecured_connection) {
+        if (false === $allow_unsecured_connection) {
             $params[CURLOPT_SSL_VERIFYPEER] = true;
             $params[CURLOPT_SSL_VERIFYHOST] = 2;
         }
