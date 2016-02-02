@@ -29,7 +29,8 @@
         "lib-openssl": "*",
         "spomky-labs/base64url": "^1.0",
         "spomky-labs/aes-key-wrap": "^2.0",
-        "phpseclib/phpseclib": "^2.0"
+        "phpseclib/phpseclib": "^2.0",
+        "beberlei/assert": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.5|^5.0",
