@@ -74,56 +74,7 @@ final class Encrypter implements EncrypterInterface
         if (null === $jwe->getCiphertext()) {
             // the content is not yet encrypted (no recipient)
 
-            if (!empty($jwe->getSharedProtectedHeaders())) {
-                $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
-            }
-
-            // CEK
-            $content_encryption_key = $this->getCEK(
-                $complete_headers,
-                $key_encryption_algorithm,
-                $content_encryption_algorithm,
-                $recipient_key,
-                $sender_key
-            );
-            $jwe = $jwe->withContentEncryptionKey($content_encryption_key);
-
-            // IV
-            if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
-                $iv = $this->createIV($iv_size);
-                $jwe = $jwe->withIV($iv);
-            }
-
-            // We encrypt the payload and get the tag
-            $tag = null;
-            $payload = $this->preparePayload($jwe->getPayload(), $complete_headers);
-
-            $ciphertext = $content_encryption_algorithm->encryptContent(
-                $payload,
-                $content_encryption_key,
-                $jwe->getIV(),
-                $jwe->getAAD(),
-                $jwe->getEncodedSharedProtectedHeaders(),
-                $tag
-            );
-            $jwe = $jwe->withCiphertext($ciphertext);
-
-            // Tag
-            if (null !== $tag) {
-                $jwe = $jwe->withTag($tag);
-            }
-
-            $recipient = $this->computeRecipient(
-                $jwe,
-                $key_encryption_algorithm,
-                $content_encryption_algorithm,
-                $complete_headers,
-                $recipient_headers,
-                $recipient_key,
-                $sender_key
-            );
-
-            $jwe = $jwe->addRecipient($recipient);
+            $this->encryptJWE($jwe, $complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $recipient_key, $sender_key);
         } else {
             if (0 === $jwe->countRecipients()) {
                 throw new \InvalidArgumentException('Invalid JWE. The payload is encrypted but no recipient is available.');
@@ -136,18 +87,74 @@ final class Encrypter implements EncrypterInterface
             if (false === $this->areKeyManagementModesCompatible($current_key_management_mode, $key_encryption_algorithm->getKeyManagementMode())) {
                 throw new \InvalidArgumentException('Foreign key management mode forbidden.');
             }
+        }
 
-            $recipient = $this->computeRecipient(
-                $jwe,
-                $key_encryption_algorithm,
-                $content_encryption_algorithm,
-                $complete_headers,
-                $recipient_headers,
-                $recipient_key,
-                $sender_key
-            );
+        $recipient = $this->computeRecipient(
+            $jwe,
+            $key_encryption_algorithm,
+            $content_encryption_algorithm,
+            $complete_headers,
+            $recipient_headers,
+            $recipient_key,
+            $sender_key
+        );
 
-            $jwe = $jwe->addRecipient($recipient);
+        $jwe = $jwe->addRecipient($recipient);
+    }
+
+    /**
+     * @param \Jose\Object\JWEInterface                           $jwe
+     * @param array                                               $complete_headers
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
+     */
+    private function encryptJWE(JWEInterface &$jwe,
+                                array $complete_headers,
+                                KeyEncryptionAlgorithmInterface $key_encryption_algorithm,
+                                ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
+                                JWKInterface $recipient_key,
+                                JWKInterface $sender_key = null
+    ) {
+
+        if (!empty($jwe->getSharedProtectedHeaders())) {
+            $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
+        }
+
+        // CEK
+        $content_encryption_key = $this->getCEK(
+            $complete_headers,
+            $key_encryption_algorithm,
+            $content_encryption_algorithm,
+            $recipient_key,
+            $sender_key
+        );
+        $jwe = $jwe->withContentEncryptionKey($content_encryption_key);
+
+        // IV
+        if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
+            $iv = $this->createIV($iv_size);
+            $jwe = $jwe->withIV($iv);
+        }
+
+        // We encrypt the payload and get the tag
+        $tag = null;
+        $payload = $this->preparePayload($jwe->getPayload(), $complete_headers);
+
+        $ciphertext = $content_encryption_algorithm->encryptContent(
+            $payload,
+            $content_encryption_key,
+            $jwe->getIV(),
+            $jwe->getAAD(),
+            $jwe->getEncodedSharedProtectedHeaders(),
+            $tag
+        );
+        $jwe = $jwe->withCiphertext($ciphertext);
+
+        // Tag
+        if (null !== $tag) {
+            $jwe = $jwe->withTag($tag);
         }
     }
 
