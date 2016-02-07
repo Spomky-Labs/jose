@@ -17,15 +17,13 @@ final class VerifierFactory
 {
     /**
      * @param string[]                         $algorithms
-     * @param \Jose\Checker\CheckerInterface[] $checker_managers
      *
      * @return \Jose\VerifierInterface
      */
-    public static function createVerifier(array $algorithms, array $checker_managers = [])
+    public static function createVerifier(array $algorithms)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
-        $checker_manager = CheckerManagerFactory::createCheckerManager($checker_managers);
 
-        return new Verifier($algorithm_manager, $checker_manager);
+        return new Verifier($algorithm_manager);
     }
 }

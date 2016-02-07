@@ -12,34 +12,13 @@
 namespace Jose\Test;
 
 use Base64Url\Base64Url;
-use Jose\Checker\AudienceChecker;
-use Jose\Checker\ExpirationChecker;
-use Jose\Checker\IssuedAtChecker;
-use Jose\Checker\NotBeforeChecker;
 use Jose\Object\JWKSet;
-use Jose\Test\Stub\IssuerChecker;
-use Jose\Test\Stub\SubjectChecker;
 
 /**
  * Class TestCase.
  */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @return \Jose\Checker\CheckerInterface[]
-     */
-    protected function getCheckers()
-    {
-        return [
-            new AudienceChecker('My service'),
-            new ExpirationChecker(),
-            new NotBeforeChecker(),
-            new IssuedAtChecker(),
-            new IssuerChecker(),
-            new SubjectChecker(),
-        ];
-    }
-
     protected function getPrivateKeySet()
     {
         $keys = ['keys' => [

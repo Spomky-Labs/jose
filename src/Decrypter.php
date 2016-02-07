@@ -20,11 +20,9 @@ use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
 use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
-use Jose\Behaviour\HasClaimCheckerManager;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Checker\ClaimCheckerManagerInterface;
 use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
@@ -38,7 +36,6 @@ final class Decrypter implements DecrypterInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasClaimCheckerManager;
     use HasCompressionManager;
 
     /**
@@ -46,16 +43,13 @@ final class Decrypter implements DecrypterInterface
      *
      * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
      * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     * @param \Jose\Checker\ClaimCheckerManagerInterface    $claim_checker_manager
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        CompressionManagerInterface $compression_manager,
-        ClaimCheckerManagerInterface $claim_checker_manager)
+        CompressionManagerInterface $compression_manager)
     {
         $this->setJWAManager($jwa_manager);
         $this->setCompressionManager($compression_manager);
-        $this->setClaimCheckerManager($claim_checker_manager);
     }
 
     /**
@@ -74,7 +68,6 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
-        $this->getClaimCheckerManager()->checkJWT($jwe);
         $this->checkJWKSet($jwk_set);
         $this->checkPayload($jwe);
         $this->checkRecipients($jwe);

@@ -192,7 +192,7 @@ class SignerTest extends TestCase
     public function testSignAndLoad()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -225,7 +225,7 @@ class SignerTest extends TestCase
     public function testSignAndLoadJWKSet()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
         $signer->addSignature(
@@ -258,7 +258,7 @@ class SignerTest extends TestCase
     public function testKeySetIsEmpty()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512']);
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getCheckers());
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
         $signer->addSignature(
