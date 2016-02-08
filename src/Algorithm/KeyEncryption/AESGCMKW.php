@@ -14,6 +14,7 @@ namespace Jose\Algorithm\KeyEncryption;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\Object\JWKInterface;
+use Jose\Util\GCM;
 use Jose\Util\StringUtil;
 
 /**
@@ -31,14 +32,20 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     public function encryptKey(JWKInterface $key, $cek, array &$header)
     {
         $this->checkKey($key);
-
-        $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-        $cipher->setAAD(null);
         $iv = StringUtil::generateRandomBytes(96 / 8);
-        $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
-
         $header['iv'] = Base64Url::encode($iv);
-        $header['tag'] = Base64Url::encode($cipher->getTag());
+
+        if (class_exists('\Crypto\Cipher')) {
+            $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
+            $cipher->setAAD(null);
+            $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
+
+            $header['tag'] = Base64Url::encode($cipher->getTag());
+        } else {
+            $gcm = new GCM();
+            list($encryted_cek, $tag) = $gcm->gcm_encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
+            $header['tag'] = Base64Url::encode($tag);
+        }
 
         return $encryted_cek;
     }
@@ -55,13 +62,17 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         $this->checkKey($key);
         $this->checkAdditionalParameters($header);
 
-        $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-        $cipher->setTag(Base64Url::decode($header['tag']));
-        $cipher->setAAD(null);
+        if (class_exists('\Crypto\Cipher')) {
+            $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
+            $cipher->setTag(Base64Url::decode($header['tag']));
+            $cipher->setAAD(null);
 
-        $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
+            $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
+            return $cek;
+        }
 
-        return $cek;
+        $gcm = new GCM();
+        return $gcm->gcm_decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encryted_cek, null, Base64Url::decode($header['tag']));
     }
 
     /**
