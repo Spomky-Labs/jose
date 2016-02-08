@@ -90,37 +90,21 @@ class JWAManagerTest extends TestCase
             'A128KW',
             'A192KW',
             'A256KW',
+            'A128GCMKW',
+            'A192GCMKW',
+            'A256GCMKW',
             'PBES2-HS256+A128KW',
             'PBES2-HS384+A192KW',
             'PBES2-HS512+A256KW',
             'A128CBC-HS256',
             'A192CBC-HS384',
             'A256CBC-HS512',
+            'A128GCM',
+            'A192GCM',
+            'A256GCM',
         ];
-
-        if ($this->isCryptooExtensionInstalled()) {
-            $algorithms = array_merge(
-                $algorithms,
-                [
-                    'A128GCMKW',
-                    'A192GCMKW',
-                    'A256GCMKW',
-                    'A128GCM',
-                    'A192GCM',
-                    'A256GCM',
-                ]
-            );
-        }
         $jwa_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
 
         $this->assertEquals($algorithms, $jwa_manager->listAlgorithms());
-    }
-
-    /**
-     * @return bool
-     */
-    private function isCryptooExtensionInstalled()
-    {
-        return class_exists('\Crypto\Cipher');
     }
 }

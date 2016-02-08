@@ -49,7 +49,7 @@ This library needs at least:
 * ![PHP 5.5.9+](https://img.shields.io/badge/PHP-5.5.9%2B-ff69b4.svg).
 
 Please consider the following optional requirements:
-* For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`).
+* For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
 * For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only).
 
 # Continuous Integration

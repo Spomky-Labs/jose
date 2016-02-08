@@ -26,11 +26,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA128GCMKW()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -56,11 +51,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testBadKey()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
         $header = [];
         $key = new JWK([
             'kty' => 'EC',
@@ -79,11 +69,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testMissingParameters()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -102,11 +87,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA192GCMKW()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -131,11 +111,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
      */
     public function testA256GCMKW()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
         $header = [];
         $key = new JWK([
             'kty' => 'oct',
@@ -153,10 +128,5 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertNotNull($header['iv']);
         $this->assertNotNull($header['tag']);
         $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, $header));
-    }
-
-    private function isCryptooExtensionInstalled()
-    {
-        return class_exists('\Crypto\Cipher');
     }
 }

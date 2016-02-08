@@ -144,12 +144,6 @@ class RSAKeyEncryptionTest extends TestCase
      */
     public function testLoadJWK1()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
-
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP', 'A256GCM'], ['DEF']);
 
         $loaded = Loader::load('eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOMTYUmKoTCVJRgckCL9kiMT03JGeipsEdY3mx_etLbbWSrFr05kLzcSr4qKAq7YN7e9jwQRb23nfa6c9d-StnImGyFDbSv04uVuxIp5Zms1gNxKKK2Da14B8S4rzVRltdYwam_lDp5XnZAYpQdb76FdIKLaVmqgfwX7XWRxv2322i-vDxRfqNzo_tETKzpVLzfiwQyeyPGLBIO56YJ7eObdv0je81860ppamavo35UgoRdbYaBcoh9QcfylQr66oc6vFWXRcZ_ZT2LawVCWTIy3brGPi6UklfCpIMfIjf7iGdXKHzg.48V1_ALb6US04U3b.5eym8TW_c8SuK0ltJ3rpYIzOeDQz7TALvtu6UG9oMo4vpzs9tX_EFShS8iB7j6jiSdiwkIr3ajwQzaBtQD_A.XFBoMYUZodetZdvTiFvSkQ');
@@ -195,18 +189,13 @@ class RSAKeyEncryptionTest extends TestCase
         $loaded = Loader::load('eyJhbGciOiJBMTI4S1ciLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.U0m_YmjN04DJvceFICbCVQ');
 
         $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
-        //$this->assertEquals('A128KW', $loaded->getHeader('alg'));
-        //$this->assertEquals('A128CBC-HS256', $loaded->getHeader('enc'));
+        $this->assertEquals('A128KW', $loaded->getSharedProtectedHeader('alg'));
+        $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
         $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
 
         $this->assertEquals(0, $result);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
-    }
-
-    private function isCryptooExtensionInstalled()
-    {
-        return class_exists('\Crypto\Cipher');
     }
 }

@@ -549,12 +549,6 @@ class EncrypterTest extends TestCase
      */
     public function testEncryptAndLoadWithGCMAndAAD()
     {
-        if (!$this->isCryptooExtensionInstalled()) {
-            $this->markTestSkipped('Crypto extension not available');
-
-            return;
-        }
-
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], ['DEF']);
 
         $jwe = JWEFactory::createJWE(
@@ -766,10 +760,5 @@ class EncrypterTest extends TestCase
         ]);
 
         return $key;
-    }
-
-    private function isCryptooExtensionInstalled()
-    {
-        return class_exists('\Crypto\Cipher');
     }
 }

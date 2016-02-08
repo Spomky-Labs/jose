@@ -13,6 +13,7 @@ namespace Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
+use Jose\Util\GCM;
 
 /**
  *
@@ -24,15 +25,27 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
-        $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = $encoded_protected_header;
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
 
-        $cipher->setAAD($calculated_aad);
-        $cyphertext = $cipher->encrypt($data, $cek, $iv);
-        $tag = $cipher->getTag();
+        if (class_exists('\Crypto\Cipher')) {
+            $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
+            $calculated_aad = $encoded_protected_header;
+            if (null !== $aad) {
+                $calculated_aad .= '.'.$aad;
+            }
+
+            $cipher->setAAD($calculated_aad);
+            $cyphertext = $cipher->encrypt($data, $cek, $iv);
+            $tag = $cipher->getTag();
+
+            return $cyphertext;
+        }
+
+        $gcm = new GCM();
+        list($cyphertext, $tag) = $gcm->gcm_encrypt($cek, $iv, $data, $calculated_aad);
 
         return $cyphertext;
     }
@@ -42,17 +55,23 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
      */
     public function decryptContent($data, $cek, $iv, $aad, $encoded_protected_header, $tag)
     {
-        $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
         $calculated_aad = $encoded_protected_header;
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $cipher->setTag($tag);
-        $cipher->setAAD($calculated_aad);
 
-        $plaintext = $cipher->decrypt($data, $cek, $iv);
+        if (class_exists('\Crypto\Cipher')) {
+            $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
+            $cipher->setTag($tag);
+            $cipher->setAAD($calculated_aad);
 
-        return $plaintext;
+            $plaintext = $cipher->decrypt($data, $cek, $iv);
+
+            return $plaintext;
+        }
+
+        $gcm = new GCM();
+        return $gcm->gcm_decrypt($cek, $iv, $data, $calculated_aad, $tag);
     }
 
     /**
