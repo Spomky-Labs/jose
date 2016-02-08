@@ -19,7 +19,7 @@ matrix:
         - php: nightly
 
 before_script:
-    - if [ "$WITH_CRYPTO" != "" ]; then pecl install crypto-0.2.2; fi;'
+    - sh -c 'if [ "$WITH_CRYPTO" != "" ]; then pecl install crypto-0.2.2; fi;'*
     - composer install --no-interaction
     - mkdir -p build/logs
 
