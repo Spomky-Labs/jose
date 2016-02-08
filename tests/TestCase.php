@@ -13,12 +13,24 @@ namespace Jose\Test;
 
 use Base64Url\Base64Url;
 use Jose\Object\JWKSet;
+use Jose\Test\Stub\ClaimCheckerManager;
 
 /**
  * Class TestCase.
  */
 class TestCase extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return \Jose\Test\Stub\ClaimCheckerManager
+     */
+    protected function getClaimCheckerManager()
+    {
+        return new ClaimCheckerManager();
+    }
+
+    /**
+     * @return \Jose\Object\JWKSet
+     */
     protected function getPrivateKeySet()
     {
         $keys = ['keys' => [
@@ -108,6 +120,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return new JWKSet($keys);
     }
 
+    /**
+     * @return \Jose\Object\JWKSet
+     */
     protected function getPublicKeySet()
     {
         $keys = ['keys' => [
@@ -159,6 +174,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         return new JWKSet($keys);
     }
 
+    /**
+     * @return \Jose\Object\JWKSet
+     */
     protected function getSymmetricKeySet()
     {
         $keys = ['keys' => [

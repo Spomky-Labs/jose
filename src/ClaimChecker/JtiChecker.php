@@ -1,0 +1,41 @@
+<?php
+
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2016 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
+namespace Jose\ClaimChecker;
+
+use Jose\Object\JWTInterface;
+
+abstract class JtiChecker implements ClaimCheckerInterface
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function checkClaim(JWTInterface $jwt)
+    {
+        if (!$jwt->hasClaim('jti')) {
+            return [];
+        }
+
+        $jti = $jwt->getClaim('jti');
+        if (!$this->isJtiValid($jti)) {
+            throw new \InvalidArgumentException(sprintf('Invalid token ID "%s".', $jti));
+        }
+
+        return ['jti'];
+    }
+
+    /**
+     * @param string $jti
+     *
+     * @return bool
+     */
+    abstract protected function isJtiValid($jti);
+}
