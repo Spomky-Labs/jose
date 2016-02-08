@@ -31,7 +31,7 @@ final class Verifier implements VerifierInterface
     /**
      * Loader constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface        $jwa_manager
+     * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
      */
     public function __construct(JWAManagerInterface $jwa_manager)
     {
@@ -74,7 +74,6 @@ final class Verifier implements VerifierInterface
                     $this->checkKeyUsage($jwk, 'verification');
                     $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
                     if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
-
                         return $i;
                     }
                 } catch (\Exception $e) {

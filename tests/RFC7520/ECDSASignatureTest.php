@@ -46,7 +46,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
             'crv' => 'P-521',
             'x'   => 'AHKZLLOsCOzz5cY97ewNUajB957y-C-U88c3v13nmGZx6sYl_oJXu9A5RkTKqjqvjyekWF-7ytDyRXYgCF5cj0Kt',
             'y'   => 'AdymlHvOiLxXkEhayXQnNCvDX4h9htZaCJN34kfmC6pV5OhQHiraVySsUdaQkAgDPrwQrJmbnX9cwlGfP-HqHZR1',
-            "d"   => "AAhRON2r9cqXX1hg-RoI6R1tX5p2rUAYdmpHZoC1XNM56KtscrX6zbKipQrCW9CGZH3T4ubpnoTKLDYJ_fF3_rJt",
+            'd'   => 'AAhRON2r9cqXX1hg-RoI6R1tX5p2rUAYdmpHZoC1XNM56KtscrX6zbKipQrCW9CGZH3T4ubpnoTKLDYJ_fF3_rJt',
         ]);
 
         /*
@@ -54,8 +54,8 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
          * @see https://tools.ietf.org/html/rfc7520#section-4.3.2
          */
         $headers = [
-            "alg" => "ES512",
-            "kid" => "bilbo.baggins@hobbiton.example"
+            'alg' => 'ES512',
+            'kid' => 'bilbo.baggins@hobbiton.example',
         ];
 
         $jws = JWSFactory::createJWS($payload);

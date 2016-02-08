@@ -16,8 +16,8 @@ use Jose\Decrypter;
 final class DecrypterFactory
 {
     /**
-     * @param string[]                         $algorithms
-     * @param string[]                         $compression_methods
+     * @param string[] $algorithms
+     * @param string[] $compression_methods
      *
      * @return \Jose\DecrypterInterface
      */

@@ -14,7 +14,7 @@ namespace Jose\ClaimChecker;
 use Jose\Object\JWTInterface;
 
 /**
- * Class ClaimCheckerManager
+ * Class ClaimCheckerManager.
  */
 class ClaimCheckerManager implements ClaimCheckerManagerInterface
 {

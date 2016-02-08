@@ -16,7 +16,7 @@ use Jose\Verifier;
 final class VerifierFactory
 {
     /**
-     * @param string[]                         $algorithms
+     * @param string[] $algorithms
      *
      * @return \Jose\VerifierInterface
      */

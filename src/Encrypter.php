@@ -117,7 +117,6 @@ final class Encrypter implements EncrypterInterface
                                 JWKInterface $recipient_key,
                                 JWKInterface $sender_key = null
     ) {
-
         if (!empty($jwe->getSharedProtectedHeaders())) {
             $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
         }
