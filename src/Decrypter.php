@@ -93,7 +93,6 @@ final class Decrypter implements DecrypterInterface
                     $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $recipient, $complete_headers);
                     if (null !== $cek) {
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
-
                             return $i;
                         };
                     }

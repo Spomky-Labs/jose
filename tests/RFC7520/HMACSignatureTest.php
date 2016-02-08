@@ -53,8 +53,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
          * @see https://tools.ietf.org/html/rfc7520#section-4.4.2
          */
         $headers = [
-            "alg" => "HS256",
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
+            'alg' => 'HS256',
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
         $jws = JWSFactory::createJWS($payload);
@@ -74,8 +74,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_compact_json, $jws->toCompactJSON(0));
 
         // We decode the json to compare the 2 arrays otherwise the test may fail as the order may be different
-        $this->assertEquals(json_decode($expected_flattened_json,true), json_decode($jws->toFlattenedJSON(0),true));
-        $this->assertEquals(json_decode($expected_json,true), json_decode($jws->toJSON(),true));
+        $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
+        $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $this->assertEquals(0, $verifer->verifyWithKey($loaded_compact_json, $key));
@@ -112,8 +112,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
          * @see https://tools.ietf.org/html/rfc7520#section-4.5.2
          */
         $headers = [
-            "alg" => "HS256",
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037"
+            'alg' => 'HS256',
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
         $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
@@ -133,9 +133,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_compact_json, $jws->toCompactJSON(0));
 
         // We decode the json to compare the 2 arrays otherwise the test may fail as the order may be different
-        $this->assertEquals(json_decode($expected_flattened_json,true), json_decode($jws->toFlattenedJSON(0),true));
+        $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
 
-        $this->assertEquals(json_decode($expected_json,true), json_decode($jws->toJSON(),true));
+        $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $this->assertEquals(0, $verifer->verifyWithKey($loaded_compact_json, $key, $encoded_payload));
@@ -172,10 +172,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
          * @see https://tools.ietf.org/html/rfc7520#section-4.6.2
          */
         $protected_headers = [
-            "alg" => "HS256",
+            'alg' => 'HS256',
         ];
         $unprotected_headers = [
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037",
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
         $jws = JWSFactory::createJWS($payload);
@@ -192,8 +192,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_json = '{"payload":"SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4","signatures":[{"protected":"eyJhbGciOiJIUzI1NiJ9","header":{"kid":"018c0ae5-4d9b-471b-bfd6-eef314bc7037"},"signature":"bWUSVaxorn7bEF1djytBd0kHv70Ly5pvbomzMWSOr20"}]}';
 
         // We decode the json to compare the 2 arrays otherwise the test may fail as the order may be different
-        $this->assertEquals(json_decode($expected_flattened_json,true), json_decode($jws->toFlattenedJSON(0),true));
-        $this->assertEquals(json_decode($expected_json,true), json_decode($jws->toJSON(),true));
+        $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
+        $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
         $this->assertEquals(0, $verifer->verifyWithKey($loaded_flattened_json, $key));
@@ -227,8 +227,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
          * @see https://tools.ietf.org/html/rfc7520#section-4.7.2
          */
         $unprotected_headers = [
-            "alg" => "HS256",
-            "kid" => "018c0ae5-4d9b-471b-bfd6-eef314bc7037",
+            'alg' => 'HS256',
+            'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
         $jws = JWSFactory::createJWS($payload);
@@ -245,8 +245,8 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $expected_json = '{"payload":"SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4","signatures":[{"header":{"alg":"HS256","kid":"018c0ae5-4d9b-471b-bfd6-eef314bc7037"},"signature":"xuLifqLGiblpv9zBpuZczWhNj1gARaLV3UxvxhJxZuk"}]}';
 
         // We decode the json to compare the 2 arrays otherwise the test may fail as the order may be different
-        $this->assertEquals(json_decode($expected_flattened_json,true), json_decode($jws->toFlattenedJSON(0),true));
-        $this->assertEquals(json_decode($expected_json,true), json_decode($jws->toJSON(),true));
+        $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
+        $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
         $this->assertEquals(0, $verifer->verifyWithKey($loaded_flattened_json, $key));
