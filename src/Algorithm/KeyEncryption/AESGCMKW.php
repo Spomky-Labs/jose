@@ -68,10 +68,12 @@ abstract class AESGCMKW implements KeyEncryptionInterface
             $cipher->setAAD(null);
 
             $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
+
             return $cek;
         }
 
         $gcm = new GCM();
+
         return $gcm->gcm_decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encryted_cek, null, Base64Url::decode($header['tag']));
     }
 
