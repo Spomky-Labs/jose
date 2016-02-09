@@ -71,6 +71,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
         }
 
         $gcm = new GCM();
+
         return $gcm->gcm_decrypt($cek, $iv, $data, $calculated_aad, $tag);
     }
 
