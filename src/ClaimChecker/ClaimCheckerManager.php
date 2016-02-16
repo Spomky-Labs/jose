@@ -19,17 +19,33 @@ use Jose\Object\JWTInterface;
 class ClaimCheckerManager implements ClaimCheckerManagerInterface
 {
     /**
+     * @var \Jose\ClaimChecker\ClaimCheckerInterface[]
+     */
+    private $claim_checkers = [];
+
+    /**
+     * ClaimCheckerManager constructor.
+     */
+    public function __construct()
+    {
+        $this->claim_checkers = [
+            new ExpirationTimeChecker(),
+            new IssuedAtChecker(),
+            new NotBeforeChecker(),
+        ];
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function checkClaims(JWTInterface $jwt)
     {
-        $checkers = $this->getSupportedClaimCheckers();
         $checked_claims = [];
 
-        foreach ($checkers as $checker) {
+        foreach ($this->claim_checkers as $claim_checker) {
             $checked_claims = array_merge(
                 $checked_claims,
-                $checker->checkClaim($jwt)
+                $claim_checker->checkClaim($jwt)
             );
         }
 
@@ -37,14 +53,10 @@ class ClaimCheckerManager implements ClaimCheckerManagerInterface
     }
 
     /**
-     * @return \Jose\ClaimChecker\ClaimCheckerInterface[]
+     * @param \Jose\ClaimChecker\ClaimCheckerInterface $claim_checker
      */
-    protected function getSupportedClaimCheckers()
+    public function addClaimChecker(ClaimCheckerInterface $claim_checker)
     {
-        return [
-            new ExpirationTimeChecker(),
-            new IssuedAtChecker(),
-            new NotBeforeChecker(),
-        ];
+        $this->claim_checkers[] = $claim_checker;
     }
 }

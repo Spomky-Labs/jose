@@ -18,18 +18,11 @@ use Jose\ClaimChecker\ClaimCheckerManager as Base;
  */
 class ClaimCheckerManager extends Base
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function getSupportedClaimCheckers()
+    public function __construct()
     {
-        return array_merge(
-            parent::getSupportedClaimCheckers(),
-            [
-                new IssuerChecker(),
-                new SubjectChecker(),
-                new AudienceChecker('My Service'),
-            ]
-        );
+        parent::__construct();
+        $this->addClaimChecker(new IssuerChecker());
+        $this->addClaimChecker(new SubjectChecker());
+        $this->addClaimChecker(new AudienceChecker('My Service'));
     }
 }
