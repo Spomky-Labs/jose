@@ -54,9 +54,7 @@ Please consider the following optional requirements:
 
 # Continuous Integration
 
-It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM`.
-
-Please note that tests using algorithms `AxxxGCM` and `AxxxGCMKW` are not performed as [PHP Crypto](https://github.com/bukka/php-crypto) is not available on `HHVM` platform.
+It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM` with all algorithms.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
