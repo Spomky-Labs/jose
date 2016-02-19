@@ -25,7 +25,7 @@ use Jose\Object\JWK;
 class RSAPSSSignatureTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * Please note that we cannot create create the signature and get the same result as the example (RSA-PSS signatures are always different).
+     * Please note that we cannot create the signature and get the same result as the example (RSA-PSS signatures are always different).
      * This test case create a signature and verifies it.
      * Then the output given in the RFC is used and verified.
      * This way, we can say that the library is able to create/verify RSA-PSS signatures and verify signature from test vectors.

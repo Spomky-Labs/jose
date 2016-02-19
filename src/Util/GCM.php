@@ -165,7 +165,7 @@ final class GCM
     private static function getInc($s_bits, $x)
     {
         $lsb = self::getLSB($s_bits, $x);
-        $X = (self::toUInt32Bits($lsb) + 1);
+        $X = self::toUInt32Bits($lsb) + 1;
         $res = self::getMSB(self::getLength($x) - $s_bits, $x).pack('N', $X);
 
         return $res;
@@ -282,7 +282,7 @@ final class GCM
 
         $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
 
-        $iv = str_repeat(chr(0), 16);  // initialize to 16 byte string of "0"s
+        $iv = str_repeat("\0", 16);  // initialize to 16 byte string of "0"s
         mcrypt_generic_init($cipher, $K, $iv);
 
         $n = (int)ceil(self::getLength($X) / 128);
