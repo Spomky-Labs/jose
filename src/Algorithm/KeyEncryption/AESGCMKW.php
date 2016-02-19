@@ -42,8 +42,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
 
             $header['tag'] = Base64Url::encode($cipher->getTag());
         } else {*/
-            $gcm = new GCM();
-            list($encryted_cek, $tag) = $gcm->encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
+            list($encryted_cek, $tag) = GCM::encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
             $header['tag'] = Base64Url::encode($tag);
         //}
 
@@ -72,9 +71,7 @@ abstract class AESGCMKW implements KeyEncryptionInterface
             return $cek;
         }*/
 
-        $gcm = new GCM();
-
-        return $gcm->decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encryted_cek, null, Base64Url::decode($header['tag']));
+        return GCM::decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encryted_cek, null, Base64Url::decode($header['tag']));
     }
 
     /**

@@ -44,8 +44,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             return $cyphertext;
         }*/
 
-        $gcm = new GCM();
-        list($cyphertext, $tag) = $gcm->encrypt($cek, $iv, $data, $calculated_aad);
+        list($cyphertext, $tag) = GCM::encrypt($cek, $iv, $data, $calculated_aad);
 
         return $cyphertext;
     }
@@ -70,9 +69,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             return $plaintext;
         }*/
 
-        $gcm = new GCM();
-
-        return $gcm->decrypt($cek, $iv, $data, $calculated_aad, $tag);
+        return GCM::decrypt($cek, $iv, $data, $calculated_aad, $tag);
     }
 
     /**

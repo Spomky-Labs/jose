@@ -20,43 +20,19 @@ final class GCM
      * @param string $IV
      * @param string $P
      * @param string $A
-     * @param int    $t
      *
-     * @return array|null
+     * @return array
      */
-    public static function encrypt($K, $IV, $P, $A, $t = 128)
+    public static function encrypt($K, $IV, $P, $A)
     {
-        $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-        Assertion::notNull($cipher);
+        list($cipher, $J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
 
-        $key_length = StringUtil::getStringLength($K) * 8;
-        Assertion::inArray($key_length, [128, 192, 256]);
-
-        $iv = str_repeat(chr(0), 16);  // initialize to 16 byte string of "0"s
-        $s = mcrypt_generic_init($cipher, $K, $iv);
-        Assertion::greaterOrEqualThan($s, 0);
-
-        $H = mcrypt_generic($cipher, StringUtil::addPadding('', 16, "\0"));
-        $iv_len = self::getLength($IV);
-        if ($iv_len == 96) {
-            $J0 = $IV.pack('H*', '00000001');
-        } else {
-            $s = (128 * ceil($iv_len / 128)) - $iv_len;
-            Assertion::eq(($s + 64) % 8, 0);
-            $packed_iv_len = pack('N', $iv_len);
-            $iv_len_padding = StringUtil::addPadding($packed_iv_len, 8, "\0", STR_PAD_LEFT);
-            $hash_X = $IV.StringUtil::addPadding('', ($s + 64) / 8, "\0").$iv_len_padding;
-            $J0 = self::getHash($H, $hash_X);
-        }
         $C = self::getGCTR($K, self::getInc(32, $J0), $P);
-
-        $u = (128 * ceil(self::getLength($C) / 128)) - self::getLength($C);
-        $v = (128 * ceil(self::getLength($A) / 128)) - self::getLength($A);
-        $a_len_padding = StringUtil::addPadding(pack('N', self::getLength($A)), 8, "\0", STR_PAD_LEFT);
-        $c_len_padding = StringUtil::addPadding(pack('N', self::getLength($C)), 8, "\0", STR_PAD_LEFT);
+        $u = self::calcVector($C);
+        $c_len_padding = self::addPadding($C);
 
         $S = self::getHash($H, $A.StringUtil::addPadding('', $v / 8, "\0").$C.StringUtil::addPadding('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T = self::getMSB($t, self::getGCTR($K, $J0, $S));
+        $T = self::getMSB(128, self::getGCTR($K, $J0, $S));
         mcrypt_generic_deinit($cipher);
         mcrypt_module_close($cipher);
 
@@ -70,53 +46,78 @@ final class GCM
      * @param string $A
      * @param string $T
      *
-     * @return array|null
+     * @return array
      */
     public static function decrypt($K, $IV, $C, $A, $T)
     {
+        list($cipher, $J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
+
+        $P = self::getGCTR($K, self::getInc(32, $J0), $C);
+
+        $u = self::calcVector($C);
+        $c_len_padding = self::addPadding($C);
+
+        $S = self::getHash($H, $A.StringUtil::addPadding('', $v / 8, "\0").$C.StringUtil::addPadding('', $u / 8, "\0").$a_len_padding.$c_len_padding);
+        $T1 = self::getMSB(self::getLength($T), self::getGCTR($K, $J0, $S));
+        $result = strcmp($T, $T1);
+        Assertion::eq($result, 0);
+
+        mcrypt_generic_deinit($cipher);
+        mcrypt_module_close($cipher);
+
+        return $P;
+    }
+
+    private static function common($K, $IV, $A)
+    {
         $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-        if (!$cipher) {
-            return;
-        }
+        Assertion::notNull($cipher);
+
         $key_length = StringUtil::getStringLength($K) * 8;
         Assertion::inArray($key_length, [128, 192, 256]);
 
-
-        $iv = str_repeat(chr(0), 16);  // initialize to 16 byte string of "0"s
+        $iv = str_repeat("\0", 16);
         $s = mcrypt_generic_init($cipher, $K, $iv);
         Assertion::greaterOrEqualThan($s, 0);
 
-        $H = mcrypt_generic($cipher, StringUtil::addPadding('', 16, "\0"));
-
+        $H = mcrypt_generic($cipher, str_repeat("\0", 16));
         $iv_len = self::getLength($IV);
+
         if ($iv_len == 96) {
             $J0 = $IV.pack('H*', '00000001');
         } else {
-            $s = (128 * ceil($iv_len / 128)) - $iv_len;
-            Assertion::notEq(($s + 64) % 8, 0);
+            $s = self::calcVector($IV);
+            Assertion::eq(($s + 64) % 8, 0);
 
             $packed_iv_len = pack('N', $iv_len);
             $iv_len_padding = StringUtil::addPadding($packed_iv_len, 8, "\0", STR_PAD_LEFT);
             $hash_X = $IV.StringUtil::addPadding('', ($s + 64) / 8, "\0").$iv_len_padding;
             $J0 = self::getHash($H, $hash_X);
         }
-        $P = self::getGCTR($K, self::getInc(32, $J0), $C);
+        $v = self::calcVector($A);
+        $a_len_padding = self::addPadding($A);
 
-        $u = (128 * ceil(self::getLength($C) / 128)) - self::getLength($C);
-        $v = (128 * ceil(self::getLength($A) / 128)) - self::getLength($A);
-        $a_len_padding = StringUtil::addPadding(pack('N', self::getLength($A)), 8, "\0", STR_PAD_LEFT);
-        $c_len_padding = StringUtil::addPadding(pack('N', self::getLength($C)), 8, "\0", STR_PAD_LEFT);
+        return [$cipher, $J0, $v, $a_len_padding, $H];
+    }
 
-        $S = self::getHash($H, $A.StringUtil::addPadding('', $v / 8, "\0").$C.StringUtil::addPadding('', $u / 8, "\0").$a_len_padding.$c_len_padding);
-        $T1 = self::getMSB(self::getLength($T), self::getGCTR($K, $J0, $S));
-        $result = strcmp($T, $T1);
-        if ($result) {
-            return;
-        }
-        mcrypt_generic_deinit($cipher);
-        mcrypt_module_close($cipher);
+    /**
+     * @param string $value
+     *
+     * @return int
+     */
+    private static function calcVector($value)
+    {
+        return (128 * ceil(self::getLength($value) / 128)) - self::getLength($value);
+    }
 
-        return $P;
+    /**
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function addPadding($value)
+    {
+        return StringUtil::addPadding(pack('N', self::getLength($value)), 8, "\0", STR_PAD_LEFT);
     }
 
     /**
@@ -137,13 +138,7 @@ final class GCM
      */
     private static function getMSB($num_bits, $x)
     {
-        Assertion::string($x);
-        Assertion::integer($num_bits);
-        Assertion::eq($num_bits % 8, 0);
-
         $num_bytes = $num_bits / 8;
-        $len_x = StringUtil::getStringLength($x);
-        Assertion::lessOrEqualThan($num_bytes, $len_x);
 
         return StringUtil::getSubString($x, 0, $num_bytes);
     }
@@ -156,14 +151,9 @@ final class GCM
      */
     private static function getLSB($num_bits, $x)
     {
-        Assertion::string($x);
-        Assertion::integer($num_bits);
-        Assertion::eq($num_bits % 8, 0);
-
         $num_bytes = ($num_bits / 8);
-        Assertion::lessOrEqualThan($num_bytes, StringUtil::getStringLength($x));
 
-        return StringUtil::getSubString($x, $num_bytes * -1);
+        return StringUtil::getSubString($x, -$num_bytes);
     }
 
     /**
@@ -174,9 +164,6 @@ final class GCM
      */
     private static function getInc($s_bits, $x)
     {
-        Assertion::eq($s_bits, 32);
-        Assertion::string($x);
-
         $lsb = self::getLSB($s_bits, $x);
         $X = (self::toUInt32Bits($lsb) + 1);
         $res = self::getMSB(self::getLength($x) - $s_bits, $x).pack('N', $X);
@@ -215,7 +202,6 @@ final class GCM
         $R = pack('H*', 'E1').StringUtil::addPadding('', 15, "\0");
         $Z = StringUtil::addPadding('', 16, "\0");
         $V = $Y;
-        Assertion::eq(StringUtil::getStringLength($X), 16);
 
         $parts = str_split($X, 4);
         $x = sprintf('%032b%032b%032b%032b', self::toUInt32Bits($parts[0]), self::toUInt32Bits($parts[1]), self::toUInt32Bits($parts[2]), self::toUInt32Bits($parts[3]));
@@ -245,8 +231,6 @@ final class GCM
         $width = 4;
         $parts = array_map('self::toUInt32Bits', str_split($input, $width));
         $runs = count($parts);
-        $len = StringUtil::getStringLength($input) / 4;
-        Assertion::integer($len);
 
         for ($i = $runs - 1; $i >= 0; $i--) {
             if ($i) {
@@ -273,10 +257,6 @@ final class GCM
      */
     private static function getHash($H, $X)
     {
-        Assertion::string($H);
-        Assertion::string($X);
-        Assertion::eq(StringUtil::getStringLength($X) % 16, 0);
-
         $Y = [];
         $Y[0] = StringUtil::addPadding('', 16, "\0");
         $num_blocks = (int)(StringUtil::getStringLength($X) / 16);
@@ -301,16 +281,9 @@ final class GCM
         }
 
         $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-        if (!$cipher) {
-            return;
-        }
-        $key_length = StringUtil::getStringLength($K) * 8;
-
-        Assertion::integer($key_length, [128, 192, 256]);
 
         $iv = str_repeat(chr(0), 16);  // initialize to 16 byte string of "0"s
-        $s = mcrypt_generic_init($cipher, $K, $iv);
-        Assertion::greaterOrEqualThan($s, 0);
+        mcrypt_generic_init($cipher, $K, $iv);
 
         $n = (int)ceil(self::getLength($X) / 128);
         $CB = [];
