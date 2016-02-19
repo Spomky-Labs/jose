@@ -30,7 +30,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $calculated_aad .= '.'.$aad;
         }
 
-        if (class_exists('\Crypto\Cipher')) {
+        /*if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $calculated_aad = $encoded_protected_header;
             if (null !== $aad) {
@@ -42,10 +42,10 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $tag = $cipher->getTag();
 
             return $cyphertext;
-        }
+        }*/
 
         $gcm = new GCM();
-        list($cyphertext, $tag) = $gcm->gcm_encrypt($cek, $iv, $data, $calculated_aad);
+        list($cyphertext, $tag) = $gcm->encrypt($cek, $iv, $data, $calculated_aad);
 
         return $cyphertext;
     }
@@ -60,7 +60,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $calculated_aad .= '.'.$aad;
         }
 
-        if (class_exists('\Crypto\Cipher')) {
+        /*if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setTag($tag);
             $cipher->setAAD($calculated_aad);
@@ -68,11 +68,11 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $plaintext = $cipher->decrypt($data, $cek, $iv);
 
             return $plaintext;
-        }
+        }*/
 
         $gcm = new GCM();
 
-        return $gcm->gcm_decrypt($cek, $iv, $data, $calculated_aad, $tag);
+        return $gcm->decrypt($cek, $iv, $data, $calculated_aad, $tag);
     }
 
     /**
