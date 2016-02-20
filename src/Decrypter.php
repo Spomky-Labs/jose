@@ -89,7 +89,11 @@ final class Decrypter implements DecrypterInterface
             foreach ($jwk_set as $jwk) {
                 try {
                     $this->checkKeyUsage($jwk, 'decryption');
-                    $this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName());
+                    if ('dir' !== $key_encryption_algorithm->getAlgorithmName()) {
+                        $this->checkKeyAlgorithm($jwk, $key_encryption_algorithm->getAlgorithmName());
+                    } else {
+                        $this->checkKeyAlgorithm($jwk, $content_encryption_algorithm->getAlgorithmName());
+                    }
                     $cek = $this->decryptCEK($key_encryption_algorithm, $content_encryption_algorithm, $jwk, $recipient, $complete_headers);
                     if (null !== $cek) {
                         if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
@@ -198,7 +202,6 @@ final class Decrypter implements DecrypterInterface
             $jwe->getEncodedSharedProtectedHeaders(),
             $jwe->getTag()
         );
-
         if (null === $payload) {
             return false;
         }

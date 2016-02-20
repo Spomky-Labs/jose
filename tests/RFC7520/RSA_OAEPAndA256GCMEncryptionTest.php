@@ -73,7 +73,6 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
-        $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_compact_json->getIV()));
@@ -81,7 +80,6 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_compact_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
-        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_flattened_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_flattened_json->getIV()));
@@ -90,11 +88,15 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
 
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
-        $this->assertEquals($expected_payload, $loaded_json->getPayload());
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
+
+
+        $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }
 }

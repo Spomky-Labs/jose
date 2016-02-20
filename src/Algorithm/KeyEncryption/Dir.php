@@ -21,11 +21,11 @@ final class Dir implements DirectEncryptionInterface
      */
     public function getCEK(JWKInterface $key)
     {
-        if ('dir' !== $key->get('kty') || !$key->has('dir')) {
+        if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
 
-        return Base64Url::decode($key->get('dir'));
+        return Base64Url::decode($key->get('k'));
     }
 
     /**

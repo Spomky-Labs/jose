@@ -421,7 +421,7 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
+        $result = $decrypter->decryptUsingKey($loaded, $this->getDirectKey());
 
         $this->assertEquals(0, $result);
         $this->assertTrue(is_array($loaded->getPayload()));
@@ -755,8 +755,8 @@ class EncrypterTest extends TestCase
         $key = new JWK([
             'kid'     => 'DIR_1',
             'key_ops' => ['encrypt', 'decrypt'],
-            'kty'     => 'dir',
-            'dir'     => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),
+            'kty'     => 'oct',
+            'k'       => Base64Url::encode(hex2bin('00112233445566778899AABBCCDDEEFF000102030405060708090A0B0C0D0E0F')),
         ]);
 
         return $key;

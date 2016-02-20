@@ -69,7 +69,7 @@ final class Encrypter implements EncrypterInterface
         $content_encryption_algorithm = $this->findContentEncryptionAlgorithm($complete_headers);
 
         // We check keys (usage and algorithm if restrictions are set)
-        $this->checkKeys($key_encryption_algorithm, $recipient_key, $sender_key);
+        $this->checkKeys($key_encryption_algorithm, $content_encryption_algorithm, $recipient_key, $sender_key);
 
         if (null === $jwe->getCiphertext()) {
             // the content is not yet encrypted (no recipient)
@@ -158,17 +158,26 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface $algorithm
-     * @param \Jose\Object\JWKInterface                       $recipient_key
-     * @param \Jose\Object\JWKInterface|null                  $sender_key
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $recipient_key
+     * @param \Jose\Object\JWKInterface|null                      $sender_key
      */
-    private function checkKeys(KeyEncryptionAlgorithmInterface $algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    private function checkKeys(KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         $this->checkKeyUsage($recipient_key, 'encryption');
-        $this->checkKeyAlgorithm($recipient_key, $algorithm->getAlgorithmName());
+        if ('dir' !== $key_encryption_algorithm->getAlgorithmName()) {
+            $this->checkKeyAlgorithm($recipient_key, $key_encryption_algorithm->getAlgorithmName());
+        } else {
+            $this->checkKeyAlgorithm($recipient_key, $content_encryption_algorithm->getAlgorithmName());
+        }
         if ($sender_key instanceof JWKInterface) {
             $this->checkKeyUsage($sender_key, 'encryption');
-            $this->checkKeyAlgorithm($sender_key, $algorithm->getAlgorithmName());
+            if ('dir' !== $key_encryption_algorithm->getAlgorithmName()) {
+                $this->checkKeyAlgorithm($sender_key, $key_encryption_algorithm->getAlgorithmName());
+            } else {
+                $this->checkKeyAlgorithm($sender_key, $content_encryption_algorithm->getAlgorithmName());
+            }
         }
     }
 
