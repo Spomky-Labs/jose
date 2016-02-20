@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Util;
+use Base64Url\Base64Url;
 
 /**
  * Class ConcatKDF.
@@ -33,6 +34,8 @@ final class ConcatKDF
      */
     public static function generate($Z, $encryption_algorithm, $encryption_key_size, $apu = '', $apv = '')
     {
+        $apu = !empty($apu)?Base64Url::decode($apu):'';
+        $apv = !empty($apv)?Base64Url::decode($apv):'';
         $encryption_segments = [
             self::toInt32Bits(1),                                                   // Round number 1
             $Z,                                                                     // Z (shared secret)
@@ -43,7 +46,11 @@ final class ConcatKDF
             '',                                                                     // SuppPrivInfo
         ];
 
-        return  substr(hex2bin(hash('sha256', implode('', $encryption_segments))), 0, $encryption_key_size / 8);
+        $input = implode('', $encryption_segments);
+        $hash = hash('sha256', $input, true);
+        $kdf = substr($hash, 0, $encryption_key_size / 8);
+
+        return $kdf;
     }
 
     /**

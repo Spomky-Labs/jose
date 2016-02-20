@@ -50,11 +50,11 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
             'apu' => 'QWxpY2U',
             'apv' => 'Qm9i',
         ];
-        $expected = Base64Url::decode('9FdsD3uzmeK4ImyoWpP5PA');
+        $expected = 'DlF1aef8CYVvmP2Ex8iKQQ';
         $ecdh_es = new ECDHES();
         $additional_header_values = [];
 
-        $this->assertEquals($expected, $ecdh_es->getAgreementKey(128, $sender, $receiver, $header, $additional_header_values));
+        $this->assertEquals($expected, Base64Url::encode($ecdh_es->getAgreementKey(128, $sender, $receiver, $header, $additional_header_values)));
         $this->assertTrue(array_key_exists('epk', $additional_header_values));
         $this->assertTrue(array_key_exists('kty', $additional_header_values['epk']));
         $this->assertTrue(array_key_exists('crv', $additional_header_values['epk']));
@@ -337,8 +337,8 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(256, $sender, $receiver, $header);
-        $this->assertEquals('clNz59mGIo1vb1wRLUz7FYB2pGx3TpQ-pRiqdEPdW1o', Base64Url::encode($agreement_key));
+        $agreement_key = $ecdh_es->getAgreementKey(128, $sender, $receiver, $header);
+        $this->assertEquals('-puVrOLlXAbXC7rKAEIW5w', Base64Url::encode($agreement_key));
     }
 
     public function testGetAnAgreementKeyUsingP384Keys()
@@ -365,8 +365,8 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(256, $sender, $receiver, $header);
-        $this->assertEquals('-Fj6ZkBpOcITxDcloKVNItlIH6qF2gyjw7oIHIEChp8', Base64Url::encode($agreement_key));
+        $agreement_key = $ecdh_es->getAgreementKey(128, $sender, $receiver, $header);
+        $this->assertEquals('tLa5MDrbO8KKjM3frmdANg', Base64Url::encode($agreement_key));
     }
 
     /**

@@ -37,17 +37,17 @@ abstract class AESKW implements KeyWrappingInterface
 
     /**
      * @param \Jose\Object\JWKInterface $key
-     * @param string                    $encryted_cek
+     * @param string                    $encrypted_cek
      * @param array                     $header
      *
      * @return mixed
      */
-    public function unwrapKey(JWKInterface $key, $encryted_cek, array $header)
+    public function unwrapKey(JWKInterface $key, $encrypted_cek, array $header)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
 
-        return $wrapper->unwrap(Base64Url::decode($key->get('k')), $encryted_cek);
+        return $wrapper->unwrap(Base64Url::decode($key->get('k')), $encrypted_cek);
     }
 
     /**

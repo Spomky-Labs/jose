@@ -33,4 +33,12 @@ final class ECDHESA128KW extends ECDHESAESKW
     {
         return 'ECDH-ES+A128KW';
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getKeyLength()
+    {
+        return 128;
+    }
 }
