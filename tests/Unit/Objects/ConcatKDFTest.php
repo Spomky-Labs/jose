@@ -60,6 +60,7 @@ class ConcatKDFTest extends \PHPUnit_Framework_TestCase
         $ecdh_es = new ECDHES();
         $agreement_key = $ecdh_es->getAgreementKey(
             128,
+            'A128GCM',
             $alice_key,
             $bob_key,
             $complete_header,

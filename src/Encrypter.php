@@ -343,7 +343,14 @@ final class Encrypter implements EncrypterInterface
         if (!$sender_key instanceof JWKInterface) {
             throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
         }
-        $jwt_cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_headers);
+        $jwt_cek = $key_encryption_algorithm->getAgreementKey(
+            $content_encryption_algorithm->getCEKSize(),
+            $content_encryption_algorithm->getAlgorithmName(),
+            $sender_key,
+            $recipient_key,
+            $complete_headers,
+            $additional_headers
+        );
 
         return $jwt_cek;
     }
@@ -480,7 +487,13 @@ final class Encrypter implements EncrypterInterface
             throw new \RuntimeException('The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
         }
         $additional_header_values = [];
-        $cek = $key_encryption_algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $sender_key, $recipient_key, $complete_headers, $additional_header_values);
+        $cek = $key_encryption_algorithm->getAgreementKey(
+            $content_encryption_algorithm->getCEKSize(),
+            $content_encryption_algorithm->getAlgorithmName(),
+            $sender_key, $recipient_key,
+            $complete_headers,
+            $additional_header_values
+        );
 
         return $cek;
     }

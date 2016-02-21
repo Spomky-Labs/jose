@@ -54,7 +54,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $ecdh_es = new ECDHES();
         $additional_header_values = [];
 
-        $this->assertEquals($expected, Base64Url::encode($ecdh_es->getAgreementKey(128, $sender, $receiver, $header, $additional_header_values)));
+        $this->assertEquals($expected, Base64Url::encode($ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header, $additional_header_values)));
         $this->assertTrue(array_key_exists('epk', $additional_header_values));
         $this->assertTrue(array_key_exists('kty', $additional_header_values['epk']));
         $this->assertTrue(array_key_exists('crv', $additional_header_values['epk']));
@@ -205,7 +205,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
     }
 
     /**
@@ -223,7 +223,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender);
     }
 
     /**
@@ -242,7 +242,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender, null, $header);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, null, $header);
     }
 
     /**
@@ -266,7 +266,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
     }
 
     /**
@@ -288,7 +288,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
     }
 
     /**
@@ -310,7 +310,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
     }
 
     public function testGetAnAgreementKeyUsingP521Keys()
@@ -337,7 +337,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(128, $sender, $receiver, $header);
+        $agreement_key = $ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header);
         $this->assertEquals('-puVrOLlXAbXC7rKAEIW5w', Base64Url::encode($agreement_key));
     }
 
@@ -365,7 +365,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(128, $sender, $receiver, $header);
+        $agreement_key = $ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header);
         $this->assertEquals('tLa5MDrbO8KKjM3frmdANg', Base64Url::encode($agreement_key));
     }
 
@@ -397,7 +397,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(256, $sender, $receiver, $header);
+        $agreement_key = $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver, $header);
         $this->assertEquals('-Fj6ZkBpOcITxDcloKVNItlIH6qF2gyjw7oIHIEChp8', Base64Url::encode($agreement_key));
     }
 }

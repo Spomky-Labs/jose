@@ -39,7 +39,7 @@ final class ECDHES implements KeyAgreementInterface
     /**
      * {@inheritdoc}
      */
-    public function getAgreementKey($encryption_key_length, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = [])
+    public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = [])
     {
         $this->checkKey($private_key, true);
         if (null === $public_key) {
@@ -64,7 +64,7 @@ final class ECDHES implements KeyAgreementInterface
         $apu = array_key_exists('apu', $complete_header) ? $complete_header['apu'] : '';
         $apv = array_key_exists('apv', $complete_header) ? $complete_header['apv'] : '';
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $complete_header['enc'], $encryption_key_length, $apu, $apv);
+        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $algorithm, $encryption_key_length, $apu, $apv);
     }
 
     /**
