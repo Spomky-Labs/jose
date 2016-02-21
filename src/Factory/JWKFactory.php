@@ -56,6 +56,13 @@ final class JWKFactory
         return hex2bin($adapter->decHex($value));
     }
 
+    /**
+     * @param string $curve
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return string
+     */
     private static function getNistName($curve)
     {
         switch ($curve) {
