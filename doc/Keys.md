@@ -12,7 +12,7 @@ This page lists algorithms and supported key types.
 
 # Key encryption
 
-* `dir`: `dir` `oct` type,
+* `dir`: `oct` type,
 * `ECDH-ES`, `ECDH-ES+A128KW`, `ECDH-ES+A192KW` and `ECDH-ES+A256KW`: `EC` (Elliptic Curves) type,
 * `RSA1_5`, `RSA-OAEP` and `RSA-OAEP-256`: `RSA` type,
 * `PBES2-HS256+A128KW`, `PBES2-HS384+A192KW` and `PBES2-HS512+A256KW`: `oct` type,

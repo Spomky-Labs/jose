@@ -217,6 +217,54 @@ final class KeyConverter
     }
 
     /**
+     * @param array $x5c
+     *
+     * @return array
+     */
+    public static function loadFromX5C(array $x5c)
+    {
+        $certificate = null;
+        $last_issuer = null;
+        $last_subject = null;
+        foreach ($x5c as $cert) {
+            $current_cert = "-----BEGIN CERTIFICATE-----\n$cert\n-----END CERTIFICATE-----";
+            $x509 = openssl_x509_read($current_cert);
+            if (false === $x509) {
+                $last_issuer = null;
+                $last_subject = null;
+                break;
+            }
+            $parsed = openssl_x509_parse($x509);
+
+            openssl_x509_free($x509);
+            if (false === $parsed) {
+                $last_issuer = null;
+                $last_subject = null;
+                break;
+            }
+            if (null === $last_subject) {
+                $last_subject = $parsed['subject'];
+                $last_issuer = $parsed['issuer'];
+                $certificate = $current_cert;
+            } else {
+                if (json_encode($last_issuer) === json_encode($parsed['subject'])) {
+                    $last_subject = $parsed['subject'];
+                    $last_issuer = $parsed['issuer'];
+                } else {
+                    $last_issuer = null;
+                    $last_subject = null;
+                    break;
+                }
+            }
+        }
+        if (null === $last_issuer || json_encode($last_issuer) !== json_encode($last_subject)) {
+            throw new \InvalidArgumentException('Invalid certificate chain.');
+        }
+
+        return self::loadKeyFromCertificate($certificate);
+    }
+
+    /**
      * @param array $data
      *
      * @throws \Exception

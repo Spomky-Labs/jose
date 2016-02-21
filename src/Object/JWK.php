@@ -66,14 +66,6 @@ final class JWK implements JWKInterface
     /**
      * {@inheritdoc}
      */
-    public function getKeys()
-    {
-        return array_keys($this->values);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getAll()
     {
         return $this->values;

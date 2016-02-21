@@ -167,7 +167,7 @@ final class JWKFactory
      * @param string $jku
      * @param bool   $allow_unsecured_connection
      *
-     * @return \Jose\Object\JWKSet
+     * @return \Jose\Object\JWKSetInterface
      */
     public static function createFromJKU($jku, $allow_unsecured_connection = false)
     {
@@ -217,44 +217,10 @@ final class JWKFactory
      */
     public static function createFromX5C(array $x5c, array $additional_values = [])
     {
-        $certificate = null;
-        $last_issuer = null;
-        $last_subject = null;
-        foreach ($x5c as $cert) {
-            $current_cert = "-----BEGIN CERTIFICATE-----\n$cert\n-----END CERTIFICATE-----";
-            $x509 = openssl_x509_read($current_cert);
-            if (false === $x509) {
-                $last_issuer = null;
-                $last_subject = null;
-                break;
-            }
-            $parsed = openssl_x509_parse($x509);
-            openssl_x509_free($x509);
-            if (false === $parsed) {
-                $last_issuer = null;
-                $last_subject = null;
-                break;
-            }
-            if (null === $last_subject) {
-                $last_subject = $parsed['subject'];
-                $last_issuer = $parsed['issuer'];
-                $certificate = $current_cert;
-            } else {
-                if (json_encode($last_issuer) === json_encode($parsed['subject'])) {
-                    $last_subject = $parsed['subject'];
-                    $last_issuer = $parsed['issuer'];
-                } else {
-                    $last_issuer = null;
-                    $last_subject = null;
-                    break;
-                }
-            }
-        }
-        if (null === $last_issuer || json_encode($last_issuer) !== json_encode($last_subject)) {
-            throw new \InvalidArgumentException('Invalid certificate chain.');
-        }
+        $values = KeyConverter::loadFromX5C($x5c);
+        $values = array_merge($values, $additional_values);
 
-        return self::createFromCertificate($certificate, $additional_values);
+        return new JWK($values);
     }
 
     /**

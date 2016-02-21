@@ -16,7 +16,7 @@ Status of the implementation
 * Serialization modes supported:
     * [x] JSON Compact Serialization Overview (JWS/JWE creation and loading)
     * [x] JSON Flattened Serialization Overview (JWS/JWE creation and loading)
-    * [x] JSON Serialization Overview (JWS/JWE creation and loading)
+    * [x] JSON General Serialization Overview (JWS/JWE creation and loading)
 
 * Compression support for JWE objects:
     * [x] Deflate —DEF—

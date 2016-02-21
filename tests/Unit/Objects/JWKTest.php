@@ -36,7 +36,6 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'bar'     => 'plic',
         ]);
 
-        $this->assertEquals(['kty', 'crv', 'x', 'y', 'use', 'key_ops', 'alg', 'bar'], $jwk->getKeys());
         $this->assertEquals('EC', $jwk->get('kty'));
         $this->assertEquals('ES256', $jwk->get('alg'));
         $this->assertEquals('sign', $jwk->get('use'));
@@ -194,5 +193,31 @@ class JWKTest extends \PHPUnit_Framework_TestCase
             'alg'     => 'ES256',
             'kid'     => '9876543210',
         ]), json_encode($public));
+    }
+
+    public function testLoadCertificateChain()
+    {
+        $key = \Jose\Factory\JWKFactory::createFromCertificateFile(
+            __DIR__.'/../Certificates/Chain/google.crt',
+            [
+                'kid' => 'From www.google.com',
+            ]
+        );
+
+        $this->assertEquals(
+            '178f7e93a74ed73d88c29042220b9ae6e4b371cd',
+            strtolower(bin2hex(\Base64Url\Base64Url::decode($key->get('x5t'))))
+        );
+        $this->assertEquals([
+                'kty' => 'RSA',
+                'n' => 'nCoEd1zYUJE6BqOC4NhQSLyJP_EZcBqIRn7gj8Xxic4h7lr-YQ23MkSJoHQLU09VpM6CYpXu61lfxuEFgBLEXpQ_vFtIOPRT9yTm-5HpFcTP9FMN9Er8n1Tefb6ga2-HwNBQHygwA0DaCHNRbH__OjynNwaOvUsRBOt9JN7m-fwxcfuU1WDzLkqvQtLL6sRqGrLMU90VS4sfyBlhH82dqD5jK4Q1aWWEyBnFRiL4U5W-44BKEMYq7LqXIBHHOZkQBKDwYXqVJYxOUnXitu0IyhT8ziJqs07PRgOXlwN-wLHee69FM8-6PnG33vQlJcINNYmdnfsOEXmJHjfFr45yaQ',
+                'e' => 'AQAB',
+                'x5t' => 'F49-k6dO1z2IwpBCIgua5uSzcc0',
+                'x5t#256' => 'pBJP2vnKx7ruHKsy4yJddGUAwJ888-uyU-8_uwiK_TQ',
+                'kid' => 'From www.google.com',
+            ],
+            $key->getAll()
+
+        );
     }
 }

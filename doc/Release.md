@@ -9,7 +9,7 @@ We manage its releases through features and time-based models.
 
 The meaning of "patch" "minor" and "major" comes from the Semantic [Versioning strategy](http://semver.org/).
 
-This release process applies from version 1.0.x.
+This release process applies from version 2.0.x.
 
 ### Backwards Compatibility
 

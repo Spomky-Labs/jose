@@ -14,13 +14,6 @@ namespace Jose\Object;
 interface JWKInterface extends \JsonSerializable
 {
     /**
-     * Get all keys available in the JWK object.
-     *
-     * @return array Available keys of the JWK object
-     */
-    public function getKeys();
-
-    /**
      * Get all values stored in the JWK object.
      *
      * @return array Values of the JWK object
