@@ -33,11 +33,11 @@ final class JWKFactory
         $privKey = $generator->createPrivateKey();
 
         $values = [
-            "kty" =>"EC",
+            'kty' => 'EC',
             'crv' => $curve,
-            'x' => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getX())),
-            'y' => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getY())),
-            'd' => Base64Url::encode(self::convertDecToBin($privKey->getSecret())),
+            'x'   => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getX())),
+            'y'   => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getY())),
+            'd'   => Base64Url::encode(self::convertDecToBin($privKey->getSecret())),
         ];
         $values = array_merge($values, $additional_values);
 
