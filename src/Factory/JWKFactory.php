@@ -11,12 +11,65 @@
 
 namespace Jose\Factory;
 
+use Base64Url\Base64Url;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Mdanter\Ecc\Curves\CurveFactory;
+use Mdanter\Ecc\Curves\NistCurve;
+use Mdanter\Ecc\EccFactory;
 
 final class JWKFactory
 {
+    /**
+     * @param string $curve
+     * @param array  $additional_values
+     *
+     * @return \Jose\Object\JWKInterface
+     */
+    public static function createRandomECPrivateKey($curve, array $additional_values = [])
+    {
+        $generator = CurveFactory::getGeneratorByName(self::getNistName($curve));
+        $privKey = $generator->createPrivateKey();
+
+        $values = [
+            "kty" =>"EC",
+            'crv' => $curve,
+            'x' => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getX())),
+            'y' => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getY())),
+            'd' => Base64Url::encode(self::convertDecToBin($privKey->getSecret())),
+        ];
+        $values = array_merge($values, $additional_values);
+
+        return new JWK($values);
+    }
+
+    /**
+     * @param $value
+     *
+     * @return string
+     */
+    private static function convertDecToBin($value)
+    {
+        $adapter = EccFactory::getAdapter();
+
+        return hex2bin($adapter->decHex($value));
+    }
+
+    private static function getNistName($curve)
+    {
+        switch ($curve) {
+            case 'P-256':
+                return NistCurve::NAME_P256;
+            case 'P-384':
+                return NistCurve::NAME_P384;
+            case 'P-521':
+                return NistCurve::NAME_P521;
+            default:
+                throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported.', $curve));
+        }
+    }
+
     /**
      * @param array $values
      *

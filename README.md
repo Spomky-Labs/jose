@@ -25,15 +25,15 @@ This library aims to provide an implementation of:
 * JW**A** [JSON Web Algorithms (RFC 7518)](http://tools.ietf.org/html/rfc7518).
 * JW**K** [JSON Web Key (RFC 7517)](http://tools.ietf.org/html/rfc7517).
 
-Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are partially implemented.
+Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are fully implemented and all test pass.
 
 This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
 
 # Important note
 
-> Note 1: this library is still in development. All tags v0.x.y must be considered as unstable.
+> Note 0: please use v2.0.x+ as previous version contain many bugs and are difficult to use.
 
-> Note 2: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
+> Note 1: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
 
 # Status of implementations
 

@@ -18,7 +18,7 @@ Before to start, you need to know object types provided by this library and the 
 To add a signature on a `JWS` object, you will need to create:
 
 * the `JWS` object itself,
-* a key (`JWK` object),
+* a private or symmetric key (`JWK` object),
 * a `Signer` object with algorithm you want to use.
 
 Example
@@ -26,7 +26,7 @@ Example
 
 ```php
 use Jose\Factory\JWSFactory;
-use Jose\Factory\KeyFactory;
+use Jose\Factory\JWKFactory;
 use Jose\Factory\SignerFactory;
 
 // We create our JWS object with claims
@@ -40,8 +40,8 @@ $jws = JWSFactory::createJWS([
 ]);
 
 // We load two keys
-$key1 = KeyFactory::createFromFile('/path/to/my/RSA/private.encrypted.key', 'Password');
-$key2 = KeyFactory::createFromValues([
+$key1 = JWKFactory::createFromFile('/path/to/my/RSA/private.encrypted.key', 'Password');
+$key2 = JWKFactory::createFromValues([
     'kty' => 'oct',
     'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
 ]);
@@ -84,7 +84,7 @@ Example
 
 ```php
 use Jose\Factory\JWSFactory;
-use Jose\Factory\KeyFactory;
+use Jose\Factory\JWKFactory;
 use Jose\Factory\SignerFactory;
 
 // We create our JWS object with claims
@@ -126,7 +126,8 @@ $signer->addSignatureWithDetachedPayload(
 To add a recipient on a `JWE` object, you will need to create:
 
 * the `JWE` object itself,
-* a key (`JWK` object),
+* a public or symmetric key (`JWK` object),
+* if you use `ECDH-ES` based algorithms, a private key (`JWK` object),
 * an `Encrypter` object with algorithm you want to use.
 
 Example
@@ -134,30 +135,29 @@ Example
 
 ```php
 use Jose\Factory\JWEFactory;
-use Jose\Factory\KeyFactory;
+use Jose\Factory\JWKFactory;
 use Jose\Factory\EncrypterFactory;
 
 // We create our JWE object with claims
 $jws = JWEFactory::createJWE(
     'My very important information',
     [
+        'alg' => 'RSA-OAEP-256',
         'enc' => 'A256CBC-HS512',
         'zip' => 'DEF',
     ]
 );
 
-// We load two keys
-$key1 = KeyFactory::createFromFile('/path/to/my/RSA/public.key');
+// We load the recipient RSA public key
+$recipient_key = JWKFactory::createFromFile('/path/to/the/recipient/public.key');
 
 // We create our Encrypter service and we declare the algorithms we want to use ('A256CBC-HS512' and 'RSA-OAEP-256')
 $encrypter = EncrypterFactory::createEncrypter(['A256CBC-HS512', 'RSA-OAEP-256']);
 
-// We add a recipient using our RSA key and algorithm RSA-OAEP-256
+// We add a recipient using our RSA key
 $encrypter->addRecipient(
-   $jwe,                     // The JWE object
-   $key1,                    // The recipient's key
-   null,                     // The sender key (needed using EC based algorithms)
-   ['alg' => 'RSA-OAEP-256'] // The recipient' headers (we only declare the algorithm used for key encryption)
+   $jwe,           // The JWE object
+   $recipient_key, // The recipient's key
 );
 
 
@@ -177,6 +177,7 @@ This library supports Additional Authenticated Data (AAD).
 $jws = JWEFactory::createJWE(
     'My very important information',
     [
+        'alg' => 'RSA-OAEP-256',
         'enc' => 'A256CBC-HS512',
         'zip' => 'DEF',
     ],
@@ -189,6 +190,55 @@ $jws = JWEFactory::createJWE(
 
 Please note that when a JWE object contains an AAD or unprotected headers (shared or per recipient), the JWE cannot be
 converted into compact JSON.
+
+### Encryption using `ECDH-ES` base algorithms
+
+`ECDH-ES`, `ECDH-ES+A128KW`, `ECDH-ES+A192KW` and `ECDH-ES+A256KW` key encryption algorithms require a private key besides the recipient public key to be used.
+
+Example
+-------
+
+```php
+use Jose\Factory\JWEFactory;
+use Jose\Factory\JWKFactory;
+use Jose\Factory\EncrypterFactory;
+
+// We create an ephemeral private key
+// Supported curves are 'P-256' 'P-384' and 'P-521'
+$private_key = JWKFactory::createRandomECPrivateKey('P-256');
+
+
+// We create our JWE object with claims
+$jws = JWEFactory::createJWE(
+    'My very important information',
+    [
+        'enc' => 'A256CBC-HS512',
+        'zip' => 'DEF',
+    ]
+);
+
+// We load the recipient EC public key
+$recipient_key = JWKFactory::createFromFile('/path/to/the/recipient/ec_p_256_public.key');
+
+// We create our Encrypter service and we declare the algorithms we want to use ('A256CBC-HS512' and 'ECDH-ES+A128KW')
+$encrypter = EncrypterFactory::createEncrypter(['A256CBC-HS512', 'ECDH-ES+A128KW']);
+
+// We add a recipient using our RSA key and algorithm ECDH-ES+A128KW
+$encrypter->addRecipient(
+   $jwe,                       // The JWE object
+   $recipient_key,             // The recipient's key
+   $private_key,               // The sender private key (our ephemeral key)
+   ['alg' => 'ECDH-ES+A128KW'] // The recipient' headers (we only declare the algorithm used for key encryption)
+);
+
+
+// Now our JWE object contains the encrypted payload and 1 recipient.
+// We can convert each recipient into compact or flattened JSON.
+// We can convert the JWE into JSON with all signatures
+$jwe->toCompactJSON(0); // We convert the recipient (#0) into compact JSON
+$jwe->toFlattenedJSON(1); // We convert the recipient (#0) into flattened JSON
+$jwe->toJSON(); // We convert all recipients into JSON
+```
 
 ### Multiple recipients support
 
@@ -204,31 +254,33 @@ Hereafter, a table with algorithms and associated Key Management Mode.
 | A128KW                          |                |      X       |                      |                                 |                   |
 | A192KW                          |                |      X       |                      |                                 |                   |
 | A256KW                          |                |      X       |                      |                                 |                   |
-| ECDH-ES                         |                |              |         X            |                                 |                   |
-| ECDH-ES+A128KW                  |                |              |                      |                X                |                   |
-| ECDH-ES+A192KW                  |                |              |                      |                X                |                   |
-| ECDH-ES+A256KW                  |                |              |                      |                X                |                   |
-| PBES2-HS256+A128KW              |                |      X       |                      |                                 |                   |
-| PBES2-HS384+A192KW              |                |      X       |                      |                                 |                   |
-| PBES2-HS512+A256KW              |                |      X       |                      |                                 |                   |
+| ECDH-ES *                       |                |              |         X            |                                 |                   |
+| ECDH-ES+A128KW *                |                |              |                      |                X                |                   |
+| ECDH-ES+A192KW *                |                |              |                      |                X                |                   |
+| ECDH-ES+A256KW *                |                |              |                      |                X                |                   |
+| PBES2-HS256+A128KW *            |                |      X       |                      |                                 |                   |
+| PBES2-HS384+A192KW *            |                |      X       |                      |                                 |                   |
+| PBES2-HS512+A256KW *            |                |      X       |                      |                                 |                   |
 | RSA1_5                          |      X         |              |                      |                                 |                   |
 | RSA-OAEP                        |      X         |              |                      |                                 |                   |
 | RSA-OAEP-256                    |      X         |              |                      |                                 |                   |
-| A128GCMKW                       |                |      X       |                      |                                 |                   |
-| A192GCMKW                       |                |      X       |                      |                                 |                   |
-| A256GCMKW                       |                |      X       |                      |                                 |                   |
+| A128GCMKW *                     |                |      X       |                      |                                 |                   |
+| A192GCMKW *                     |                |      X       |                      |                                 |                   |
+| A256GCMKW *                     |                |      X       |                      |                                 |                   |
+
 
 And a compatibility table between Key Management Modes:
 
 |        Key Management Mode      | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
 |---------------------------------|----------------|--------------|----------------------|---------------------------------|-------------------|
-| Key Encryption                  |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
-| Key Wrapping                    |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
-| Direct Key Agreement            |     NO *       |     NO *     |        YES           |            NO *                 |       NO          |
-| Key Agreement with Key Wrapping |     YES        |     YES      |        NO *          |            YES                  |       NO *      |
-| Direct Encryption               |     NO *       |     NO *     |        NO            |            NO *                 |       YES         |
+| Key Encryption                  |     YES        |     YES      |        NO **         |            YES                  |       NO *      |
+| Key Wrapping                    |     YES        |     YES      |        NO **         |            YES                  |       NO *      |
+| Direct Key Agreement            |     NO **      |     NO **    |        YES           |            NO **                |       NO          |
+| Key Agreement with Key Wrapping |     YES        |     YES      |        NO **         |            YES                  |       NO *      |
+| Direct Encryption               |     NO **      |     NO **    |        NO            |            NO **                |       YES         |
 
-*: Compatibility is possible only if the algorithm for the first recipient is a `Direct Key Agreement` or a `Direct Encryption` algorithm and there is no other recipient using the same algorithms, otherwise it is not possible
+`*`: As these algorithms add additional header information, you must indicate that you want to create a JWE with multiple recipients.
+`**`: Compatibility is possible only if the algorithm for the first recipient is a `Direct Key Agreement` or a `Direct Encryption` algorithm and there is no other recipient using the same algorithms, otherwise it is not possible
 
 ## How To Load?
 
