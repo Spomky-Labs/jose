@@ -74,6 +74,9 @@ final class KeyConverter
         $details = openssl_pkey_get_details($key);
         if (isset($details['key'])) {
             $values = self::loadKeyFromPEM($details['key']);
+            openssl_x509_export($res, $out);
+            $values['x5c'] = [trim(preg_replace('#-.*-#', '', $out))];
+
             if (function_exists('openssl_x509_fingerprint')) {
                 $values['x5t'] = Base64Url::encode(openssl_x509_fingerprint($res, 'sha1', true));
                 $values['x5t#256'] = Base64Url::encode(openssl_x509_fingerprint($res, 'sha256', true));
