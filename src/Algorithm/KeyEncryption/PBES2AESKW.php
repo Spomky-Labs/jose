@@ -43,10 +43,10 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function encryptKey(JWKInterface $key, $cek, array &$header)
+    public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
-        $this->checkHeaderAlgorithm($header);
+        $this->checkHeaderAlgorithm($complete_headers);
         $wrapper = $this->getWrapper();
         $hash_algorithm = $this->getHashAlgorithm();
         $key_size = $this->getKeySize();
@@ -54,10 +54,10 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
         $password = Base64Url::decode($key->get('k'));
 
         // We set headers parameters
-        $header['p2s'] = Base64Url::encode($salt);
-        $header['p2c'] = $this->nb_count;
+        $additional_headers['p2s'] = Base64Url::encode($salt);
+        $additional_headers['p2c'] = $this->nb_count;
 
-        $derived_key = hash_pbkdf2($hash_algorithm, $password, $header['alg']."\x00".$salt, $this->nb_count, $key_size, true);
+        $derived_key = hash_pbkdf2($hash_algorithm, $password, $complete_headers['alg']."\x00".$salt, $this->nb_count, $key_size, true);
 
         return $wrapper->wrap($derived_key, $cek);
     }

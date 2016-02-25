@@ -9,14 +9,14 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\ClaimChecker;
+namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
 /**
- * Interface ClaimCheckerManagerInterface.
+ * Interface HeaderCheckerInterface
  */
-interface ClaimCheckerManagerInterface
+interface HeaderCheckerInterface
 {
     /**
      * @param \Jose\Object\JWTInterface $jwt
@@ -25,5 +25,5 @@ interface ClaimCheckerManagerInterface
      *
      * @return string[]
      */
-    public function checkClaims(JWTInterface $jwt);
+    public function checkHeader(JWTInterface $jwt);
 }

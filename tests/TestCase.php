@@ -14,6 +14,9 @@ namespace Jose\Test;
 use Base64Url\Base64Url;
 use Jose\Object\JWKSet;
 use Jose\Test\Stub\ClaimCheckerManager;
+use Monolog\Handler\PHPConsoleHandler;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 /**
  * Class TestCase.

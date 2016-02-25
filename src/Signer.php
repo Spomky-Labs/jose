@@ -15,9 +15,11 @@ use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasLogger;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\Signature;
+use Psr\Log\LoggerInterface;
 
 /**
  */
@@ -25,15 +27,22 @@ final class Signer implements SignerInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
+    use HasLogger;
 
     /**
      * Signer constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
+     * @param \Psr\Log\LoggerInterface|null       $logger
      */
-    public function __construct(JWAManagerInterface $jwa_manager)
-    {
+    public function __construct(JWAManagerInterface $jwa_manager,
+                                LoggerInterface $logger = null
+    ) {
         $this->setJWAManager($jwa_manager);
+
+        if (null !== $logger) {
+            $this->setLogger($logger);
+        }
     }
 
     /**

@@ -23,12 +23,15 @@ use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasLogger;
 use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\RecipientInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  */
@@ -37,19 +40,26 @@ final class Decrypter implements DecrypterInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasCompressionManager;
+    use HasLogger;
 
     /**
-     * Loader constructor.
+     * Decrypter constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
      * @param \Jose\Compression\CompressionManagerInterface $compression_manager
+     * @param \Psr\Log\LoggerInterface|null                 $logger
      */
     public function __construct(
         JWAManagerInterface $jwa_manager,
-        CompressionManagerInterface $compression_manager)
-    {
+        CompressionManagerInterface $compression_manager,
+        LoggerInterface $logger = null
+    ) {
         $this->setJWAManager($jwa_manager);
         $this->setCompressionManager($compression_manager);
+
+        if (null !== $logger) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
@@ -68,13 +78,16 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
     {
+        $this->log(LogLevel::DEBUG, 'Trying to decrypt the JWE.');
         $this->checkJWKSet($jwk_set);
         $this->checkPayload($jwe);
         $this->checkRecipients($jwe);
 
         $nb_recipients = $jwe->countRecipients();
+        $this->log(LogLevel::DEBUG, 'The JWE contains {nb} recipient(s).', ['nb' => $nb_recipients]);
 
         for ($i = 0; $i < $nb_recipients; $i++) {
+            $this->log(LogLevel::DEBUG, 'Trying to decrypt the encrypted key of recipient #{nb}.', ['nb' => $i]);
             $recipient = $jwe->getRecipient($i);
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
@@ -107,7 +120,7 @@ final class Decrypter implements DecrypterInterface
             }
         }
 
-        return false;
+        throw new \InvalidArgumentException('Unable to decrypt the JWE. Please verify the key or keyset used is correct');
     }
 
     /**
@@ -125,8 +138,11 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkPayload(JWEInterface $jwe)
     {
+        $this->log(LogLevel::DEBUG, 'Checking the payload.', ['payload' => $jwe->getPayload()]);
         if (null !== $jwe->getPayload()) {
-            throw new \InvalidArgumentException('The JWE is already decrypted.');
+            $exception = new \InvalidArgumentException('The JWE is already decrypted.');
+            $this->log(LogLevel::ERROR, 'The JWE is already decrypted.', ['exception' => $exception]);
+            throw $exception;
         }
     }
 
@@ -135,9 +151,13 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
+        $this->log(LogLevel::DEBUG, 'Checking the key set.', ['jwkset' => $jwk_set]);
         if (0 === count($jwk_set)) {
-            throw new \InvalidArgumentException('No key in the key set.');
+            $exception = new \InvalidArgumentException('No key in the key set.');
+            $this->log(LogLevel::ERROR, 'There is no key in the key set.', ['exception' => $exception]);
+            throw $exception;
         }
+        $this->log(LogLevel::DEBUG, 'Checking the key set.', ['jwkset' => $jwk_set]);
     }
 
     /**
@@ -207,20 +227,33 @@ final class Decrypter implements DecrypterInterface
             return false;
         }
 
-        if (array_key_exists('zip', $complete_headers)) {
-            $compression_method = $this->getCompressionMethod($complete_headers['zip']);
-            $payload = $compression_method->uncompress($payload);
-            if (!is_string($payload)) {
-                throw new \InvalidArgumentException('Decompression failed');
-            }
-        }
-
         $jwe = $jwe->withContentEncryptionKey($cek);
+
+        $this->decompressIfNeeded($payload, $complete_headers);
 
         $decoded = json_decode($payload, true);
         $jwe = $jwe->withPayload(null === $decoded ? $payload : $decoded);
 
         return true;
+    }
+
+    /**
+     * @param string $payload
+     * @param array  $complete_headers
+     */
+    private function decompressIfNeeded(&$payload, array $complete_headers)
+    {
+        $this->log(LogLevel::DEBUG, 'Checking if payload is compressed.', ['payload' => $payload]);
+        if (array_key_exists('zip', $complete_headers)) {
+            $this->log(LogLevel::DEBUG, 'Header indicates the payload is compressed with method {compress}.', ['compress' => $complete_headers['zip']]);
+            $compression_method = $this->getCompressionMethod($complete_headers['zip']);
+            $payload = $compression_method->uncompress($payload);
+            if (!is_string($payload)) {
+                $exception = new \InvalidArgumentException('Decompression failed');
+                $this->log(LogLevel::ERROR, 'Unable to decompress the payload.', ['exception' => $exception]);
+                throw $exception;
+            }
+        }
     }
 
     /**
@@ -230,9 +263,12 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkCompleteHeader(array $complete_headers)
     {
+        $this->log(LogLevel::DEBUG, 'Checking for mandatory parameters.');
         foreach (['enc', 'alg'] as $key) {
             if (!array_key_exists($key, $complete_headers)) {
-                throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
+                $exception = new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
+                $this->log(LogLevel::ERROR, 'Parameter is missing.', ['exception' => $exception]);
+                throw $exception;
             }
         }
     }

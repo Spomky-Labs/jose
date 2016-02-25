@@ -15,11 +15,13 @@ use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
+use Jose\Behaviour\HasLogger;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\SignatureInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  */
@@ -27,15 +29,22 @@ final class Verifier implements VerifierInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
+    use HasLogger;
 
     /**
-     * Loader constructor.
+     * Verifier constructor.
      *
      * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
+     * @param \Psr\Log\LoggerInterface|null       $logger
      */
-    public function __construct(JWAManagerInterface $jwa_manager)
-    {
+    public function __construct(JWAManagerInterface $jwa_manager,
+                                LoggerInterface $logger = null
+    ) {
         $this->setJWAManager($jwa_manager);
+
+        if (null !== $logger) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
@@ -83,7 +92,7 @@ final class Verifier implements VerifierInterface
             }
         }
 
-        return false;
+        throw new \InvalidArgumentException('Unable to verify the JWS. Please verify the key or keyset used is correct');
     }
 
     /**

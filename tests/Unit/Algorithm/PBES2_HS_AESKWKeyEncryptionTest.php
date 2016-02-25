@@ -67,10 +67,11 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS256A128KW();
-        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
-        $this->assertTrue(isset($header['p2s']));
-        $this->assertEquals(4096, $header['p2c']);
-        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, $header));
+        $additional_headers = [];
+        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header, $additional_headers);
+        $this->assertTrue(isset($additional_headers['p2s']));
+        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, array_merge($header, $additional_headers)));
     }
 
     /**
@@ -91,10 +92,11 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS384A192KW();
-        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
-        $this->assertTrue(isset($header['p2s']));
-        $this->assertEquals(4096, $header['p2c']);
-        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, $header));
+        $additional_headers = [];
+        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header, $additional_headers);
+        $this->assertTrue(isset($additional_headers['p2s']));
+        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, array_merge($header, $additional_headers)));
     }
 
     /**
@@ -115,10 +117,11 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS512A256KW();
-        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header);
-        $this->assertTrue(isset($header['p2s']));
-        $this->assertEquals(4096, $header['p2c']);
-        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, $header));
+        $additional_headers = [];
+        $encrypted_cek = $pbes2->encryptKey($key, $cek, $header, $additional_headers);
+        $this->assertTrue(isset($additional_headers['p2s']));
+        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertEquals($cek, $pbes2->decryptKey($key, $encrypted_cek, array_merge($header, $additional_headers)));
     }
 
     /**
@@ -140,7 +143,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS512A256KW();
-        $pbes2->encryptKey($key, $cek, $header);
+        $additional_headers = [];
+        $pbes2->encryptKey($key, $cek, $header, $additional_headers);
     }
 
     /**
@@ -162,7 +166,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS512A256KW();
-        $pbes2->encryptKey($key, $cek, $header);
+        $additional_headers = [];
+        $pbes2->encryptKey($key, $cek, $header, $additional_headers);
     }
 
     /**
@@ -183,7 +188,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $cek = $this->convertArrayToBinString([111, 27, 25, 52, 66, 29, 20, 78, 92, 176, 56, 240, 65, 208, 82, 112, 161, 131, 36, 55, 202, 236, 185, 172, 129, 23, 153, 194, 195, 48, 253, 182]);
 
         $pbes2 = new PBES2HS512A256KW();
-        $pbes2->encryptKey($key, $cek, $header);
+        $additional_headers = [];
+        $pbes2->encryptKey($key, $cek, $header, $additional_headers);
     }
 
     /**

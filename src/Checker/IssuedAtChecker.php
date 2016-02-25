@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\ClaimChecker;
+namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 

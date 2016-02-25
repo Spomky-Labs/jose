@@ -23,7 +23,7 @@ abstract class RSA implements KeyEncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function encryptKey(JWKInterface $key, $cek, array &$header)
+    public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
         $values = array_intersect_key($key->getAll(), array_flip(['n', 'e']));

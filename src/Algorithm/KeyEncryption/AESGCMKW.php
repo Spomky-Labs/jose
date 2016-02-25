@@ -25,25 +25,26 @@ abstract class AESGCMKW implements KeyEncryptionInterface
     /**
      * @param \Jose\Object\JWKInterface $key
      * @param string                    $cek
-     * @param array                     $header
+     * @param array                     $complete_headers
+     * @param array                     $additional_headers
      *
      * @return mixed
      */
-    public function encryptKey(JWKInterface $key, $cek, array &$header)
+    public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
         $iv = StringUtil::generateRandomBytes(96 / 8);
-        $header['iv'] = Base64Url::encode($iv);
+        $additional_headers['iv'] = Base64Url::encode($iv);
 
         if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setAAD(null);
             $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
 
-            $header['tag'] = Base64Url::encode($cipher->getTag());
+            $additional_headers['tag'] = Base64Url::encode($cipher->getTag());
         } else {
             list($encryted_cek, $tag) = GCM::encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
-            $header['tag'] = Base64Url::encode($tag);
+            $additional_headers['tag'] = Base64Url::encode($tag);
         }
 
         return $encryted_cek;

@@ -13,6 +13,8 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
+use Jose\Factory\EncrypterFactory;
+use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -77,6 +79,51 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
         $this->assertEquals($expected_aad, $loaded_json->getAAD());
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
+
+        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_json->getPayload());
+    }
+
+    /**
+     * Same input as before, but we perform the encryption first
+     */
+    public function testA128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataBis()
+    {
+        $expected_payload = "You can trust us to stick with you through thick and thin\xe2\x80\x93to the bitter end. And you can trust us to keep any secret of yours\xe2\x80\x93closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.";
+
+        $private_key = new JWK([
+            'kty' => 'oct',
+            'kid' => '81b20965-8332-43d9-a468-82160ad91ac8',
+            'use' => 'enc',
+            'alg' => 'A128KW',
+            'k'   => 'GZy6sIZ6wl9NJOKB-jnmVQ',
+        ]);
+
+        $protected_headers = [
+            'alg' => 'A128KW',
+            'kid' => '81b20965-8332-43d9-a468-82160ad91ac8',
+            'enc' => 'A128GCM',
+        ];
+
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
+
+        $encrypter->addRecipient(
+            $jwe,
+            $private_key
+        );
+
+        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+
+        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+
+        $loaded_json = Loader::load($jwe->toJSON());
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+
+        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+
+        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
 
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());

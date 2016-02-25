@@ -9,19 +9,24 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\ClaimChecker;
+namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
 /**
- * Class ClaimCheckerManager.
+ * Class CheckerManager.
  */
-class ClaimCheckerManager implements ClaimCheckerManagerInterface
+class CheckerManager implements CheckerManagerInterface
 {
     /**
      * @var \Jose\ClaimChecker\ClaimCheckerInterface[]
      */
     private $claim_checkers = [];
+
+    /**
+     * @var \Jose\ClaimChecker\HeaderCheckerInterface[]
+     */
+    private $header_checkers = [];
 
     /**
      * ClaimCheckerManager constructor.
@@ -38,7 +43,7 @@ class ClaimCheckerManager implements ClaimCheckerManagerInterface
     /**
      * {@inheritdoc}
      */
-    public function checkClaims(JWTInterface $jwt)
+    public function checkJWT(JWTInterface $jwt)
     {
         $checked_claims = [];
 
@@ -58,5 +63,13 @@ class ClaimCheckerManager implements ClaimCheckerManagerInterface
     public function addClaimChecker(ClaimCheckerInterface $claim_checker)
     {
         $this->claim_checkers[] = $claim_checker;
+    }
+
+    /**
+     * @param \Jose\ClaimChecker\HeaderCheckerInterface $header_checker
+     */
+    public function addHeaderChecker(HeaderCheckerInterface $header_checker)
+    {
+        $this->header_checkers[] = $header_checker;
     }
 }

@@ -13,6 +13,9 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
+use Jose\Factory\EncrypterFactory;
+use Jose\Factory\JWEFactory;
+use Jose\Factory\JWKFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -95,6 +98,62 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_json->getPayload());
+    }
+
+    /**
+     * Same input as before, but we perform the encryption first
+     */
+    public function testECDH_ES_A128KWAndA128GCMEncryptionBis()
+    {
+        $expected_payload = "You can trust us to stick with you through thick and thin\xe2\x80\x93to the bitter end. And you can trust us to keep any secret of yours\xe2\x80\x93closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.";
+
+        $private_key = new JWK([
+            'kty' => 'EC',
+            'kid' => 'peregrin.took@tuckborough.example',
+            'use' => 'enc',
+            'crv' => 'P-384',
+            'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
+            'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
+            'd'   => 'iTx2pk7wW-GqJkHcEkFQb2EFyYcO7RugmaW3mRrQVAOUiPommT0IdnYK2xDlZh-j',
+        ]);
+
+        $protected_headers = [
+            'alg' => 'ECDH-ES+A128KW',
+            'kid' => 'peregrin.took@tuckborough.example',
+            'enc' => 'A128GCM',
+        ];
+
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A128KW', 'A128GCM']);
+
+        $encrypter->addRecipient(
+            $jwe,
+            $private_key,
+            new JWK([ // We use the same key as the recipient
+                    'kty' => 'EC',
+                    'kid' => 'peregrin.took@tuckborough.example',
+                    'use' => 'enc',
+                    'crv' => 'P-384',
+                    'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
+                    'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
+                    'd'   => 'iTx2pk7wW-GqJkHcEkFQb2EFyYcO7RugmaW3mRrQVAOUiPommT0IdnYK2xDlZh-j',
+            ])
+        );
+
+        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A128KW', 'A128GCM']);
+
+        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+
+        $loaded_json = Loader::load($jwe->toJSON());
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+
+        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+
+        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }

@@ -11,11 +11,9 @@
 
 namespace Jose\Factory;
 
-use Base64Url\Base64Url;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
-use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
 
@@ -29,19 +27,7 @@ final class JWKFactory
      */
     public static function createRandomECPrivateKey($curve, array $additional_values = [])
     {
-        $generator = CurveFactory::getGeneratorByName(self::getNistName($curve));
-        $privKey = $generator->createPrivateKey();
-
-        $values = [
-            'kty' => 'EC',
-            'crv' => $curve,
-            'x'   => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getX())),
-            'y'   => Base64Url::encode(self::convertDecToBin($privKey->getPoint()->getY())),
-            'd'   => Base64Url::encode(self::convertDecToBin($privKey->getSecret())),
-        ];
-        $values = array_merge($values, $additional_values);
-
-        return new JWK($values);
+        throw new \Exception('Not implemented');
     }
 
     /**

@@ -12,20 +12,22 @@
 namespace Jose\Factory;
 
 use Jose\Decrypter;
+use Psr\Log\LoggerInterface;
 
 final class DecrypterFactory
 {
     /**
-     * @param string[] $algorithms
-     * @param string[] $compression_methods
+     * @param string[]                      $algorithms
+     * @param string[]                      $compression_methods
+     * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\DecrypterInterface
      */
-    public static function createDecrypter(array $algorithms, array $compression_methods = ['DEF'])
+    public static function createDecrypter(array $algorithms, array $compression_methods = ['DEF'], LoggerInterface $logger = null)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
         $compression_manager = CompressionManagerFactory::createCompressionManager($compression_methods);
 
-        return new Decrypter($algorithm_manager, $compression_manager);
+        return new Decrypter($algorithm_manager, $compression_manager, $logger);
     }
 }

@@ -12,18 +12,20 @@
 namespace Jose\Factory;
 
 use Jose\Verifier;
+use Psr\Log\LoggerInterface;
 
 final class VerifierFactory
 {
     /**
-     * @param string[] $algorithms
+     * @param string[]                      $algorithms
+     * @param \Psr\Log\LoggerInterface|null $logger
      *
-     * @return \Jose\VerifierInterface
+     * @return \Jose\Verifier
      */
-    public static function createVerifier(array $algorithms)
+    public static function createVerifier(array $algorithms, LoggerInterface $logger = null)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
 
-        return new Verifier($algorithm_manager);
+        return new Verifier($algorithm_manager, $logger);
     }
 }

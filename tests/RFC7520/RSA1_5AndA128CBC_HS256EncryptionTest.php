@@ -13,6 +13,8 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
+use Jose\Factory\EncrypterFactory;
+use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -91,6 +93,63 @@ class RSA1_5AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
+
+        $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_json->getPayload());
+    }
+
+    /**
+     * Same input as before, but we perform the encryption first
+     */
+    public function testRSA1_5AndA128CBC_HS256EncryptionBis()
+    {
+        $expected_payload = "You can trust us to stick with you through thick and thin\xe2\x80\x93to the bitter end. And you can trust us to keep any secret of yours\xe2\x80\x93closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.";
+
+        $private_key = new JWK([
+            'kty' => 'RSA',
+            'kid' => 'frodo.baggins@hobbiton.example',
+            'use' => 'enc',
+            'n'   => 'maxhbsmBtdQ3CNrKvprUE6n9lYcregDMLYNeTAWcLj8NnPU9XIYegTHVHQjxKDSHP2l-F5jS7sppG1wgdAqZyhnWvXhYNvcM7RfgKxqNx_xAHx6f3yy7s-M9PSNCwPC2lh6UAkR4I00EhV9lrypM9Pi4lBUop9t5fS9W5UNwaAllhrd-osQGPjIeI1deHTwx-ZTHu3C60Pu_LJIl6hKn9wbwaUmA4cR5Bd2pgbaY7ASgsjCUbtYJaNIHSoHXprUdJZKUMAzV0WOKPfA6OPI4oypBadjvMZ4ZAj3BnXaSYsEZhaueTXvZB4eZOAjIyh2e_VOIKVMsnDrJYAVotGlvMQ',
+            'e'   => 'AQAB',
+            'd'   => 'Kn9tgoHfiTVi8uPu5b9TnwyHwG5dK6RE0uFdlpCGnJN7ZEi963R7wybQ1PLAHmpIbNTztfrheoAniRV1NCIqXaW_qS461xiDTp4ntEPnqcKsyO5jMAji7-CL8vhpYYowNFvIesgMoVaPRYMYT9TW63hNM0aWs7USZ_hLg6Oe1mY0vHTI3FucjSM86Nff4oIENt43r2fspgEPGRrdE6fpLc9Oaq-qeP1GFULimrRdndm-P8q8kvN3KHlNAtEgrQAgTTgz80S-3VD0FgWfgnb1PNmiuPUxO8OpI9KDIfu_acc6fg14nsNaJqXe6RESvhGPH2afjHqSy_Fd2vpzj85bQQ',
+            'p'   => '2DwQmZ43FoTnQ8IkUj3BmKRf5Eh2mizZA5xEJ2MinUE3sdTYKSLtaEoekX9vbBZuWxHdVhM6UnKCJ_2iNk8Z0ayLYHL0_G21aXf9-unynEpUsH7HHTklLpYAzOOx1ZgVljoxAdWNn3hiEFrjZLZGS7lOH-a3QQlDDQoJOJ2VFmU',
+            'q'   => 'te8LY4-W7IyaqH1ExujjMqkTAlTeRbv0VLQnfLY2xINnrWdwiQ93_VF099aP1ESeLja2nw-6iKIe-qT7mtCPozKfVtUYfz5HrJ_XY2kfexJINb9lhZHMv5p1skZpeIS-GPHCC6gRlKo1q-idn_qxyusfWv7WAxlSVfQfk8d6Et0',
+            'dp'  => 'UfYKcL_or492vVc0PzwLSplbg4L3-Z5wL48mwiswbpzOyIgd2xHTHQmjJpFAIZ8q-zf9RmgJXkDrFs9rkdxPtAsL1WYdeCT5c125Fkdg317JVRDo1inX7x2Kdh8ERCreW8_4zXItuTl_KiXZNU5lvMQjWbIw2eTx1lpsflo0rYU',
+            'dq'  => 'iEgcO-QfpepdH8FWd7mUFyrXdnOkXJBCogChY6YKuIHGc_p8Le9MbpFKESzEaLlN1Ehf3B6oGBl5Iz_ayUlZj2IoQZ82znoUrpa9fVYNot87ACfzIG7q9Mv7RiPAderZi03tkVXAdaBau_9vs5rS-7HMtxkVrxSUvJY14TkXlHE',
+            'qi'  => 'kC-lzZOqoFaZCr5l0tOVtREKoVqaAYhQiqIRGL-MzS4sCmRkxm5vZlXYx6RtE1n_AagjqajlkjieGlxTTThHD8Iga6foGBMaAr5uR1hGQpSc7Gl7CF1DZkBJMTQN6EshYzZfxW08mIO8M6Rzuh0beL6fG9mkDcIyPrBXx2bQ_mM',
+        ]);
+
+        $protected_headers = [
+            'alg' => 'RSA1_5',
+            'kid' => 'frodo.baggins@hobbiton.example',
+            'enc' => 'A128CBC-HS256',
+        ];
+
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $encrypter = EncrypterFactory::createEncrypter(['A128CBC-HS256', 'RSA1_5']);
+
+        $encrypter->addRecipient(
+            $jwe,
+            $private_key
+        );
+
+        $decrypter = DecrypterFactory::createDecrypter(['A128CBC-HS256', 'RSA1_5']);
+
+        $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+
+        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+
+        $loaded_json = Loader::load($jwe->toJSON());
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+
+        $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
+
+        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+
+        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
 
         $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());

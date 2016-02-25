@@ -9,26 +9,26 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\ClaimChecker;
+namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-class ExpirationTimeChecker implements ClaimCheckerInterface
+class NotBeforeChecker implements ClaimCheckerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function checkClaim(JWTInterface $jwt)
     {
-        if (!$jwt->hasClaim('exp')) {
+        if (!$jwt->hasClaim('nbf')) {
             return [];
         }
 
-        $exp = (int) $jwt->getClaim('exp');
-        if (time() > $exp) {
-            throw new \InvalidArgumentException('The JWT has expired.');
+        $nbf = (int) $jwt->getClaim('nbf');
+        if (time() < $nbf) {
+            throw new \InvalidArgumentException('Can not use this JWT yet.');
         }
 
-        return ['exp'];
+        return ['nbf'];
     }
 }

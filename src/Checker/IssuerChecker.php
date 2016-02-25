@@ -9,33 +9,33 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\ClaimChecker;
+namespace Jose\Checker;
 
 use Jose\Object\JWTInterface;
 
-abstract class JtiChecker implements ClaimCheckerInterface
+abstract class IssuerChecker implements ClaimCheckerInterface
 {
     /**
      * {@inheritdoc}
      */
     public function checkClaim(JWTInterface $jwt)
     {
-        if (!$jwt->hasClaim('jti')) {
+        if (!$jwt->hasClaim('iss')) {
             return [];
         }
 
-        $jti = $jwt->getClaim('jti');
-        if (!$this->isJtiValid($jti)) {
-            throw new \InvalidArgumentException(sprintf('Invalid token ID "%s".', $jti));
+        $issuer = $jwt->getClaim('iss');
+        if (!$this->isIssuerAllowed($issuer)) {
+            throw new \InvalidArgumentException(sprintf('The issuer "%s" is not allowed.', $issuer));
         }
 
-        return ['jti'];
+        return ['iss'];
     }
 
     /**
-     * @param string $jti
+     * @param string $issuer
      *
      * @return bool
      */
-    abstract protected function isJtiValid($jti);
+    abstract protected function isIssuerAllowed($issuer);
 }

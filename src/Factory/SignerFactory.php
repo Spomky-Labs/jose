@@ -12,18 +12,20 @@
 namespace Jose\Factory;
 
 use Jose\Signer;
+use Psr\Log\LoggerInterface;
 
 final class SignerFactory
 {
     /**
-     * @param string[] $algorithms
+     * @param string[]                      $algorithms
+     * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\SignerInterface
      */
-    public static function createSigner(array $algorithms)
+    public static function createSigner(array $algorithms, LoggerInterface $logger = null)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
 
-        return new Signer($algorithm_manager);
+        return new Signer($algorithm_manager, $logger);
     }
 }

@@ -13,6 +13,8 @@ namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
+use Jose\Factory\EncrypterFactory;
+use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -107,6 +109,71 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
 
         $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
+        $this->assertEquals($expected_payload, $loaded_json->getPayload());
+    }
+
+    /**
+     * Same input as before, but we perform the encryption first
+     */
+    public function testPBES2_HS512_A256KWAndA128CBC_HS256EncryptionBis()
+    {
+        $expected_payload = ['keys' => [
+            [
+                'kty' => 'oct',
+                'kid' => '77c7e2b8-6e13-45cf-8672-617b5b45243a',
+                'use' => 'enc',
+                'alg' => 'A128GCM',
+                'k'   => 'XctOhJAkA-pD9Lh7ZgW_2A',
+            ], [
+                'kty' => 'oct',
+                'kid' => '81b20965-8332-43d9-a468-82160ad91ac8',
+                'use' => 'enc',
+                'alg' => 'A128KW',
+                'k'   => 'GZy6sIZ6wl9NJOKB-jnmVQ',
+            ], [
+                'kty' => 'oct',
+                'kid' => '18ec08e1-bfa9-4d95-b205-2b4dd1d4321d',
+                'use' => 'enc',
+                'alg' => 'A256GCMKW',
+                'k'   => 'qC57l_uxcm7Nm3K-ct4GFjx8tM1U8CZ0NLBvdQstiS8',
+            ],
+        ]];
+
+        $private_key = new JWK([
+            'kty' => 'oct',
+            'use' => 'enc',
+            'k'   => Base64Url::encode("entrap_o\xe2\x80\x93peter_long\xe2\x80\x93credit_tun"),
+        ]);
+
+        $protected_headers = [
+            'alg' => 'PBES2-HS512+A256KW',
+            'p2s' => '8Q1SzinasR3xchYz6ZZcHA',
+            'p2c' => 8192,
+            'cty' => 'jwk-set+json',
+            'enc' => 'A128CBC-HS256',
+        ];
+
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $encrypter = EncrypterFactory::createEncrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
+
+        $encrypter->addRecipient(
+            $jwe,
+            $private_key
+        );
+
+        $decrypter = DecrypterFactory::createDecrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
+
+        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+
+        $loaded_json = Loader::load($jwe->toJSON());
+        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+
+        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+
+        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }
