@@ -11,19 +11,15 @@
 
 namespace Jose\Checker;
 
-use Jose\Object\JWTInterface;
-
 /**
  * Interface HeaderCheckerInterface
  */
 interface HeaderCheckerInterface
 {
     /**
-     * @param \Jose\Object\JWTInterface $jwt
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string[]
+     * @param array $protected_headers
+     * @param array $headers
+     * @param array $checked_claims
      */
-    public function checkHeader(JWTInterface $jwt);
+    public function checkHeader(array $protected_headers, array $headers, array $checked_claims);
 }

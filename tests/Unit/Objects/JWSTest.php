@@ -10,6 +10,7 @@
  */
 
 use Base64Url\Base64Url;
+use Jose\Factory\CheckerManagerFactory;
 use Jose\Factory\JWSFactory;
 use Jose\Object\Signature;
 
@@ -22,7 +23,8 @@ use Jose\Object\Signature;
 class JWSTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  One or more claims are marked as critical, but they are missing or not have not been checked (["iss"])
      */
     public function testJWS()
     {
@@ -44,6 +46,14 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($claims, $jws->getPayload());
         $this->assertEquals($claims, $jws->getClaims());
         $this->assertEquals(0, $jws->countSignatures());
+
+        $signature = new Signature();
+        $signature = $signature->withProtectedHeader('crit', ['nbf', 'iat', 'exp', 'iss']);
+        $jws = $jws->addSignature($signature);
+        $this->assertEquals(1, $jws->countSignatures());
+
+        $checker_manager = CheckerManagerFactory::createClaimCheckerManager();
+        $checker_manager->checkJWS($jws,0);
     }
 
     /**

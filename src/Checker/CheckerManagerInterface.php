@@ -11,7 +11,8 @@
 
 namespace Jose\Checker;
 
-use Jose\Object\JWTInterface;
+use Jose\Object\JWEInterface;
+use Jose\Object\JWSInterface;
 
 /**
  * Interface CheckerManagerInterface.
@@ -19,11 +20,14 @@ use Jose\Object\JWTInterface;
 interface CheckerManagerInterface
 {
     /**
-     * @param \Jose\Object\JWTInterface $jwt
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return string[]
+     * @param \Jose\Object\JWSInterface $jws
+     * @param int                       $signature
      */
-    public function checkJWT(JWTInterface $jwt);
+    public function checkJWS(JWSInterface $jws, $signature);
+
+    /**
+     * @param \Jose\Object\JWEInterface $jwe
+     * @param int                       $recipient
+     */
+    public function checkJWE(JWEInterface $jwe, $recipient);
 }
