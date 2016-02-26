@@ -22,6 +22,7 @@ use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\SignatureInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  */
@@ -54,10 +55,11 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null)
     {
+        $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key', ['jws' => $jws, 'jwk' => $jwk, 'detached_payload' => $detached_payload]);
         $jwk_set = new JWKSet();
         $jwk_set = $jwk_set->addKey($jwk);
 
-        return $this->verifyWithKeySet($jws, $jwk_set, $detached_payload);
+        return $this->verifySignatures($jws, $jwk_set, $detached_payload);
     }
 
     /**
@@ -67,9 +69,22 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
     {
+        $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key set', ['jwk' => $jws, 'jwk_set' => $jwk_set, 'detached_payload' => $detached_payload]);
+        return $this->verifySignatures($jws, $jwk_set, $detached_payload);
+    }
+
+    /**
+     * @param \Jose\Object\JWSInterface    $jws
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     * @param string|null                  $detached_payload
+     *
+     * @return int
+     */
+    private function verifySignatures(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
+    {
         $this->checkPayload($jws, $detached_payload);
         $this->checkJWKSet($jwk_set);
-        $this->checkSignaturess($jws);
+        $this->checkSignatures($jws);
 
         $nb_signatures = $jws->countSignatures();
 
@@ -98,9 +113,10 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\JWSInterface $jws
      */
-    private function checkSignaturess(JWSInterface $jws)
+    private function checkSignatures(JWSInterface $jws)
     {
         if (0 === $jws->countSignatures()) {
+            $this->log(LogLevel::ERROR, 'There is no signature in the JWS', ['jws' => $jws]);
             throw new \InvalidArgumentException('The JWS does not contain any signature.');
         }
     }
@@ -111,6 +127,7 @@ final class Verifier implements VerifierInterface
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
         if (0 === count($jwk_set)) {
+            $this->log(LogLevel::ERROR, 'There is no key in the key set', ['jwk_set' => $jwk_set]);
             throw new \InvalidArgumentException('No key in the key set.');
         }
     }

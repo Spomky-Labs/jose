@@ -29,7 +29,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsMissing()
     {
-        $signer = SignerFactory::createSigner([]);
+        $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $signer->addSignature(
@@ -44,7 +44,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsNotSupported()
     {
-        $signer = SignerFactory::createSigner([]);
+        $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $signer->addSignature(
@@ -59,7 +59,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadCompact()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $signer->addSignature(
@@ -88,7 +88,7 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -112,7 +112,7 @@ class SignerTest extends TestCase
      */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -137,7 +137,7 @@ class SignerTest extends TestCase
      */
     public function testAlgorithmNotAllowedForTheKey()
     {
-        $signer = SignerFactory::createSigner([]);
+        $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -153,7 +153,7 @@ class SignerTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $signer = SignerFactory::createSigner(['PS512']);
+        $signer = SignerFactory::createSigner(['PS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -168,7 +168,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadFlattened()
     {
-        $signer = SignerFactory::createSigner(['HS512']);
+        $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS(['baz', 'ban']);
         $signer->addSignature(
@@ -191,7 +191,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoad()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
@@ -224,7 +224,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadJWKSet()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
@@ -257,7 +257,7 @@ class SignerTest extends TestCase
      */
     public function testKeySetIsEmpty()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512']);
+        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());

@@ -14,6 +14,7 @@ namespace Jose\Test;
 use Base64Url\Base64Url;
 use Jose\Object\JWKSet;
 use Jose\Test\Stub\ClaimCheckerManager;
+use Jose\Test\Stub\FakeLogger;
 use Monolog\Handler\PHPConsoleHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -203,5 +204,22 @@ class TestCase extends \PHPUnit_Framework_TestCase
         ]];
 
         return new JWKSet($keys);
+    }
+
+    /**
+     * @var \Jose\Test\Stub\FakeLogger|null
+     */
+    private $logger = null;
+
+    /**
+     * @return \Jose\Test\Stub\FakeLogger|null
+     */
+    protected function getLogger()
+    {
+        if (null === $this->logger) {
+            $this->logger = new FakeLogger();
+        }
+
+        return $this->logger;
     }
 }
