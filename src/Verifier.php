@@ -126,7 +126,7 @@ final class Verifier implements VerifierInterface
             }
         }
 
-        throw new \InvalidArgumentException('Unable to verify the JWS. Please verify the key or keyset used is correct');
+        throw new \InvalidArgumentException('Unable to verify the JWS. Please verify the key or keyset used is correct.');
     }
 
     /**

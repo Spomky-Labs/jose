@@ -25,6 +25,21 @@ class SignerTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No payload.
+     */
+    public function testNoPayload()
+    {
+        $signer = SignerFactory::createSigner([], $this->getLogger());
+
+        $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
+        $signer->addSignature(
+            $jws,
+            $this->getKey1()
+        );
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No "alg" parameter set in the header.
      */
     public function testAlgParameterIsMissing()
@@ -192,7 +207,7 @@ class SignerTest extends TestCase
     public function testSignAndLoad()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
+        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Je suis Charlie');
         $signer->addSignature(
@@ -217,6 +232,94 @@ class SignerTest extends TestCase
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to verify the JWS. Please verify the key or keyset used is correct.
+     */
+    public function testSignAndLoadWithWrongKeys()
+    {
+        $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
+        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+
+        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $signer->addSignature(
+            $jws,
+            $this->getKey2(),
+            ['alg' => 'RS512']
+        );
+
+        $loaded = Loader::load($jws->toJSON());
+
+        $this->assertEquals(1, $loaded->countSignatures());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     * @expectedExceptionMessage The algorithm "RS512" is not supported or does not implement SignatureInterface.
+     */
+    public function testSignAndLoadWithUnsupportedAlgorithm()
+    {
+        $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
+        $verifier = VerifierFactory::createVerifier(['HS512'], $this->getLogger());
+
+        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $signer->addSignature(
+            $jws,
+            $this->getKey2(),
+            ['alg' => 'RS512']
+        );
+
+        $loaded = Loader::load($jws->toJSON());
+
+        $this->assertEquals(1, $loaded->countSignatures());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
+        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The JWS does not contain any signature.
+     */
+    public function testSignAndLoadWithJWSWithoutSignatures()
+    {
+        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+        $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
+        $jws = '{"payload":"SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4","signatures":[]}';
+
+        $loaded = Loader::load($jws);
+
+        $this->assertEquals(0, $loaded->countSignatures());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
+        $this->assertEquals($payload, $loaded->getPayload());
+
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage No "alg" parameter set in the header.
+     */
+    public function testSignAndLoadWithoutAlgParameterInTheHeader()
+    {
+        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+        $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
+        $jws = 'eyJraWQiOiJiaWxiby5iYWdnaW5zQGhvYmJpdG9uLmV4YW1wbGUifQ.SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4.MRjdkly7_-oTPTS3AXP41iQIGKa80A0ZmTuV5MEaHoxnW2e5CZ5NlKtainoFmKZopdHM1O2U4mwzJdQx996ivp83xuglII7PNDi84wnB-BDkoBwA78185hX-Es4JIwmDLJK3lfWRa-XtL0RnltuYv746iYTh_qHRD68BNt1uSNCrUCTJDt5aAE6x8wW1Kt9eRo4QPocSadnHXFxnt8Is9UzpERV0ePPQdLuW3IS_de3xyIrDaLGdjluPxUAhb6L2aXic1U12podGU0KLUQSE_oI-ZnmKJ3F4uOZDnd6QZWJushZ41Axf_fcIe8u9ipH84ogoree7vjbU5y18kDquDg';
+
+        $loaded = Loader::load($jws);
+
+        $this->assertEquals(1, $loaded->countSignatures());
+        $this->assertInstanceOf('\Jose\Object\JWSInterface', $loaded);
+        $this->assertEquals($payload, $loaded->getPayload());
+
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
     }
 
     /**
