@@ -74,6 +74,35 @@ final class Verifier implements VerifierInterface
     }
 
     /**
+     * @param \Jose\Object\JWSInterface       $jws
+     * @param \Jose\Object\JWKSetInterface    $jwk_set
+     * @param \Jose\Object\SignatureInterface $signature
+     * @param string|null                     $detached_payload
+     *
+     * @return bool
+     */
+    private function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set, SignatureInterface $signature, $detached_payload = null)
+    {
+        $input = $signature->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
+
+        foreach ($jwk_set->getKeys() as $jwk) {
+            $algorithm = $this->getAlgorithm($signature);
+            try {
+                $this->checkKeyUsage($jwk, 'verification');
+                $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
+                if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
+                    return true;
+                }
+            } catch (\Exception $e) {
+                //We do nothing, we continue with other keys
+                continue;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param \Jose\Object\JWSInterface    $jws
      * @param \Jose\Object\JWKSetInterface $jwk_set
      * @param string|null                  $detached_payload
@@ -90,20 +119,10 @@ final class Verifier implements VerifierInterface
 
         for ($i = 0; $i < $nb_signatures; $i++) {
             $signature = $jws->getSignature($i);
-            $input = $signature->getEncodedProtectedHeaders().'.'.(null === $detached_payload ? $jws->getEncodedPayload() : $detached_payload);
+            $result = $this->verifySignature($jws, $jwk_set, $signature, $detached_payload);
 
-            foreach ($jwk_set->getKeys() as $jwk) {
-                $algorithm = $this->getAlgorithm($signature);
-                try {
-                    $this->checkKeyUsage($jwk, 'verification');
-                    $this->checkKeyAlgorithm($jwk, $algorithm->getAlgorithmName());
-                    if (true === $algorithm->verify($jwk, $input, $signature->getSignature())) {
-                        return $i;
-                    }
-                } catch (\Exception $e) {
-                    //We do nothing, we continue with other keys
-                    continue;
-                }
+            if (true == $result) {
+                return $i;
             }
         }
 
@@ -119,6 +138,8 @@ final class Verifier implements VerifierInterface
             $this->log(LogLevel::ERROR, 'There is no signature in the JWS', ['jws' => $jws]);
             throw new \InvalidArgumentException('The JWS does not contain any signature.');
         }
+        $this->log(LogLevel::INFO, 'The JWS contains {nb} signature(s)', ['nb' => $jws->countSignatures()]);
+
     }
 
     /**
@@ -130,6 +151,7 @@ final class Verifier implements VerifierInterface
             $this->log(LogLevel::ERROR, 'There is no key in the key set', ['jwk_set' => $jwk_set]);
             throw new \InvalidArgumentException('No key in the key set.');
         }
+        $this->log(LogLevel::INFO, 'The JWK Set contains {nb} key(s)', ['nb' => count($jwk_set)]);
     }
 
     /**
@@ -139,6 +161,7 @@ final class Verifier implements VerifierInterface
     private function checkPayload(JWSInterface $jws, $detached_payload = null)
     {
         if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
+            $this->log(LogLevel::ERROR, 'A detached payload is set, but the JWS already has a payload');
             throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload.');
         }
     }
@@ -155,6 +178,7 @@ final class Verifier implements VerifierInterface
             $signature->getHeaders()
         );
         if (!array_key_exists('alg', $complete_headers)) {
+            $this->log(LogLevel::ERROR, 'No "alg" parameter set in the header.');
             throw new \InvalidArgumentException('No "alg" parameter set in the header.');
         }
 
