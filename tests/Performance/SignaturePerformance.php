@@ -11,42 +11,43 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
-use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
 use Jose\Object\JWK;
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
+use Jose\Algorithm\Signature\HS256;
+use Jose\Algorithm\Signature\HS384;
+use Jose\Algorithm\Signature\HS512;
+use Jose\Algorithm\Signature\RS256;
+use Jose\Algorithm\Signature\RS384;
+use Jose\Algorithm\Signature\RS512;
+use Jose\Algorithm\Signature\PS256;
+use Jose\Algorithm\Signature\PS384;
+use Jose\Algorithm\Signature\PS512;
+use Jose\Algorithm\Signature\ES256;
+use Jose\Algorithm\Signature\ES384;
+use Jose\Algorithm\Signature\ES512;
+use Jose\Algorithm\Signature\None;
 
-function testSignaturePerformance($alg, JWKInterface $key)
+function testSignaturePerformance(SignatureAlgorithmInterface $alg, JWKInterface $key)
 {
     $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
 
-    $headers = [
-        'alg' => $alg,
-        'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
-    ];
-
-    $jws = JWSFactory::createJWS($payload);
-
-    $back =  clone $jws;
-    $signer = SignerFactory::createSigner([$alg]);
-
     $time_start = microtime(true);
-    for($i = 0; $i < 10000; $i++) {
+    for($i = 0; $i < 1000; $i++) {
 
-        $signer->addSignature($jws, $key, $headers);
-        $jws = $back;
+        $alg->sign($key, $payload);
     }
 
     $time_end = microtime(true);
-    $time = ($time_end - $time_start)/$i*1000;
-    print_r("$alg: $time m sec/signature\n");
+    $time = $time_end - $time_start;
+    printf('%s: %f milliseconds/signature'.PHP_EOL, $alg->getAlgorithmName(), $time, 3);
 }
 
 function dataSignaturePerformance()
 {
     return [
         [
-            'HS256',
+            new HS256(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -56,7 +57,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'HS384',
+            new HS384(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -66,7 +67,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'HS512',
+            new HS512(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -76,7 +77,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS256',
+            new RS256(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -92,7 +93,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS384',
+            new RS384(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -108,7 +109,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS512',
+            new RS512(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -124,7 +125,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS256',
+            new PS256(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -140,7 +141,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS384',
+            new PS384(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -156,7 +157,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS512',
+            new PS512(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -172,7 +173,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES256',
+            new ES256(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'meriadoc.brandybuck@buckland.example',
@@ -184,7 +185,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES384',
+            new ES384(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'peregrin.took@tuckborough.example',
@@ -196,7 +197,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES512',
+            new ES512(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -205,6 +206,12 @@ function dataSignaturePerformance()
                 'x'   => 'AHKZLLOsCOzz5cY97ewNUajB957y-C-U88c3v13nmGZx6sYl_oJXu9A5RkTKqjqvjyekWF-7ytDyRXYgCF5cj0Kt',
                 'y'   => 'AdymlHvOiLxXkEhayXQnNCvDX4h9htZaCJN34kfmC6pV5OhQHiraVySsUdaQkAgDPrwQrJmbnX9cwlGfP-HqHZR1',
                 'd'   => 'AAhRON2r9cqXX1hg-RoI6R1tX5p2rUAYdmpHZoC1XNM56KtscrX6zbKipQrCW9CGZH3T4ubpnoTKLDYJ_fF3_rJt',
+            ]),
+        ],
+        [
+            new None(),
+            new JWK([
+                'kty' => 'none',
             ]),
         ],
     ];

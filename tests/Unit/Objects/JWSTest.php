@@ -24,7 +24,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage  One or more claims are marked as critical, but they are missing or not have not been checked (["iss"])
+     * @expectedExceptionMessage  One or more claims are marked as critical, but they are missing or have not been checked (["iss"])
      */
     public function testJWS()
     {

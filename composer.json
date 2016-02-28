@@ -36,8 +36,7 @@
     "require-dev": {
         "phpunit/phpunit": "^4.5|^5.0",
         "satooshi/php-coveralls": "^1.0",
-        "mdanter/ecc": "0.3",
-        "monolog/monolog": "^1.17"
+        "mdanter/ecc": "0.3"
     },
    "suggest":{
         "ext-crypto": "Required to use AES GCM based algorithms.",
