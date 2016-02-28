@@ -11,6 +11,7 @@
 
 namespace Jose\Factory;
 
+use Jose\Checker\CheckerManagerInterface;
 use Jose\Checker\ClaimCheckerInterface;
 use Jose\Checker\CheckerManager;
 use Jose\Checker\HeaderCheckerInterface;
@@ -25,35 +26,53 @@ final class CheckerManagerFactory
      */
     public static function createClaimCheckerManager(array $claims = ['exp', 'iat', 'nbf'], array $headers = ['crit'])
     {
-        $claim_checker_manager = new CheckerManager();
+        $checker_manager = new CheckerManager();
+
+        self::populateClaimCheckers($checker_manager, $claims);
+        self::populateHeaderCheckers($checker_manager, $headers);
+
+        return $checker_manager;
+    }
+
+    /**
+     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param array                                 $claims
+     */
+    private static function populateClaimCheckers(CheckerManagerInterface &$checker_manager, array $claims)
+    {
 
         foreach ($claims as $key=>$value) {
             if ($value instanceof ClaimCheckerInterface) {
-                $claim_checker_manager->addClaimChecker($value);
+                $checker_manager->addClaimChecker($value);
             } else {
                 if (is_string($key)) {
                     $class = self::getClaimClass($key);
                 } else {
                     $class = self::getClaimClass($value);
                 }
-                $claim_checker_manager->addClaimChecker(new $class($value));
+                $checker_manager->addClaimChecker(new $class($value));
             }
         }
+    }
 
+    /**
+     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param array                                 $headers
+     */
+    private static function populateHeaderCheckers(CheckerManagerInterface &$checker_manager, array $headers)
+    {
         foreach ($headers as $key=>$value) {
             if ($value instanceof HeaderCheckerInterface) {
-                $claim_checker_manager->addHeaderChecker($value);
+                $checker_manager->addHeaderChecker($value);
             } else {
                 if (is_string($key)) {
                     $class = self::getHeaderClass($key);
                 } else {
                     $class = self::getHeaderClass($value);
                 }
-                $claim_checker_manager->addHeaderChecker(new $class($value));
+                $checker_manager->addHeaderChecker(new $class($value));
             }
         }
-
-        return $claim_checker_manager;
     }
 
     /**

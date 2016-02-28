@@ -121,7 +121,7 @@ final class Verifier implements VerifierInterface
             $signature = $jws->getSignature($i);
             $result = $this->verifySignature($jws, $jwk_set, $signature, $detached_payload);
 
-            if (true == $result) {
+            if (true === $result) {
                 return $i;
             }
         }
