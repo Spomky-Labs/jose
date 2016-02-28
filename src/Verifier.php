@@ -169,7 +169,7 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\SignatureInterface $signature
      *
-     * @return \Jose\Algorithm\SignatureAlgorithmInterface|null
+     * @return \Jose\Algorithm\SignatureAlgorithmInterface
      */
     private function getAlgorithm(SignatureInterface $signature)
     {

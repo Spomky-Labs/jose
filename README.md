@@ -87,6 +87,11 @@ This library supports unsecured `JWS` (`none` algorithm).
 **Unsecured `JWS` is something you probably do not want to use.**
 After you loaded data you received, you should verify that the algorithm used is not `none`.
 
+# Performances
+
+Take a look on the test results performed by [Travis-CI](https://travis-ci.org/Spomky-Labs/jose).
+We added some tests to verify the performance of each algorithm.
+
 # Contributing
 
 Requests for new features, bug fixed and all other ideas to make this library useful are welcome. [Please follow these best practices](doc/Contributing.md).
