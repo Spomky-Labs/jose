@@ -50,7 +50,7 @@ This library needs at least:
 
 Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
-* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only).
+* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only and `fgrosse/phpasn1` version `dev-compat/php5-5 as v1.3.1`).
 
 # Continuous Integration
 
