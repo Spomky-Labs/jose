@@ -11,6 +11,7 @@
 
 namespace Jose\KeyConverter;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use FG\ASN1\ExplicitlyTaggedObject;
 use FG\ASN1\Object;
@@ -65,9 +66,8 @@ final class ECKey extends Sequence
         $data = base64_decode(preg_replace('#-.*-|\r|\n#', '', $data));
         $asnObject = Object::fromBinary($data);
 
-        if (!$asnObject instanceof Sequence) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::isInstanceOf($asnObject, '\FG\ASN1\Universal\Sequence');
+
         $children = $asnObject->getChildren();
         if (4 === count($children)) {
             return $this->loadPrivatePEM($children);
@@ -82,15 +82,12 @@ final class ECKey extends Sequence
      */
     private function loadJWK(array $jwk)
     {
-        if (!array_key_exists('kty', $jwk) || 'EC' !== $jwk['kty']) {
-            throw new \InvalidArgumentException('JWK is not an Elliptic Curve key');
-        }
-        if (!array_key_exists('crv', $jwk)) {
-            throw new \InvalidArgumentException('Curve parameter is missing');
-        }
-        if (!array_key_exists('x', $jwk) || !array_key_exists('y', $jwk)) {
-            throw new \InvalidArgumentException('Point parameters are missing');
-        }
+        Assertion::true(array_key_exists('kty', $jwk), 'JWK is not an Elliptic Curve key');
+        Assertion::eq($jwk['kty'], 'EC', 'JWK is not an Elliptic Curve key');
+        Assertion::true(array_key_exists('crv', $jwk), 'Curve parameter is missing');
+        Assertion::true(array_key_exists('x', $jwk), 'Point parameters are missing');
+        Assertion::true(array_key_exists('y', $jwk), 'Point parameters are missing');
+
         $this->values = $jwk;
         if (array_key_exists('d', $jwk)) {
             $this->initPrivateKey();
@@ -142,26 +139,18 @@ final class ECKey extends Sequence
      */
     private function loadPublicPEM(array $children)
     {
-        if (!$children[0] instanceof Sequence) {
-            throw new \Exception('Unable to load the key');
-        }
-        $sub = $children[0]->getChildren();
-        if (!$sub[0] instanceof ObjectIdentifier || '1.2.840.10045.2.1' !== $sub[0]->getContent()) {
-            throw new \Exception('Unsupported key type');
-        }
-        if (!$sub[1] instanceof ObjectIdentifier) {
-            throw new \Exception('Unsupported key type');
-        }
+        Assertion::isInstanceOf($children[0], '\FG\ASN1\Universal\Sequence', 'Unsupported key type');
 
-        if (!$children[1] instanceof BitString) {
-            throw new \Exception('Unable to load the key');
-        }
+        $sub = $children[0]->getChildren();
+        Assertion::isInstanceOf($sub[0], '\FG\ASN1\Universal\ObjectIdentifier', 'Unsupported key type');
+        Assertion::eq('1.2.840.10045.2.1', $sub[0]->getContent(), 'Unsupported key type');
+
+        Assertion::isInstanceOf($sub[1], '\FG\ASN1\Universal\ObjectIdentifier', 'Unsupported key type');
+        Assertion::isInstanceOf($children[1], '\FG\ASN1\Universal\BitString', 'Unable to load the key');
 
         $bits = $children[1]->getContent();
 
-        if (substr($bits, 0, 2) !== '04') {
-            throw new \Exception('Unsupported key type');
-        }
+        Assertion::eq('04', substr($bits, 0, 2), 'Unsupported key type');
 
         $this->values['kty'] = 'EC';
         $this->values['crv'] = $this->getCurve($sub[1]->getContent());
@@ -171,37 +160,26 @@ final class ECKey extends Sequence
 
     /**
      * @param \FG\ASN1\Object $children
-     *
-     * @throws \Exception
      */
     private function verifyVersion(Object $children)
     {
-        if (!$children instanceof Integer || 1 !== (int) $children->getContent()) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::isInstanceOf($children, '\FG\ASN1\Universal\Integer', 'Unable to load the key');
+        Assertion::eq(1, $children->getContent(), 'Unable to load the key');
     }
 
     /**
      * @param \FG\ASN1\Object $children
      * @param string|null     $x
      * @param string|null     $y
-     *
-     * @throws \Exception
      */
     private function getXAndY(Object $children, &$x, &$y)
     {
-        if (!$children instanceof ExplicitlyTaggedObject) {
-            throw new \Exception('Unable to load the key');
-        }
-        if (!$children->getContent() instanceof BitString) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::isInstanceOf($children, '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
+        Assertion::isInstanceOf($children->getContent(), '\FG\ASN1\Universal\BitString', 'Unable to load the key');
 
         $bits = $children->getContent()->getContent();
 
-        if (substr($bits, 0, 2) !== '04') {
-            throw new \Exception('Unsupported key type');
-        }
+        Assertion::eq('04', substr($bits, 0, 2), 'Unsupported key type');
 
         $x = substr($bits, 2, (strlen($bits) - 2) / 2);
         $y = substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2);
@@ -210,23 +188,17 @@ final class ECKey extends Sequence
     /**
      * @param \FG\ASN1\Object $children
      *
-     * @throws \Exception
-     *
      * @return string
      */
     private function getD(Object $children)
     {
-        if (!$children instanceof OctetString) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::isInstanceOf($children, '\FG\ASN1\Universal\OctetString', 'Unable to load the key');
 
         return $children->getContent();
     }
 
     /**
      * @param array $children
-     *
-     * @throws \Exception
      *
      * @return array
      */
@@ -239,12 +211,9 @@ final class ECKey extends Sequence
         $d = $this->getD($children[1]);
         $this->getXAndY($children[3], $x, $y);
 
-        if (!$children[2] instanceof ExplicitlyTaggedObject) {
-            throw new \Exception('Unable to load the key');
-        }
-        if (!$children[2]->getContent() instanceof ObjectIdentifier) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::isInstanceOf($children[2], '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
+        Assertion::isInstanceOf($children[2]->getContent(), '\FG\ASN1\Universal\ObjectIdentifier', 'Unable to load the key');
+
         $curve = $children[2]->getContent()->getContent();
 
         $this->private = true;
@@ -312,9 +281,8 @@ final class ECKey extends Sequence
     {
         $curves = $this->getSupportedCurves();
         $oid = array_key_exists($curve, $curves) ? $curves[$curve] : null;
-        if (null === $oid) {
-            throw new \InvalidArgumentException('Unsupported curve');
-        }
+
+        Assertion::notNull($oid, 'Unsupported curve');
 
         return $oid;
     }
@@ -328,13 +296,14 @@ final class ECKey extends Sequence
     {
         $curves = $this->getSupportedCurves();
         $curve = array_search($oid, $curves, true);
-        if (false === $curve) {
-            throw new \InvalidArgumentException('Unsupported OID');
-        }
+        Assertion::string($curve, 'Unsupported OID');
 
         return $curve;
     }
 
+    /**
+     * @return array
+     */
     private function getSupportedCurves()
     {
         return [
