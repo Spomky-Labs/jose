@@ -175,9 +175,10 @@ final class ECKey extends Sequence
     private function getXAndY(Object $children, &$x, &$y)
     {
         Assertion::isInstanceOf($children, '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
-        Assertion::isInstanceOf($children->getContent(), '\FG\ASN1\Universal\BitString', 'Unable to load the key');
+        Assertion::isArray($children->getContent(), 'Unable to load the key');
+        Assertion::isInstanceOf($children->getContent()[0], '\FG\ASN1\Universal\BitString', 'Unable to load the key');
 
-        $bits = $children->getContent()->getContent();
+        $bits = $children->getContent()[0]->getContent();
 
         Assertion::eq('04', substr($bits, 0, 2), 'Unsupported key type');
 
@@ -212,9 +213,10 @@ final class ECKey extends Sequence
         $this->getXAndY($children[3], $x, $y);
 
         Assertion::isInstanceOf($children[2], '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
-        Assertion::isInstanceOf($children[2]->getContent(), '\FG\ASN1\Universal\ObjectIdentifier', 'Unable to load the key');
+        Assertion::isArray($children[2]->getContent(), 'Unable to load the key');
+        Assertion::isInstanceOf($children[2]->getContent()[0], '\FG\ASN1\Universal\ObjectIdentifier', 'Unable to load the key');
 
-        $curve = $children[2]->getContent()->getContent();
+        $curve = $children[2]->getContent()[0]->getContent();
 
         $this->private = true;
         $this->values['kty'] = 'EC';
@@ -258,6 +260,14 @@ final class ECKey extends Sequence
     public function toArray()
     {
         return $this->values;
+    }
+
+    /**
+     * @return string
+     */
+    public function toDER()
+    {
+        return $this->getBinary();
     }
 
     /**
@@ -307,7 +317,6 @@ final class ECKey extends Sequence
     private function getSupportedCurves()
     {
         return [
-            'P-192' => '1.2.840.10045.3.1.1',
             'P-256' => '1.2.840.10045.3.1.7',
             'P-384' => '1.3.132.0.34',
             'P-521' => '1.3.132.0.35',

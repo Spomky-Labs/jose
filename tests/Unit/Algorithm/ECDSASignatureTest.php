@@ -50,13 +50,16 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
             'crv' => 'P-256',
             'x'   => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
             'y'   => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
+            'd'   => 'jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI',
         ]);
 
         $ecdsa = new ES256();
-
         $data = 'eyJhbGciOiJFUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ';
         $signature = 'DtEhU3ljbEg8L38VWAfUAqOyKAM6-Xx-F4GawxaepmXFCgfTjDxw5djxLa8ISlSApmWQxfKTUJqPP3-Kg6NU1Q';
 
+        $sign = $ecdsa->sign($key, $data);
+
+        $this->assertTrue($ecdsa->verify($key, $data, $sign));
         $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
     }
 
@@ -155,13 +158,16 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
             'crv' => 'P-521',
             'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
             'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
+            'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
         ]);
 
         $ecdsa = new ES512();
-
         $data = 'eyJhbGciOiJFUzUxMiJ9.UGF5bG9hZA';
         $signature = 'AdwMgeerwtHoh-l192l60hp9wAHZFVJbLfD_UxMi70cwnZOYaRI1bKPWROc-mZZqwqT2SI-KGDKB34XO0aw_7XdtAG8GaSwFKdCAPZgoXD2YBJZCPEX3xKpRwcdOO8KpEHwJjyqOgzDO7iKvU8vcnwNrmxYbSW9ERBXukOXolLzeO_Jn';
 
+        $sign = $ecdsa->sign($key, $data);
+
+        $this->assertTrue($ecdsa->verify($key, $data, $sign));
         $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
     }
 

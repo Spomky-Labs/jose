@@ -171,33 +171,9 @@ final class KeyConverter
 
                 return $ec_key->toArray();
             case OPENSSL_KEYTYPE_RSA:
-                $temp = [
-                    'kty' => 'RSA',
-                ];
+                 $rsa_key = new RSAKey($pem);
 
-                foreach ([
-                    'n' => 'n',
-                    'e' => 'e',
-                    'd' => 'd',
-                    'p' => 'p',
-                    'q' => 'q',
-                    'dp' => 'dmp1',
-                    'dq' => 'dmq1',
-                    'qi' => 'iqmp',
-                        ] as $A => $B) {
-                    if (array_key_exists($B, $details['rsa'])) {
-                        $temp[$A] = Base64Url::encode($details['rsa'][$B]);
-                    }
-                }
-
-                return $temp;
-                /*
-                 * The following lines will be used when FGrosse/PHPASN1 v1.4.0 will be available
-                 * (not available because of current version of mdanter/phpecc.
-                 * $rsa_key = new RSAKey($pem);
-                 *
-                 * return $rsa_key->toArray();
-                 */
+                 return $rsa_key->toArray();
             default:
                 throw new \InvalidArgumentException('Unsupported key type');
         }

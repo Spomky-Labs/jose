@@ -87,10 +87,22 @@ This library supports unsecured `JWS` (`none` algorithm).
 **Unsecured `JWS` is something you probably do not want to use.**
 After you loaded data you received, you should verify that the algorithm used is not `none`.
 
-# Performances
+# Signature Performances
 
 Take a look on the test results performed by [Travis-CI](https://travis-ci.org/Spomky-Labs/jose).
 We added some tests to verify the performance of each algorithm.
+
+Please note that the time per signature will be different on your platform.
+The conclusions reached regarding these results are:
+
+* The RSA signature performances are good.
+* The HMAC signature performances are very good (approx. 100x faster than RSA signatures).
+* The ECC signature performances are very bad (from 100x to 200x slower than RSA signatures). This is due to the use of a pure PHP library.
+
+In other words, if you use
+
+* symmetric keys (shared keys), you should prefer the use of HMAC signatures (HSxxx algorithms).
+* asymmetric keys (private/public key pairs), you should prefer the use of RSA signatures (RSxxx or PSxxx algorithms).
 
 # Contributing
 

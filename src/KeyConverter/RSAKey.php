@@ -220,6 +220,14 @@ final class RSAKey extends Sequence
     /**
      * @return string
      */
+    public function toDER()
+    {
+        return $this->getBinary();
+    }
+
+    /**
+     * @return string
+     */
     public function toPEM()
     {
         $result = '-----BEGIN '.($this->private ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
