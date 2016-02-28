@@ -66,7 +66,7 @@ abstract class AESKW implements KeyWrappingInterface
         if ('oct' !== $key->get('kty') || !$key->has('k')) {
             throw new \InvalidArgumentException('The key is not valid');
         }
-        if ($this->getKeySize() !==  StringUtil::getStringLength(Base64Url::decode($key->get('k')))) {
+        if ($this->getKeySize() !==  strlen(Base64Url::decode($key->get('k')))) {
             throw new \InvalidArgumentException('The key size is not valid');
         }
     }

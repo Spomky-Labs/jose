@@ -55,8 +55,8 @@ abstract class HMAC implements SignatureAlgorithmInterface
         if (function_exists('hash_equals')) {
             return hash_equals($safe, $user);
         }
-        $safeLen = StringUtil::getStringLength($safe);
-        $userLen = StringUtil::getStringLength($user);
+        $safeLen = strlen($safe);
+        $userLen = strlen($user);
 
         if ($userLen !== $safeLen) {
             return false;

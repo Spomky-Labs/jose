@@ -31,7 +31,7 @@ final class GCM
         $u = self::calcVector($C);
         $c_len_padding = self::addPadding($C);
 
-        $S = self::getHash($H, $A.StringUtil::addPadding('', $v / 8, "\0").$C.StringUtil::addPadding('', $u / 8, "\0").$a_len_padding.$c_len_padding);
+        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
         $T = self::getMSB(128, self::getGCTR($K, $J0, $S));
         mcrypt_generic_deinit($cipher);
         mcrypt_module_close($cipher);
@@ -57,7 +57,7 @@ final class GCM
         $u = self::calcVector($C);
         $c_len_padding = self::addPadding($C);
 
-        $S = self::getHash($H, $A.StringUtil::addPadding('', $v / 8, "\0").$C.StringUtil::addPadding('', $u / 8, "\0").$a_len_padding.$c_len_padding);
+        $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
         $T1 = self::getMSB(self::getLength($T), self::getGCTR($K, $J0, $S));
         $result = strcmp($T, $T1);
         Assertion::eq($result, 0);
@@ -73,7 +73,7 @@ final class GCM
         $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
         Assertion::notNull($cipher);
 
-        $key_length = StringUtil::getStringLength($K) * 8;
+        $key_length = strlen($K) * 8;
         Assertion::inArray($key_length, [128, 192, 256]);
 
         $iv = str_repeat("\0", 16);
@@ -90,8 +90,8 @@ final class GCM
             Assertion::eq(($s + 64) % 8, 0);
 
             $packed_iv_len = pack('N', $iv_len);
-            $iv_len_padding = StringUtil::addPadding($packed_iv_len, 8, "\0", STR_PAD_LEFT);
-            $hash_X = $IV.StringUtil::addPadding('', ($s + 64) / 8, "\0").$iv_len_padding;
+            $iv_len_padding = str_pad($packed_iv_len, 8, "\0", STR_PAD_LEFT);
+            $hash_X = $IV.str_pad('', ($s + 64) / 8, "\0").$iv_len_padding;
             $J0 = self::getHash($H, $hash_X);
         }
         $v = self::calcVector($A);
@@ -117,7 +117,7 @@ final class GCM
      */
     private static function addPadding($value)
     {
-        return StringUtil::addPadding(pack('N', self::getLength($value)), 8, "\0", STR_PAD_LEFT);
+        return str_pad(pack('N', self::getLength($value)), 8, "\0", STR_PAD_LEFT);
     }
 
     /**
@@ -127,7 +127,7 @@ final class GCM
      */
     private static function getLength($x)
     {
-        return StringUtil::getStringLength($x) * 8;
+        return strlen($x) * 8;
     }
 
     /**
@@ -140,7 +140,7 @@ final class GCM
     {
         $num_bytes = $num_bits / 8;
 
-        return StringUtil::getSubString($x, 0, $num_bytes);
+        return substr($x, 0, $num_bytes);
     }
 
     /**
@@ -153,7 +153,7 @@ final class GCM
     {
         $num_bytes = ($num_bits / 8);
 
-        return StringUtil::getSubString($x, -$num_bytes);
+        return substr($x, -$num_bytes);
     }
 
     /**
@@ -199,8 +199,8 @@ final class GCM
      */
     private static function getProduct($X, $Y)
     {
-        $R = pack('H*', 'E1').StringUtil::addPadding('', 15, "\0");
-        $Z = StringUtil::addPadding('', 16, "\0");
+        $R = pack('H*', 'E1').str_pad('', 15, "\0");
+        $Z = str_pad('', 16, "\0");
         $V = $Y;
 
         $parts = str_split($X, 4);
@@ -210,7 +210,7 @@ final class GCM
             if ($x[$i]) {
                 $Z = self::getBitXor($Z, $V);
             }
-            $lsb_8 = StringUtil::getSubString($V, -1);
+            $lsb_8 = substr($V, -1);
             if (ord($lsb_8 & $lsb_mask)) {
                 $V = self::getBitXor(self::shiftStringToRight($V), $R);
             } else {
@@ -258,10 +258,10 @@ final class GCM
     private static function getHash($H, $X)
     {
         $Y = [];
-        $Y[0] = StringUtil::addPadding('', 16, "\0");
-        $num_blocks = (int) (StringUtil::getStringLength($X) / 16);
+        $Y[0] = str_pad('', 16, "\0");
+        $num_blocks = (int) (strlen($X) / 16);
         for ($i = 1; $i <= $num_blocks; $i++) {
-            $Y[$i] = self::getProduct(self::getBitXor($Y[$i - 1], StringUtil::getSubString($X, ($i - 1) * 16, 16)), $H);
+            $Y[$i] = self::getProduct(self::getBitXor($Y[$i - 1], substr($X, ($i - 1) * 16, 16)), $H);
         }
 
         return $Y[$num_blocks];
@@ -294,10 +294,10 @@ final class GCM
         }
         for ($i = 1; $i < $n; $i++) {
             $C = mcrypt_generic($cipher, $CB[$i]);
-            $Y[$i] = self::getBitXor(StringUtil::getSubString($X, ($i - 1) * 16, 16), $C);
+            $Y[$i] = self::getBitXor(substr($X, ($i - 1) * 16, 16), $C);
         }
 
-        $Xn = StringUtil::getSubString($X, ($n - 1) * 16);
+        $Xn = substr($X, ($n - 1) * 16);
         $C = mcrypt_generic($cipher, $CB[$n]);
         $Y[$n] = self::getBitXor($Xn, self::getMSB(self::getLength($Xn), $C));
         mcrypt_generic_deinit($cipher);

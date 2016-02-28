@@ -41,7 +41,7 @@ final class AESMCrypt implements AESInterface
 
     private static function pad($data, $block_size)
     {
-        $padding = $block_size - (StringUtil::getStringLength($data) % $block_size);
+        $padding = $block_size - (strlen($data) % $block_size);
         $pattern = chr($padding);
 
         return $data.str_repeat($pattern, $padding);
@@ -49,9 +49,9 @@ final class AESMCrypt implements AESInterface
 
     private static function unpad($data)
     {
-        $padChar = StringUtil::getSubString($data, -1);
+        $padChar = substr($data, -1);
         $padLength = ord($padChar);
 
-        return StringUtil::getSubString($data, 0, -$padLength);
+        return substr($data, 0, -$padLength);
     }
 }
