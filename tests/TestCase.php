@@ -12,12 +12,10 @@
 namespace Jose\Test;
 
 use Base64Url\Base64Url;
+use Jose\Checker\AudienceChecker;
+use Jose\Factory\CheckerManagerFactory;
 use Jose\Object\JWKSet;
-use Jose\Test\Stub\ClaimCheckerManager;
 use Jose\Test\Stub\FakeLogger;
-use Monolog\Handler\PHPConsoleHandler;
-use Monolog\Handler\StreamHandler;
-use Monolog\Logger;
 
 /**
  * Class TestCase.
@@ -25,11 +23,21 @@ use Monolog\Logger;
 class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return \Jose\Test\Stub\ClaimCheckerManager
+     * @var \Jose\Checker\CheckerManagerInterface|null
      */
-    protected function getClaimCheckerManager()
+    private $checker_manager = null;
+
+    /**
+     * @return \Jose\Checker\CheckerManagerInterface
+     */
+    protected function getCheckerManager()
     {
-        return new ClaimCheckerManager();
+        if (null === $this->checker_manager) {
+            $this->checker_manager =  CheckerManagerFactory::createClaimCheckerManager();
+            $this->checker_manager->addClaimChecker(new AudienceChecker('My Service'));
+        }
+
+        return $this->checker_manager;
     }
 
     /**

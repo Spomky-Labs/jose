@@ -26,7 +26,7 @@ class IssuedAtChecker implements ClaimCheckerInterface
 
         $iat = (int) $jwt->getClaim('iat');
         if (time() < $iat) {
-            throw new \Exception('The JWT is issued in the futur.');
+            throw new \InvalidArgumentException('The JWT is issued in the futur.');
         }
 
         return ['iat'];

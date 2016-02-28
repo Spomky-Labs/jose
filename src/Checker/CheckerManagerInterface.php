@@ -30,4 +30,14 @@ interface CheckerManagerInterface
      * @param int                       $recipient
      */
     public function checkJWE(JWEInterface $jwe, $recipient);
+
+    /**
+     * @param \Jose\Checker\ClaimCheckerInterface $claim_checker
+     */
+    public function addClaimChecker(ClaimCheckerInterface $claim_checker);
+
+    /**
+     * @param \Jose\Checker\HeaderCheckerInterface $header_checker
+     */
+    public function addHeaderChecker(HeaderCheckerInterface $header_checker);
 }
