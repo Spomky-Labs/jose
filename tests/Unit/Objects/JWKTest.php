@@ -10,6 +10,7 @@
  */
 
 use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 
 /**
@@ -128,7 +129,7 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($jwkset));
         $this->assertEquals(1, $jwkset->count());
 
-        $this->assertInstanceOf('\Jose\Object\JWKInterface', $jwkset->getKey(0));
+        $this->assertInstanceOf(JWKInterface::class, $jwkset->getKey(0));
     }
 
     /**

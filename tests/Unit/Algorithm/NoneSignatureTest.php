@@ -12,6 +12,7 @@
 use Jose\Algorithm\Signature\None;
 use Jose\Factory\SignerFactory;
 use Jose\Loader;
+use Jose\Object\JWSInterface;
 use Jose\Object\JWK;
 use Jose\Test\TestCase;
 
@@ -79,7 +80,7 @@ class NoneSignatureTest extends TestCase
 
         $result = Loader::load($compact);
 
-        $this->assertInstanceOf('Jose\Object\JWSInterface', $result);
+        $this->assertInstanceOf(JWSInterface::class, $result);
 
         $this->assertEquals('Je suis Charlie', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());

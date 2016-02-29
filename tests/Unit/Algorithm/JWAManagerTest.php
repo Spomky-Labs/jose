@@ -9,6 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Algorithm\JWAInterface;
 use Jose\Algorithm\JWAManager;
 use Jose\Algorithm\Signature\ES384;
 use Jose\Factory\AlgorithmManagerFactory;
@@ -36,8 +37,8 @@ class JWAManagerTest extends TestCase
         $this->assertFalse($jwa_manager->isAlgorithmSupported('HS384'));
 
         $this->assertEquals(['ES256', 'ES384'], $jwa_manager->listAlgorithms());
-        $this->assertInstanceOf('\Jose\Algorithm\JWAInterface', $jwa_manager->getAlgorithm('ES256'));
-        $this->assertInstanceOf('\Jose\Algorithm\JWAInterface', $jwa_manager->getAlgorithms()['ES256']);
+        $this->assertInstanceOf(JWAInterface::class, $jwa_manager->getAlgorithm('ES256'));
+        $this->assertInstanceOf(JWAInterface::class, $jwa_manager->getAlgorithms()['ES256']);
 
         $jwa_manager->removeAlgorithm('ES256');
         $jwa_manager->removeAlgorithm('ES256');

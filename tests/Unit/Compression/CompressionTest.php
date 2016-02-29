@@ -9,6 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Compression\CompressionInterface;
 use Jose\Compression\CompressionManager;
 use Jose\Compression\Deflate;
 use Jose\Compression\GZip;
@@ -32,7 +33,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $manager->addCompressionAlgorithm(new ZLib());
 
         $compression = $manager->getCompressionAlgorithm('DEF');
-        $this->assertInstanceOf('Jose\Compression\CompressionInterface', $compression);
+        $this->assertInstanceOf(CompressionInterface::class, $compression);
     }
 
     /**

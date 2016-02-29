@@ -11,40 +11,60 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
+use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWK;
-use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
 use Jose\Object\JWKInterface;
+use Jose\Algorithm\Signature\HS256;
+use Jose\Algorithm\Signature\HS384;
+use Jose\Algorithm\Signature\HS512;
+use Jose\Algorithm\Signature\RS256;
+use Jose\Algorithm\Signature\RS384;
+use Jose\Algorithm\Signature\RS512;
+use Jose\Algorithm\Signature\PS256;
+use Jose\Algorithm\Signature\PS384;
+use Jose\Algorithm\Signature\PS512;
+use Jose\Algorithm\Signature\ES256;
+use Jose\Algorithm\Signature\ES384;
+use Jose\Algorithm\Signature\ES512;
+use Jose\Algorithm\Signature\None;
 
-function testSignaturePerformance($alg, JWKInterface $key)
+function testSignaturePerformance(SignatureAlgorithmInterface $alg, JWKInterface $key)
 {
     $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
-    $headers = [
-        'alg' => $alg,
-    ];
 
-    $jws = JWSFactory::createJWS($payload);
-    $back = clone $jws;
-    $signer = SignerFactory::createSigner([$alg]);
 
     $time_start = microtime(true);
     $nb = 100;
     for($i = 0; $i < $nb; $i++) {
-
-        $signer->addSignature($jws, $key, $headers);
-        $jws = $back;
+        $alg->sign($key, $payload);
     }
 
     $time_end = microtime(true);
     $time = ($time_end - $time_start)/$nb*1000;
-    printf('%s: %f milliseconds/signature'.PHP_EOL, $alg, $time);
+    printf('%s: %f milliseconds/signature'.PHP_EOL, $alg->getAlgorithmName(), $time);
+}
+
+function testVerificationPerformance(SignatureAlgorithmInterface $alg, JWKInterface $key)
+{
+    $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
+    $signature = $alg->sign($key, $payload);
+
+    $time_start = microtime(true);
+    $nb = 100;
+    for($i = 0; $i < $nb; $i++) {
+        $alg->verify($key, $payload, $signature);
+    }
+
+    $time_end = microtime(true);
+    $time = ($time_end - $time_start)/$nb*1000;
+    printf('%s: %f milliseconds/verification'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
 function dataSignaturePerformance()
 {
     return [
         [
-            'HS256',
+            new HS256(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -54,7 +74,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'HS384',
+            new HS384(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -64,7 +84,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'HS512',
+            new HS512(),
             new JWK([
                 'kty' => 'oct',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
@@ -74,7 +94,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS256',
+            new RS256(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -90,7 +110,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS384',
+            new RS384(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -106,7 +126,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'RS512',
+            new RS512(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -122,7 +142,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS256',
+            new PS256(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -138,7 +158,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS384',
+            new PS384(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -154,7 +174,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'PS512',
+            new PS512(),
             new JWK([
                 'kty' => 'RSA',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -170,7 +190,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES256',
+            new ES256(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'meriadoc.brandybuck@buckland.example',
@@ -182,7 +202,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES384',
+            new ES384(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'peregrin.took@tuckborough.example',
@@ -194,7 +214,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'ES512',
+            new ES512(),
             new JWK([
                 'kty' => 'EC',
                 'kid' => 'bilbo.baggins@hobbiton.example',
@@ -206,7 +226,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            'none',
+            new None(),
             new JWK([
                 'kty' => 'none',
             ]),
@@ -222,6 +242,10 @@ print_r('#####################'.PHP_EOL);
 
 foreach($environments as $environment) {
     testSignaturePerformance($environment[0], $environment[1]);
+}
+
+foreach($environments as $environment) {
+    testVerificationPerformance($environment[0], $environment[1]);
 }
 
 print_r('#####################'.PHP_EOL);

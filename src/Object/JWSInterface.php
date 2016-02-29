@@ -14,6 +14,8 @@ namespace Jose\Object;
 interface JWSInterface extends JWTInterface
 {
     /**
+     * @internal
+     *
      * @return null|string
      */
     public function getEncodedPayload();
@@ -27,6 +29,8 @@ interface JWSInterface extends JWTInterface
 
     /**
      * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @internal
      *
      * @return \Jose\Object\JWSInterface
      */

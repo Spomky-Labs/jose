@@ -92,17 +92,38 @@ After you loaded data you received, you should verify that the algorithm used is
 Take a look on the test results performed by [Travis-CI](https://travis-ci.org/Spomky-Labs/jose).
 We added some tests to verify the performance of each algorithm.
 
-Please note that the time per signature will be different on your platform.
+Hereafter a table with all signature/verification test results.
+
+|  Algorithm  |    Signature    |  Verification   |
+|-------------|-----------------|-----------------|
+| none        |   0.002120 msec |   0.002561 msec |
+| HS256       |   0.063560 msec |   0.011048 msec |
+| HS384       |   0.008521 msec |   0.013590 msec |
+| HS512       |   0.009749 msec |   0.011101 msec |
+| RS256       |   3.185160 msec |   0.408080 msec |
+| RS384       |   2.673111 msec |   0.392590 msec |
+| RS512       |   2.616920 msec |   0.387020 msec |
+| PS256       |   2.711060 msec |   0.338850 msec |
+| PS384       |   2.658789 msec |   0.305960 msec |
+| PS512       |   2.691140 msec |   0.352941 msec |
+| ES256       | 119.703550 msec | 335.086281 msec |
+| ES384       | 201.914010 msec | 571.660171 msec |
+| ES512       | 316.626689 msec | 895.848720 msec |
+|-------------|-----------------|-----------------|
+
+*Please note that the time per signature will be different on your platform.*
+
 The conclusions reached regarding these results are:
 
+* The HMAC signature performances are very good.
 * The RSA signature performances are good.
-* The HMAC signature performances are very good (approx. 100x faster than RSA signatures).
-* The ECC signature performances are very bad (from 100x to 200x slower than RSA signatures). This is due to the use of a pure PHP library.
+* The ECC signature performances are very bad. This is due to the use of a pure PHP library.
 
-In other words, if you use
+**We do not recommend the use of ECC algorithms.**
 
-* symmetric keys (shared keys), you should prefer the use of HMAC signatures (HSxxx algorithms).
-* asymmetric keys (private/public key pairs), you should prefer the use of RSA signatures (RSxxx or PSxxx algorithms).
+# Encryption Performances
+
+To be written
 
 # Contributing
 

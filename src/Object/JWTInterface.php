@@ -27,6 +27,8 @@ interface JWTInterface
     /**
      * @param mixed $payload
      *
+     * @internal
+     *
      * @return \Jose\Object\JWTInterface
      */
     public function withPayload($payload);

@@ -66,7 +66,7 @@ final class ECKey extends Sequence
         $data = base64_decode(preg_replace('#-.*-|\r|\n#', '', $data));
         $asnObject = Object::fromBinary($data);
 
-        Assertion::isInstanceOf($asnObject, '\FG\ASN1\Universal\Sequence');
+        Assertion::isInstanceOf($asnObject,Sequence::class);
 
         $children = $asnObject->getChildren();
         if (4 === count($children)) {
@@ -139,14 +139,14 @@ final class ECKey extends Sequence
      */
     private function loadPublicPEM(array $children)
     {
-        Assertion::isInstanceOf($children[0], '\FG\ASN1\Universal\Sequence', 'Unsupported key type');
+        Assertion::isInstanceOf($children[0], Sequence::class, 'Unsupported key type');
 
         $sub = $children[0]->getChildren();
-        Assertion::isInstanceOf($sub[0], '\FG\ASN1\Universal\ObjectIdentifier', 'Unsupported key type');
+        Assertion::isInstanceOf($sub[0], ObjectIdentifier::class, 'Unsupported key type');
         Assertion::eq('1.2.840.10045.2.1', $sub[0]->getContent(), 'Unsupported key type');
 
-        Assertion::isInstanceOf($sub[1], '\FG\ASN1\Universal\ObjectIdentifier', 'Unsupported key type');
-        Assertion::isInstanceOf($children[1], '\FG\ASN1\Universal\BitString', 'Unable to load the key');
+        Assertion::isInstanceOf($sub[1], ObjectIdentifier::class, 'Unsupported key type');
+        Assertion::isInstanceOf($children[1], BitString::class, 'Unable to load the key');
 
         $bits = $children[1]->getContent();
 
@@ -163,7 +163,7 @@ final class ECKey extends Sequence
      */
     private function verifyVersion(Object $children)
     {
-        Assertion::isInstanceOf($children, '\FG\ASN1\Universal\Integer', 'Unable to load the key');
+        Assertion::isInstanceOf($children, Integer::class, 'Unable to load the key');
         Assertion::eq(1, $children->getContent(), 'Unable to load the key');
     }
 
@@ -174,9 +174,9 @@ final class ECKey extends Sequence
      */
     private function getXAndY(Object $children, &$x, &$y)
     {
-        Assertion::isInstanceOf($children, '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
+        Assertion::isInstanceOf($children, ExplicitlyTaggedObject::class, 'Unable to load the key');
         Assertion::isArray($children->getContent(), 'Unable to load the key');
-        Assertion::isInstanceOf($children->getContent()[0], '\FG\ASN1\Universal\BitString', 'Unable to load the key');
+        Assertion::isInstanceOf($children->getContent()[0], BitString::class, 'Unable to load the key');
 
         $bits = $children->getContent()[0]->getContent();
 
@@ -212,9 +212,9 @@ final class ECKey extends Sequence
         $d = $this->getD($children[1]);
         $this->getXAndY($children[3], $x, $y);
 
-        Assertion::isInstanceOf($children[2], '\FG\ASN1\ExplicitlyTaggedObject', 'Unable to load the key');
+        Assertion::isInstanceOf($children[2], ExplicitlyTaggedObject::class, 'Unable to load the key');
         Assertion::isArray($children[2]->getContent(), 'Unable to load the key');
-        Assertion::isInstanceOf($children[2]->getContent()[0], '\FG\ASN1\Universal\ObjectIdentifier', 'Unable to load the key');
+        Assertion::isInstanceOf($children[2]->getContent()[0], ObjectIdentifier::class, 'Unable to load the key');
 
         $curve = $children[2]->getContent()[0]->getContent();
 

@@ -14,6 +14,7 @@ use Jose\Factory\DecrypterFactory;
 use Jose\Factory\EncrypterFactory;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
+use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Jose\Test\TestCase;
@@ -54,7 +55,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($encrypted);
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('RSA-OAEP-256', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
@@ -94,7 +95,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($encrypted);
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('RSA-OAEP-256', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
@@ -292,7 +293,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($encrypted);
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('RSA-OAEP-256', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
@@ -415,7 +416,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($encrypted);
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('dir', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A192CBC-HS384', $loaded->getSharedProtectedHeader('enc'));
         $this->assertFalse($loaded->hasSharedHeader('zip'));
@@ -451,7 +452,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($jwe->toFlattenedJSON(0));
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('ECDH-ES', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A192CBC-HS384', $loaded->getSharedProtectedHeader('enc'));
         $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
@@ -530,7 +531,7 @@ class EncrypterTest extends TestCase
 
         $loaded = Loader::load($jwe->toFlattenedJSON(0));
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
         $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
@@ -572,7 +573,7 @@ class EncrypterTest extends TestCase
 
         $decrypter = DecrypterFactory::createDecrypter(['A256GCM', 'ECDH-ES+A256KW'], ['DEF']);
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getSharedProtectedHeader('alg'));
         $this->assertEquals('A256GCM', $loaded->getSharedProtectedHeader('enc'));
         $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
@@ -614,7 +615,7 @@ class EncrypterTest extends TestCase
 
         $this->assertEquals(2, $loaded->countRecipients());
 
-        $this->assertInstanceOf('Jose\Object\JWEInterface', $loaded);
+        $this->assertInstanceOf(JWEInterface::class, $loaded);
         $this->assertEquals('A256CBC-HS512', $loaded->getSharedProtectedHeader('enc'));
         $this->assertEquals('ECDH-ES+A256KW', $loaded->getRecipient(0)->getHeader('alg'));
         $this->assertEquals('RSA-OAEP-256', $loaded->getRecipient(1)->getHeader('alg'));
