@@ -29,6 +29,8 @@ Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are fully impl
 
 This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
 
+The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unencoded Payload Option) is not yet supported.
+
 # Important note
 
 > Note 0: please use v2.0.x+ as previous version contain many bugs and are difficult to use.
