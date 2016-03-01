@@ -116,7 +116,7 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
             'zip' => 'DEF',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
 
         $encrypter->addRecipient(

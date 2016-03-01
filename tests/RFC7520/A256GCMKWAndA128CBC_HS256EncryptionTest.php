@@ -122,7 +122,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
             'enc' => 'A128CBC-HS256',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $encrypter->addRecipient(

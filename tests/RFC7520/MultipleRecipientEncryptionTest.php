@@ -193,7 +193,7 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
             'kid' => '18ec08e1-bfa9-4d95-b205-2b4dd1d4321d',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers, $headers);
         $encrypter = EncrypterFactory::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $encrypter->addRecipient(

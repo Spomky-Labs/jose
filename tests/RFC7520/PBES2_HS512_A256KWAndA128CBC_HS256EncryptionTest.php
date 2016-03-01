@@ -154,7 +154,7 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
             'enc' => 'A128CBC-HS256',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
 
         $encrypter->addRecipient(

@@ -125,7 +125,7 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
             'enc' => 'A128GCM',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A128KW', 'A128GCM']);
 
         $encrypter->addRecipient(

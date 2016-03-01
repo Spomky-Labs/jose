@@ -105,7 +105,7 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
             'enc' => 'A128GCM',
         ];
 
-        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
 
         $encrypter->addRecipient(

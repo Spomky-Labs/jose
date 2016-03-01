@@ -25,7 +25,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testExpiredJWT()
     {
-        $jwe = JWEFactory::createJWE(
+        $jwe = JWEFactory::createEmptyJWE(
             [
                 'exp' => time()-1,
             ],
@@ -48,7 +48,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTIssuedInTheFuture()
     {
-        $jwe = JWEFactory::createJWE(
+        $jwe = JWEFactory::createEmptyJWE(
             [
                 'exp' => time()+3600,
                 'iat' => time()+100,
@@ -72,7 +72,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotNow()
     {
-        $jwe = JWEFactory::createJWE(
+        $jwe = JWEFactory::createEmptyJWE(
             [
                 'exp' => time()+3600,
                 'iat' => time()-100,
@@ -97,7 +97,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotForAudience()
     {
-        $jwe = JWEFactory::createJWE(
+        $jwe = JWEFactory::createEmptyJWE(
             [
                 'exp' => time()+3600,
                 'iat' => time()-100,
@@ -123,7 +123,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTHasCriticalClaimsNotSatisfied()
     {
-        $jwe = JWEFactory::createJWE(
+        $jwe = JWEFactory::createEmptyJWE(
             [
                 'exp' => time()+3600,
                 'iat' => time()-100,
