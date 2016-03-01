@@ -59,7 +59,7 @@ class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => 'bilbo.baggins@hobbiton.example',
         ];
 
-        $jws = JWSFactory::createJWS($payload);
+        $jws = JWSFactory::createEmptyJWS($payload);
         $signer = SignerFactory::createSigner(['RS256']);
         $signer->addSignature($jws, $private_key, $headers);
 

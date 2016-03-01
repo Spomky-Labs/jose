@@ -36,7 +36,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
             'aud' => 'You',
             'sub' => 'My friend',
         ];
-        $jws = JWSFactory::createJWS($claims);
+        $jws = JWSFactory::createEmptyJWS($claims);
 
         $this->assertTrue($jws->hasClaims());
         $this->assertTrue($jws->hasClaim('nbf'));
@@ -62,7 +62,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testToCompactJSONFailed()
     {
-        $jws = JWSFactory::createJWS([
+        $jws = JWSFactory::createEmptyJWS([
             'nbf' => time(),
             'iat' => time(),
             'exp' => time() + 3600,
@@ -80,7 +80,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testToFlattenedJSONFailed()
     {
-        $jws = JWSFactory::createJWS([
+        $jws = JWSFactory::createEmptyJWS([
             'nbf' => time(),
             'iat' => time(),
             'exp' => time() + 3600,
@@ -98,7 +98,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testToJSONFailed()
     {
-        $jws = JWSFactory::createJWS([
+        $jws = JWSFactory::createEmptyJWS([
             'nbf' => time(),
             'iat' => time(),
             'exp' => time() + 3600,
@@ -116,7 +116,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testNoClaims()
     {
-        $jws = JWSFactory::createJWS('Hello');
+        $jws = JWSFactory::createEmptyJWS('Hello');
 
         $jws->getClaims();
     }
@@ -127,7 +127,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testClaimDoesNotExist()
     {
-        $jws = JWSFactory::createJWS([
+        $jws = JWSFactory::createEmptyJWS([
             'nbf' => time(),
             'iat' => time(),
             'exp' => time() + 3600,
@@ -145,7 +145,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
      */
     public function testSignatureContainsUnprotectedHeaders()
     {
-        $jws = JWSFactory::createJWS('Hello');
+        $jws = JWSFactory::createEmptyJWS('Hello');
         $signature = new Signature();
         $signature = $signature->withHeader('foo', 'bar');
 

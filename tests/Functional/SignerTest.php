@@ -32,7 +32,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
+        $jws = JWSFactory::createEmptyJWSWithDetachedPayload($this->getKey3(), $payload);
         $signer->addSignature(
             $jws,
             $this->getKey1()
@@ -47,7 +47,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createJWS($this->getKey3());
+        $jws = JWSFactory::createEmptyJWS($this->getKey3());
         $signer->addSignature(
             $jws,
             $this->getKey1()
@@ -62,7 +62,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createJWS($this->getKey3());
+        $jws = JWSFactory::createEmptyJWS($this->getKey3());
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -77,7 +77,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS($this->getKey3());
+        $jws = JWSFactory::createEmptyJWS($this->getKey3());
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -106,7 +106,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -126,11 +126,30 @@ class SignerTest extends TestCase
     /**
      *
      */
+    public function testCreateCompactJWSUsingFactory()
+    {
+        $jws0 = JWSFactory::createJWSToCompactJSON('Je suis Charlie', $this->getKey1(), ['alg' => 'HS512']);
+        $jws1 = JWSFactory::createJWSToCompactJSON('Je suis Charlie', $this->getKey2(), ['alg' => 'RS512']);
+        $jws2 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Je suis Charlie', $this->getKey1(), $encoded_payload_2, ['alg' => 'HS512']);
+        $jws3 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Je suis Charlie', $this->getKey2(), $encoded_payload_3, ['alg' => 'RS512']);
+
+        $this->assertEquals('eyJhbGciOiJIUzUxMiJ9.SmUgc3VpcyBDaGFybGll.di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA', $jws0);
+        $this->assertEquals('eyJhbGciOiJSUzUxMiJ9.SmUgc3VpcyBDaGFybGll.JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg', $jws1);
+        $this->assertEquals('eyJhbGciOiJIUzUxMiJ9..di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA', $jws2);
+        $this->assertEquals('eyJhbGciOiJSUzUxMiJ9..JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg', $jws3);
+
+        $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_2);
+        $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_3);
+    }
+
+    /**
+     *
+     */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -148,6 +167,25 @@ class SignerTest extends TestCase
     }
 
     /**
+     *
+     */
+    public function testCreateFlattenedJWSUsingFactory()
+    {
+        $jws0 = JWSFactory::createJWSToFlattenedJSON('Je suis Charlie', $this->getKey1(), ['alg' => 'HS512'], ['foo' => 'bar']);
+        $jws1 = JWSFactory::createJWSToFlattenedJSON('Je suis Charlie', $this->getKey2(), ['alg' => 'RS512'], ['plic' => 'ploc']);
+        $jws2 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Je suis Charlie', $this->getKey1(), $encoded_payload_2, ['alg' => 'HS512'], ['foo' => 'bar']);
+        $jws3 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Je suis Charlie', $this->getKey2(), $encoded_payload_3, ['alg' => 'RS512'], ['plic' => 'ploc']);
+
+        $this->assertEquals('{"payload":"SmUgc3VpcyBDaGFybGll","protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar"},"signature":"di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA"}', $jws0);
+        $this->assertEquals('{"payload":"SmUgc3VpcyBDaGFybGll","protected":"eyJhbGciOiJSUzUxMiJ9","header":{"plic":"ploc"},"signature":"JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg"}', $jws1);
+        $this->assertEquals('{"protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar"},"signature":"di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA"}', $jws2);
+        $this->assertEquals('{"protected":"eyJhbGciOiJSUzUxMiJ9","header":{"plic":"ploc"},"signature":"JFGAhEsQvMYOAfV5ShYK3Z_VS0Lz-jhwmucIudCT9gtSMdv1B4NTJfvuEnGkPnGCTW0j09eZxJSkT6-iU2YlyN22LD9nGuxCzBPLrz3JFETRNws77jfc2F7Jcc3MfCA5yhRbTZuyVL02LoQhOlgFvuUz9VaNuPCogarU3UxOgu1VPnrb2VMi6HCXHylmrSrQBrHShYtW0KEEkmN4X6HLtebnAuFIwhe8buy-aDURmFeqq2a6v92v69v1bqqZYA6YkOU5OzA-VLC8-MYM4ltFEUvGUPB3NGztg7r0QjImDdI5S13yV4IXsl6_XEgi3ilUXI1-tYgwZssSaRPdiOCBUg"}', $jws3);
+
+        $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_2);
+        $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_3);
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The algorithm "RS512" is allowed with this key.
      */
@@ -155,7 +193,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey5(),
@@ -171,7 +209,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['PS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey4(),
@@ -186,7 +224,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS(['baz', 'ban']);
+        $jws = JWSFactory::createEmptyJWS(['baz', 'ban']);
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -210,7 +248,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -244,7 +282,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey2(),
@@ -269,7 +307,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512'], $this->getLogger());
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
         $signer->addSignature(
             $jws,
             $this->getKey2(),
@@ -331,7 +369,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
-        $jws = JWSFactory::createJWS($this->getKeyset());
+        $jws = JWSFactory::createEmptyJWS($this->getKeyset());
         $signer->addSignature(
             $jws,
             $this->getKey1(),
@@ -364,7 +402,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
-        $jws = JWSFactory::createJWS($this->getKeyset());
+        $jws = JWSFactory::createEmptyJWS($this->getKeyset());
         $signer->addSignature(
             $jws,
             $this->getKey1(),

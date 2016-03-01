@@ -233,7 +233,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['RS256']);
 
@@ -275,7 +275,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWSWithDetachedPayload('Je suis Charlie', $encoded_payload);
+        $jws = JWSFactory::createEmptyJWSWithDetachedPayload('Je suis Charlie', $encoded_payload);
 
         $signer = SignerFactory::createSigner(['RS256']);
 
@@ -320,7 +320,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['RS384']);
 
@@ -363,7 +363,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['RS512']);
 
@@ -408,7 +408,7 @@ class RSASignatureTest extends TestCase
                 'qi'      => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['PS256']);
 
@@ -451,7 +451,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['PS384']);
 
@@ -493,7 +493,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWS('Je suis Charlie');
+        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
 
         $signer = SignerFactory::createSigner(['PS512']);
 

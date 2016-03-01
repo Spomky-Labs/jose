@@ -57,7 +57,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createJWS($payload);
+        $jws = JWSFactory::createEmptyJWS($payload);
         $signer = SignerFactory::createSigner(['HS256']);
         $signer->addSignature($jws, $key, $headers);
 
@@ -116,7 +116,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = JWSFactory::createEmptyJWSWithDetachedPayload($payload, $encoded_payload);
         $signer = SignerFactory::createSigner(['HS256']);
         $signer->addSignatureWithDetachedPayload($jws, $key, $encoded_payload, $headers);
 
@@ -178,7 +178,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createJWS($payload);
+        $jws = JWSFactory::createEmptyJWS($payload);
         $signer = SignerFactory::createSigner(['HS256']);
         $signer->addSignature($jws, $key, $protected_headers, $unprotected_headers);
 
@@ -231,7 +231,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createJWS($payload);
+        $jws = JWSFactory::createEmptyJWS($payload);
         $signer = SignerFactory::createSigner(['HS256']);
         $signer->addSignature($jws, $key, [], $unprotected_headers);
 
