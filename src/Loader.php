@@ -11,8 +11,16 @@
 
 namespace Jose;
 
+use Assert\Assertion;
+use Jose\Factory\DecrypterFactory;
+use Jose\Factory\VerifierFactory;
+use Jose\Object\JWKInterface;
+use Jose\Object\JWKSet;
+use Jose\Object\JWKSetInterface;
+use Jose\Object\JWSInterface;
 use Jose\Util\JWELoader;
 use Jose\Util\JWSLoader;
+use Psr\Log\LoggerInterface;
 
 /**
  * Class able to load JWS or JWE.
@@ -20,6 +28,59 @@ use Jose\Util\JWSLoader;
  */
 final class Loader implements LoaderInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
+    {
+        $jwk_set = new JWKSet();
+        $jwk_set = $jwk_set->addKey($jwk);
+
+        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    {
+        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
+    {
+        $jwk_set = new JWKSet();
+        $jwk_set = $jwk_set->addKey($jwk);
+
+        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
+    {
+        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    private static function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
+    {
+        $jwt = self::load($input);
+        Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
+        $verifier = VerifierFactory::createVerifier($allowed_algorithms, $logger);
+
+        $result = $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
+        Assertion::integer($result, 'Unable to verify or decrypt the input');
+
+        return $jwt;
+    }
+
     /**
      * {@inheritdoc}
      */

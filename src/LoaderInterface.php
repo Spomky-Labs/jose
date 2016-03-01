@@ -10,6 +10,9 @@
  */
 
 namespace Jose;
+use Jose\Object\JWKInterface;
+use Jose\Object\JWKSetInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Loader Interface.
@@ -26,4 +29,46 @@ interface LoaderInterface
      * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
      */
     public static function load($input);
+
+    /**
+     * @param string                        $input
+     * @param \Jose\Object\JWKInterface     $jwk
+     * @param string[]                      $allowed_algorithms
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
+     */
+    public static function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null);
+
+    /**
+     * @param string                        $input
+     * @param \Jose\Object\JWKSetInterface  $jwk_set
+     * @param string[]                      $allowed_algorithms
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
+     */
+    public static function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null);
+
+    /**
+     * @param string                        $input
+     * @param \Jose\Object\JWKInterface     $jwk
+     * @param string[]                      $allowed_algorithms
+     * @param string                        $detached_payload
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
+     */
+    public static function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null);
+
+    /**
+     * @param string                        $input
+     * @param \Jose\Object\JWKSetInterface  $jwk_set
+     * @param string[]                      $allowed_algorithms
+     * @param string                        $detached_payload
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
+     */
+    public static function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null);
 }

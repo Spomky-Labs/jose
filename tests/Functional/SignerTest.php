@@ -140,6 +140,16 @@ class SignerTest extends TestCase
 
         $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_2);
         $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_3);
+
+        $loaded_0 = Loader::loadAndVerifySignatureUsingKey($jws0, $this->getKey1(), ['HS512']);
+        $loaded_1 = Loader::loadAndVerifySignatureUsingKey($jws1, $this->getKey2(), ['RS512']);
+        $loaded_2 = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'SmUgc3VpcyBDaGFybGll');
+        $loaded_3 = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'SmUgc3VpcyBDaGFybGll');
+
+        $this->assertInstanceOf(JWSInterface::class, $loaded_0);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_1);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_2);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_3);
     }
 
     /**
@@ -183,6 +193,16 @@ class SignerTest extends TestCase
 
         $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_2);
         $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload_3);
+
+        $loaded_0 = Loader::loadAndVerifySignatureUsingKey($jws0, $this->getKey1(), ['HS512']);
+        $loaded_1 = Loader::loadAndVerifySignatureUsingKey($jws1, $this->getKey2(), ['RS512']);
+        $loaded_2 = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'SmUgc3VpcyBDaGFybGll');
+        $loaded_3 = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'SmUgc3VpcyBDaGFybGll');
+
+        $this->assertInstanceOf(JWSInterface::class, $loaded_0);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_1);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_2);
+        $this->assertInstanceOf(JWSInterface::class, $loaded_3);
     }
 
     /**
