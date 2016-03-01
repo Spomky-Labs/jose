@@ -65,18 +65,18 @@ final class Decrypter implements DecrypterInterface
     /**
      * {@inheritdoc}
      */
-    public function decryptUsingKey(JWEInterface &$jwe, JWKInterface $jwk)
+    public function decryptUsingKey(JWEInterface &$jwe, JWKInterface $jwk, &$recipient_index = null)
     {
         $jwk_set = new JWKSet();
         $jwk_set = $jwk_set->addKey($jwk);
 
-        return $this->decryptUsingKeySet($jwe, $jwk_set);
+        return $this->decryptUsingKeySet($jwe, $jwk_set, $recipient_index);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set)
+    public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set, &$recipient_index = null)
     {
         $this->log(LogLevel::DEBUG, 'Trying to decrypt the JWE.');
         $this->checkJWKSet($jwk_set);
@@ -88,11 +88,13 @@ final class Decrypter implements DecrypterInterface
 
         for ($i = 0; $i < $nb_recipients; $i++) {
             if (is_int($result = $this->decryptRecipientKey($jwe, $jwk_set, $i))) {
-                return $result;
+                $recipient_index = $result;
+
+                return true;
             }
         }
 
-        throw new \InvalidArgumentException('Unable to decrypt the JWE. Please verify the key or keyset used is correct');
+        return false;
     }
 
     /**

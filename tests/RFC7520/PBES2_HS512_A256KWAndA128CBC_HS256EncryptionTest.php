@@ -79,13 +79,13 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
         $decrypter = DecrypterFactory::createDecrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
@@ -165,10 +165,10 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
         $decrypter = DecrypterFactory::createDecrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
 

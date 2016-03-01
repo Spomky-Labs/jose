@@ -61,9 +61,10 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
@@ -91,9 +92,10 @@ class EncrypterTest extends TestCase
         $this->assertNull($loaded->getPayload());
 
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF']);
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
@@ -131,9 +133,10 @@ class EncrypterTest extends TestCase
         $this->assertNull($loaded->getPayload());
 
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF']);
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
@@ -171,9 +174,10 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeyToEncrypt(), new JWK($loaded->getPayload()));
     }
@@ -369,9 +373,10 @@ class EncrypterTest extends TestCase
         $this->assertEquals('DEF', $loaded->getSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
     }
@@ -492,9 +497,10 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKey($loaded, $this->getDirectKey());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_array($loaded->getPayload()));
         $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
     }
@@ -528,9 +534,10 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue($loaded->hasClaims());
         $this->assertTrue($loaded->hasClaim('user_id'));
         $this->assertEquals('1234', $loaded->getClaim('user_id'));
@@ -608,9 +615,10 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
@@ -650,9 +658,10 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
@@ -693,9 +702,10 @@ class EncrypterTest extends TestCase
         $this->assertFalse($loaded->hasSharedProtectedHeader('zip'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }

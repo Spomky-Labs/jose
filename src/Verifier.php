@@ -53,13 +53,13 @@ final class Verifier implements VerifierInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null)
+    public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null, &$recipient_index = null)
     {
         $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key', ['jws' => $jws, 'jwk' => $jwk, 'detached_payload' => $detached_payload]);
         $jwk_set = new JWKSet();
         $jwk_set = $jwk_set->addKey($jwk);
 
-        return $this->verifySignatures($jws, $jwk_set, $detached_payload);
+        return $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 
     /**
@@ -67,10 +67,10 @@ final class Verifier implements VerifierInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
+    public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
         $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key set', ['jwk' => $jws, 'jwk_set' => $jwk_set, 'detached_payload' => $detached_payload]);
-        return $this->verifySignatures($jws, $jwk_set, $detached_payload);
+        return $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 
     /**
@@ -106,10 +106,11 @@ final class Verifier implements VerifierInterface
      * @param \Jose\Object\JWSInterface    $jws
      * @param \Jose\Object\JWKSetInterface $jwk_set
      * @param string|null                  $detached_payload
+     * @param int|null                     $recipient_index
      *
-     * @return int
+     * @return bool
      */
-    private function verifySignatures(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null)
+    private function verifySignatures(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
         $this->checkPayload($jws, $detached_payload);
         $this->checkJWKSet($jwk_set);
@@ -122,11 +123,13 @@ final class Verifier implements VerifierInterface
             $result = $this->verifySignature($jws, $jwk_set, $signature, $detached_payload);
 
             if (true === $result) {
-                return $i;
+                $recipient_index = $i;
+
+                return true;
             }
         }
 
-        throw new \InvalidArgumentException('Unable to verify the JWS. Please verify the key or keyset used is correct.');
+        return false;
     }
 
     /**

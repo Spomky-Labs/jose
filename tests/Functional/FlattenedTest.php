@@ -36,9 +36,10 @@ class FlattenedTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 

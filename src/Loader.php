@@ -76,7 +76,7 @@ final class Loader implements LoaderInterface
         $verifier = VerifierFactory::createVerifier($allowed_algorithms, $logger);
 
         $result = $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
-        Assertion::integer($result, 'Unable to verify or decrypt the input');
+        Assertion::true($result, 'Unable to verify or decrypt the input');
 
         return $jwt;
     }

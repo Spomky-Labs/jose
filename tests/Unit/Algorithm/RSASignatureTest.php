@@ -532,9 +532,10 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 
@@ -555,9 +556,10 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128KW', $loaded->getRecipient(1)->getHeader('alg'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet());
+        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertEquals(0, $result);
+        $this->assertTrue($result);
+        $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
 
@@ -592,7 +594,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result->getSignature(1)->getProtectedHeader('alg'));
-        $this->assertEquals(0, $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $this->assertTrue($verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
     }
 
     /**

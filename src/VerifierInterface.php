@@ -27,10 +27,11 @@ interface VerifierInterface
      * @param \Jose\Object\JWSInterface $input            A JWS object.
      * @param \Jose\Object\JWKInterface $jwk              The signature will be verified using keys in the key set
      * @param null|string               $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
+     * @param null|int                  $recipient_index  If the JWS has been verified, an integer that represents the ID of the signature is set
      *
-     * @return false|int Return false if the JWS has not been verified, else an integer that represents the ID of the verified signature
+     * @return bool Return false if the JWS has not been verified, else true
      */
-    public function verifyWithKey(JWSInterface $input, JWKInterface $jwk, $detached_payload = null);
+    public function verifyWithKey(JWSInterface $input, JWKInterface $jwk, $detached_payload = null, &$recipient_index = null);
 
     /**
      * Verify the signature of the input.
@@ -39,8 +40,9 @@ interface VerifierInterface
      * @param \Jose\Object\JWSInterface    $input            A JWS object.
      * @param \Jose\Object\JWKSetInterface $jwk_set          The signature will be verified using keys in the key set
      * @param null|string                  $detached_payload If not null, the value must be the detached payload encoded in Base64 URL safe. If the input contains a payload, throws an exception.
+     * @param null|int                     $recipient_index  If the JWS has been verified, an integer that represents the ID of the signature is set
      *
-     * @return false|int Return false if the JWS has not been verified, else an integer that represents the ID of the verified signature
+     * @return bool Return false if the JWS has not been verified, else true
      */
-    public function verifyWithKeySet(JWSInterface $input, JWKSetInterface $jwk_set, $detached_payload = null);
+    public function verifyWithKeySet(JWSInterface $input, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null);
 }

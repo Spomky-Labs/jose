@@ -107,13 +107,13 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(1, $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(2, $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
@@ -226,13 +226,13 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertEquals(1, $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertEquals(2, $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
 
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
         $this->assertEquals($recipient_1_headers, $loaded_json->getRecipient(0)->getHeaders());

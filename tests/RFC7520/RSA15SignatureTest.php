@@ -80,12 +80,12 @@ class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertEquals(0, $verifer->verifyWithKey($loaded_compact_json, $private_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_compact_json, $private_key));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertEquals(0, $verifer->verifyWithKey($loaded_flattened_json, $private_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(0, $verifer->verifyWithKey($loaded_json, $private_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_json, $private_key));
     }
 }

@@ -113,9 +113,9 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
 
         $verifer = VerifierFactory::createVerifier(['RS256', 'ES512', 'HS256']);
 
-        $this->assertEquals(0, $verifer->verifyWithKey($jws, $rsa_private_key));
-        $this->assertEquals(1, $verifer->verifyWithKey($jws, $ecdsa_private_key));
-        $this->assertEquals(2, $verifer->verifyWithKey($jws, $symmetric_key));
+        $this->assertTrue($verifer->verifyWithKey($jws, $rsa_private_key));
+        $this->assertTrue($verifer->verifyWithKey($jws, $ecdsa_private_key));
+        $this->assertTrue($verifer->verifyWithKey($jws, $symmetric_key));
 
         /*
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.5
@@ -126,8 +126,8 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, $loaded_json->countSignatures());
 
-        $this->assertEquals(0, $verifer->verifyWithKey($loaded_json, $rsa_private_key));
-        $this->assertEquals(1, $verifer->verifyWithKey($loaded_json, $ecdsa_private_key));
-        $this->assertEquals(2, $verifer->verifyWithKey($loaded_json, $symmetric_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_json, $rsa_private_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_json, $ecdsa_private_key));
+        $this->assertTrue($verifer->verifyWithKey($loaded_json, $symmetric_key));
     }
 }

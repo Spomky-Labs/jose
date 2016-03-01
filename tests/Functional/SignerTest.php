@@ -286,16 +286,15 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
-        $this->assertEquals(0, $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
-        $this->assertEquals(1, $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
+        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Unable to verify the JWS. Please verify the key or keyset used is correct.
+     * 
      */
     public function testSignAndLoadWithWrongKeys()
     {
@@ -315,7 +314,7 @@ class SignerTest extends TestCase
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
 
-        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+        $this->assertFalse($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
     }
 
     /**
@@ -406,8 +405,8 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals($this->getKeyset(), new JWKSet($loaded->getPayload()));
-        $this->assertEquals(0, $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
-        $this->assertEquals(1, $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
+        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));

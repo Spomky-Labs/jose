@@ -61,10 +61,10 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
@@ -121,10 +121,10 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertEquals(0, $decrypter->decryptUsingKey($loaded_json, $private_key));
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
         $this->assertEquals($headers, $loaded_flattened_json->getSharedHeaders());
