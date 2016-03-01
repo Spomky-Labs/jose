@@ -1,16 +1,49 @@
 The JWE object
 ==============
 
-The JWE object is usually the output after a JWE string has been loaded.
+When you want to encrypt a payload (claims, key, message...), you will need to create a JWE object and add recipients.
 
-This object provides the same methods as [JWT](jwt.md) and is also immutable.
+A JWE object can be easily create using the `JWEFactory` provided by this library:
 
-Internally, the library uses the following methods:
+```php
+use Jose\Factory\JWEFactory;
 
-* `getCiphertext()`: Returns the cipher text as displayed in the serialization representation.
-* `getEncryptedKey()`: Returns the encrypted key as displayed in the serialization representation.
-* `getAAD()`: Returns the AAD as displayed in the serialization representation.
-* `getIV()`: Returns the IV as displayed in the serialization representation.
-* `getTag()`: Returns the tag as displayed in the serialization representation.
+$jwe = JWEFactory::createJWE(
+    'My important message',
+    [
+        'enc' => 'A256CBC-HS512',
+        'alg' => 'RSA-OAEP-256',
+        'zip' => 'DEF',
+    ]
+    );
+```
 
-Note that the methods `getPayload()`, `getClaims()`, `getClaim($key)` and `hasClaim($key)` are only available when the payload has been decrypted.
+The first parameter is the payload (in this exemple, this is a message).
+The second parameter is the shared protected header. This header indicates the key encryption algorithm ('RSA-OAEP-256'), the content encryption algorithm ('A256CBC-HS512') and that the payload is compressed before encryption using the method 'DEF' (deflate).
+
+The variable `$jwe` now contains an object that implements `Jose\Object\JWEInterface`.
+
+The methods available are:
+
+* `getPayload()`: Return the payload of the JWS.
+* `hasClaims()`: Return true if the payload is an array, else false.
+* `getClaims()`: Return all claims.
+* `hasClaim($key)`: Return true is the claim exists.
+* `getClaim($key)`: Return the claim. If it does not exist, an exception is thrown.
+* `countRecipients()`: Return the number of recipients
+* `getRecipients()`: Return the all recipients
+* `getRecipient($index)`: Return the recipient at the index `$index`
+* `getSharedProtectedHeaders()`: Return the shared protected headers
+* `withSharedProtectedHeaders(array $shared_protected_headers)`: Change the shared protected headers
+* `withSharedProtectedHeader($key, $value)`: Change the shared protected header at index `$index` with value `$value`
+* `getSharedProtectedHeader($key)`: Return the shared protected header at index `$index`
+* `hasSharedProtectedHeader($key)`: Return true if the shared protected header at index `$index` exists, else false
+* `getSharedHeaders()`: Return the shared headers
+* `withSharedHeaders(array $shared_headers)`: Change the shared headers
+* `withSharedHeader($key, $value)`: Change the shared header at index `$index` with value `$value`
+* `getSharedHeader($key)`: Return the shared header at index `$index`
+* `hasSharedHeader($key)`: Return true if the shared header at index `$index` exists, else false
+* `toCompactJSON($index)`: Return the compact JSON representation of the signature at index $index.
+* `toFlattenedJSON($index)`: Return the flattened JSON representation of the signature at index $index.
+* `toJSON()`: Return the general JSON representation of the JWS.
+
