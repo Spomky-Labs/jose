@@ -42,6 +42,8 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $tag = $cipher->getTag();
 
             return $cyphertext;
+        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_encrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag , $aad, 16);
         }
 
         list($cyphertext, $tag) = GCM::encrypt($cek, $iv, $data, $calculated_aad);
@@ -67,9 +69,21 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $plaintext = $cipher->decrypt($data, $cek, $iv);
 
             return $plaintext;
+        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_decrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag , $aad);
         }
 
         return GCM::decrypt($cek, $iv, $data, $calculated_aad, $tag);
+    }
+
+    /**
+     * @param string $k
+     *
+     * @return string
+     */
+    private function getMode($k)
+    {
+        return 'aes-'.(8 *  strlen($k)).'-gcm';
     }
 
     /**
