@@ -28,17 +28,21 @@ abstract class AESGCMKW implements KeyWrappingInterface
     public function wrapKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
+        $kek = Base64Url::decode($key->get('k'));
         $iv = StringUtil::generateRandomBytes(96 / 8);
         $additional_headers['iv'] = Base64Url::encode($iv);
 
         if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setAAD(null);
-            $encrypted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
+            $encrypted_cek = $cipher->encrypt($cek, $kek, $iv);
 
             $additional_headers['tag'] = Base64Url::encode($cipher->getTag());
+        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            $encrypted_cek = openssl_encrypt($cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag , null, 16);
+            $additional_headers['tag'] = Base64Url::encode($tag);
         } else {
-            list($encrypted_cek, $tag) = GCM::encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
+            list($encrypted_cek, $tag) = GCM::encrypt($kek, $iv, $cek, null);
             $additional_headers['tag'] = Base64Url::encode($tag);
         }
 
@@ -52,18 +56,34 @@ abstract class AESGCMKW implements KeyWrappingInterface
     {
         $this->checkKey($key);
         $this->checkAdditionalParameters($header);
+        
+        $kek = Base64Url::decode($key->get('k'));
+        $tag = Base64Url::decode($header['tag']);
+        $iv = Base64Url::decode($header['iv']);
 
         if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
-            $cipher->setTag(Base64Url::decode($header['tag']));
+            $cipher->setTag($tag);
             $cipher->setAAD(null);
 
-            $cek = $cipher->decrypt($encrypted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
+            $cek = $cipher->decrypt($encrypted_cek, $kek, $iv);
 
             return $cek;
+        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_decrypt($cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag , null);
         }
 
-        return GCM::decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encrypted_cek, null, Base64Url::decode($header['tag']));
+        return GCM::decrypt($kek, $iv, $encrypted_cek, null, $tag);
+    }
+
+    /**
+     * @param string $k
+     *
+     * @return string
+     */
+    private function getMode($k)
+    {
+        return 'aes-'.(8 *  strlen($k)).'-gcm';
     }
 
     /**
