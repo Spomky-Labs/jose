@@ -18,7 +18,7 @@ use Jose\Util\StringUtil;
 /**
  * Class PBES2AESKW.
  */
-abstract class PBES2AESKW implements KeyEncryptionInterface
+abstract class PBES2AESKW implements KeyWrappingInterface
 {
     /**
      * @var int
@@ -43,7 +43,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
+    public function wrapKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
         $this->checkHeaderAlgorithm($complete_headers);
@@ -65,7 +65,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
     /**
      * {@inheritdoc}
      */
-    public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
+    public function unwrapKey(JWKInterface $key, $encrypted_cek, array $header)
     {
         $this->checkKey($key);
         $this->checkHeaderAlgorithm($header);
@@ -79,7 +79,7 @@ abstract class PBES2AESKW implements KeyEncryptionInterface
 
         $derived_key = hash_pbkdf2($hash_algorithm, $password, $salt, $count, $key_size, true);
 
-        return $wrapper->unwrap($derived_key, $encryted_cek);
+        return $wrapper->unwrap($derived_key, $encrypted_cek);
     }
 
     /**

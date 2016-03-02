@@ -236,9 +236,9 @@ function dataSignaturePerformance()
 
 $environments = dataSignaturePerformance();
 
-print_r('#####################'.PHP_EOL);
-print_r('# PERFORMANCE TESTS #'.PHP_EOL);
-print_r('#####################'.PHP_EOL);
+print_r('###############################'.PHP_EOL);
+print_r('# SIGNATURE PERFORMANCE TESTS #'.PHP_EOL);
+print_r('###############################'.PHP_EOL);
 
 foreach($environments as $environment) {
     testSignaturePerformance($environment[0], $environment[1]);
@@ -248,4 +248,4 @@ foreach($environments as $environment) {
     testVerificationPerformance($environment[0], $environment[1]);
 }
 
-print_r('#####################'.PHP_EOL);
+print_r('###############################'.PHP_EOL);

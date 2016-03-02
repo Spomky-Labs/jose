@@ -21,13 +21,9 @@ use Jose\Util\StringUtil;
 abstract class AESKW implements KeyWrappingInterface
 {
     /**
-     * @param \Jose\Object\JWKInterface $key
-     * @param string                    $cek
-     * @param array                     $header
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function wrapKey(JWKInterface $key, $cek, array &$header)
+    public function wrapKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
         $wrapper = $this->getWrapper();
@@ -36,11 +32,7 @@ abstract class AESKW implements KeyWrappingInterface
     }
 
     /**
-     * @param \Jose\Object\JWKInterface $key
-     * @param string                    $encrypted_cek
-     * @param array                     $header
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
     public function unwrapKey(JWKInterface $key, $encrypted_cek, array $header)
     {

@@ -294,7 +294,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * 
+     *
      */
     public function testSignAndLoadWithWrongKeys()
     {

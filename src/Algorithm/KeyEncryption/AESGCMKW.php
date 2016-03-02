@@ -20,17 +20,12 @@ use Jose\Util\StringUtil;
 /**
  * Class AESGCMKW.
  */
-abstract class AESGCMKW implements KeyEncryptionInterface
+abstract class AESGCMKW implements KeyWrappingInterface
 {
     /**
-     * @param \Jose\Object\JWKInterface $key
-     * @param string                    $cek
-     * @param array                     $complete_headers
-     * @param array                     $additional_headers
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
+    public function wrapKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
         $iv = StringUtil::generateRandomBytes(96 / 8);
@@ -39,25 +34,21 @@ abstract class AESGCMKW implements KeyEncryptionInterface
         if (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setAAD(null);
-            $encryted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
+            $encrypted_cek = $cipher->encrypt($cek, Base64Url::decode($key->get('k')), $iv);
 
             $additional_headers['tag'] = Base64Url::encode($cipher->getTag());
         } else {
-            list($encryted_cek, $tag) = GCM::encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
+            list($encrypted_cek, $tag) = GCM::encrypt(Base64Url::decode($key->get('k')), $iv, $cek, null);
             $additional_headers['tag'] = Base64Url::encode($tag);
         }
 
-        return $encryted_cek;
+        return $encrypted_cek;
     }
 
     /**
-     * @param \Jose\Object\JWKInterface $key
-     * @param string                    $encryted_cek
-     * @param array                     $header
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function decryptKey(JWKInterface $key, $encryted_cek, array $header)
+    public function unwrapKey(JWKInterface $key, $encrypted_cek, array $header)
     {
         $this->checkKey($key);
         $this->checkAdditionalParameters($header);
@@ -67,12 +58,12 @@ abstract class AESGCMKW implements KeyEncryptionInterface
             $cipher->setTag(Base64Url::decode($header['tag']));
             $cipher->setAAD(null);
 
-            $cek = $cipher->decrypt($encryted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
+            $cek = $cipher->decrypt($encrypted_cek, Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']));
 
             return $cek;
         }
 
-        return GCM::decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encryted_cek, null, Base64Url::decode($header['tag']));
+        return GCM::decrypt(Base64Url::decode($key->get('k')), Base64Url::decode($header['iv']), $encrypted_cek, null, Base64Url::decode($header['tag']));
     }
 
     /**

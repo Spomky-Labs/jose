@@ -27,6 +27,10 @@ before_script:
 script:
     - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
     - php tests/Performance/SignaturePerformance.php
+    - php tests/Performance/KeyAgreementPerformance.php
+    - php tests/Performance/KeyAgreementWithKeyWrappingPerformance..php
+    - php tests/Performance/KeyWrappingPerformance.php
+    - php tests/Performance/KeyEncryptionPerformance.php.php
 
 after_success:
     - vendor/bin/coveralls --no-interaction

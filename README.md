@@ -89,10 +89,23 @@ This library supports unsecured `JWS` (`none` algorithm).
 **Unsecured `JWS` is something you probably do not want to use.**
 After you loaded data you received, you should verify that the algorithm used is not `none`.
 
-# Signature Performances
+# Performances
 
 Take a look on the test results performed by [Travis-CI](https://travis-ci.org/Spomky-Labs/jose).
 We added some tests to verify the performance of each algorithm.
+
+*Please note that the time per signature will be different on your platform.*
+
+The conclusions reached regarding these results are:
+
+* The HMAC signature performances are very good.
+* The RSA signature performances are good.
+* The ECC signature performances are very bad. This is due to the use of a pure PHP library.
+* The Key 
+
+**We do not recommend the use of ECC algorithms.**
+
+## Signature/Verification Performances
 
 Hereafter a table with all signature/verification test results.
 
@@ -111,19 +124,63 @@ Hereafter a table with all signature/verification test results.
 | ES256       | 119.703550 msec | 335.086281 msec |
 | ES384       | 201.914010 msec | 571.660171 msec |
 | ES512       | 316.626689 msec | 895.848720 msec |
-|-------------|-----------------|-----------------|
 
-*Please note that the time per signature will be different on your platform.*
+## Key Encryption Performances
 
-The conclusions reached regarding these results are:
+### Direct Key
 
-* The HMAC signature performances are very good.
-* The RSA signature performances are good.
-* The ECC signature performances are very bad. This is due to the use of a pure PHP library.
+Not tested as there is no ciphering process with this algorithm.
 
-**We do not recommend the use of ECC algorithms.**
+### Key Agreement
 
-# Encryption Performances
+|    Algorithm    |  Key Agreement  |
+|-----------------|-----------------|
+| ECDH-ES (P-256) | 196.068900 msec |
+| ECDH-ES (P-384) | N/A             |
+| ECDH-ES (P-521) | 568.323238 msec |
+
+### Key Agreement With Key Wrapping
+
+|    Algorithm           |  Wrapping       |    Unwrapping   |
+|------------------------|-----------------|-----------------|
+| ECDH-ES+A128KW (P-256) | 201.839530 msec | 210.227959 msec |
+| ECDH-ES+A128KW (P-384) | N/A             | N/A             |
+| ECDH-ES+A128KW (P-521) | 577.361839 msec | 580.698538 msec |
+| ECDH-ES+A192KW (P-256) | 221.429391 msec | 227.398269 msec |
+| ECDH-ES+A192KW (P-384) | N/A             | N/A             |
+| ECDH-ES+A192KW (P-521) | 591.375620 msec | 591.996751 msec |
+| ECDH-ES+A256KW (P-256) | 204.114299 msec | 220.426919 msec |
+| ECDH-ES+A256KW (P-384) | N/A             | N/A             |
+| ECDH-ES+A256KW (P-521) | 596.029930 msec | 572.769132 msec |
+
+### Key Wrapping
+
+|    Algorithm       |  Wrapping       |    Unwrapping   |
+|--------------------|-----------------|-----------------|
+| A128KW             |   2.684588 msec |   2.543530 msec |
+| A192KW             |   2.597601 msec |   2.532120 msec |
+| A256KW             |   2.644479 msec |   2.608180 msec |
+| A128GCMKW          |   0.022180 msec |   0.015359 msec |
+| A128GCMKW*         |   9.724200 msec |   8.727851 msec |
+| A192GCMKW          |   0.020292 msec |   0.014329 msec |
+| A192GCMKW*         |   9.288480 msec |   9.948759 msec |
+| A256GCMKW          |   0.020370 msec |   0.014551 msec |
+| A256GCMKW*         |   9.685671 msec |   8.994040 msec |
+| PBES2-HS256+A128KW |  12.351940 msec |  12.727599 msec |
+| PBES2-HS384+A192KW |  15.622742 msec |  16.451840 msec |
+| PBES2-HS512+A256KW |  15.600979 msec |  15.592752 msec |
+
+*(*) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+
+### Key Encryption
+
+|    Algorithm |  Encryption     |    Decryption   |
+|--------------|-----------------|-----------------|
+| RSA 1_5      |   1.056662 msec |   2.835732 msec |
+| RSA-OAEP     |   0.314999 msec |   2.594349 msec |
+| RSA-OAEP-256 |   0.320430 msec |   2.721188 msec |
+
+### Content Encryption
 
 To be written
 

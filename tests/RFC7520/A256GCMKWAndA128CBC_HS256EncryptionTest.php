@@ -133,6 +133,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+
         $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
 
         $loaded_json = Loader::load($jwe->toJSON());

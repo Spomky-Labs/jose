@@ -329,7 +329,7 @@ final class Encrypter implements EncrypterInterface
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $this->getEncryptedKeyFromKeyEncryptionAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key, $additional_headers);
         } elseif ($key_encryption_algorithm instanceof KeyWrappingInterface) {
-            return $this->getEncryptedKeyFromKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key);
+            return $this->getEncryptedKeyFromKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key, $additional_headers);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $this->getEncryptedKeyFromKeyAgreementAndKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
@@ -409,15 +409,17 @@ final class Encrypter implements EncrypterInterface
      * @param string                                             $cek
      * @param \Jose\Algorithm\KeyEncryption\KeyWrappingInterface $key_encryption_algorithm
      * @param \Jose\Object\JWKInterface                          $recipient_key
+     * @param array                                              $additional_headers
      *
      * @return string
      */
-    private function getEncryptedKeyFromKeyWrappingAlgorithm(array $complete_headers, $cek, KeyWrappingInterface $key_encryption_algorithm, JWKInterface $recipient_key)
+    private function getEncryptedKeyFromKeyWrappingAlgorithm(array $complete_headers, $cek, KeyWrappingInterface $key_encryption_algorithm, JWKInterface $recipient_key, &$additional_headers)
     {
         return $key_encryption_algorithm->wrapKey(
             $recipient_key,
             $cek,
-            $complete_headers
+            $complete_headers,
+            $additional_headers
         );
     }
 

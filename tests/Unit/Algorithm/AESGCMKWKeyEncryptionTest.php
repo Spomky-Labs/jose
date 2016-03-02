@@ -36,14 +36,13 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $aeskw = new A128GCMKW();
 
-        $additional_headers = [];
-        $wrapped_cek = $aeskw->encryptKey($key, $cek, $header, $additional_headers);
+        $wrapped_cek = $aeskw->wrapKey($key, $cek, $header, $header);
 
-        $this->assertTrue(array_key_exists('iv', $additional_headers));
-        $this->assertTrue(array_key_exists('tag', $additional_headers));
-        $this->assertNotNull($additional_headers['iv']);
-        $this->assertNotNull($additional_headers['tag']);
-        $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, array_merge($header, $additional_headers)));
+        $this->assertTrue(array_key_exists('iv', $header));
+        $this->assertTrue(array_key_exists('tag', $header));
+        $this->assertNotNull($header['iv']);
+        $this->assertNotNull($header['tag']);
+        $this->assertEquals($cek, $aeskw->unwrapKey($key, $wrapped_cek, $header));
     }
 
     /**
@@ -61,8 +60,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $aeskw = new A128GCMKW();
 
-        $additional_headers = [];
-        $aeskw->encryptKey($key, $cek, $header, $additional_headers);
+        $aeskw->wrapKey($key, $cek, $header, $header);
     }
 
     /**
@@ -81,7 +79,7 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $aeskw = new A128GCMKW();
 
-        $aeskw->decryptKey($key, $cek, $header);
+        $aeskw->unwrapKey($key, $cek, $header);
     }
 
     /**
@@ -99,14 +97,13 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $aeskw = new A192GCMKW();
 
-        $additional_headers = [];
-        $wrapped_cek = $aeskw->encryptKey($key, $cek, $header, $additional_headers);
+        $wrapped_cek = $aeskw->wrapKey($key, $cek, $header, $header);
 
-        $this->assertTrue(array_key_exists('iv', $additional_headers));
-        $this->assertTrue(array_key_exists('tag', $additional_headers));
-        $this->assertNotNull($additional_headers['iv']);
-        $this->assertNotNull($additional_headers['tag']);
-        $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, array_merge($header, $additional_headers)));
+        $this->assertTrue(array_key_exists('iv', $header));
+        $this->assertTrue(array_key_exists('tag', $header));
+        $this->assertNotNull($header['iv']);
+        $this->assertNotNull($header['tag']);
+        $this->assertEquals($cek, $aeskw->unwrapKey($key, $wrapped_cek, $header));
     }
 
     /**
@@ -124,13 +121,12 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $aeskw = new A256GCMKW();
 
-        $additional_headers = [];
-        $wrapped_cek = $aeskw->encryptKey($key, $cek, $header, $additional_headers);
+        $wrapped_cek = $aeskw->wrapKey($key, $cek, $header, $header);
 
-        $this->assertTrue(array_key_exists('iv', $additional_headers));
-        $this->assertTrue(array_key_exists('tag', $additional_headers));
-        $this->assertNotNull($additional_headers['iv']);
-        $this->assertNotNull($additional_headers['tag']);
-        $this->assertEquals($cek, $aeskw->decryptKey($key, $wrapped_cek, array_merge($header, $additional_headers)));
+        $this->assertTrue(array_key_exists('iv', $header));
+        $this->assertTrue(array_key_exists('tag', $header));
+        $this->assertNotNull($header['iv']);
+        $this->assertNotNull($header['tag']);
+        $this->assertEquals($cek, $aeskw->unwrapKey($key, $wrapped_cek, $header));
     }
 }
