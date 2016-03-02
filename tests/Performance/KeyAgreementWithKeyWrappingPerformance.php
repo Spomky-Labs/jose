@@ -182,9 +182,9 @@ function dataKeyAgreementWithKeyWrappingPerformance()
 
 $environments = dataKeyAgreementWithKeyWrappingPerformance();
 
-print_r('###################################'.PHP_EOL);
-print_r('# KEY AGREEMENT PERFORMANCE TESTS #'.PHP_EOL);
-print_r('###################################'.PHP_EOL);
+print_r('#####################################################'.PHP_EOL);
+print_r('# KEY AGREEMENT WITH KEY WRAPPING PERFORMANCE TESTS #'.PHP_EOL);
+print_r('#####################################################'.PHP_EOL);
 
 foreach($environments as $environment) {
     testKeyAgreementWithKeyWrappingEncryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
@@ -193,4 +193,4 @@ foreach($environments as $environment) {
     testKeyAgreementWithKeyWrappingDecryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
 }
 
-print_r('###################################'.PHP_EOL);
+print_r('#####################################################'.PHP_EOL);
