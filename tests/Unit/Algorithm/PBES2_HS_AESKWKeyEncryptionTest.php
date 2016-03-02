@@ -46,7 +46,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $wrapped_cek = Base64Url::decode('TrqXOwuNUfDV9VPTNbyGvEJ9JMjefAVn-TR1uIxR9p6hsRQh9Tk7BA');
 
-        $this->assertEquals($expected_cek, $pbes2->wrapKey($key, $wrapped_cek, $header, $header));
+        $this->assertEquals($expected_cek, $pbes2->unwrapKey($key, $wrapped_cek, $header));
     }
 
     /**
@@ -68,8 +68,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $pbes2 = new PBES2HS256A128KW();
         $encrypted_cek = $pbes2->wrapKey($key, $cek, $header, $header);
-        $this->assertTrue(isset($additional_headers['p2s']));
-        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertTrue(isset($header['p2s']));
+        $this->assertEquals(4096, $header['p2c']);
         $this->assertEquals($cek, $pbes2->unwrapKey($key, $encrypted_cek, $header));
     }
 
@@ -92,8 +92,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $pbes2 = new PBES2HS384A192KW();
         $encrypted_cek = $pbes2->wrapKey($key, $cek, $header, $header);
-        $this->assertTrue(isset($additional_headers['p2s']));
-        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertTrue(isset($header['p2s']));
+        $this->assertEquals(4096, $header['p2c']);
         $this->assertEquals($cek, $pbes2->unwrapKey($key, $encrypted_cek, $header));
     }
 
@@ -116,8 +116,8 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $pbes2 = new PBES2HS512A256KW();
         $encrypted_cek = $pbes2->wrapKey($key, $cek, $header, $header);
-        $this->assertTrue(isset($additional_headers['p2s']));
-        $this->assertEquals(4096, $additional_headers['p2c']);
+        $this->assertTrue(isset($header['p2s']));
+        $this->assertEquals(4096, $header['p2c']);
         $this->assertEquals($cek, $pbes2->unwrapKey($key, $encrypted_cek, $header));
     }
 
@@ -207,7 +207,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $wrapped_cek = Base64Url::decode('TrqXOwuNUfDV9VPTNbyGvEJ9JMjefAVn-TR1uIxR9p6hsRQh9Tk7BA');
 
-        $pbes2->wrapKey($key, $wrapped_cek, $header, $header);
+        $pbes2->unwrapKey($key, $wrapped_cek, $header);
     }
 
     /**
@@ -231,7 +231,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $wrapped_cek = Base64Url::decode('TrqXOwuNUfDV9VPTNbyGvEJ9JMjefAVn-TR1uIxR9p6hsRQh9Tk7BA');
 
-        $pbes2->wrapKey($key, $wrapped_cek, $header, $header);
+        $pbes2->unwrapKey($key, $wrapped_cek, $header);
     }
 
     /**
