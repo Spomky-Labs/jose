@@ -115,9 +115,9 @@ function dataKeyEncryptionPerformance()
 
 $environments = dataKeyEncryptionPerformance();
 
-print_r('###################################'.PHP_EOL);
-print_r('# KEY AGREEMENT PERFORMANCE TESTS #'.PHP_EOL);
-print_r('###################################'.PHP_EOL);
+print_r('####################################'.PHP_EOL);
+print_r('# KEY ENCRYPTION PERFORMANCE TESTS #'.PHP_EOL);
+print_r('####################################'.PHP_EOL);
 
 foreach($environments as $environment) {
     testKeyEncryptionPerformance($environment[0], $environment[1]);
@@ -126,4 +126,4 @@ foreach($environments as $environment) {
     testKeyDecryptionPerformance($environment[0], $environment[1]);
 }
 
-print_r('###################################'.PHP_EOL);
+print_r('####################################'.PHP_EOL);
