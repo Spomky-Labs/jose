@@ -37,9 +37,83 @@ The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unen
 
 > Note 1: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
 
-# Status of implementations
+# Provided Features
 
-[Please see this page](doc/Status.md).
+## Supported Input Types:
+
+* [x] Plain text
+* [x] Array
+* [x] JWTInterface object
+* [x] jwk+json content type (JWKInterface object)
+* [x] jwkset+json content type (JWKSetInterface object)
+* [x] Detached content
+
+## Supported Serialization Modes
+
+* [x] JSON Compact Serialization Overview (JWS/JWE creation and loading)
+* [x] JSON Flattened Serialization Overview (JWS/JWE creation and loading)
+* [x] JSON General Serialization Overview (JWS/JWE creation and loading)
+
+## Supported Compression Methods
+
+* [x] Deflate —DEF—
+* [x] GZip —GZ— *(this compression method is not described in the specification)*
+* [x] ZLib —ZLIB— *(this compression method is not described in the specification)*
+
+## Supported Key Types (JWK)
+
+* [x] None keys (`none`)
+* [x] Symmetric keys (`oct`)
+* [x] Asymmetric keys based on RSA keys (`RSA`)
+* [x] Asymmetric keys based on Elliptic Curves (`EC`)
+* [x] Asymmetric keys based on Octet Key Pair (`OKP`)
+* 
+JWK objects support JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
+
+## Key Sets (JWKSet)
+
+JWKSet is fully supported.
+
+## Supported Signature Algorithms
+
+* [x] HS256, HS384, HS512
+* [x] ES256, ES384, ES512
+* [x] RS256, RS384, RS512
+* [x] PS256, PS384, PS512
+* [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
+* [ ] Ed25519, Ed25519ph
+* [ ] Ed448, Ed448ph
+
+## Supported Key Encryption Algorithms
+
+* [x] dir
+* [x] RSA1_5
+* [x] RSA-OAEP
+* [x] RSA-OAEP-256
+* [x] ECDH-ES
+* [x] ECDH-ES+A128KW
+* [x] ECDH-ES+A192KW
+* [x] ECDH-ES+A256KW
+* [x] A128KW
+* [x] A192KW
+* [x] A256KW
+* [x] PBES2-HS256+A128KW
+* [x] PBES2-HS384+A192KW
+* [x] PBES2-HS512+A256KW
+* [x] A128GCMKW
+* [x] A192GCMKW
+* [x] A256GCMKW
+* [ ] X25519
+* [ ] X448
+
+## Supported Content Encryption Algorithms
+
+* [x] A128CBC-HS256
+* [x] A192CBC-HS384
+* [x] A256CBC-HS512
+* [x] A128GCM
+* [x] A192GCM
+* [x] A256GCM
 
 # The Release Process
 
@@ -83,14 +157,62 @@ composer require spomky-labs/jose --prefer-source
 
 # How to use
 
-Have a look at [How to use](doc/Use.md) to create or load your first JWT objects.
+## The Easiest Way To Create JWS/JWE
 
-# Unsecured JWS 
+The easiest way to create a JWS or JWE is to use our factories.
 
-This library supports unsecured `JWS` (`none` algorithm).
+### Signed JWT (JWS)
 
-**Unsecured `JWS` is something you probably do not want to use.**
-After you loaded data you received, you should verify that the algorithm used is not `none`.
+```php
+use Jose\Factory\JWKFactory;
+use Jose\Factory\JWSFactory;
+
+// We create our payload
+$payload = [
+    'exp' => time()+3600, // Expiration claim (expires in 3600 seconds)
+    'iat' => time(),      // Issued At claim
+    'nbf' => time(),      // Not Before claim
+    'aud' => 'My client', // Audience claim
+    'iss' => 'My Server', // Issuer claim
+    'sub' => 'My User',   // Subject claim
+    'root'=> true,        // Custom claim
+];
+
+// We create our header
+$header = [
+    'cty' => 'JWT',
+    'alg' => 'RS512',
+];
+
+// We load our private key
+$jwk = JWKFactory::createFromKeyFile(/path/to/my/private.rsa.encrypted.key', 'Secret');
+
+// We create our JWS
+$jws = JWSFactory::createJWSToCompactJSON($payload, $jwk, $header);
+```
+
+### Encrypted JWT (JWE)
+
+```php
+use Jose\Factory\JWKFactory;
+use Jose\Factory\JWEFactory;
+
+// In this example, the payload will be the JWS created above
+
+// We create our header
+$header = [
+    'alg' => 'RSA1_5',
+    'enc' => 'A256GCM',
+];
+
+// We load the public key of the recipient
+$jwk = JWKFactory::createFromKeyFile(/path/to/my/public.rsa.key');
+
+// We create our JWE
+$jwe = JWEFactory::createJWEToCompactJSON($jws, $jwk, $header);
+```
+
+Have a look at [How to use](doc/Use.md) to load your JWT and to know all possibilities provided by this library.
 
 # Performances
 
