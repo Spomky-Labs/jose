@@ -48,11 +48,14 @@ The release process [is described here](doc/Release.md).
 # Prerequisites
 
 This library needs at least:
+* OpenSSL extension
 * ![PHP 5.5.9+](https://img.shields.io/badge/PHP-5.5.9%2B-ff69b4.svg).
 
 Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
 * For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only and `fgrosse/phpasn1` version `dev-compat/php5-5 as v1.3.1`).
+
+Please read performance test results concerning the ECC based algorithms. As the time needed to perform operation is very long compared to the other algorithms, we do not recommend their use.
 
 # Continuous Integration
 
@@ -161,16 +164,16 @@ Not tested as there is no ciphering process with this algorithm.
 | A192KW             |   2.597601 msec |   2.532120 msec |
 | A256KW             |   2.644479 msec |   2.608180 msec |
 | A128GCMKW          |   0.022180 msec |   0.015359 msec |
-| A128GCMKW*         |   9.724200 msec |   8.727851 msec |
+| A128GCMKW(1)       |   9.724200 msec |   8.727851 msec |
 | A192GCMKW          |   0.020292 msec |   0.014329 msec |
-| A192GCMKW*         |   9.288480 msec |   9.948759 msec |
+| A192GCMKW(1)       |   9.288480 msec |   9.948759 msec |
 | A256GCMKW          |   0.020370 msec |   0.014551 msec |
-| A256GCMKW*         |   9.685671 msec |   8.994040 msec |
+| A256GCMKW(1)       |   9.685671 msec |   8.994040 msec |
 | PBES2-HS256+A128KW |  12.351940 msec |  12.727599 msec |
 | PBES2-HS384+A192KW |  15.622742 msec |  16.451840 msec |
 | PBES2-HS512+A256KW |  15.600979 msec |  15.592752 msec |
 
-*(*) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+* (1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
 
 ### Key Encryption
 
