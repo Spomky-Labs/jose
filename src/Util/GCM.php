@@ -25,7 +25,7 @@ final class GCM
      */
     public static function encrypt($K, $IV, $P, $A)
     {
-        list($cipher, $J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
+        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
 
         $C = self::getGCTR($K, self::getInc(32, $J0), $P);
         $u = self::calcVector($C);
@@ -33,8 +33,6 @@ final class GCM
 
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
         $T = self::getMSB(128, self::getGCTR($K, $J0, $S));
-        mcrypt_generic_deinit($cipher);
-        mcrypt_module_close($cipher);
 
         return [$C, $T];
     }
@@ -50,7 +48,7 @@ final class GCM
      */
     public static function decrypt($K, $IV, $C, $A, $T)
     {
-        list($cipher, $J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
+        list($J0, $v, $a_len_padding, $H) = self::common($K, $IV, $A);
 
         $P = self::getGCTR($K, self::getInc(32, $J0), $C);
 
@@ -62,25 +60,15 @@ final class GCM
         $result = strcmp($T, $T1);
         Assertion::eq($result, 0);
 
-        mcrypt_generic_deinit($cipher);
-        mcrypt_module_close($cipher);
-
         return $P;
     }
 
     private static function common($K, $IV, $A)
     {
-        $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-        Assertion::notNull($cipher);
-
         $key_length = strlen($K) * 8;
         Assertion::inArray($key_length, [128, 192, 256]);
 
-        $iv = str_repeat("\0", 16);
-        $s = mcrypt_generic_init($cipher, $K, $iv);
-        Assertion::greaterOrEqualThan($s, 0);
-
-        $H = mcrypt_generic($cipher, str_repeat("\0", 16));
+        $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.(strlen($K)*8).'-ecb', $K, OPENSSL_NO_PADDING|OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);
 
         if ($iv_len == 96) {
@@ -97,7 +85,7 @@ final class GCM
         $v = self::calcVector($A);
         $a_len_padding = self::addPadding($A);
 
-        return [$cipher, $J0, $v, $a_len_padding, $H];
+        return [$J0, $v, $a_len_padding, $H];
     }
 
     /**
@@ -280,11 +268,6 @@ final class GCM
             return '';
         }
 
-        $cipher = mcrypt_module_open(MCRYPT_RIJNDAEL_128, '', MCRYPT_MODE_ECB, '');
-
-        $iv = str_repeat(chr(0), 16);  // initialize to 16 byte string of "0"s
-        mcrypt_generic_init($cipher, $K, $iv);
-
         $n = (int) ceil(self::getLength($X) / 128);
         $CB = [];
         $Y = [];
@@ -293,15 +276,13 @@ final class GCM
             $CB[$i] = self::getInc(32, $CB[$i - 1]);
         }
         for ($i = 1; $i < $n; $i++) {
-            $C = mcrypt_generic($cipher, $CB[$i]);
+            $C = openssl_encrypt($CB[$i], 'aes-'.(strlen($K)*8).'-ecb', $K, OPENSSL_NO_PADDING|OPENSSL_RAW_DATA);
             $Y[$i] = self::getBitXor(substr($X, ($i - 1) * 16, 16), $C);
         }
 
         $Xn = substr($X, ($n - 1) * 16);
-        $C = mcrypt_generic($cipher, $CB[$n]);
+        $C = openssl_encrypt($CB[$n], 'aes-'.(strlen($K)*8).'-ecb', $K, OPENSSL_NO_PADDING|OPENSSL_RAW_DATA);
         $Y[$n] = self::getBitXor($Xn, self::getMSB(self::getLength($Xn), $C));
-        mcrypt_generic_deinit($cipher);
-        mcrypt_module_close($cipher);
 
         return implode('', $Y);
     }
