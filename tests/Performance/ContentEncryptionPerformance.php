@@ -30,7 +30,7 @@ function testContentEncryptionPerformance(ContentEncryptionAlgorithmInterface $a
         'iat' => time(),
         'nbf' => time(),
     ]));
-    $data = StringUtil::generateRandomBytes(1024*100);
+    $data = StringUtil::generateRandomBytes(1024);
     $iv = StringUtil::generateRandomBytes($alg->getIVSize()/8);
     $cek = StringUtil::generateRandomBytes($alg->getCEKSize()/8);
     $aad = StringUtil::generateRandomBytes(128);
@@ -55,9 +55,9 @@ function testContentDecryptionPerformance(ContentEncryptionAlgorithmInterface $a
         'iat' => time(),
         'nbf' => time(),
     ]));
-    $data = StringUtil::generateRandomBytes(1024*100);
-    $iv = StringUtil::generateRandomBytes($alg->getIVSize());
-    $cek = StringUtil::generateRandomBytes($alg->getCEKSize());
+    $data = StringUtil::generateRandomBytes(1024);
+    $iv = StringUtil::generateRandomBytes($alg->getIVSize()/8);
+    $cek = StringUtil::generateRandomBytes($alg->getCEKSize()/8);
     $aad = StringUtil::generateRandomBytes(128);
     $encrypted_content = $alg->encryptContent($data, $cek, $iv, $aad, $header, $tag);
     $nb = 100;

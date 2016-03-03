@@ -58,7 +58,7 @@ final class GCM
         $S = self::getHash($H, $A.str_pad('', $v / 8, "\0").$C.str_pad('', $u / 8, "\0").$a_len_padding.$c_len_padding);
         $T1 = self::getMSB(self::getLength($T), self::getGCTR($K, $J0, $S));
         $result = strcmp($T, $T1);
-        Assertion::eq($result, 0);
+        Assertion::eq($result, 0, 'Unable to decrypt or to verify the tag.');
 
         return $P;
     }
@@ -66,7 +66,7 @@ final class GCM
     private static function common($K, $IV, $A)
     {
         $key_length = strlen($K) * 8;
-        Assertion::inArray($key_length, [128, 192, 256]);
+        Assertion::inArray($key_length, [128, 192, 256], 'Bad key length.');
 
         $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.(strlen($K)*8).'-ecb', $K, OPENSSL_NO_PADDING|OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);
@@ -75,7 +75,7 @@ final class GCM
             $J0 = $IV.pack('H*', '00000001');
         } else {
             $s = self::calcVector($IV);
-            Assertion::eq(($s + 64) % 8, 0);
+            Assertion::eq(($s + 64) % 8, 0, 'Unable to decrypt or to verify the tag.');
 
             $packed_iv_len = pack('N', $iv_len);
             $iv_len_padding = str_pad($packed_iv_len, 8, "\0", STR_PAD_LEFT);
