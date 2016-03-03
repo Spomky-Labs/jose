@@ -29,7 +29,7 @@ script:
 
 after_success:
     - vendor/bin/coveralls --no-interaction
-    - php tests/Performance/SignaturePerformance.php || true
-    - php tests/Performance/KeyWrappingPerformance.php || true
-    - php tests/Performance/KeyEncryptionPerformance.php || true
-    - php tests/Performance/ContentEncryptionPerformance.php || true
+    - php tests/Performance/SignaturePerformance.php
+    - php tests/Performance/KeyWrappingPerformance.php
+    - php tests/Performance/KeyEncryptionPerformance.php
+    - php tests/Performance/ContentEncryptionPerformance.php
