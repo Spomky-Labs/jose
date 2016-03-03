@@ -48,13 +48,13 @@ function testContentEncryptionPerformance(ContentEncryptionAlgorithmInterface $a
 
 function testContentDecryptionPerformance(ContentEncryptionAlgorithmInterface $alg)
 {
-    $header = Base64Url::encode([
+    $header = Base64Url::encode(json_encode([
         'alg' => 'A128GCM',
         'enc' => $alg->getAlgorithmName(),
         'exp' => time()+3600,
         'iat' => time(),
         'nbf' => time(),
-    ]);
+    ]));
     $data = StringUtil::generateRandomBytes(1024*100);
     $iv = StringUtil::generateRandomBytes($alg->getIVSize());
     $cek = StringUtil::generateRandomBytes($alg->getCEKSize());
