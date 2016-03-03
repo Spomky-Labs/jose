@@ -27,8 +27,6 @@ final class StringUtil
             return random_bytes($size);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             return openssl_random_pseudo_bytes($size);
-        } elseif (function_exists('mcrypt_create_iv')) {
-            return mcrypt_create_iv($size);
         }
         throw new \RuntimeException('Unable to create random bytes.');
     }

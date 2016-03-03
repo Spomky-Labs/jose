@@ -34,3 +34,4 @@ after_success:
     - php tests/Performance/KeyAgreementWithKeyWrappingPerformance.php
     - php tests/Performance/KeyWrappingPerformance.php
     - php tests/Performance/KeyEncryptionPerformance.php
+    - php tests/Performance/ContentEncryptionPerformance.php

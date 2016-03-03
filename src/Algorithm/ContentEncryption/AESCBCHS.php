@@ -12,7 +12,6 @@
 namespace Jose\Algorithm\ContentEncryption;
 
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use Jose\Util\StringUtil;
 
 /**
  *
@@ -26,7 +25,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
     {
         $k = substr($cek, strlen($cek) / 2);
 
-        $cyphertext = AESOpenSSL::encrypt($data, $k, $iv);
+        $cyphertext = openssl_encrypt($data, $this->getMode($k), $k, OPENSSL_RAW_DATA, $iv);
 
         $tag = $this->calculateAuthenticationTag($cyphertext, $cek, $iv, $aad, $encoded_protected_header);
 
@@ -52,7 +51,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
 
         $k = substr($cek, strlen($cek) / 2);
 
-        return AESOpenSSL::decrypt($data, $k, $iv);
+        return openssl_decrypt($data, self::getMode($k), $k, OPENSSL_RAW_DATA, $iv);
     }
 
     /**
@@ -110,5 +109,15 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
     public function getIVSize()
     {
         return 128;
+    }
+
+    /**
+     * @param string $k
+     *
+     * @return string
+     */
+    private function getMode($k)
+    {
+        return 'aes-'.(8 *  strlen($k)).'-cbc';
     }
 }
