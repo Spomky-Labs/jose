@@ -77,12 +77,14 @@ JWKSet is fully supported.
 ## Supported Signature Algorithms
 
 * [x] HS256, HS384, HS512
-* [x] ES256, ES384, ES512
+* [x] ES256, ES384, ES512 (third party library needed)
 * [x] RS256, RS384, RS512
 * [x] PS256, PS384, PS512
 * [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
-* [ ] Ed25519, Ed25519ph
-* [ ] Ed448, Ed448ph
+* [x] Ed25519 (third party extension needed)
+* [ ] Ed25519ph
+* [ ] Ed448
+* [ ] Ed448ph
 
 ## Supported Key Encryption Algorithms
 
@@ -90,19 +92,19 @@ JWKSet is fully supported.
 * [x] RSA1_5
 * [x] RSA-OAEP
 * [x] RSA-OAEP-256
-* [x] ECDH-ES
-* [x] ECDH-ES+A128KW
-* [x] ECDH-ES+A192KW
-* [x] ECDH-ES+A256KW
+* [x] ECDH-ES (third party library needed)
+* [x] ECDH-ES+A128KW (third party library needed)
+* [x] ECDH-ES+A192KW (third party library needed)
+* [x] ECDH-ES+A256KW (third party library needed)
 * [x] A128KW
 * [x] A192KW
 * [x] A256KW
 * [x] PBES2-HS256+A128KW
 * [x] PBES2-HS384+A192KW
 * [x] PBES2-HS512+A256KW
-* [x] A128GCMKW
-* [x] A192GCMKW
-* [x] A256GCMKW
+* [x] A128GCMKW (third party extension recommended)
+* [x] A192GCMKW (third party extension recommended)
+* [x] A256GCMKW (third party extension recommended)
 * [ ] X25519
 * [ ] X448
 
@@ -111,9 +113,9 @@ JWKSet is fully supported.
 * [x] A128CBC-HS256
 * [x] A192CBC-HS384
 * [x] A256CBC-HS512
-* [x] A128GCM
-* [x] A192GCM
-* [x] A256GCM
+* [x] A128GCM (third party extension recommended)
+* [x] A192GCM (third party extension recommended)
+* [x] A256GCM (third party extension recommended)
 
 # The Release Process
 
@@ -128,6 +130,7 @@ This library needs at least:
 Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
 * For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only and `fgrosse/phpasn1` version `dev-compat/php5-5 as v1.3.1`).
+* For Ed25519 algorithm: [php-ed25519-ext](https://github.com/encedo/php-ed25519-ext) required
 
 Please read performance test results concerning the ECC based algorithms. As the time needed to perform operation is very long compared to the other algorithms, we do not recommend their use.
 
@@ -249,6 +252,7 @@ Hereafter a table with all signature/verification test results.
 | ES256       | 119.703550 msec | 335.086281 msec |
 | ES384       | 201.914010 msec | 571.660171 msec |
 | ES512       | 316.626689 msec | 895.848720 msec |
+| Ed25519     |   0.042379 msec |   0.109930 msec |
 
 ## Key Encryption Performances
 
@@ -266,7 +270,7 @@ Not tested as there is no ciphering process with this algorithm.
 
 ### Key Agreement With Key Wrapping
 
-|    Algorithm           |  Wrapping       |    Unwrapping   |
+|    Algorithm           |    Wrapping     |    Unwrapping   |
 |------------------------|-----------------|-----------------|
 | ECDH-ES+A128KW (P-256) | 201.839530 msec | 210.227959 msec |
 | ECDH-ES+A128KW (P-384) | N/A             | N/A             |
@@ -280,7 +284,7 @@ Not tested as there is no ciphering process with this algorithm.
 
 ### Key Wrapping
 
-|    Algorithm       |  Wrapping       |    Unwrapping   |
+|    Algorithm       |    Wrapping     |    Unwrapping   |
 |--------------------|-----------------|-----------------|
 | A128KW             |   2.684588 msec |   2.543530 msec |
 | A192KW             |   2.597601 msec |   2.532120 msec |
@@ -295,11 +299,11 @@ Not tested as there is no ciphering process with this algorithm.
 | PBES2-HS384+A192KW |  15.622742 msec |  16.451840 msec |
 | PBES2-HS512+A256KW |  15.600979 msec |  15.592752 msec |
 
-* (1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+*(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
 
 ### Key Encryption
 
-|    Algorithm |  Encryption     |    Decryption   |
+|    Algorithm |   Encryption    |    Decryption   |
 |--------------|-----------------|-----------------|
 | RSA 1_5      |   1.056662 msec |   2.835732 msec |
 | RSA-OAEP     |   0.314999 msec |   2.594349 msec |
@@ -307,7 +311,19 @@ Not tested as there is no ciphering process with this algorithm.
 
 ### Content Encryption
 
-To be written
+|    Algorithm  |   Encryption    |    Decryption   |
+|---------------|-----------------|-----------------|
+| A128CBC-HS256 |   0.070095 msec |   0.034094 msec |
+| A192CBC-HS384 |   0.031948 msec |   0.025988 msec |
+| A256CBC-HS512 |   0.025034 msec |   0.012875 msec |
+| A128GCM       |   0.070095 msec |   0.034094 msec |
+| A128GCM(1)    |  67.502975 msec |  57.278872 msec |
+| A192GCM       |   0.070095 msec |   0.034094 msec |
+| A192GCM(1)    |  64.872026 msec |  64.872026 msec |
+| A256GCM       |   0.070095 msec |   0.034094 msec |
+| A256GCM(1)    |  61.682940 msec |  57.463884 msec |
+
+*(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
 
 # Contributing
 

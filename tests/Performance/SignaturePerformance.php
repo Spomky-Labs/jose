@@ -14,6 +14,7 @@ include_once __DIR__.'/../../vendor/autoload.php';
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
+use Jose\Algorithm\Signature\Ed25519;
 use Jose\Algorithm\Signature\HS256;
 use Jose\Algorithm\Signature\HS384;
 use Jose\Algorithm\Signature\HS512;
@@ -229,6 +230,15 @@ function dataSignaturePerformance()
             new None(),
             new JWK([
                 'kty' => 'none',
+            ]),
+        ],
+        [
+            new Ed25519(),
+            new JWK([
+                'kty' => 'OKP',
+                'crv' => 'Ed25519',
+                'd' => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+                'x' => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
             ]),
         ],
     ];
