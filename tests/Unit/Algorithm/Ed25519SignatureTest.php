@@ -31,6 +31,10 @@ class Ed25519SignatureTest extends TestCase
      */
     public function testEd25519VerifyAlgorithm()
     {
+        if (!function_exists('ed25519_sign')) {
+            $this->markTestSkipped('Ed25519 extension not available');
+        }
+
         $key = new JWK([
             'kty' => 'OKP',
             'crv' => 'Ed25519',
@@ -50,6 +54,10 @@ class Ed25519SignatureTest extends TestCase
      */
     public function testEd25519SignAndVerifyAlgorithm()
     {
+        if (!function_exists('ed25519_sign')) {
+            $this->markTestSkipped('Ed25519 extension not available');
+        }
+
         $key = new JWK([
             'kty' => 'OKP',
             'crv' => 'Ed25519',
