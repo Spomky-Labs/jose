@@ -33,10 +33,9 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWSWithDetachedPayload($this->getKey3(), $payload);
-        $signer->addSignature(
-            $jws,
-            $this->getKey1()
-        );
+        $jws = $jws->addSignature($this->getKey1());
+
+        $signer->sign($jws);
     }
 
     /**
@@ -48,10 +47,9 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS($this->getKey3());
-        $signer->addSignature(
-            $jws,
-            $this->getKey1()
-        );
+        $jws = $jws->addSignature($this->getKey1());
+
+        $signer->sign($jws);
     }
 
     /**
@@ -63,11 +61,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS($this->getKey3());
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'foo']
         );
+
+        $signer->sign($jws);
     }
 
     /**
@@ -78,16 +77,16 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS($this->getKey3());
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $this->assertEquals(2, $jws->countSignatures());
 
@@ -107,16 +106,16 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $this->assertEquals(2, $jws->countSignatures());
         $this->assertEquals('eyJhbGciOiJIUzUxMiJ9.SmUgc3VpcyBDaGFybGll.di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA', $jws->toCompactJSON(0));
@@ -160,16 +159,16 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $this->assertEquals(2, $jws->countSignatures());
         $this->assertEquals('{"payload":"SmUgc3VpcyBDaGFybGll","protected":"eyJhbGciOiJIUzUxMiJ9","signature":"di3mwSN9cb9OTIJ-V53TMlX6HiCZQnvP9uFTCF4NPXOnPsmH_M74vIUr3O_jpkII1Bim6aUZVlzmhwfsUpAazA"}', $jws->toFlattenedJSON(0));
@@ -214,11 +213,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey5(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
     }
 
     /**
@@ -230,11 +230,12 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['PS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey4(),
             ['alg' => 'PS512']
         );
+
+        $signer->sign($jws);
     }
 
     /**
@@ -245,12 +246,13 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS(['baz', 'ban']);
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
 
@@ -269,17 +271,17 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
 
@@ -302,11 +304,12 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
 
@@ -327,11 +330,12 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
 
@@ -389,17 +393,17 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createEmptyJWS($this->getKeyset());
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
         $this->assertEquals(2, $loaded->countSignatures());
@@ -422,17 +426,17 @@ class SignerTest extends TestCase
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createEmptyJWS($this->getKeyset());
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
+
+        $signer->sign($jws);
 
         $loaded = Loader::load($jws->toJSON());
         $this->assertEquals(2, $loaded->countSignatures());

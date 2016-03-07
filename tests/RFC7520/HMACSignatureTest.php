@@ -58,8 +58,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = $jws->addSignature($key, $headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, $headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -117,8 +119,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createEmptyJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = $jws->addSignature($key, $headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignatureWithDetachedPayload($jws, $key, $encoded_payload, $headers);
+        $signer->signWithDetachedPayload($jws, $encoded_payload);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -179,8 +183,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = $jws->addSignature($key, $protected_headers, $unprotected_headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, $protected_headers, $unprotected_headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -232,8 +238,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = $jws->addSignature($key, [], $unprotected_headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, [], $unprotected_headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 

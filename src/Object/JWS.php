@@ -55,7 +55,7 @@ final class JWS implements JWSInterface
     /**
      * {@inheritdoc}
      */
-    public function getSignature($id)
+    public function &getSignature($id)
     {
         if (isset($this->signatures[$id])) {
             return $this->signatures[$id];
@@ -66,10 +66,18 @@ final class JWS implements JWSInterface
     /**
      * {@inheritdoc}
      */
-    public function addSignature(SignatureInterface $signature)
+    public function addSignature(JWKInterface $signature_key = null, array $protected_headers = [], array $headers = [], $signature = null)
     {
         $jws = clone $this;
-        $jws->signatures[] = $signature;
+
+        $object = new Signature();
+        if (null !== $signature_key) {
+            $object = $object->withSignatureKey($signature_key);
+        }
+        $object = $object->withProtectedHeaders($protected_headers);
+        $object = $object->withSignature($signature);
+        $object = $object->withHeaders($headers);
+        $jws->signatures[] = $object;
 
         return $jws;
     }

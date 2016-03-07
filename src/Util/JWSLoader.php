@@ -14,8 +14,6 @@ namespace Jose\Util;
 use Base64Url\Base64Url;
 use Jose\Object\JWS;
 use Jose\Object\JWSInterface;
-use Jose\Object\Signature;
-use Jose\Object\SignatureInterface;
 
 final class JWSLoader
 {
@@ -31,38 +29,42 @@ final class JWSLoader
         self::populatePayload($jws, $data);
 
         foreach ($data['signatures'] as $signature) {
-            $object = new Signature();
-            $object = $object->withSignature(Base64Url::decode($signature['signature']));
+            $bin_signature = Base64Url::decode($signature['signature']);
+            $protected_headers = self::getProtectedHeaders($signature);
+            $headers = self::getHeaders($signature);
 
-            self::populateProtectedHeaders($object, $signature);
-            self::populateHeaders($object, $signature);
-
-            $jws = $jws->addSignature($object);
+            $jws = $jws->addSignature(null, $protected_headers, $headers, $bin_signature);
         }
 
         return $jws;
     }
 
     /**
-     * @param \Jose\Object\SignatureInterface $signature
-     * @param array                           $data
+     * @param array $data
+     *
+     * @return array
      */
-    private static function populateProtectedHeaders(SignatureInterface &$signature, array $data)
+    private static function getProtectedHeaders(array $data)
     {
         if (array_key_exists('protected', $data)) {
-            $signature = $signature->withEncodedProtectedHeaders($data['protected']);
+            return json_decode(Base64Url::decode($data['protected']), true);
         }
+
+        return [];
     }
 
     /**
-     * @param \Jose\Object\SignatureInterface $signature
-     * @param array                           $data
+     * @param array $data
+     *
+     * @return array
      */
-    private static function populateHeaders(SignatureInterface &$signature, array $data)
+    private static function getHeaders(array $data)
     {
         if (array_key_exists('header', $data)) {
-            $signature = $signature->withHeaders($data['header']);
+            return $data['header'];
         }
+
+        return [];
     }
 
     /**

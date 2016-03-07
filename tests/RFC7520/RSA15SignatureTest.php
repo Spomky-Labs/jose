@@ -60,8 +60,10 @@ class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = $jws->addSignature($private_key, $headers);
+
         $signer = SignerFactory::createSigner(['RS256']);
-        $signer->addSignature($jws, $private_key, $headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['RS256']);
 

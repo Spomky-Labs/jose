@@ -39,6 +39,11 @@ final class Signature implements SignatureInterface
     private $signature;
 
     /**
+     * @var \Jose\Object\JWKInterface
+     */
+    private $signature_key;
+
+    /**
      * {@inheritdoc}
      */
     public function getProtectedHeaders()
@@ -65,43 +70,13 @@ final class Signature implements SignatureInterface
     /**
      * {@inheritdoc}
      */
-    public function withEncodedProtectedHeaders($encoded_protected_headers)
-    {
-        $signature = clone $this;
-        $signature->encoded_protected_headers = $encoded_protected_headers;
-        if (empty($encoded_protected_headers)) {
-            $signature->protected_headers = [];
-        } else {
-            $decoded = json_decode(Base64Url::decode($encoded_protected_headers), true);
-            if (!is_array($decoded)) {
-                throw new \InvalidArgumentException('The argument does not contain valid encoded protected headers.');
-            }
-            $signature->protected_headers = $decoded;
-        }
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function withProtectedHeaders(array $protected_headers)
     {
         $signature = clone $this;
         $signature->protected_headers = $protected_headers;
-        $signature->encoded_protected_headers = Base64Url::encode(json_encode($signature->protected_headers));
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withProtectedHeader($key, $value)
-    {
-        $signature = clone $this;
-        $signature->protected_headers[$key] = $value;
-        $signature->encoded_protected_headers = Base64Url::encode(json_encode($signature->protected_headers));
+        if (!empty($protected_headers)) {
+            $signature->encoded_protected_headers = Base64Url::encode(json_encode($signature->protected_headers));
+        }
 
         return $signature;
     }
@@ -189,6 +164,27 @@ final class Signature implements SignatureInterface
     {
         $signature = clone $this;
         $signature->signature = $values;
+
+        return $signature;
+    }
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function getSignatureKey()
+    {
+        return $this->signature_key;
+    }
+
+    /**
+     * @param \Jose\Object\JWKInterface $signature_key
+     *
+     * @return \Jose\Object\SignatureInterface
+     */
+    public function withSignatureKey(JWKInterface $signature_key)
+    {
+        $signature = clone $this;
+        $signature->signature_key = $signature_key;
 
         return $signature;
     }

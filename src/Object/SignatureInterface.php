@@ -19,6 +19,18 @@ namespace Jose\Object;
 interface SignatureInterface
 {
     /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function getSignatureKey();
+
+    /**
+     * @param \Jose\Object\JWKInterface $signature_key
+     *
+     * @return \Jose\Object\SignatureInterface
+     */
+    public function withSignatureKey(JWKInterface $signature_key);
+
+    /**
      * The protected header associated with the signature.
      *
      * @internal
@@ -26,17 +38,6 @@ interface SignatureInterface
      * @return null|string
      */
     public function getEncodedProtectedHeaders();
-
-    /**
-     * Set the encoded protected headers associated with the signature.
-     *
-     * @internal
-     *
-     * @param string $encoded_protected_headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withEncodedProtectedHeaders($encoded_protected_headers);
 
     /**
      * The protected header associated with the signature.
@@ -53,16 +54,6 @@ interface SignatureInterface
      * @return \Jose\Object\SignatureInterface
      */
     public function withProtectedHeaders(array $protected_headers);
-
-    /**
-     * Set the protected header.
-     *
-     * @param string     $key
-     * @param mixed|null $value
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withProtectedHeader($key, $value);
 
     /**
      * Returns the value of the protected header of the specified key.

@@ -21,18 +21,12 @@ interface SignerInterface
 {
     /**
      * @param \Jose\Object\JWSInterface $jws
-     * @param \Jose\Object\JWKInterface $key
      * @param null|string               $detached_payload
-     * @param array                     $protected_headers
-     * @param array                     $headers
      */
-    public function addSignatureWithDetachedPayload(JWSInterface &$jws, JWKInterface $key, $detached_payload, array $protected_headers = [], array $headers = []);
+    public function signWithDetachedPayload(JWSInterface &$jws, $detached_payload);
 
     /**
      * @param \Jose\Object\JWSInterface $jws
-     * @param \Jose\Object\JWKInterface $key
-     * @param array                     $protected_headers
-     * @param array                     $headers
      */
-    public function addSignature(JWSInterface &$jws, JWKInterface $key, array $protected_headers = [], array $headers = []);
+    public function sign(JWSInterface &$jws);
 }

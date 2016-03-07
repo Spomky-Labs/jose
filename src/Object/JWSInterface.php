@@ -28,13 +28,14 @@ interface JWSInterface extends JWTInterface
     public function countSignatures();
 
     /**
-     * @param \Jose\Object\SignatureInterface $signature
-     *
-     * @internal
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
+     * @param array                     $headers
+     * @param string|null               $signature
      *
      * @return \Jose\Object\JWSInterface
      */
-    public function addSignature(SignatureInterface $signature);
+    public function addSignature(JWKInterface $signature_key, array $protected_headers = [], array $headers = [], $signature = null);
 
     /**
      * Returns the signature associated with the JWS.

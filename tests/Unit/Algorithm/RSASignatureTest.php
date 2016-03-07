@@ -237,8 +237,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['RS256']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS256',
@@ -247,7 +246,10 @@ class RSASignatureTest extends TestCase
                     'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                     'e'   => 'AQAB',
                 ],
-            ]);
+            ]
+        );
+
+        $signer->sign($jws);
 
         $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.j8Ixg1CtPKdjn_nQbzRuFfX2I5i13uOLXDW1bPDMG4glp9ZW7mBi5_8ISnir-JVl93MpveppJo2adN_YkmmQjAgIYBgqO64Z1ltvjT5BwtS54SXCV4_YQDK-Tgy-IM6oG-T7zRz1GL_HowkkcUs9TenmakP3EDHL3MOsK6yo2HKhXgTvQ3ud0zKacdo4RQ_OQBoAle3Dr2rnTBVaF_4YRem2YrdFMzOHN9Luo7RxQJQcQTv99KTUNGih5mZug4k6W4YZPHi9lWfqzSTrlhKnnIc-EkecSsgjgWJzXjH2JQkd5rlKLWB96Al1iGjiGmsanmqcnETjnYZQAK0Hy73Lgw', $jws->toCompactJSON(0));
         $result = Loader::load($jws->toCompactJSON(0));
@@ -279,10 +281,8 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['RS256']);
 
-        $signer->addSignatureWithDetachedPayload(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
-            $encoded_payload,
             [
                 'alg' => 'RS256',
                 'jwk' => [
@@ -292,6 +292,8 @@ class RSASignatureTest extends TestCase
                 ],
             ]
         );
+
+        $signer->signWithDetachedPayload($jws, $encoded_payload);
 
         $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0..j8Ixg1CtPKdjn_nQbzRuFfX2I5i13uOLXDW1bPDMG4glp9ZW7mBi5_8ISnir-JVl93MpveppJo2adN_YkmmQjAgIYBgqO64Z1ltvjT5BwtS54SXCV4_YQDK-Tgy-IM6oG-T7zRz1GL_HowkkcUs9TenmakP3EDHL3MOsK6yo2HKhXgTvQ3ud0zKacdo4RQ_OQBoAle3Dr2rnTBVaF_4YRem2YrdFMzOHN9Luo7RxQJQcQTv99KTUNGih5mZug4k6W4YZPHi9lWfqzSTrlhKnnIc-EkecSsgjgWJzXjH2JQkd5rlKLWB96Al1iGjiGmsanmqcnETjnYZQAK0Hy73Lgw', $jws->toCompactJSON(0));
         $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload);
@@ -324,8 +326,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['RS384']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS384',
@@ -336,6 +337,8 @@ class RSASignatureTest extends TestCase
                 ],
             ]
         );
+
+        $signer->sign($jws);
 
         $this->assertEquals('eyJhbGciOiJSUzM4NCIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.hITAAg42Vdp6y-3TdaCU939bMNgN4XlJ0YDKrCgexIvqYPorMjLEnldMnq-0-Xp4T7CrXJd_2Abbv1216gqRGwmtXIeWXWaZ8jaEejtdiRIAsxN2HLCDdX8ofmXMzvJC0uO4MP6hAgxBpDtL2Czc37kh4D7b8hHIvaXq0RbtP2fF62Db9mMJijjDLmxzWaElAcr8ks49aI-xfXgKnDw7LxVKjnEbjQubHnrbqsaonGagWc2SwDPzMrRebCplcf1UAv0daGXj4KZoL00grT-fpUyDYTFlH4ihuCHSFyo7_EmVFSfttaa8OcBo7xKOPrrc1hZw8GzkA5QHLFPaWERBmg', $jws->toCompactJSON(0));
         $result = Loader::load($jws->toCompactJSON(0));
@@ -367,8 +370,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['RS512']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS512',
@@ -379,6 +381,8 @@ class RSASignatureTest extends TestCase
                 ],
             ]
         );
+
+        $signer->sign($jws);
 
         $this->assertEquals('eyJhbGciOiJSUzUxMiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.iOFHV9kmm5Sx6fVhSLpoJRUnfGftKLO8QKvG6b1yiUGg8EPolw4uKcF7e9jlNFPSkB_oF8vTLkdIXQ-ux7VIfVwV5XocU7--tWP69UqfqLcBpVe01TNeKBXE82uILYoo599LiLE-pLIM0nXjD43KVUv7_D2jJ5xd2TJdfdgU-3CLFit-5wiJ_ut1hByX_YT7KZwM6soIBoqedfPfe99mlENJ1FbqNuK9weQQeotKU4EvOFVMRRm4ZAAZHWcimUfLIJmH3pcOL0p4LXj93rJtHkUzK1XZGkff1WQkCq_6GTToPhhC8xRO8uV2np3NFxQuPNx6fBkJsQjWGGum0d3MOA', $jws->toCompactJSON(0));
 
@@ -412,8 +416,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['PS256']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS256',
@@ -424,7 +427,9 @@ class RSASignatureTest extends TestCase
                     'e'       => 'AQAB',
                 ],
             ]
-    );
+        );
+
+        $signer->sign($jws);
 
         $result = Loader::load($jws->toCompactJSON(0));
 
@@ -455,8 +460,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['PS384']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS384',
@@ -467,6 +471,8 @@ class RSASignatureTest extends TestCase
                 ],
             ]
         );
+
+        $signer->sign($jws);
 
         $result = Loader::load($jws->toCompactJSON(0));
 
@@ -497,8 +503,7 @@ class RSASignatureTest extends TestCase
 
         $signer = SignerFactory::createSigner(['PS512']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS512',
@@ -509,6 +514,8 @@ class RSASignatureTest extends TestCase
                 ],
             ]
         );
+
+        $signer->sign($jws);
 
         $result = Loader::load($jws->toCompactJSON(0));
 

@@ -67,11 +67,11 @@ class NoneSignatureTest extends TestCase
             'kty' => 'none',
         ]);
 
-        $signer = SignerFactory::createSigner(['none']);
-
         $jws = \Jose\Factory\JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = $jws->addSignature($jwk, ['alg' => 'none']);
 
-        $signer->addSignature($jws, $jwk, ['alg' => 'none']);
+        $signer = SignerFactory::createSigner(['none']);
+        $signer->sign($jws);
 
         $this->assertEquals(1, $jws->countSignatures());
 

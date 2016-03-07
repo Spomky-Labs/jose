@@ -26,8 +26,6 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
 {
     public function testMultipleSignatures()
     {
-        $signer = SignerFactory::createSigner(['RS256', 'ES512', 'HS256']);
-
         /*
          * Payload,
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.1
@@ -53,8 +51,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.2
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $rsa_private_key,
             [
                 'alg' => 'RS256',
@@ -78,8 +75,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.3
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $ecdsa_private_key,
             [],
             [
@@ -100,14 +96,16 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.4
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $symmetric_key,
             [
                 'alg' => 'HS256',
                 'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
             ]
         );
+
+        $signer = SignerFactory::createSigner(['RS256', 'ES512', 'HS256']);
+        $signer->sign($jws);
 
         $this->assertEquals(3, $jws->countSignatures());
 
