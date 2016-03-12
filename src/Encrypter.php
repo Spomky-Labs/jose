@@ -79,6 +79,9 @@ final class Encrypter implements EncrypterInterface
         // Content Encryption Algorithm
         $content_encryption_algorithm = $this->findContentEncryptionAlgorithm($complete_headers);
 
+        // Compression Method (if any)
+        $compression_method = $this->getCompressionMethod($complete_headers);
+
         // We check keys (usage and algorithm if restrictions are set)
         $this->checkKeys($key_encryption_algorithm, $content_encryption_algorithm, $recipient_key, $sender_key);
 
@@ -125,18 +128,18 @@ final class Encrypter implements EncrypterInterface
         if (null === $jwe->getCiphertext()) {
             // the content is not yet encrypted (no recipient)
 
-            $this->encryptJWE($jwe, $complete_headers, $content_encryption_algorithm);
+            $this->encryptJWE($jwe, $content_encryption_algorithm, $compression_method);
         }
     }
 
     /**
      * @param \Jose\Object\JWEInterface                           $jwe
-     * @param array                                               $complete_headers
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Compression\CompressionInterface|null         $compression_method
      */
     private function encryptJWE(JWEInterface &$jwe,
-                                array $complete_headers,
-                                ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+                                ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
+                                CompressionInterface $compression_method = null
     ) {
         if (!empty($jwe->getSharedProtectedHeaders())) {
             $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
@@ -144,7 +147,7 @@ final class Encrypter implements EncrypterInterface
 
         // We encrypt the payload and get the tag
         $tag = null;
-        $payload = $this->preparePayload($jwe->getPayload(), $complete_headers);
+        $payload = $this->preparePayload($jwe->getPayload(), $compression_method);
 
         $ciphertext = $content_encryption_algorithm->encryptContent(
             $payload,
@@ -255,18 +258,18 @@ final class Encrypter implements EncrypterInterface
         $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
 
         $supported_key_management_mode_combinations = [
-            $agree.$enc   => true,
-            $agree.$wrap  => true,
-            $dir.$enc     => true,
-            $dir.$wrap    => true,
             $enc.$enc     => true,
             $enc.$wrap    => true,
             $wrap.$enc    => true,
             $wrap.$wrap   => true,
             $agree.$agree => false,
             $agree.$dir   => false,
+            $agree.$enc   => false,
+            $agree.$wrap  => false,
             $dir.$agree   => false,
             $dir.$dir     => false,
+            $dir.$enc     => false,
+            $dir.$wrap    => false,
             $enc.$agree   => false,
             $enc.$dir     => false,
             $wrap.$agree  => false,
@@ -281,28 +284,41 @@ final class Encrypter implements EncrypterInterface
     }
 
     /**
-     * @param string $payload
-     * @param array  $complete_headers
+     * @param string                                      $payload
+     * @param \Jose\Compression\CompressionInterface|null $compression_method
      *
      * @return string
      */
-    private function preparePayload($payload, array $complete_headers)
+    private function preparePayload($payload, CompressionInterface $compression_method = null)
     {
         $prepared = is_string($payload) ? $payload : json_encode($payload);
 
         Assertion::notNull($prepared, 'The payload is empty or cannot encoded into JSON.');
 
-        if (!array_key_exists('zip', $complete_headers)) {
+        if (null === $compression_method) {
             return $prepared;
+        }
+        $compressed_payload = $compression_method->compress($prepared);
+        Assertion::string($compressed_payload, 'Compression failed.');
+
+        return $compressed_payload;
+    }
+
+    /**
+     * @param array $complete_headers
+     *
+     * @return \Jose\Compression\CompressionInterface|null
+     */
+    private function getCompressionMethod(array $complete_headers)
+    {
+        if (!array_key_exists('zip', $complete_headers)) {
+            return;
         }
 
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($complete_headers['zip']);
         Assertion::isInstanceOf($compression_method, CompressionInterface::class, sprintf('Compression method "%s" not supported', $complete_headers['zip']));
 
-        $compressed_payload = $compression_method->compress($prepared);
-        Assertion::string($compressed_payload, 'Compression failed.');
-
-        return $compressed_payload;
+        return $compression_method;
     }
 
     /**
