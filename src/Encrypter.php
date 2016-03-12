@@ -85,6 +85,7 @@ final class Encrypter implements EncrypterInterface
         // We check keys (usage and algorithm if restrictions are set)
         $this->checkKeys($key_encryption_algorithm, $content_encryption_algorithm, $recipient_key, $sender_key);
 
+        $additional_headers = [];
         if (null !== $jwe->getCiphertext()) {
             Assertion::greaterThan($jwe->countRecipients(), 0, 'Invalid JWE. The payload is encrypted but no recipient is available.');
             Assertion::notNull($jwe->getContentEncryptionKey(), 'Unable to add a recipient. The JWE must be decrypted first.');
@@ -101,6 +102,7 @@ final class Encrypter implements EncrypterInterface
                 $complete_headers,
                 $key_encryption_algorithm,
                 $content_encryption_algorithm,
+                $additional_headers,
                 $recipient_key,
                 $sender_key
             );
@@ -118,6 +120,7 @@ final class Encrypter implements EncrypterInterface
             $key_encryption_algorithm,
             $content_encryption_algorithm,
             $complete_headers,
+            $additional_headers,
             $recipient_headers,
             $recipient_key,
             $sender_key
@@ -211,18 +214,18 @@ final class Encrypter implements EncrypterInterface
      * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      * @param array                                               $complete_headers
+     * @param array                                               $additional_headers
      * @param array                                               $recipient_headers
      * @param \Jose\Object\JWKInterface                           $recipient_key
      * @param \Jose\Object\JWKInterface|null                      $sender_key
      *
      * @return \Jose\Object\RecipientInterface
      */
-    private function computeRecipient(JWEInterface $jwe, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array $complete_headers, array $recipient_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    private function computeRecipient(JWEInterface $jwe, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array $complete_headers, array &$additional_headers, array $recipient_headers, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         $recipient = new Recipient();
         $recipient = $recipient->withHeaders($recipient_headers);
 
-        $additional_headers = [];
         $encrypted_content_encryption_key = $this->getEncryptedKey(
             $complete_headers,
             $jwe->getContentEncryptionKey(),
@@ -340,9 +343,9 @@ final class Encrypter implements EncrypterInterface
             return $this->getEncryptedKeyFromKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $recipient_key, $additional_headers);
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $this->getEncryptedKeyFromKeyAgreementAndKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
-        } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            return $this->getEncryptedKeyFromKeyAgreementAlgorithm($complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key, $sender_key);
         }
+
+        // Using KeyAgreementInterface or DirectEncryptionInterface, the encrypted key is an empty string
     }
 
     /**
@@ -433,12 +436,13 @@ final class Encrypter implements EncrypterInterface
      * @param array                                               $complete_headers
      * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param array                                               $additional_header_values
      * @param \Jose\Object\JWKInterface                           $recipient_key
      * @param \Jose\Object\JWKInterface|null                      $sender_key
      *
      * @return string
      */
-    private function getCEK(array $complete_headers, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    private function getCEK(array $complete_headers, KeyEncryptionAlgorithmInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_header_values, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         if ($key_encryption_algorithm instanceof KeyEncryptionInterface) {
             return $this->createCEK($content_encryption_algorithm->getCEKSize());
@@ -447,7 +451,7 @@ final class Encrypter implements EncrypterInterface
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $this->createCEK($content_encryption_algorithm->getCEKSize());
         } elseif ($key_encryption_algorithm instanceof KeyAgreementInterface) {
-            return $this->calculateAgreementKey($complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $recipient_key, $sender_key);
+            return $this->calculateAgreementKey($complete_headers, $key_encryption_algorithm, $content_encryption_algorithm, $additional_header_values, $recipient_key, $sender_key);
         } elseif ($key_encryption_algorithm instanceof DirectEncryptionInterface) {
             return $key_encryption_algorithm->getCEK($recipient_key);
         } else {
@@ -490,16 +494,16 @@ final class Encrypter implements EncrypterInterface
      * @param array                                               $complete_headers
      * @param \Jose\Algorithm\KeyEncryption\KeyAgreementInterface $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param array                                               $additional_header_values
      * @param \Jose\Object\JWKInterface                           $recipient_key
      * @param \Jose\Object\JWKInterface|null                      $sender_key
      *
      * @return string
      */
-    private function calculateAgreementKey(array $complete_headers, KeyAgreementInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, JWKInterface $recipient_key, JWKInterface $sender_key = null)
+    private function calculateAgreementKey(array $complete_headers, KeyAgreementInterface $key_encryption_algorithm, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_header_values, JWKInterface $recipient_key, JWKInterface $sender_key = null)
     {
         Assertion::isInstanceOf($sender_key, JWKInterface::class, 'The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.');
 
-        $additional_header_values = [];
         $cek = $key_encryption_algorithm->getAgreementKey(
             $content_encryption_algorithm->getCEKSize(),
             $content_encryption_algorithm->getAlgorithmName(),
