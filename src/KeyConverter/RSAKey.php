@@ -11,6 +11,7 @@
 
 namespace Jose\KeyConverter;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use FG\ASN1\Universal\BitString;
 use FG\ASN1\Universal\Integer;
@@ -65,13 +66,10 @@ final class RSAKey extends Sequence
         if (false === $res) {
             $res = openssl_pkey_get_public($data);
         }
-        if (false === $res) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::false(false === $res, 'Unable to load the key');
+
         $details = openssl_pkey_get_details($res);
-        if (!array_key_exists('rsa', $details)) {
-            throw new \Exception('Unable to load the key');
-        }
+        Assertion::keyExists($details, 'rsa', 'Unable to load the key');
 
         $this->values['kty'] = 'RSA';
         $keys = [
@@ -97,9 +95,8 @@ final class RSAKey extends Sequence
      */
     private function loadJWK(array $jwk)
     {
-        if (!array_key_exists('kty', $jwk) || 'RSA' !== $jwk['kty']) {
-            throw new \InvalidArgumentException('JWK is not a RSA key');
-        }
+        Assertion::keyExists($jwk, 'kty', 'The key parameter "kty" is missing.');
+        Assertion::eq($jwk['kty'], 'RSA', 'The JWK is not a RSA key');
 
         $this->values = $jwk;
         if (array_key_exists('p', $jwk)) {

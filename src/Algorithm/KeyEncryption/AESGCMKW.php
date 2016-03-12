@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\Object\JWKInterface;
@@ -100,9 +101,8 @@ abstract class AESGCMKW implements KeyWrappingInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->get('kty') || !$key->has('k')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'oct', 'Wrong key type.');
+        Assertion::true($key->has('k'), 'The key parameter "k" is missing.');
     }
 
     /**
@@ -110,9 +110,8 @@ abstract class AESGCMKW implements KeyWrappingInterface
      */
     protected function checkAdditionalParameters(array $header)
     {
-        if (!array_key_exists('iv', $header) || !array_key_exists('tag', $header)) {
-            throw new \InvalidArgumentException("Missing parameters 'iv' or 'tag'.");
-        }
+        Assertion::keyExists($header, 'iv', 'Parameter "iv" is missing.');
+        Assertion::keyExists($header, 'tag', 'Parameter "tag" is missing.');
     }
 
     /**

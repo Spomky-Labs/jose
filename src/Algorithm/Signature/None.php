@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Assert\Assertion;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
@@ -42,9 +43,7 @@ final class None implements SignatureAlgorithmInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('none' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'none', 'Wrong key type.');
     }
 
     /**

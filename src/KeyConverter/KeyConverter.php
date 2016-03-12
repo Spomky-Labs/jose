@@ -11,6 +11,7 @@
 
 namespace Jose\KeyConverter;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use phpseclib\Crypt\RSA;
 
@@ -28,9 +29,7 @@ final class KeyConverter
      */
     public static function loadKeyFromCertificateFile($file)
     {
-        if (!file_exists($file)) {
-            throw new \InvalidArgumentException(sprintf('File "%s" does not exist.', $file));
-        }
+        Assertion::true(file_exists($file), sprintf('File "%s" does not exist.', $file));
         $content = file_get_contents($file);
 
         return self::loadKeyFromCertificate($content);
@@ -51,9 +50,8 @@ final class KeyConverter
             $certificate = self::convertDerToPem($certificate);
             $res = openssl_x509_read($certificate);
         }
-        if (false === $res) {
-            throw new \InvalidArgumentException('Unable to load the certificate');
-        }
+        Assertion::false(false === $res, 'Unable to load the certificate');
+
         $values = self::loadKeyFromX509Resource($res);
         openssl_x509_free($res);
 
@@ -156,14 +154,11 @@ final class KeyConverter
         if ($res === false) {
             $res = openssl_pkey_get_public($pem);
         }
-        if ($res === false) {
-            throw new \InvalidArgumentException('Unable to load the key');
-        }
+        Assertion::false($res === false, 'Unable to load the key');
 
         $details = openssl_pkey_get_details($res);
-        if (!is_array($details) || !array_key_exists('type', $details)) {
-            throw new \Exception('Unable to get details of the key');
-        }
+        Assertion::isArray($details, 'Unable to get details of the key');
+        Assertion::keyExists($details, 'type', 'Unable to get details of the key');
 
         switch ($details['type']) {
             case OPENSSL_KEYTYPE_EC:
@@ -236,9 +231,10 @@ final class KeyConverter
                 }
             }
         }
-        if (null === $last_issuer || json_encode($last_issuer) !== json_encode($last_subject)) {
-            throw new \InvalidArgumentException('Invalid certificate chain.');
-        }
+        Assertion::false(
+            null === $last_issuer || json_encode($last_issuer) !== json_encode($last_subject),
+            'Invalid certificate chain.'
+        );
 
         return self::loadKeyFromCertificate($certificate);
     }
@@ -310,9 +306,8 @@ final class KeyConverter
      */
     private static function decodePem($pem, array $matches, $password = null)
     {
-        if (null === $password) {
-            throw new \InvalidArgumentException('Password required for encrypted keys.');
-        }
+        Assertion::notNull($password, 'Password required for encrypted keys.');
+
         $iv = pack('H*', trim($matches[2]));
         $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
         $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
@@ -322,9 +317,8 @@ final class KeyConverter
         $decoded = openssl_decrypt($ciphertext, strtolower($matches[1]), $symkey, true, $iv);
 
         $number = preg_match_all('#-{5}.*-{5}#', $pem, $result);
-        if (2 !== $number) {
-            throw new \InvalidArgumentException('Unable to load the key');
-        }
+        Assertion::eq($number, 2, 'Unable to load the key');
+
         $pem = $result[0][0].PHP_EOL;
         $pem .= chunk_split(base64_encode($decoded), 64);
         $pem .= $result[0][1].PHP_EOL;

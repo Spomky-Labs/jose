@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Assert\Assertion;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWKInterface;
@@ -84,8 +85,6 @@ abstract class RSA implements SignatureAlgorithmInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'RSA' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'RSA', 'Wrong key type.');
     }
 }

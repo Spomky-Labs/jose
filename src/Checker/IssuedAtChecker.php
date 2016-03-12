@@ -11,6 +11,7 @@
 
 namespace Jose\Checker;
 
+use Assert\Assertion;
 use Jose\Object\JWTInterface;
 
 class IssuedAtChecker implements ClaimCheckerInterface
@@ -25,9 +26,7 @@ class IssuedAtChecker implements ClaimCheckerInterface
         }
 
         $iat = (int) $jwt->getClaim('iat');
-        if (time() < $iat) {
-            throw new \InvalidArgumentException('The JWT is issued in the futur.');
-        }
+        Assertion::lessOrEqualThan($iat, time(), 'The JWT is issued in the futur.');
 
         return ['iat'];
     }

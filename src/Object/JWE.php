@@ -11,6 +11,7 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 
 /**
@@ -97,9 +98,7 @@ final class JWE implements JWEInterface
      */
     public function getRecipient($id)
     {
-        if (!isset($this->recipients[$id])) {
-            throw new \InvalidArgumentException('The recipient does not exist.');
-        }
+        Assertion::keyExists($this->recipients, $id, 'The recipient does not exist.');
 
         return $this->recipients[$id];
     }
@@ -323,9 +322,7 @@ final class JWE implements JWEInterface
      */
     private function checkHasNoAAD()
     {
-        if (!empty($this->getAAD())) {
-            throw new \InvalidArgumentException('This JWE has AAD and cannot be converted into Compact JSON.');
-        }
+        Assertion::true(empty($this->getAAD()), 'This JWE has AAD and cannot be converted into Compact JSON.');
     }
 
     /**
@@ -333,9 +330,10 @@ final class JWE implements JWEInterface
      */
     private function checkRecipientHasNoHeaders($id)
     {
-        if (!empty($this->getSharedHeaders()) || !empty($this->getRecipient($id)->getHeaders())) {
-            throw new \InvalidArgumentException('This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.');
-        }
+        Assertion::true(
+            empty($this->getSharedHeaders()) && empty($this->getRecipient($id)->getHeaders()),
+            'This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.'
+        );
     }
 
     /**
@@ -343,9 +341,10 @@ final class JWE implements JWEInterface
      */
     private function checkHasSharedProtectedHeaders()
     {
-        if (empty($this->getSharedProtectedHeaders())) {
-            throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
-        }
+        Assertion::notEmpty(
+            $this->getSharedProtectedHeaders(),
+            'This JWE does not have shared protected headers and cannot be converted into Compact JSON.'
+        );
     }
 
     /**

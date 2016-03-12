@@ -44,7 +44,7 @@ class NoneSignatureTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testInvalidKey()
     {

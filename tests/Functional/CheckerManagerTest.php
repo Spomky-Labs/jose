@@ -68,7 +68,7 @@ class CheckerManagerTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Can not use this JWT yet.
+     * @expectedExceptionMessage The JWT can not be used yet.
      */
     public function testJWTNotNow()
     {

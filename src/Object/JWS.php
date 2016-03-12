@@ -11,6 +11,7 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 
 /**
@@ -37,9 +38,7 @@ final class JWS implements JWSInterface
             return Base64Url::encode($payload);
         }
         $encoded = json_encode($payload);
-        if (null === $encoded) {
-            throw new \InvalidArgumentException('Unsupported payload.');
-        }
+        Assertion::notNull($encoded, 'Unsupported payload.');
 
         return Base64Url::encode($encoded);
     }
@@ -97,9 +96,10 @@ final class JWS implements JWSInterface
     {
         $signature = $this->getSignature($id);
 
-        if (!empty($signature->getHeaders())) {
-            throw new \InvalidArgumentException('The signature contains unprotected headers and cannot be converted into compact JSON');
-        }
+        Assertion::true(
+            empty($signature->getHeaders()),
+            'The signature contains unprotected headers and cannot be converted into compact JSON'
+        );
 
         return sprintf(
             '%s.%s.%s',
@@ -138,9 +138,7 @@ final class JWS implements JWSInterface
      */
     public function toJSON()
     {
-        if (0 === $this->countSignatures()) {
-            throw new \BadMethodCallException('No signature.');
-        }
+        Assertion::greaterThan($this->countSignatures(), 0,'No signature.');
 
         $data = [];
         if (!empty($this->getEncodedPayload())) {

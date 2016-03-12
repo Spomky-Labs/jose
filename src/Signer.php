@@ -11,6 +11,7 @@
 
 namespace Jose;
 
+use Assert\Assertion;
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;
@@ -66,9 +67,8 @@ final class Signer implements SignerInterface
     public function sign(JWSInterface &$jws)
     {
         $this->log(LogLevel::INFO, 'Trying to sign the JWS object', ['jws' => $jws]);
-        if (null === $jws->getEncodedPayload()) {
-            throw new \InvalidArgumentException('No payload.');
-        }
+        Assertion::notNull($jws->getEncodedPayload(), 'No payload.');
+
         for ($i = 0; $i < $jws->countSignatures(); $i++) {
             $this->computeSignature($jws->getEncodedPayload(), $jws->getSignature($i));
         }
@@ -104,22 +104,18 @@ final class Signer implements SignerInterface
     private function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
         $this->log(LogLevel::DEBUG, 'Trying to find the algorithm used to sign');
-        if (!array_key_exists('alg', $complete_header)) {
-            $this->log(LogLevel::ERROR, 'No "alg" parameter set in the header');
-            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
-        }
+        Assertion::keyExists($complete_header, 'alg', 'No "alg" parameter set in the header.');
+
         $this->log(LogLevel::DEBUG, 'The algorithm is {alg}', ['alg' => $complete_header['alg']]);
 
-        if ($key->has('alg') && $key->get('alg') !== $complete_header['alg']) {
-            $this->log(LogLevel::ERROR, 'The algorithm {alg} is allowed with this key', ['alg' => $complete_header['alg']]);
-            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg']));
-        }
+        Assertion::false(
+            $key->has('alg') && $key->get('alg') !== $complete_header['alg'],
+            sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg'])
+        );
+
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
-        if (!$signature_algorithm instanceof SignatureAlgorithmInterface) {
-            $this->log(LogLevel::ERROR, 'The algorithm {alg} is not supported', ['alg' => $complete_header['alg']]);
-            throw new \InvalidArgumentException(sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));
-        }
+        Assertion::isInstanceOf($signature_algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));
 
         $this->log(LogLevel::DEBUG, 'The algorithm {alg} is supported', ['alg' => $complete_header['alg'], 'handler' => $signature_algorithm]);
 

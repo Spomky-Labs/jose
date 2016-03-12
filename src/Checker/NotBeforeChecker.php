@@ -11,6 +11,7 @@
 
 namespace Jose\Checker;
 
+use Assert\Assertion;
 use Jose\Object\JWTInterface;
 
 class NotBeforeChecker implements ClaimCheckerInterface
@@ -25,9 +26,7 @@ class NotBeforeChecker implements ClaimCheckerInterface
         }
 
         $nbf = (int) $jwt->getClaim('nbf');
-        if (time() < $nbf) {
-            throw new \InvalidArgumentException('Can not use this JWT yet.');
-        }
+        Assertion::lessOrEqualThan($nbf, time(), 'The JWT can not be used yet.');
 
         return ['nbf'];
     }

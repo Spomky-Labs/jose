@@ -11,6 +11,7 @@
 
 namespace Jose;
 
+use Assert\Assertion;
 use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\HasJWAManager;
@@ -137,10 +138,7 @@ final class Verifier implements VerifierInterface
      */
     private function checkSignatures(JWSInterface $jws)
     {
-        if (0 === $jws->countSignatures()) {
-            $this->log(LogLevel::ERROR, 'There is no signature in the JWS', ['jws' => $jws]);
-            throw new \InvalidArgumentException('The JWS does not contain any signature.');
-        }
+        Assertion::greaterThan($jws->countSignatures(), 0, 'The JWS does not contain any signature.');
         $this->log(LogLevel::INFO, 'The JWS contains {nb} signature(s)', ['nb' => $jws->countSignatures()]);
 
     }
@@ -150,10 +148,7 @@ final class Verifier implements VerifierInterface
      */
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
-        if (0 === count($jwk_set)) {
-            $this->log(LogLevel::ERROR, 'There is no key in the key set', ['jwk_set' => $jwk_set]);
-            throw new \InvalidArgumentException('No key in the key set.');
-        }
+        Assertion::greaterThan($jwk_set->countKeys(), 0, 'There is no key in the key set.');
         $this->log(LogLevel::INFO, 'The JWK Set contains {nb} key(s)', ['nb' => count($jwk_set)]);
     }
 
@@ -163,10 +158,10 @@ final class Verifier implements VerifierInterface
      */
     private function checkPayload(JWSInterface $jws, $detached_payload = null)
     {
-        if (null !== $detached_payload && !empty($jws->getEncodedPayload())) {
-            $this->log(LogLevel::ERROR, 'A detached payload is set, but the JWS already has a payload');
-            throw new \InvalidArgumentException('A detached payload is set, but the JWS already has a payload.');
-        }
+        Assertion::false(
+            null !== $detached_payload && !empty($jws->getEncodedPayload()),
+            'A detached payload is set, but the JWS already has a payload.'
+        );
     }
 
     /**
@@ -180,15 +175,11 @@ final class Verifier implements VerifierInterface
             $signature->getProtectedHeaders(),
             $signature->getHeaders()
         );
-        if (!array_key_exists('alg', $complete_headers)) {
-            $this->log(LogLevel::ERROR, 'No "alg" parameter set in the header.');
-            throw new \InvalidArgumentException('No "alg" parameter set in the header.');
-        }
+        Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header.');
 
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
-        if (!$algorithm instanceof SignatureAlgorithmInterface) {
-            throw new \RuntimeException(sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $complete_headers['alg']));
-        }
+        Assertion::isInstanceOf($algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $complete_headers['alg']));
+
 
         return $algorithm;
     }

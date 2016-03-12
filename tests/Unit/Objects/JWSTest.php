@@ -92,7 +92,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \BadMethodCallException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No signature.
      */
     public function testToJSONFailed()

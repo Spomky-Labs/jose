@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
@@ -43,9 +44,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
-        if (!$key->has('d')) {
-            throw new \InvalidArgumentException('The EC key is not private');
-        }
+        Assertion::true($key->has('d'), 'The EC key is not private');
 
         $p = $this->getGenerator();
         $d = $this->convertBase64ToDec($key->get('d'));
@@ -165,11 +164,9 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if ('EC' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
-        if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
-            throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
-        }
+        Assertion::eq($key->get('kty'), 'EC', 'Wrong key type.');
+        Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
+        Assertion::true($key->has('y'), 'The key parameter "y" is missing.');
+        Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 
 /**
@@ -30,9 +31,8 @@ final class JWK implements JWKInterface
      */
     public function __construct(array $values = [])
     {
-        if (!array_key_exists('kty', $values)) {
-            throw new \InvalidArgumentException('The parameter "kty" is mandatory.');
-        }
+        Assertion::keyExists($values, 'kty', 'The parameter "kty" is mandatory.');
+
         $this->values = $values;
     }
 
@@ -73,9 +73,7 @@ final class JWK implements JWKInterface
 
     public function thumbprint($hash_algorithm)
     {
-        if (false === in_array($hash_algorithm, hash_algos())) {
-            throw new \InvalidArgumentException(sprintf('Hash algorithm "%s" is not supported', $hash_algorithm));
-        }
+        Assertion::inArray($hash_algorithm, hash_algos(), sprintf('Hash algorithm "%s" is not supported', $hash_algorithm));
 
         $values = array_intersect_key($this->getAll(), array_flip(['kty', 'n', 'e', 'crv', 'x', 'y', 'k']));
         ksort($values);

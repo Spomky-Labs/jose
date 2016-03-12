@@ -321,7 +321,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The algorithm "RS512" is not supported or does not implement SignatureInterface.
      */
     public function testSignAndLoadWithUnsupportedAlgorithm()
@@ -418,7 +418,7 @@ class SignerTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage No key in the key set.
+     * @expectedExceptionMessage There is no key in the key set.
      */
     public function testKeySetIsEmpty()
     {

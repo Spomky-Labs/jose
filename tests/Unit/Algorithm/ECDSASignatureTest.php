@@ -26,7 +26,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testInvalidKey()
     {

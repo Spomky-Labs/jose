@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use Assert\Assertion;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWKInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
@@ -95,9 +96,7 @@ abstract class RSA implements KeyEncryptionInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if (!$key->has('kty') || 'RSA' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'RSA', 'Wrong key type.');
     }
 
     /**

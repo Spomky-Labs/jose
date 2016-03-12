@@ -11,6 +11,7 @@
 
 namespace Jose\Checker;
 
+use Assert\Assertion;
 use Jose\Object\JWTInterface;
 
 abstract class IssuerChecker implements ClaimCheckerInterface
@@ -25,9 +26,7 @@ abstract class IssuerChecker implements ClaimCheckerInterface
         }
 
         $issuer = $jwt->getClaim('iss');
-        if (!$this->isIssuerAllowed($issuer)) {
-            throw new \InvalidArgumentException(sprintf('The issuer "%s" is not allowed.', $issuer));
-        }
+        Assertion::true($this->isIssuerAllowed($issuer), sprintf('The issuer "%s" is not allowed.', $issuer));
 
         return ['iss'];
     }

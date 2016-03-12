@@ -210,7 +210,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage "epk" parameter missing
+     * @expectedExceptionMessage The header parameter "epk" is missing
      */
     public function testEPKParameterAreMissing()
     {
@@ -228,7 +228,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage "epk" parameter is not an array of parameter
+     * @expectedExceptionMessage The header parameter "epk" is not an array of parameter
      */
     public function testBadEPKParameter()
     {
@@ -247,7 +247,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key must be private
+     * @expectedExceptionMessage The key parameter "d" is missing.
      */
     public function testNotAPrivateKey()
     {
@@ -271,7 +271,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key type must be "EC"
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testNotAnECKey()
     {
@@ -293,7 +293,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Key components ("x", "y" or "crv") missing
+     * @expectedExceptionMessage The key parameter "x" is missing.
      */
     public function testECKeyHasMissingParameters()
     {

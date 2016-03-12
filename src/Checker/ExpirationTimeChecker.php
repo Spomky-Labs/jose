@@ -11,6 +11,7 @@
 
 namespace Jose\Checker;
 
+use Assert\Assertion;
 use Jose\Object\JWTInterface;
 
 class ExpirationTimeChecker implements ClaimCheckerInterface
@@ -25,9 +26,7 @@ class ExpirationTimeChecker implements ClaimCheckerInterface
         }
 
         $exp = (int) $jwt->getClaim('exp');
-        if (time() > $exp) {
-            throw new \InvalidArgumentException('The JWT has expired.');
-        }
+        Assertion::greaterThan($exp, time(), 'The JWT has expired.');
 
         return ['exp'];
     }

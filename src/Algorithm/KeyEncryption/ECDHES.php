@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
@@ -55,9 +56,7 @@ final class ECDHES implements KeyAgreementInterface
                 ],
             ]);
         }
-        if ($private_key->get('crv') !== $public_key->get('crv')) {
-            throw new \InvalidArgumentException('Curves are different');
-        }
+        Assertion::eq($private_key->get('crv'), $public_key->get('crv'), 'Curves are different');
 
         $agreed_key = $this->calculateAgreementKey($private_key, $public_key);
 
@@ -116,12 +115,9 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function getPublicKey(array $complete_header)
     {
-        if (!array_key_exists('epk', $complete_header)) {
-            throw new \InvalidArgumentException('"epk" parameter missing');
-        }
-        if (!is_array($complete_header['epk'])) {
-            throw new \InvalidArgumentException('"epk" parameter is not an array of parameter');
-        }
+        Assertion::keyExists($complete_header, 'epk', 'The header parameter "epk" is missing');
+        Assertion::isArray($complete_header['epk'], 'The header parameter "epk" is not an array of parameter');
+
         $public_key = new JWK($complete_header['epk']);
         $this->checkKey($public_key, false);
 
@@ -134,14 +130,13 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        if ('EC' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key type must be "EC"');
-        }
-        if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
-            throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
-        }
-        if (!$key->has('d') && true === $is_private) {
-            throw new \InvalidArgumentException('The key must be private');
+        Assertion::eq($key->get('kty'), 'EC', 'Wrong key type.');
+        Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
+        Assertion::true($key->has('y'), 'The key parameter "y" is missing.');
+        Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
+
+        if (true === $is_private) {
+            Assertion::true($key->has('d'), 'The key parameter "d" is missing.');
         }
     }
 
