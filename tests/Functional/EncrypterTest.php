@@ -183,7 +183,7 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage Compression method "FIP" not supported
      */
     public function testCompressionAlgorithmNotSupported()
@@ -446,7 +446,7 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The algorithm "RSA-OAEP-256" is not enabled or does not implement ContentEncryptionInterface.
      */
     public function testNotAContentEncryptionAlgorithm()
@@ -544,7 +544,7 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
      */
     public function testEncryptWithAgreementAlgorithm()
@@ -565,7 +565,7 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \RuntimeException
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
      */
     public function testEncryptWithAgreementKeyWrapAlgorithm()
