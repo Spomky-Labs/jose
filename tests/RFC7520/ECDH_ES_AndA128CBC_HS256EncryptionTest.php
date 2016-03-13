@@ -65,24 +65,25 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_compact_json->getIV()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_compact_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
 
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+
+        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }
 
@@ -92,6 +93,15 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
     public function testECDH_ES_AndA128CBC_HS256EncryptionBis()
     {
         $expected_payload = "You can trust us to stick with you through thick and thin\xe2\x80\x93to the bitter end. And you can trust us to keep any secret of yours\xe2\x80\x93closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.";
+
+        $public_key = new JWK([
+            'kty' => 'EC',
+            'kid' => 'meriadoc.brandybuck@buckland.example',
+            'use' => 'enc',
+            'crv' => 'P-256',
+            'x'   => 'Ze2loSV3wrroKUN_4zhwGhCqo3Xhu1td4QjeQ5wIVR0',
+            'y'   => 'HlLtdXARY_f55A3fnzQbPcm6hgr34Mp8p-nuzQCE0Zw',
+        ]);
 
         $private_key = new JWK([
             'kty' => 'EC',
@@ -114,16 +124,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->addRecipient(
             $jwe,
-            $private_key,
-            new JWK([ // We use the same key as the recipient
-                'kty' => 'EC',
-                'kid' => 'meriadoc.brandybuck@buckland.example',
-                'use' => 'enc',
-                'crv' => 'P-256',
-                'x'   => 'Ze2loSV3wrroKUN_4zhwGhCqo3Xhu1td4QjeQ5wIVR0',
-                'y'   => 'HlLtdXARY_f55A3fnzQbPcm6hgr34Mp8p-nuzQCE0Zw',
-                'd'   => 'r_kHyZ-a06rmxM3yESK84r1otSg-aQcVStkRhA-iCM8',
-            ])
+            $public_key
         );
 
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A128CBC-HS256']);

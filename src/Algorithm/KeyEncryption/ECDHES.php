@@ -13,6 +13,7 @@ namespace Jose\Algorithm\KeyEncryption;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
+use Jose\Factory\JWKFactory;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
 use Jose\Util\ConcatKDF;
@@ -40,13 +41,16 @@ final class ECDHES implements KeyAgreementInterface
     /**
      * {@inheritdoc}
      */
-    public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = [])
+    public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $recipient_key, array $complete_header = [], array &$additional_header_values = [])
     {
-        $this->checkKey($private_key, true);
-        if (null === $public_key) {
+        if ($recipient_key->has('d')) {
+            $this->checkKey($recipient_key, true);
+            $private_key = $recipient_key;
             $public_key = $this->getPublicKey($complete_header);
         } else {
-            $this->checkKey($public_key, false);
+            $this->checkKey($recipient_key, false);
+            $public_key = $recipient_key;
+            $private_key = JWKFactory::createRandomECPrivateKey($public_key->get('crv'));
             $additional_header_values = array_merge($additional_header_values, [
                 'epk' => [
                     'kty' => $private_key->get('kty'),
@@ -82,12 +86,11 @@ final class ECDHES implements KeyAgreementInterface
         $rec_y = $this->convertBase64ToDec($public_key->get('y'));
         $sen_d = $this->convertBase64ToDec($private_key->get('d'));
 
-        $private_key = $p->getPrivateKeyFrom($sen_d);
-
-        $public_key = $p->getPublicKeyFrom($rec_x, $rec_y);
+        $priv_key = $p->getPrivateKeyFrom($sen_d);
+        $pub_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
         $message = new MessageFactory($this->adapter);
-        $exchange = $private_key->createExchange($message, $public_key);
+        $exchange = $priv_key->createExchange($message, $pub_key);
 
         return $exchange->calculateSharedKey();
     }

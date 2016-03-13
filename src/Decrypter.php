@@ -196,7 +196,6 @@ final class Decrypter implements DecrypterInterface
                 $content_encryption_algorithm->getCEKSize(),
                 $content_encryption_algorithm->getAlgorithmName(),
                 $key,
-                null,
                 $complete_headers
             );
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {

@@ -152,6 +152,15 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
             'qi'  => 'kC-lzZOqoFaZCr5l0tOVtREKoVqaAYhQiqIRGL-MzS4sCmRkxm5vZlXYx6RtE1n_AagjqajlkjieGlxTTThHD8Iga6foGBMaAr5uR1hGQpSc7Gl7CF1DZkBJMTQN6EshYzZfxW08mIO8M6Rzuh0beL6fG9mkDcIyPrBXx2bQ_mM',
         ]);
 
+        $recipient_2_public_key = new JWK([
+            'kty' => 'EC',
+            'kid' => 'peregrin.took@tuckborough.example',
+            'use' => 'enc',
+            'crv' => 'P-384',
+            'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
+            'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
+        ]);
+
         $recipient_2_private_key = new JWK([
             'kty' => 'EC',
             'kid' => 'peregrin.took@tuckborough.example',
@@ -199,27 +208,16 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $encrypter->addRecipient(
             $jwe,
             $recipient_1_private_key,
-            null,
             $recipient_1_headers
         );
         $encrypter->addRecipient(
             $jwe,
-            $recipient_2_private_key,
-            new JWK([
-                'kty' => 'EC',
-                'kid' => 'peregrin.took@tuckborough.example',
-                'use' => 'enc',
-                'crv' => 'P-384',
-                'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
-                'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
-                'd'   => 'iTx2pk7wW-GqJkHcEkFQb2EFyYcO7RugmaW3mRrQVAOUiPommT0IdnYK2xDlZh-j',
-            ]),
+            $recipient_2_public_key,
             $recipient_2_headers
         );
         $encrypter->addRecipient(
             $jwe,
             $recipient_3_private_key,
-            null,
             $recipient_3_headers
         );
 

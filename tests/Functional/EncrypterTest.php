@@ -222,13 +222,11 @@ class EncrypterTest extends TestCase
         $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKeyWithAlgorithm(),
-            null,
             ['alg' => 'RSA-OAEP']
         );
         $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
-            null,
             ['alg' => 'RSA-OAEP-256']
         );
 
@@ -250,14 +248,12 @@ class EncrypterTest extends TestCase
         $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
 
         $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
-            null,
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
@@ -280,14 +276,12 @@ class EncrypterTest extends TestCase
         $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
 
         $encrypter->addRecipient(
             $jwe,
             $this->getDirectKey(),
-            null,
             ['kid' => 'DIR_1', 'alg' => 'dir']
         );
     }
@@ -522,8 +516,7 @@ class EncrypterTest extends TestCase
 
         $encrypter->addRecipient(
             $jwe,
-            $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey()
+            $this->getECDHRecipientPublicKey()
         );
 
         $loaded = Loader::load($jwe->toFlattenedJSON(0));
@@ -544,48 +537,6 @@ class EncrypterTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
-     */
-    public function testEncryptWithAgreementAlgorithm()
-    {
-        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], ['DEF']);
-
-        $jwe = JWEFactory::createEmptyJWE(['user_id' => '1234', 'exp' => time() + 3600]);
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
-            'enc' => 'A192CBC-HS384',
-            'alg' => 'ECDH-ES',
-        ]);
-
-        $encrypter->addRecipient(
-            $jwe,
-            $this->getECDHRecipientPublicKey()
-        );
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The sender key must be set using Key Agreement or Key Agreement with Wrapping algorithms.
-     */
-    public function testEncryptWithAgreementKeyWrapAlgorithm()
-    {
-        $encrypter = EncrypterFactory::createEncrypter(['A192CBC-HS384', 'ECDH-ES+A128KW'], ['DEF']);
-
-        $jwe = JWEFactory::createEmptyJWE(['user_id' => '1234', 'exp' => time() + 3600]);
-        $jwe = $jwe->withSharedProtectedHeaders([
-            'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
-            'enc' => 'A192CBC-HS384',
-            'alg' => 'ECDH-ES+A128KW',
-        ]);
-
-        $encrypter->addRecipient(
-            $jwe,
-            $this->getECDHRecipientPublicKey()
-        );
-    }
-
-    /**
      *
      */
     public function testEncryptAndLoadCompactKeyAgreementWithWrappingCompact()
@@ -602,8 +553,7 @@ class EncrypterTest extends TestCase
 
         $encrypter->addRecipient(
             $jwe,
-            $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey()
+            $this->getECDHRecipientPublicKey()
         );
 
         $loaded = Loader::load($jwe->toFlattenedJSON(0));
@@ -643,8 +593,7 @@ class EncrypterTest extends TestCase
 
         $encrypter->addRecipient(
             $jwe,
-            $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey()
+            $this->getECDHRecipientPublicKey()
         );
 
         $loaded = Loader::load($jwe->toFlattenedJSON(0));
@@ -680,13 +629,11 @@ class EncrypterTest extends TestCase
         $encrypter->addRecipient(
             $jwe,
             $this->getECDHRecipientPublicKey(),
-            $this->getECDHSenderPrivateKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
         $encrypter->addRecipient(
             $jwe,
             $this->getRSARecipientKey(),
-            null,
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
 
@@ -806,23 +753,6 @@ class EncrypterTest extends TestCase
             'crv'     => 'P-256',
             'x'       => 'f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU',
             'y'       => 'x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0',
-        ]);
-
-        return $key;
-    }
-
-    /**
-     * @return JWK
-     */
-    private function getECDHSenderPrivateKey()
-    {
-        $key = new JWK([
-            'kty'     => 'EC',
-            'key_ops' => ['encrypt', 'decrypt'],
-            'crv'     => 'P-256',
-            'x'       => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'       => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'       => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ]);
 
         return $key;

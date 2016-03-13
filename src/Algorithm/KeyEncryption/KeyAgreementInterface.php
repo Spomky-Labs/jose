@@ -22,12 +22,11 @@ interface KeyAgreementInterface extends KeyEncryptionAlgorithmInterface
     /**
      * @param int                       $encryption_key_length    Size of the key expected for the algorithm used for data encryption
      * @param string                    $algorithm                The algorithm
-     * @param \Jose\Object\JWKInterface $private_key              Private key (sender key or receiver key depending on operation to execute
-     * @param \Jose\Object\JWKInterface $public_key               Public key (receiver key on encryption) or null if key is in the header
+     * @param \Jose\Object\JWKInterface $recipient_key            The recipient key. If the key is public, then an ephemeral private key will be created, else will try to find the ephemeral key in the header
      * @param array                     $complete_header          The complete header of the JWT
      * @param array                     $additional_header_values Set additional header values if needed
      *
      * @return mixed
      */
-    public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $private_key, JWKInterface $public_key = null, array $complete_header = [], array &$additional_header_values = []);
+    public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $recipient_key, array $complete_header = [], array &$additional_header_values = []);
 }

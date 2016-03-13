@@ -63,4 +63,16 @@ interface RecipientInterface
      * @return \Jose\Object\RecipientInterface
      */
     public function withEncryptedKey($encrypted_key);
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function getRecipientKey();
+
+    /**
+     * @param \Jose\Object\JWKInterface $recipient_key
+     *
+     * @return \Jose\Object\RecipientInterface
+     */
+    public function withRecipientKey(JWKInterface $recipient_key);
 }

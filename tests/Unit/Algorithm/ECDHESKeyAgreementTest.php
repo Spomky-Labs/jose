@@ -34,15 +34,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
             'crv' => 'P-256',
             'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
             'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-            'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd',
         ]);
 
         $header = [
@@ -50,11 +41,10 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
             'apu' => 'QWxpY2U',
             'apv' => 'Qm9i',
         ];
-        $expected = 'DlF1aef8CYVvmP2Ex8iKQQ';
         $ecdh_es = new ECDHES();
         $additional_header_values = [];
 
-        $this->assertEquals($expected, Base64Url::encode($ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header, $additional_header_values)));
+        $ecdh_es->getAgreementKey(128, 'A128GCM', $receiver, $header, $additional_header_values);
         $this->assertTrue(array_key_exists('epk', $additional_header_values));
         $this->assertTrue(array_key_exists('kty', $additional_header_values['epk']));
         $this->assertTrue(array_key_exists('crv', $additional_header_values['epk']));
@@ -69,20 +59,19 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
     {
         $header = ['enc' => 'A128GCM'];
 
-        $receiver = new JWK([
+        $public = new JWK([
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+        ]);
+
+        $private = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
             'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
             'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ]);
 
         $cek = [4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207];
@@ -92,7 +81,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA128KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 128, $header, $header);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($public, $cek, 128, $header, $header);
         $this->assertTrue(array_key_exists('epk', $header));
         $this->assertTrue(array_key_exists('crv', $header['epk']));
         $this->assertTrue(array_key_exists('kty', $header['epk']));
@@ -100,7 +89,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('y', $header['epk']));
         $this->assertEquals('P-256', $header['epk']['crv']);
         $this->assertEquals('EC', $header['epk']['kty']);
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($private, $encrypted_cek, 128, $header));
     }
 
     /**
@@ -109,20 +98,20 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
     public function testGetAgreementKeyWithA192KeyWrap()
     {
         $header = ['enc' => 'A192GCM'];
-        $receiver = new JWK([
+
+        $public = new JWK([
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+        ]);
+
+        $private = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
             'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
             'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ]);
 
         $cek = [4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207];
@@ -132,7 +121,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA192KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 192, $header, $header);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($public, $cek, 192, $header, $header);
         $this->assertTrue(array_key_exists('epk', $header));
         $this->assertTrue(array_key_exists('crv', $header['epk']));
         $this->assertTrue(array_key_exists('kty', $header['epk']));
@@ -140,7 +129,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('y', $header['epk']));
         $this->assertEquals('P-256', $header['epk']['crv']);
         $this->assertEquals('EC', $header['epk']['kty']);
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($private, $encrypted_cek, 192, $header));
     }
 
     /**
@@ -149,20 +138,20 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
     public function testGetAgreementKeyWithA256KeyWrap()
     {
         $header = ['enc' => 'A256GCM'];
-        $receiver = new JWK([
+
+        $public = new JWK([
+            'kty' => 'EC',
+            'crv' => 'P-256',
+            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+        ]);
+
+        $private = new JWK([
             'kty' => 'EC',
             'crv' => 'P-256',
             'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
             'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
             'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
         ]);
 
         $cek = [4, 211, 31, 197, 84, 157, 252, 254, 11, 100, 157, 250, 63, 170, 106, 206, 107, 124, 212, 45, 111, 107, 9, 219, 200, 177, 0, 240, 143, 156, 44, 207];
@@ -172,7 +161,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $cek = hex2bin(implode('', $cek));
 
         $ecdh_es = new ECDHESA256KW();
-        $encrypted_cek = $ecdh_es->wrapAgreementKey($sender, $receiver, $cek, 256, $header, $header);
+        $encrypted_cek = $ecdh_es->wrapAgreementKey($public, $cek, 256, $header, $header);
         $this->assertTrue(array_key_exists('epk', $header));
         $this->assertTrue(array_key_exists('crv', $header['epk']));
         $this->assertTrue(array_key_exists('kty', $header['epk']));
@@ -180,32 +169,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('y', $header['epk']));
         $this->assertEquals('P-256', $header['epk']['crv']);
         $this->assertEquals('EC', $header['epk']['kty']);
-        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 256, $header));
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Curves are different
-     */
-    public function testCurvesAreDifferent()
-    {
-        $receiver = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-521',
-            'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-            'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-            'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
-        ]);
-
-        $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
+        $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($private, $encrypted_cek, 256, $header));
     }
 
     /**
@@ -242,31 +206,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, null, $header);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key parameter "d" is missing.
-     */
-    public function testNotAPrivateKey()
-    {
-        $receiver = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
-            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-            'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-        ]);
-
-        $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $header);
     }
 
     /**
@@ -276,19 +216,12 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
     public function testNotAnECKey()
     {
         $receiver = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
-            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-        ]);
-
-        $sender = new JWK([
             'kty' => 'dir',
             'dir' => Base64Url::encode('ABCD'),
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver);
     }
 
     /**
@@ -299,79 +232,16 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
     {
         $receiver = new JWK([
             'kty' => 'EC',
-            'crv' => 'P-256',
-            'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
-            'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
             'dir' => Base64Url::encode('ABCD'),
         ]);
 
         $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver);
-    }
-
-    public function testGetAnAgreementKeyUsingP521Keys()
-    {
-        $header = [
-            'enc' => 'A128GCM',
-            'apu' => 'QWxpY2U',
-            'apv' => 'Qm9i',
-        ];
-
-        $receiver = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-521',
-            'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-            'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-521',
-            'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
-            'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
-            'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
-        ]);
-
-        $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header);
-        $this->assertEquals('-puVrOLlXAbXC7rKAEIW5w', Base64Url::encode($agreement_key));
-    }
-
-    public function testGetAnAgreementKeyUsingP384Keys()
-    {
-        $header = [
-            'enc' => 'A128GCM',
-            'apu' => 'QWxpY2U',
-            'apv' => 'Qm9i',
-        ];
-
-        $receiver = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-384',
-            'x'   => '6f-XZsg2Tvn0EoEapQ-ylMYNtsm8CPf0cb8HI2EkfY9Bqpt3QMzwlM7mVsFRmaMZ',
-            'y'   => 'b8nOnRwmpmEnvA2U8ydS-dbnPv7bwYl-q1qNeh8Wpjor3VO-RTt4ce0Pn25oGGWU',
-        ]);
-
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-384',
-            'd'   => 'pcSSXrbeZEOaBIs7IwqcU9M_OOM81XhZuOHoGgmS_2PdECwcdQcXzv7W8-lYL0cr',
-            'x'   => '6f-XZsg2Tvn0EoEapQ-ylMYNtsm8CPf0cb8HI2EkfY9Bqpt3QMzwlM7mVsFRmaMZ',
-            'y'   => 'b8nOnRwmpmEnvA2U8ydS-dbnPv7bwYl-q1qNeh8Wpjor3VO-RTt4ce0Pn25oGGWU',
-        ]);
-
-        $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(128, 'A128GCM', $sender, $receiver, $header);
-        $this->assertEquals('tLa5MDrbO8KKjM3frmdANg', Base64Url::encode($agreement_key));
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Curve "P-192" is not supported
+     * @expectedExceptionMessage The curve "P-192" is not supported
      */
     public function testUnsupportedCurve()
     {
@@ -388,16 +258,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
             'y'   => '84lz6hQtPJe9WFPPgEyOUwh3tuW2kOS_',
         ]);
 
-        $sender = new JWK([
-            'kty' => 'EC',
-            'crv' => 'P-192',
-            'd'   => 'qArdbBWdouFDDNNu0KQn5LvlC_2sUX2Y',
-            'x'   => 'oiSisKljjDC_KrqGQl0WvxLvDOAxbKdL',
-            'y'   => '97zCNl8vB9uiDcRhoH19DnplN0KSRn9A',
-        ]);
-
         $ecdh_es = new ECDHES();
-        $agreement_key = $ecdh_es->getAgreementKey(256, 'A128GCM', $sender, $receiver, $header);
-        $this->assertEquals('-Fj6ZkBpOcITxDcloKVNItlIH6qF2gyjw7oIHIEChp8', Base64Url::encode($agreement_key));
+        $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver, $header);
     }
 }

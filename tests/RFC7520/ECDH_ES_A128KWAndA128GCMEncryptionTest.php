@@ -109,6 +109,15 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
     {
         $expected_payload = "You can trust us to stick with you through thick and thin\xe2\x80\x93to the bitter end. And you can trust us to keep any secret of yours\xe2\x80\x93closer than you keep it yourself. But you cannot trust us to let you face trouble alone, and go off without a word. We are your friends, Frodo.";
 
+        $public_key = new JWK([
+            'kty' => 'EC',
+            'kid' => 'peregrin.took@tuckborough.example',
+            'use' => 'enc',
+            'crv' => 'P-384',
+            'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
+            'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
+        ]);
+
         $private_key = new JWK([
             'kty' => 'EC',
             'kid' => 'peregrin.took@tuckborough.example',
@@ -130,16 +139,7 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->addRecipient(
             $jwe,
-            $private_key,
-            new JWK([ // We use the same key as the recipient
-                    'kty' => 'EC',
-                    'kid' => 'peregrin.took@tuckborough.example',
-                    'use' => 'enc',
-                    'crv' => 'P-384',
-                    'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
-                    'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
-                    'd'   => 'iTx2pk7wW-GqJkHcEkFQb2EFyYcO7RugmaW3mRrQVAOUiPommT0IdnYK2xDlZh-j',
-            ])
+            $public_key
         );
 
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A128KW', 'A128GCM']);

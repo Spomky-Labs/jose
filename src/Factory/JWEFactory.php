@@ -93,7 +93,7 @@ final class JWEFactory
 
         $jws = self::createEmptyJWE($payload, $shared_protected_headers, $shared_headers, $aad);
 
-        $encrypter->addRecipient($jws, $recipient_key, null, $recipient_headers);
+        $encrypter->addRecipient($jws, $recipient_key, $recipient_headers);
 
         return $jws;
     }

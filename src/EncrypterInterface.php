@@ -20,10 +20,14 @@ use Jose\Object\JWKInterface;
 interface EncrypterInterface
 {
     /**
+     * @param \Jose\Object\JWEInterface $jwe
+     */
+    public function encrypt(JWEInterface &$jwe);
+
+    /**
      * @param \Jose\Object\JWEInterface      $jwe
      * @param \Jose\Object\JWKInterface      $recipient_key
-     * @param \Jose\Object\JWKInterface|null $sender_key
      * @param array                          $recipient_headers
      */
-    public function addRecipient(JWEInterface &$jwe, JWKInterface $recipient_key, JWKInterface $sender_key = null, array $recipient_headers = []);
+    public function addRecipient(JWEInterface &$jwe, JWKInterface $recipient_key, array $recipient_headers = []);
 }
