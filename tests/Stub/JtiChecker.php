@@ -11,17 +11,17 @@
 
 namespace Jose\Test\Stub;
 
-use Jose\Checker\IssuerChecker as Base;
+use Jose\Checker\JtiChecker as Base;
 
 /**
  */
-class IssuerChecker extends Base
+class JtiChecker extends Base
 {
     /**
      * {@inheritdoc}
      */
-    protected function isIssuerAllowed($issuer)
+    protected function isJtiValid($jti)
     {
-        return in_array($issuer, ['ISS1', 'ISS2']);
+        return in_array($jti, ['JTI1', 'JTI2']);
     }
 }
