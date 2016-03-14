@@ -57,7 +57,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new Deflate(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -71,7 +71,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new GZip(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -85,7 +85,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new ZLib(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);

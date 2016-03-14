@@ -34,7 +34,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = StringUtil::generateRandomBytes(128 / 8);
         $iv = StringUtil::generateRandomBytes(96 / 8);
-        $plaintext = 'Je suis Charlie';
+        $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 
@@ -54,7 +54,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = StringUtil::generateRandomBytes(192 / 8);
         $iv = StringUtil::generateRandomBytes(96 / 8);
-        $plaintext = 'Je suis Charlie';
+        $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 
@@ -74,7 +74,7 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $cek = StringUtil::generateRandomBytes(256 / 8);
         $iv = StringUtil::generateRandomBytes(96 / 8);
-        $plaintext = 'Je suis Charlie';
+        $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
 

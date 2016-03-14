@@ -215,7 +215,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP', 'RSA-OAEP-256', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createEmptyJWE('Je suis Charlie');
+        $jwe = JWEFactory::createEmptyJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
         ]);
@@ -241,7 +241,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createEmptyJWE('Je suis Charlie');
+        $jwe = JWEFactory::createEmptyJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
         ]);
@@ -269,7 +269,7 @@ class EncrypterTest extends TestCase
     {
         $encrypter = EncrypterFactory::createEncrypter(['dir', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createEmptyJWE('Je suis Charlie');
+        $jwe = JWEFactory::createEmptyJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders([
             'enc' => 'A256CBC-HS512',
         ]);
@@ -545,7 +545,7 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createEmptyJWE('Je suis Charlie');
+        $jwe = JWEFactory::createEmptyJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders([
             'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
             'enc' => 'A256CBC-HS512',
@@ -571,7 +571,7 @@ class EncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+        $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
 
     /**
@@ -582,7 +582,7 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], ['DEF'], new FakeLogger());
 
         $jwe = JWEFactory::createEmptyJWE(
-            'Je suis Charlie',
+            'Live long and Prosper.',
             [
                 'kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d',
                 'enc' => 'A256GCM',
@@ -613,7 +613,7 @@ class EncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+        $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
 
     /**
@@ -624,7 +624,7 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createEmptyJWE('Je suis Charlie');
+        $jwe = JWEFactory::createEmptyJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders(['enc' => 'A256CBC-HS512']);
 
         $encrypter->addRecipient(
@@ -655,7 +655,7 @@ class EncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+        $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
 
     /**

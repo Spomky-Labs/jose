@@ -39,7 +39,7 @@ class RSAKeyEncryptionTest extends TestCase
         $rsa1_5 = new RSA15();
 
         $header = [];
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $additional_headers = [];
         $rsa1_5->encryptKey($key, $data, $header, $additional_headers);

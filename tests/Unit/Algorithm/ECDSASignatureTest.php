@@ -35,7 +35,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $ecdsa = new ES256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $ecdsa->sign($key, $data);
     }
@@ -112,7 +112,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $private_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key'));
 
         $ecdsa = new ES256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
@@ -127,7 +127,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $private_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key'));
 
         $ecdsa = new ES384();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
@@ -142,7 +142,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $private_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key'));
 
         $ecdsa = new ES512();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $signature = $ecdsa->sign($private_key, $data);
 
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));

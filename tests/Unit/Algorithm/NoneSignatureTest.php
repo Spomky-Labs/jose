@@ -34,7 +34,7 @@ class NoneSignatureTest extends TestCase
         ]);
 
         $none = new None();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $none->sign($key, $data);
 
@@ -53,7 +53,7 @@ class NoneSignatureTest extends TestCase
         ]);
 
         $none = new None();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $none->sign($key, $data);
     }
@@ -67,7 +67,7 @@ class NoneSignatureTest extends TestCase
             'kty' => 'none',
         ]);
 
-        $jws = \Jose\Factory\JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = \Jose\Factory\JWSFactory::createEmptyJWS('Live long and Prosper.');
         $jws = $jws->addSignature($jwk, ['alg' => 'none']);
 
         $signer = SignerFactory::createSigner(['none']);
@@ -82,7 +82,7 @@ class NoneSignatureTest extends TestCase
 
         $this->assertInstanceOf(JWSInterface::class, $result);
 
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertTrue($result->getSignature(0)->hasProtectedHeader('alg'));
         $this->assertEquals('none', $result->getSignature(0)->getProtectedHeader('alg'));

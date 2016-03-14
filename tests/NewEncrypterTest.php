@@ -38,7 +38,7 @@ class NewEncrypterTest extends TestCase
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
         $jwe = JWEFactory::createEmptyJWE(
-            'Je suis Charlie',
+            'Live long and Prosper.',
             [
                 'enc' => 'A256CBC-HS512',
             ], [
@@ -73,7 +73,7 @@ class NewEncrypterTest extends TestCase
         $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertTrue(is_string($loaded->getPayload()));
-        $this->assertEquals('Je suis Charlie', $loaded->getPayload());
+        $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
 
     /**
