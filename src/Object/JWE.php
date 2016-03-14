@@ -96,7 +96,7 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function getRecipient($id)
+    public function &getRecipient($id)
     {
         Assertion::keyExists($this->recipients, $id, 'The recipient does not exist.');
 

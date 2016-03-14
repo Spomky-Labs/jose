@@ -52,7 +52,7 @@ final class Recipient implements RecipientInterface
      *
      * @return \Jose\Object\Recipient
      */
-    public static function createRecipientForJWEEncryption(JWKInterface $recipient_key, array $headers)
+    public static function createRecipientForJWEEncryption(JWKInterface $recipient_key, array $headers = [])
     {
         $recipient = new self();
         $recipient->headers = $headers;

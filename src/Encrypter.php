@@ -30,6 +30,7 @@ use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\Recipient;
+use Jose\Object\RecipientInterface;
 use Jose\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 
@@ -93,11 +94,18 @@ final class Encrypter implements EncrypterInterface
 
             $this->processRecipient(
                 $jwe,
-                $i,
+                $jwe->getRecipient($i),
                 $cek,
                 $content_encryption_algorithm,
                 $additional_headers
             );
+        }
+
+        if (!empty($additional_headers) && 1 === $jwe->countRecipients()) {
+            $jwe = $jwe->withSharedProtectedHeaders(array_merge(
+                $jwe->getSharedProtectedHeaders(),
+                $additional_headers
+            ));
         }
 
         // IV
@@ -106,24 +114,24 @@ final class Encrypter implements EncrypterInterface
             $jwe = $jwe->withIV($iv);
         }
 
+        $jwe = $jwe ->withContentEncryptionKey($cek);
+
         $this->encryptJWE($jwe, $content_encryption_algorithm, $compression_method);
     }
 
     /**
      * @param \Jose\Object\JWEInterface                           $jwe
-     * @param int                                                 $i
+     * @param \Jose\Object\RecipientInterface                     $recipient
      * @param string                                              $cek
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      * @param array                                               $additional_headers
      */
     private function processRecipient(JWEInterface $jwe,
-                                      $i,
+                                      RecipientInterface &$recipient,
                                       $cek,
                                       ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
                                       array &$additional_headers
     ) {
-        $recipient = $jwe->getRecipient($i);
-
         $complete_headers = array_merge(
             $jwe->getSharedProtectedHeaders(),
             $jwe->getSharedHeaders(),

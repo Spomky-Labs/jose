@@ -39,7 +39,7 @@ interface JWEInterface extends JWTInterface
      *
      * @return \Jose\Object\RecipientInterface
      */
-    public function getRecipient($id);
+    public function &getRecipient($id);
 
     /**
      * @param int $recipient
