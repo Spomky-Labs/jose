@@ -12,7 +12,6 @@
 namespace Jose;
 
 use Jose\Object\JWEInterface;
-use Jose\Object\JWKInterface;
 
 /**
  * Encrypter Interface.

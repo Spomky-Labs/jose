@@ -87,7 +87,7 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testA128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesBis()
     {

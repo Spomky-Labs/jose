@@ -12,8 +12,8 @@
 use Base64Url\Base64Url;
 use Jose\Factory\CheckerManagerFactory;
 use Jose\Factory\JWSFactory;
-use Jose\Object\Signature;
 use Jose\Object\JWK;
+use Jose\Object\Signature;
 
 /**
  * Class JWSTest.
@@ -48,11 +48,11 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($claims, $jws->getClaims());
         $this->assertEquals(0, $jws->countSignatures());
 
-        $jws = $jws->addSignature(new JWK(['kty'=>'none']), ['crit' => ['nbf', 'iat', 'exp', 'iss']]);
+        $jws = $jws->addSignature(new JWK(['kty' => 'none']), ['crit' => ['nbf', 'iat', 'exp', 'iss']]);
         $this->assertEquals(1, $jws->countSignatures());
 
         $checker_manager = CheckerManagerFactory::createClaimCheckerManager();
-        $checker_manager->checkJWS($jws,0);
+        $checker_manager->checkJWS($jws, 0);
     }
 
     /**
@@ -173,7 +173,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $signature->getProtectedHeader('foo');
     }
 
-    /**
+    /*
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The argument does not contain valid encoded protected headers.
      */

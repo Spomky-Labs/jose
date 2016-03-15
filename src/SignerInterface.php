@@ -11,7 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWKInterface;
 use Jose\Object\JWSInterface;
 
 /**

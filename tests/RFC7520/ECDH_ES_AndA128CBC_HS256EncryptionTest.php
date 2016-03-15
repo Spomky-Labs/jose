@@ -88,7 +88,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testECDH_ES_AndA128CBC_HS256EncryptionBis()
     {

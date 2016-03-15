@@ -29,8 +29,6 @@ class ECKeysTest extends TestCase
         KeyConverter::loadFromKeyFile($file);
     }
 
-    /**
-     */
     public function testLoadPublicEC256Key()
     {
         $pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key');
@@ -48,8 +46,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $pem), $ec_key->toPEM());
     }
 
-    /**
-     */
     public function testLoadPrivateEC256Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.key');
@@ -69,8 +65,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $public_pem), ECKey::toPublic($ec_key)->toPEM());
     }
 
-    /**
-     */
     public function testLoadEncryptedPrivateEC256Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.encrypted.key');
@@ -97,8 +91,6 @@ class ECKeysTest extends TestCase
         KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es256.encrypted.key');
     }
 
-    /**
-     */
     public function testLoadPublicEC384Key()
     {
         $pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key');
@@ -116,8 +108,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $pem), $ec_key->toPEM());
     }
 
-    /**
-     */
     public function testLoadPrivateEC384Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.key');
@@ -137,8 +127,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $public_pem), ECKey::toPublic($ec_key)->toPEM());
     }
 
-    /**
-     */
     public function testLoadEncryptedPrivateEC384Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es384.encrypted.key');
@@ -156,8 +144,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $public_pem), ECKey::toPublic($ec_key)->toPEM());
     }
 
-    /**
-     */
     public function testLoadPublicEC512Key()
     {
         $pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key');
@@ -175,8 +161,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $pem), $ec_key->toPEM());
     }
 
-    /**
-     */
     public function testLoadPrivateEC512Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.key');
@@ -197,8 +181,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $public_pem), ECKey::toPublic($ec_key)->toPEM());
     }
 
-    /**
-     */
     public function testLoadEncryptedPrivateEC512Key()
     {
         $private_pem = file_get_contents('file://'.__DIR__.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'private.es512.encrypted.key');
@@ -218,8 +200,6 @@ class ECKeysTest extends TestCase
         $this->assertEquals(str_replace("\r\n", PHP_EOL, $public_pem), ECKey::toPublic($ec_key)->toPEM());
     }
 
-    /**
-     */
     public function testConvertPrivateKeyToPublic()
     {
         $private_ec_key = new ECKey([

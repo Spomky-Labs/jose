@@ -24,9 +24,6 @@ use Jose\Object\JWK;
  */
 class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testRS256()
     {
         /*

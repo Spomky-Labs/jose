@@ -39,13 +39,13 @@ trait HasLogger
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed $level
+     * @param mixed  $level
      * @param string $message
-     * @param array $context
+     * @param array  $context
      *
      * @return null
      */
-    private function log($level, $message, array $context = array())
+    private function log($level, $message, array $context = [])
     {
         if (null !== $this->logger) {
             $this->logger->log($level, $message, $context);

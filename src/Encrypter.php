@@ -31,8 +31,6 @@ use Jose\Object\RecipientInterface;
 use Jose\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 
-/**
- */
 final class Encrypter implements EncrypterInterface
 {
     use HasKeyChecker;
@@ -87,8 +85,7 @@ final class Encrypter implements EncrypterInterface
             $additional_headers
         );
 
-        for($i = 0; $i < $jwe->countRecipients(); $i++) {
-
+        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
             $this->processRecipient(
                 $jwe,
                 $jwe->getRecipient($i),
@@ -111,7 +108,7 @@ final class Encrypter implements EncrypterInterface
             $jwe = $jwe->withIV($iv);
         }
 
-        $jwe = $jwe ->withContentEncryptionKey($cek);
+        $jwe = $jwe->withContentEncryptionKey($cek);
 
         $this->encryptJWE($jwe, $content_encryption_algorithm, $compression_method);
     }
@@ -166,8 +163,8 @@ final class Encrypter implements EncrypterInterface
     /**
      * @param \Jose\Object\JWEInterface                           $jwe
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
-     * @param string                                               $key_management_mode
-     * @param array                                                $additional_headers
+     * @param string                                              $key_management_mode
+     * @param array                                               $additional_headers
      *
      * @return string
      */
@@ -176,7 +173,7 @@ final class Encrypter implements EncrypterInterface
                                   $key_management_mode,
                                   array &$additional_headers
     ) {
-        switch($key_management_mode) {
+        switch ($key_management_mode) {
             case KeyEncryptionInterface::MODE_ENCRYPT:
             case KeyEncryptionInterface::MODE_WRAP:
                 return $this->createCEK($content_encryption_algorithm->getCEKSize());
@@ -212,7 +209,7 @@ final class Encrypter implements EncrypterInterface
     {
         $mode = null;
 
-        foreach($jwe->getRecipients() as $recipient) {
+        foreach ($jwe->getRecipients() as $recipient) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),
@@ -245,7 +242,7 @@ final class Encrypter implements EncrypterInterface
     {
         $method = null;
 
-        for($i = 0; $i < $jwe->countRecipients(); $i++) {
+        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),
@@ -268,7 +265,7 @@ final class Encrypter implements EncrypterInterface
             }
         }
 
-        if (null ===$method) {
+        if (null === $method) {
             return;
         }
 
@@ -287,7 +284,7 @@ final class Encrypter implements EncrypterInterface
     {
         $algorithm = null;
 
-        foreach($jwe->getRecipients() as $recipient) {
+        foreach ($jwe->getRecipients() as $recipient) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),

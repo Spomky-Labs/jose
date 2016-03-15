@@ -66,7 +66,7 @@ final class ECKey extends Sequence
         $data = base64_decode(preg_replace('#-.*-|\r|\n#', '', $data));
         $asnObject = Object::fromBinary($data);
 
-        Assertion::isInstanceOf($asnObject,Sequence::class);
+        Assertion::isInstanceOf($asnObject, Sequence::class);
 
         $children = $asnObject->getChildren();
         if (4 === count($children)) {
@@ -112,9 +112,6 @@ final class ECKey extends Sequence
         $this->addChild(new BitString($bits));
     }
 
-    /**
-     *
-     */
     private function initPrivateKey()
     {
         $this->addChild(new Integer(1));

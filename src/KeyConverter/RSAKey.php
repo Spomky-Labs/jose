@@ -129,9 +129,6 @@ final class RSAKey extends Sequence
         $this->addChild($key_bit_string);
     }
 
-    /**
-     *
-     */
     private function initPrivateKey()
     {
         $this->addChild(new Integer(0));
