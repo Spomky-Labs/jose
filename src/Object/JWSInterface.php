@@ -49,7 +49,7 @@ interface JWSInterface extends JWTInterface
      *
      * @return \Jose\Object\SignatureInterface
      */
-    public function getSignature($id);
+    public function &getSignature($id);
 
     /**
      * @param int $id

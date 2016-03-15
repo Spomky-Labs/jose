@@ -77,9 +77,26 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function addRecipient(RecipientInterface $recipient)
+    public function addRecipient(JWKInterface $recipient_key, $recipient_headers = [])
     {
         $jwe = clone $this;
+        $recipient = new Recipient();
+        $recipient = $recipient->withRecipientKey($recipient_key);
+        $recipient = $recipient->withHeaders($recipient_headers);
+        $jwe->recipients[] = $recipient;
+
+        return $jwe;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecipientWithEncryptedKey($encrypted_key = null, $recipient_headers = [])
+    {
+        $jwe = clone $this;
+        $recipient = new Recipient();
+        $recipient = $recipient->withHeaders($recipient_headers);
+        $recipient = $recipient->withEncryptedKey($encrypted_key);
         $jwe->recipients[] = $recipient;
 
         return $jwe;

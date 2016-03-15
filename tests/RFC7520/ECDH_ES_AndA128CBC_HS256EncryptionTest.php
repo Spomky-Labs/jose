@@ -132,7 +132,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $loaded_json = Loader::load($jwe->toJSON());
         $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
-        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('epk', $loaded_json->getSharedProtectedHeaders()));
 
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }

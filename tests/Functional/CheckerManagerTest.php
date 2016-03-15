@@ -11,7 +11,6 @@
 
 use Jose\Factory\JWEFactory;
 use Jose\Test\TestCase;
-use Jose\Object\Recipient;
 
 /**
  * @group CheckerManager
@@ -37,7 +36,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -61,7 +60,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -86,7 +85,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -112,7 +111,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -138,7 +137,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -165,7 +164,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -193,7 +192,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -222,7 +221,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -248,7 +247,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -273,7 +272,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
@@ -292,7 +291,7 @@ class CheckerManagerTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jwe = $jwe->addRecipientWithEncryptedKey();
 
         $this->getCheckerManager()->checkJWE($jwe, 0);
     }
