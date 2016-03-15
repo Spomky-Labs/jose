@@ -334,9 +334,6 @@ final class JWE implements JWEInterface
         );
     }
 
-    /**
-     *
-     */
     private function checkHasNoAAD()
     {
         Assertion::true(empty($this->getAAD()), 'This JWE has AAD and cannot be converted into Compact JSON.');
@@ -353,9 +350,6 @@ final class JWE implements JWEInterface
         );
     }
 
-    /**
-     *
-     */
     private function checkHasSharedProtectedHeaders()
     {
         Assertion::notEmpty(

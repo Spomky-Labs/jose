@@ -15,9 +15,6 @@ use Crypto\Cipher;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
 use Jose\Util\GCM;
 
-/**
- *
- */
 abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 {
     /**
@@ -43,7 +40,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 
             return $cyphertext;
         } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_encrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag , $calculated_aad, 16);
+            return openssl_encrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad, 16);
         }
 
         list($cyphertext, $tag) = GCM::encrypt($cek, $iv, $data, $calculated_aad);
@@ -70,7 +67,7 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 
             return $plaintext;
         } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_decrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag , $calculated_aad);
+            return openssl_decrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad);
         }
 
         return GCM::decrypt($cek, $iv, $data, $calculated_aad, $tag);

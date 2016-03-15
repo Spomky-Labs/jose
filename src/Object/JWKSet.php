@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Object;
+
 use Assert\Assertion;
 
 /**
@@ -144,6 +145,4 @@ final class JWKSet implements JWKSetInterface
     {
         return count($this->keys);
     }
-
-
 }

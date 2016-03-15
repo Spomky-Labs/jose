@@ -15,8 +15,8 @@ use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
-use Jose\Test\TestCase;
 use Jose\Test\Stub\FakeLogger;
+use Jose\Test\TestCase;
 
 /**
  * Class NewEncrypterTest.
@@ -26,9 +26,6 @@ use Jose\Test\Stub\FakeLogger;
  */
 class NewEncrypterTest extends TestCase
 {
-    /**
-     *
-     */
     public function testEncryptWithJWTInput()
     {
         $encrypter = EncrypterFactory::createEncrypter(['A256GCMKW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
@@ -71,9 +68,7 @@ class NewEncrypterTest extends TestCase
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
-    /**
-     *
-     */
+
     public function testEncryptWithJWTInputAndDirectKey()
     {
         $encrypter = EncrypterFactory::createEncrypter(['dir', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
@@ -116,9 +111,7 @@ class NewEncrypterTest extends TestCase
         $this->assertTrue(is_string($loaded->getPayload()));
         $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
     }
-    /**
-     *
-     */
+
     public function testEncryptWithJWTInputAndECDHESKey()
     {
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A256CBC-HS512'], ['DEF'], new FakeLogger());

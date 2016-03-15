@@ -13,8 +13,6 @@ namespace Jose\Test\Stub;
 
 use Psr\Log\LoggerInterface;
 
-/**
- */
 class FakeLogger implements LoggerInterface
 {
     /**
@@ -25,7 +23,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function emergency($message, array $context = array())
+    public function emergency($message, array $context = [])
     {
         $this->log('emergency', $message, $context);
     }
@@ -33,7 +31,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function alert($message, array $context = array())
+    public function alert($message, array $context = [])
     {
         $this->log('alert', $message, $context);
     }
@@ -41,7 +39,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function critical($message, array $context = array())
+    public function critical($message, array $context = [])
     {
         $this->log('critical', $message, $context);
     }
@@ -49,7 +47,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function error($message, array $context = array())
+    public function error($message, array $context = [])
     {
         $this->log('error', $message, $context);
     }
@@ -57,7 +55,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function warning($message, array $context = array())
+    public function warning($message, array $context = [])
     {
         $this->log('warning', $message, $context);
     }
@@ -65,7 +63,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function notice($message, array $context = array())
+    public function notice($message, array $context = [])
     {
         $this->log('notice', $message, $context);
     }
@@ -73,7 +71,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function info($message, array $context = array())
+    public function info($message, array $context = [])
     {
         $this->log('info', $message, $context);
     }
@@ -81,7 +79,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function debug($message, array $context = array())
+    public function debug($message, array $context = [])
     {
         $this->log('debug', $message, $context);
     }
@@ -89,7 +87,7 @@ class FakeLogger implements LoggerInterface
     /**
      * {@inheritdoc}
      */
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $this->messages[] = [
             'timestamp' => microtime(true),

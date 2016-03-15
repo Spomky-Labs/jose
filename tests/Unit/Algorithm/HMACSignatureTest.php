@@ -38,9 +38,6 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $hmac->sign($key, $data);
     }
 
-    /**
-     *
-     */
     public function testSignatureHasBadBadLength()
     {
         $key = new JWK([
@@ -53,9 +50,6 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($hmac->verify($key, $data, hex2bin('326eb338c465d3587f3349df0b96ba81')));
     }
 
-    /**
-     *
-     */
     public function testHS256SignAndVerify()
     {
         $key = new JWK([
@@ -71,9 +65,6 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testHS384SignAndVerify()
     {
         $key = new JWK([
@@ -89,9 +80,6 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testHS512SignAndVerify()
     {
         $key = new JWK([

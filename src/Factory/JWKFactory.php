@@ -16,9 +16,9 @@ use Base64Url\Base64Url;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
-use Mdanter\Ecc\Curves\CurveFactory;
 
 final class JWKFactory
 {
@@ -48,7 +48,6 @@ final class JWKFactory
         );
 
         return new JWK($values);
-
     }
 
     /**

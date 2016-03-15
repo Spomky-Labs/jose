@@ -13,9 +13,9 @@ use Jose\Factory\JWSFactory;
 use Jose\Factory\SignerFactory;
 use Jose\Factory\VerifierFactory;
 use Jose\Loader;
-use Jose\Object\JWSInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Object\JWSInterface;
 use Jose\Test\TestCase;
 
 /**
@@ -69,9 +69,6 @@ class SignerTest extends TestCase
         $signer->sign($jws);
     }
 
-    /**
-     *
-     */
     public function testSignAndLoadCompact()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
@@ -98,9 +95,6 @@ class SignerTest extends TestCase
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
@@ -122,9 +116,6 @@ class SignerTest extends TestCase
         $this->assertEquals('eyJhbGciOiJSUzUxMiJ9.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA', $jws->toCompactJSON(1));
     }
 
-    /**
-     *
-     */
     public function testCreateCompactJWSUsingFactory()
     {
         $jws0 = JWSFactory::createJWSToCompactJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512']);
@@ -151,9 +142,6 @@ class SignerTest extends TestCase
         $this->assertInstanceOf(JWSInterface::class, $loaded_3);
     }
 
-    /**
-     *
-     */
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
@@ -175,9 +163,6 @@ class SignerTest extends TestCase
         $this->assertEquals('{"payload":"TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg","protected":"eyJhbGciOiJSUzUxMiJ9","signature":"cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA"}', $jws->toFlattenedJSON(1));
     }
 
-    /**
-     *
-     */
     public function testCreateFlattenedJWSUsingFactory()
     {
         $jws0 = JWSFactory::createJWSToFlattenedJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512'], ['foo' => 'bar']);
@@ -238,9 +223,6 @@ class SignerTest extends TestCase
         $signer->sign($jws);
     }
 
-    /**
-     *
-     */
     public function testSignAndLoadFlattened()
     {
         $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
@@ -262,9 +244,6 @@ class SignerTest extends TestCase
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testSignAndLoad()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
@@ -295,9 +274,6 @@ class SignerTest extends TestCase
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testSignAndLoadWithWrongKeys()
     {
         $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
@@ -384,9 +360,6 @@ class SignerTest extends TestCase
         $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
     }
 
-    /**
-     *
-     */
     public function testSignAndLoadJWKSet()
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());

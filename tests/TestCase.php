@@ -36,7 +36,7 @@ class TestCase extends \PHPUnit_Framework_TestCase
     protected function getCheckerManager()
     {
         if (null === $this->checker_manager) {
-            $this->checker_manager =  CheckerManagerFactory::createClaimCheckerManager();
+            $this->checker_manager = CheckerManagerFactory::createClaimCheckerManager();
             $this->checker_manager->addClaimChecker(new AudienceChecker('My Service'));
             $this->checker_manager->addClaimChecker(new SubjectChecker());
             $this->checker_manager->addClaimChecker(new IssuerChecker());

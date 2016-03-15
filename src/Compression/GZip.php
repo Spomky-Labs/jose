@@ -10,6 +10,7 @@
  */
 
 namespace Jose\Compression;
+
 use Assert\Assertion;
 
 /**

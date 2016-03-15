@@ -95,7 +95,7 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testA128KWAndA128GCMEncryptionWithCompressionBis()
     {

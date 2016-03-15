@@ -33,8 +33,6 @@ use Jose\Object\RecipientInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- */
 final class Decrypter implements DecrypterInterface
 {
     use HasKeyChecker;

@@ -23,8 +23,6 @@ use Jose\Object\SignatureInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- */
 final class Signer implements SignerInterface
 {
     use HasKeyChecker;
@@ -112,7 +110,6 @@ final class Signer implements SignerInterface
             $key->has('alg') && $key->get('alg') !== $complete_header['alg'],
             sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg'])
         );
-
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         Assertion::isInstanceOf($signature_algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));

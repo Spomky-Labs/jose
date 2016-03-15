@@ -114,7 +114,7 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testPBES2_HS512_A256KWAndA128CBC_HS256EncryptionBis()
     {

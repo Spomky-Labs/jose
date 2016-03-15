@@ -29,5 +29,4 @@ class CriticalHeaderChecker implements HeaderCheckerInterface
         $diff = array_diff($protected_headers['crit'], $checked_claims);
         Assertion::true(empty($diff), sprintf('One or more claims are marked as critical, but they are missing or have not been checked (%s).', json_encode(array_values($diff))));
     }
-
 }

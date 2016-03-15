@@ -46,7 +46,7 @@ class Ed25519 implements SignatureAlgorithmInterface
 
         $public = Base64Url::decode($key->get('x'));
 
-        return ed25519_sign_open($data,  $public, $signature);
+        return ed25519_sign_open($data, $public, $signature);
     }
 
     /**

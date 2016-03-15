@@ -25,8 +25,6 @@ use Jose\Object\SignatureInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- */
 final class Verifier implements VerifierInterface
 {
     use HasKeyChecker;
@@ -71,6 +69,7 @@ final class Verifier implements VerifierInterface
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
         $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key set', ['jwk' => $jws, 'jwk_set' => $jwk_set, 'detached_payload' => $detached_payload]);
+
         return $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 
@@ -140,7 +139,6 @@ final class Verifier implements VerifierInterface
     {
         Assertion::greaterThan($jws->countSignatures(), 0, 'The JWS does not contain any signature.');
         $this->log(LogLevel::INFO, 'The JWS contains {nb} signature(s)', ['nb' => $jws->countSignatures()]);
-
     }
 
     /**
@@ -179,7 +177,6 @@ final class Verifier implements VerifierInterface
 
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
         Assertion::isInstanceOf($algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $complete_headers['alg']));
-
 
         return $algorithm;
     }

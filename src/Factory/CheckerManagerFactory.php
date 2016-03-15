@@ -11,9 +11,9 @@
 
 namespace Jose\Factory;
 
+use Jose\Checker\CheckerManager;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Checker\ClaimCheckerInterface;
-use Jose\Checker\CheckerManager;
 use Jose\Checker\HeaderCheckerInterface;
 
 final class CheckerManagerFactory
@@ -40,8 +40,7 @@ final class CheckerManagerFactory
      */
     private static function populateClaimCheckers(CheckerManagerInterface &$checker_manager, array $claims)
     {
-
-        foreach ($claims as $key=>$value) {
+        foreach ($claims as $key => $value) {
             if ($value instanceof ClaimCheckerInterface) {
                 $checker_manager->addClaimChecker($value);
             } else {
@@ -61,7 +60,7 @@ final class CheckerManagerFactory
      */
     private static function populateHeaderCheckers(CheckerManagerInterface &$checker_manager, array $headers)
     {
-        foreach ($headers as $key=>$value) {
+        foreach ($headers as $key => $value) {
             if ($value instanceof HeaderCheckerInterface) {
                 $checker_manager->addHeaderChecker($value);
             } else {

@@ -22,9 +22,6 @@ use Jose\Util\StringUtil;
  */
 class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testA128GCMEncryptAndDecrypt()
     {
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A128GCM']));
@@ -42,9 +39,6 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
-    /**
-     *
-     */
     public function testA192GCMEncryptAndDecrypt()
     {
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A192GCM']));
@@ -62,9 +56,6 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($plaintext, $algorithm->decryptContent($cyphertext, $cek, $iv, null, $header, $tag));
     }
 
-    /**
-     *
-     */
     public function testA256GCMEncryptAndDecrypt()
     {
         $header = Base64Url::encode(json_encode(['alg' => 'ECDH-ES', 'enc' => 'A256GCM']));

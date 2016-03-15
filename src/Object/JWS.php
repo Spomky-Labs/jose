@@ -138,7 +138,7 @@ final class JWS implements JWSInterface
      */
     public function toJSON()
     {
-        Assertion::greaterThan($this->countSignatures(), 0,'No signature.');
+        Assertion::greaterThan($this->countSignatures(), 0, 'No signature.');
 
         $data = [];
         if (!empty($this->getEncodedPayload())) {

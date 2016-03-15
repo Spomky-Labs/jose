@@ -13,8 +13,6 @@ namespace Jose\Test\Stub;
 
 use Jose\Checker\JtiChecker as Base;
 
-/**
- */
 class JtiChecker extends Base
 {
     /**

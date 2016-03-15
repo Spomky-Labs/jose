@@ -11,12 +11,12 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
-use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
-use Jose\Object\JWK;
-use Jose\Object\JWKInterface;
 use Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
+use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 use Jose\Util\StringUtil;
 
 function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
@@ -24,7 +24,7 @@ function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgree
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
@@ -33,12 +33,12 @@ function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgree
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->wrapAgreementKey($sender_key, $recipient_key, $cek, 128, $header, $ahv);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/wrapping of key agreement (%s)'.PHP_EOL, $alg->getAlgorithmName(), $time, $message);
 }
 
@@ -47,22 +47,22 @@ function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgree
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512/8);
+    $cek = StringUtil::generateRandomBytes(512 / 8);
 
     $encrypted_cek = $alg->wrapAgreementKey($sender_key, $recipient_key, $cek, 128, $header, $header);
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->unwrapAgreementKey($recipient_key, $encrypted_cek, 128, $header);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/unwrapping of key agreement (%s)'.PHP_EOL, $alg->getAlgorithmName(), $time, $message);
 }
 
@@ -186,10 +186,10 @@ print_r('#####################################################'.PHP_EOL);
 print_r('# KEY AGREEMENT WITH KEY WRAPPING PERFORMANCE TESTS #'.PHP_EOL);
 print_r('#####################################################'.PHP_EOL);
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyAgreementWithKeyWrappingEncryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
 }
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyAgreementWithKeyWrappingDecryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
 }
 

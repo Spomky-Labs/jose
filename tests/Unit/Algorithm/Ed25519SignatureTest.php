@@ -38,8 +38,8 @@ class Ed25519SignatureTest extends TestCase
         $key = new JWK([
             'kty' => 'OKP',
             'crv' => 'Ed25519',
-            'd' => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
-            'x' => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+            'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+            'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
         ]);
 
         $ed25519 = new Ed25519();
@@ -61,8 +61,8 @@ class Ed25519SignatureTest extends TestCase
         $key = new JWK([
             'kty' => 'OKP',
             'crv' => 'Ed25519',
-            'd' => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
-            'x' => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+            'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+            'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
         ]);
 
         $header = ['alg' => 'Ed25519'];

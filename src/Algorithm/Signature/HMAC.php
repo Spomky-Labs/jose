@@ -15,7 +15,6 @@ use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 
 /**
  * This class handles signatures using HMAC.

@@ -26,7 +26,7 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()-1,
+                'exp' => time() - 1,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -49,8 +49,8 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()+100,
+                'exp' => time() + 3600,
+                'iat' => time() + 100,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -73,9 +73,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()+100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() + 100,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -98,9 +98,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'aud' => 'Other Service',
             ],
             [
@@ -124,9 +124,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
             ],
             [
                 'enc'  => 'A256CBC-HS512',
@@ -150,9 +150,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'iss' => 'foo',
             ],
             [
@@ -177,9 +177,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'foo',
             ],
@@ -206,9 +206,9 @@ class CheckerManagerTest extends TestCase
         $jwe = JWEFactory::createEmptyJWE(
             [
                 'jti' => 'bad jti',
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
             ],
@@ -231,9 +231,9 @@ class CheckerManagerTest extends TestCase
         $jwe = JWEFactory::createEmptyJWE(
             [
                 'jti' => 'JTI1',
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
                 'aud' => 'My Service',
@@ -257,9 +257,9 @@ class CheckerManagerTest extends TestCase
         $jwe = JWEFactory::createEmptyJWE(
             [
                 'jti' => 'JTI1',
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
                 'aud' => 'My Service',

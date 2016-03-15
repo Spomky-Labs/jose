@@ -20,9 +20,6 @@ use Jose\Object\Recipient;
  */
 class JWETest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testJWE()
     {
         $claims = [
@@ -141,7 +138,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createEmptyJWE([]);
         $jwe = $jwe->addRecipientWithEncryptedKey(null, [
             'foo'  => 'bar',
-            'plic' => 'ploc'
+            'plic' => 'ploc',
         ]);
 
         $this->assertEquals(1, $jwe->countRecipients());

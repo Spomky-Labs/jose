@@ -23,9 +23,6 @@ use Jose\Test\TestCase;
  */
 class JWAManagerTest extends TestCase
 {
-    /**
-     *
-     */
     public function testAlgorithmIsSupported()
     {
         $jwa_manager = AlgorithmManagerFactory::createAlgorithmManager(['ES256', 'ES384']);
@@ -62,9 +59,6 @@ class JWAManagerTest extends TestCase
         $jwa_manager->removeAlgorithm(new \StdClass());
     }
 
-    /**
-     *
-     */
     public function testAllAlgorithms()
     {
         $algorithms = [
