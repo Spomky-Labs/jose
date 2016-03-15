@@ -12,11 +12,11 @@
 include_once __DIR__.'/../../vendor/autoload.php';
 
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
-use Jose\Object\JWK;
-use Jose\Object\JWKInterface;
 use Jose\Algorithm\KeyEncryption\RSA15;
 use Jose\Algorithm\KeyEncryption\RSAOAEP;
 use Jose\Algorithm\KeyEncryption\RSAOAEP256;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 use Jose\Util\StringUtil;
 
 function testKeyEncryptionPerformance(KeyEncryptionInterface $alg, JWKInterface $recipient_key)
@@ -24,20 +24,20 @@ function testKeyEncryptionPerformance(KeyEncryptionInterface $alg, JWKInterface 
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512/8);
+    $cek = StringUtil::generateRandomBytes(512 / 8);
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->encryptKey($recipient_key, $cek, $header, $header);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/wrapping'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -46,22 +46,22 @@ function testKeyDecryptionPerformance(KeyEncryptionInterface $alg, JWKInterface 
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512/8);
+    $cek = StringUtil::generateRandomBytes(512 / 8);
 
     $encrypted_cek = $alg->encryptKey($recipient_key, $cek, $header, $header);
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->decryptKey($recipient_key, $encrypted_cek, $header);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/unwrapping'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -119,10 +119,10 @@ print_r('####################################'.PHP_EOL);
 print_r('# KEY ENCRYPTION PERFORMANCE TESTS #'.PHP_EOL);
 print_r('####################################'.PHP_EOL);
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyEncryptionPerformance($environment[0], $environment[1]);
 }
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyDecryptionPerformance($environment[0], $environment[1]);
 }
 

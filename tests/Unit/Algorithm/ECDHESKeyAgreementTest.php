@@ -62,9 +62,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('y', $additional_header_values['epk']));
     }
 
-    /**
-     *
-     */
     public function testGetAgreementKeyWithA128KeyWrap()
     {
         $header = ['enc' => 'A128GCM'];
@@ -103,9 +100,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 128, $header));
     }
 
-    /**
-     *
-     */
     public function testGetAgreementKeyWithA192KeyWrap()
     {
         $header = ['enc' => 'A192GCM'];
@@ -143,9 +137,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $ecdh_es->unwrapAgreementKey($receiver, $encrypted_cek, 192, $header));
     }
 
-    /**
-     *
-     */
     public function testGetAgreementKeyWithA256KeyWrap()
     {
         $header = ['enc' => 'A256GCM'];

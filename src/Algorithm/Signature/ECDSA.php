@@ -14,7 +14,6 @@ namespace Jose\Algorithm\Signature;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
@@ -29,9 +28,6 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private $adapter;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->adapter = EccFactory::getAdapter();

@@ -12,8 +12,8 @@
 use Jose\Algorithm\Signature\None;
 use Jose\Factory\SignerFactory;
 use Jose\Loader;
-use Jose\Object\JWSInterface;
 use Jose\Object\JWK;
+use Jose\Object\JWSInterface;
 use Jose\Test\TestCase;
 
 /**
@@ -24,9 +24,6 @@ use Jose\Test\TestCase;
  */
 class NoneSignatureTest extends TestCase
 {
-    /**
-     *
-     */
     public function testNoneSignAndVerifyAlgorithm()
     {
         $key = new JWK([
@@ -58,9 +55,6 @@ class NoneSignatureTest extends TestCase
         $none->sign($key, $data);
     }
 
-    /**
-     *
-     */
     public function testNoneSignAndVerifyComplete()
     {
         $jwk = new JWK([

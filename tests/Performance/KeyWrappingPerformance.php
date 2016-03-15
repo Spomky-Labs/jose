@@ -11,18 +11,18 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
-use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
-use Jose\Object\JWK;
-use Jose\Object\JWKInterface;
-use Jose\Algorithm\KeyEncryption\A128KW;
-use Jose\Algorithm\KeyEncryption\A192KW;
-use Jose\Algorithm\KeyEncryption\A256KW;
 use Jose\Algorithm\KeyEncryption\A128GCMKW;
+use Jose\Algorithm\KeyEncryption\A128KW;
 use Jose\Algorithm\KeyEncryption\A192GCMKW;
+use Jose\Algorithm\KeyEncryption\A192KW;
 use Jose\Algorithm\KeyEncryption\A256GCMKW;
+use Jose\Algorithm\KeyEncryption\A256KW;
+use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
 use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
 use Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
 use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 use Jose\Util\StringUtil;
 
 function testKeyWrappinPerformance(KeyWrappingInterface $alg, JWKInterface $recipient_key)
@@ -30,20 +30,20 @@ function testKeyWrappinPerformance(KeyWrappingInterface $alg, JWKInterface $reci
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512/8);
+    $cek = StringUtil::generateRandomBytes(512 / 8);
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->wrapKey($recipient_key, $cek, $header, $header);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/wrapping'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -52,22 +52,22 @@ function testKeyUnwrappingPerformance(KeyWrappingInterface $alg, JWKInterface $r
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A128GCM',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512/8);
+    $cek = StringUtil::generateRandomBytes(512 / 8);
 
     $encrypted_cek = $alg->wrapKey($recipient_key, $cek, $header, $header);
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->unwrapKey($recipient_key, $encrypted_cek, $header);
     }
     $time_end = microtime(true);
 
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/unwrapping'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -146,10 +146,10 @@ print_r('##################################'.PHP_EOL);
 print_r('# KEY WRAPPING PERFORMANCE TESTS #'.PHP_EOL);
 print_r('##################################'.PHP_EOL);
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyWrappinPerformance($environment[0], $environment[1]);
 }
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyUnwrappingPerformance($environment[0], $environment[1]);
 }
 

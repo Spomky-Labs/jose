@@ -10,8 +10,8 @@
  */
 
 use Jose\Factory\JWEFactory;
-use Jose\Test\TestCase;
 use Jose\Object\Recipient;
+use Jose\Test\TestCase;
 
 /**
  * @group CheckerManager
@@ -27,7 +27,7 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()-1,
+                'exp' => time() - 1,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -50,8 +50,8 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()+100,
+                'exp' => time() + 3600,
+                'iat' => time() + 100,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -74,9 +74,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()+100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() + 100,
             ],
             [
                 'enc' => 'A256CBC-HS512',
@@ -99,9 +99,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
                 'aud' => 'Other Service',
             ],
             [
@@ -125,9 +125,9 @@ class CheckerManagerTest extends TestCase
     {
         $jwe = JWEFactory::createEmptyJWE(
             [
-                'exp' => time()+3600,
-                'iat' => time()-100,
-                'nbf' => time()-100,
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
             ],
             [
                 'enc'  => 'A256CBC-HS512',

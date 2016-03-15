@@ -21,9 +21,6 @@ use Jose\Object\JWK;
  */
 class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testA128GCMKW()
     {
         $header = [];
@@ -82,9 +79,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $aeskw->unwrapKey($key, $cek, $header);
     }
 
-    /**
-     *
-     */
     public function testA192GCMKW()
     {
         $header = [];
@@ -106,9 +100,6 @@ class AESGCMKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $aeskw->unwrapKey($key, $wrapped_cek, $header));
     }
 
-    /**
-     *
-     */
     public function testA256GCMKW()
     {
         $header = [];

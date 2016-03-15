@@ -15,7 +15,6 @@ use Base64Url\Base64Url;
 use Jose\Factory\DecrypterFactory;
 use Jose\Factory\EncrypterFactory;
 use Jose\Factory\JWEFactory;
-use Jose\Factory\JWKFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -103,7 +102,7 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testECDH_ES_A128KWAndA128GCMEncryptionBis()
     {

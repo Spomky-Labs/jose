@@ -18,7 +18,7 @@ final class StringUtil
 {
     /**
      * @param int $size
-     * 
+     *
      * @return string
      */
     public static function generateRandomBytes($size)

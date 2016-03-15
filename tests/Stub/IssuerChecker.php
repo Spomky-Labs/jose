@@ -13,8 +13,6 @@ namespace Jose\Test\Stub;
 
 use Jose\ClaimChecker\IssuerChecker as Base;
 
-/**
- */
 class IssuerChecker extends Base
 {
     /**

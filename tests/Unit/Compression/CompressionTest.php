@@ -22,9 +22,6 @@ use Jose\Compression\ZLib;
  */
 class CompressionTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testGetValidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
@@ -36,9 +33,6 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf(CompressionInterface::class, $compression);
     }
 
-    /**
-     *
-     */
     public function testGetInvalidCompressionAlgorithm()
     {
         $manager = new CompressionManager();
@@ -50,9 +44,6 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($compression);
     }
 
-    /**
-     *
-     */
     public function testDeflate()
     {
         $compression = new Deflate(9);
@@ -64,9 +55,6 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($data, $uncompressed);
     }
 
-    /**
-     *
-     */
     public function testGZip()
     {
         $compression = new GZip(9);
@@ -78,9 +66,6 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($data, $uncompressed);
     }
 
-    /**
-     *
-     */
     public function testZLib()
     {
         $compression = new ZLib(9);

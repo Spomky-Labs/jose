@@ -227,8 +227,6 @@ class RSAKeysTest extends TestCase
         $this->assertFalse($public_key->isPrivate());
     }
 
-    /**
-     */
     public function testConvertPrivateKeyToPublic()
     {
         $private_ec_key = new RSAKey([

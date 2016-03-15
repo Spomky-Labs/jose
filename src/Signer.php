@@ -22,8 +22,6 @@ use Jose\Object\Signature;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
-/**
- */
 final class Signer implements SignerInterface
 {
     use HasKeyChecker;

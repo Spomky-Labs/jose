@@ -87,7 +87,7 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
     }
 
     /**
-     * Same input as before, but we perform the encryption first
+     * Same input as before, but we perform the encryption first.
      */
     public function testA128KWAndA128GCMEncryptionProtectedContentOnlyBis()
     {

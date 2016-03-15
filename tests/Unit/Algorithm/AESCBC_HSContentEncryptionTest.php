@@ -44,8 +44,6 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_T, $T);
     }
 
-    /**
-     */
     public function testBadTag()
     {
         $header = Base64Url::encode(json_encode(['alg' => 'A128KW', 'enc' => 'A128CBC-HS256']));

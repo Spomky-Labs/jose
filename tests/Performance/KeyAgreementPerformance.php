@@ -11,17 +11,17 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
+use Jose\Algorithm\KeyEncryption\ECDHES;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
-use Jose\Algorithm\KeyEncryption\ECDHES;
 
 function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
 {
     $header = [
         'alg' => $alg->getAlgorithmName(),
         'enc' => 'A256CBC-HS512',
-        'exp' => time()+3600,
+        'exp' => time() + 3600,
         'iat' => time(),
         'nbf' => time(),
     ];
@@ -29,12 +29,12 @@ function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKIn
     $nb = 100;
 
     $time_start = microtime(true);
-    for($i = 0; $i < $nb; $i++) {
-        $alg->getAgreementKey(512/8, 'A256GCM', $sender_key, $recipient_key, $header, $ahv);
+    for ($i = 0; $i < $nb; $i++) {
+        $alg->getAgreementKey(512 / 8, 'A256GCM', $sender_key, $recipient_key, $header, $ahv);
     }
 
     $time_end = microtime(true);
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/key agreement (%s)'.PHP_EOL, $alg->getAlgorithmName(), $time, $message);
 }
 
@@ -84,7 +84,7 @@ print_r('###################################'.PHP_EOL);
 print_r('# KEY AGREEMENT PERFORMANCE TESTS #'.PHP_EOL);
 print_r('###################################'.PHP_EOL);
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testKeyAgreementPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
 }
 

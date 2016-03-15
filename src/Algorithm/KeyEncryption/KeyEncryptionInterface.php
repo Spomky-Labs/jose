@@ -14,9 +14,6 @@ namespace Jose\Algorithm\KeyEncryption;
 use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
 use Jose\Object\JWKInterface;
 
-/**
- *
- */
 interface KeyEncryptionInterface extends KeyEncryptionAlgorithmInterface
 {
     /**

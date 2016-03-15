@@ -23,8 +23,8 @@ use Jose\Factory\VerifierFactory;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Loader;
 use Jose\Object\JWEInterface;
-use Jose\Object\JWSInterface;
 use Jose\Object\JWK;
+use Jose\Object\JWSInterface;
 use Jose\Test\TestCase;
 
 /**
@@ -69,9 +69,6 @@ class RSASignatureTest extends TestCase
         $rsa->sign($key, $data);
     }
 
-    /**
-     *
-     */
     public function testRS256Sign()
     {
         $rsa = new RS256();
@@ -94,9 +91,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testRS384Sign()
     {
         $rsa = new RS384();
@@ -119,9 +113,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testRS512Sign()
     {
         $rsa = new RS512();
@@ -144,9 +135,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testPS256Sign()
     {
         $rsa = new PS256();
@@ -168,9 +156,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testPS384Sign()
     {
         $rsa = new PS384();
@@ -192,9 +177,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testPS512Sign()
     {
         $rsa = new PS512();
@@ -216,9 +198,6 @@ class RSASignatureTest extends TestCase
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testCompleteRS256Sign()
     {
         $key = new JWK([
@@ -258,9 +237,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompleteRS256SignWithDetachedPayload()
     {
         $key = new JWK([
@@ -303,9 +279,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompleteRS384Sign()
     {
         $key = new JWK([
@@ -346,9 +319,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('RS384', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompleteRS512Sign()
     {
         $key = new JWK([
@@ -390,9 +360,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('RS512', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompletePS256Sign()
     {
         $key = new JWK([
@@ -434,9 +401,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('PS256', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompletePS384Sign()
     {
         $key = new JWK([
@@ -476,9 +440,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('PS384', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     *
-     */
     public function testCompletePS512Sign()
     {
         $key = new JWK([
@@ -684,8 +645,6 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('ES512', $result->getSignature(0)->getProtectedHeader('alg'));
     }
 
-    /**
-     */
     public function testCertificateConversion()
     {
         $details = KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'RSA'.DIRECTORY_SEPARATOR.'private.encrypted.key', 'tests');

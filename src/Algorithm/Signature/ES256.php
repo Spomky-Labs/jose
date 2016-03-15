@@ -13,8 +13,6 @@ namespace Jose\Algorithm\Signature;
 
 use Mdanter\Ecc\EccFactory;
 
-/**
- */
 final class ES256 extends ECDSA
 {
     /**

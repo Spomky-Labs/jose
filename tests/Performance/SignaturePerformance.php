@@ -11,37 +11,36 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
-use Jose\Algorithm\SignatureAlgorithmInterface;
-use Jose\Object\JWK;
-use Jose\Object\JWKInterface;
 use Jose\Algorithm\Signature\Ed25519;
-use Jose\Algorithm\Signature\HS256;
-use Jose\Algorithm\Signature\HS384;
-use Jose\Algorithm\Signature\HS512;
-use Jose\Algorithm\Signature\RS256;
-use Jose\Algorithm\Signature\RS384;
-use Jose\Algorithm\Signature\RS512;
-use Jose\Algorithm\Signature\PS256;
-use Jose\Algorithm\Signature\PS384;
-use Jose\Algorithm\Signature\PS512;
 use Jose\Algorithm\Signature\ES256;
 use Jose\Algorithm\Signature\ES384;
 use Jose\Algorithm\Signature\ES512;
+use Jose\Algorithm\Signature\HS256;
+use Jose\Algorithm\Signature\HS384;
+use Jose\Algorithm\Signature\HS512;
 use Jose\Algorithm\Signature\None;
+use Jose\Algorithm\Signature\PS256;
+use Jose\Algorithm\Signature\PS384;
+use Jose\Algorithm\Signature\PS512;
+use Jose\Algorithm\Signature\RS256;
+use Jose\Algorithm\Signature\RS384;
+use Jose\Algorithm\Signature\RS512;
+use Jose\Algorithm\SignatureAlgorithmInterface;
+use Jose\Object\JWK;
+use Jose\Object\JWKInterface;
 
 function testSignaturePerformance(SignatureAlgorithmInterface $alg, JWKInterface $key)
 {
     $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
 
-
     $time_start = microtime(true);
     $nb = 100;
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->sign($key, $payload);
     }
 
     $time_end = microtime(true);
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/signature'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -52,12 +51,12 @@ function testVerificationPerformance(SignatureAlgorithmInterface $alg, JWKInterf
 
     $time_start = microtime(true);
     $nb = 100;
-    for($i = 0; $i < $nb; $i++) {
+    for ($i = 0; $i < $nb; $i++) {
         $alg->verify($key, $payload, $signature);
     }
 
     $time_end = microtime(true);
-    $time = ($time_end - $time_start)/$nb*1000;
+    $time = ($time_end - $time_start) / $nb * 1000;
     printf('%s: %f milliseconds/verification'.PHP_EOL, $alg->getAlgorithmName(), $time);
 }
 
@@ -237,8 +236,8 @@ function dataSignaturePerformance()
             new JWK([
                 'kty' => 'OKP',
                 'crv' => 'Ed25519',
-                'd' => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
-                'x' => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+                'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+                'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
             ]),
         ],
     ];
@@ -250,11 +249,11 @@ print_r('###############################'.PHP_EOL);
 print_r('# SIGNATURE PERFORMANCE TESTS #'.PHP_EOL);
 print_r('###############################'.PHP_EOL);
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testSignaturePerformance($environment[0], $environment[1]);
 }
 
-foreach($environments as $environment) {
+foreach ($environments as $environment) {
     testVerificationPerformance($environment[0], $environment[1]);
 }
 

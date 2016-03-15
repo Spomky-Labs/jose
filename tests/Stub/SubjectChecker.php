@@ -13,8 +13,6 @@ namespace Jose\Test\Stub;
 
 use Jose\ClaimChecker\SubjectChecker as Base;
 
-/**
- */
 class SubjectChecker extends Base
 {
     /**

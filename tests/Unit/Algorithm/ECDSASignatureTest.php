@@ -40,9 +40,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $ecdsa->sign($key, $data);
     }
 
-    /**
-     *
-     */
     public function testES256Verify()
     {
         $key = new JWK([
@@ -63,9 +60,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
     }
 
-    /**
-     *
-     */
     public function testES256SignVerify()
     {
         $key = new JWK([
@@ -103,9 +97,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $ecdsa->sign($key, $data);
     }
 
-    /**
-     *
-     */
     public function testES256SignAndVerify()
     {
         $public_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es256.key'));
@@ -118,9 +109,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testES384SignAndVerify()
     {
         $public_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es384.key'));
@@ -133,9 +121,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testES512SignAndVerify()
     {
         $public_key = new JWK(KeyConverter::loadFromKeyFile('file://'.__DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'Keys'.DIRECTORY_SEPARATOR.'EC'.DIRECTORY_SEPARATOR.'public.es512.key'));
@@ -148,9 +133,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($public_key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testHS512Verify()
     {
         $key = new JWK([
@@ -171,9 +153,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($key, $data, Base64Url::decode($signature)));
     }
 
-    /**
-     *
-     */
     public function testHS512SignVerify()
     {
         $key = new JWK([
@@ -192,9 +171,6 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($ecdsa->verify($key, $data, $signature));
     }
 
-    /**
-     *
-     */
     public function testBadSignature()
     {
         $key = new JWK([

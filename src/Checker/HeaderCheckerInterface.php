@@ -12,7 +12,7 @@
 namespace Jose\Checker;
 
 /**
- * Interface HeaderCheckerInterface
+ * Interface HeaderCheckerInterface.
  */
 interface HeaderCheckerInterface
 {
