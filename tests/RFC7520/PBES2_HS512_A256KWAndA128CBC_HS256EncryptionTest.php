@@ -157,10 +157,11 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
         $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $private_key
         );
+
+        $encrypter->encrypt($jwe);
 
         $decrypter = DecrypterFactory::createDecrypter(['PBES2-HS512+A256KW', 'A128CBC-HS256']);
 
@@ -170,9 +171,11 @@ class PBES2_HS512_A256KWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framewor
         $loaded_json = Loader::load($jwe->toJSON());
         $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
-        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('p2s', $loaded_flattened_json->getSharedProtectedHeaders()));
+        $this->assertTrue(array_key_exists('p2c', $loaded_flattened_json->getSharedProtectedHeaders()));
 
-        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('p2s', $loaded_json->getSharedProtectedHeaders()));
+        $this->assertTrue(array_key_exists('p2c', $loaded_json->getSharedProtectedHeaders()));
 
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());

@@ -137,10 +137,11 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A128KW', 'A128GCM']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $public_key
         );
+
+        $encrypter->encrypt($jwe);
 
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES+A128KW', 'A128GCM']);
 
@@ -150,9 +151,9 @@ class ECDH_ES_A128KWAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $loaded_json = Loader::load($jwe->toJSON());
         $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
 
-        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('epk', $loaded_flattened_json->getSharedProtectedHeaders()));
 
-        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('epk', $loaded_json->getSharedProtectedHeaders()));
 
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());

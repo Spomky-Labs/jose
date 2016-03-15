@@ -91,10 +91,12 @@ final class JWEFactory
         Assertion::keyExists($complete_headers, 'enc', 'No "enc" parameter set in the header');
         $encrypter = EncrypterFactory::createEncrypter([$complete_headers['alg'], $complete_headers['enc']], ['DEF'], $logger);
 
-        $jws = self::createEmptyJWE($payload, $shared_protected_headers, $shared_headers, $aad);
+        $jwe = self::createEmptyJWE($payload, $shared_protected_headers, $shared_headers, $aad);
 
-        $encrypter->addRecipient($jws, $recipient_key, $recipient_headers);
+        $jwe = $jwe->addRecipient($recipient_key, $recipient_headers);
 
-        return $jws;
+        $encrypter->encrypt($jwe);
+
+        return $jwe;
     }
 }

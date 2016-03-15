@@ -23,11 +23,4 @@ interface EncrypterInterface
      * @param \Jose\Object\JWEInterface $jwe
      */
     public function encrypt(JWEInterface &$jwe);
-
-    /**
-     * @param \Jose\Object\JWEInterface      $jwe
-     * @param \Jose\Object\JWKInterface      $recipient_key
-     * @param array                          $recipient_headers
-     */
-    public function addRecipient(JWEInterface &$jwe, JWKInterface $recipient_key, array $recipient_headers = []);
 }
