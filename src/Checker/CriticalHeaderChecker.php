@@ -31,5 +31,4 @@ class CriticalHeaderChecker implements HeaderCheckerInterface
             throw new \InvalidArgumentException(sprintf('One or more claims are marked as critical, but they are missing or have not been checked (%s).', json_encode(array_values($diff))));
         }
     }
-
 }

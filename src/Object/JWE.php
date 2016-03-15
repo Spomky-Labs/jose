@@ -318,9 +318,6 @@ final class JWE implements JWEInterface
         );
     }
 
-    /**
-     *
-     */
     private function checkHasNoAAD()
     {
         if (!empty($this->getAAD())) {
@@ -338,9 +335,6 @@ final class JWE implements JWEInterface
         }
     }
 
-    /**
-     *
-     */
     private function checkHasSharedProtectedHeaders()
     {
         if (empty($this->getSharedProtectedHeaders())) {

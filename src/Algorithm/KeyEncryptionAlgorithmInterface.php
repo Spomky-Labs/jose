@@ -11,9 +11,6 @@
 
 namespace Jose\Algorithm;
 
-/**
- *
- */
 interface KeyEncryptionAlgorithmInterface extends JWAInterface
 {
     const MODE_DIRECT = 'dir';

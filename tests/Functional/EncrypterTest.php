@@ -27,9 +27,6 @@ use Jose\Test\TestCase;
  */
 class EncrypterTest extends TestCase
 {
-    /**
-     *
-     */
     public function testEncryptWithJWTInput()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF']);
@@ -68,9 +65,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
-    /**
-     *
-     */
     public function testCreateCompactJWEUsingFactory()
     {
         $jwe = JWEFactory::createJWEToCompactJSON(
@@ -99,9 +93,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
-    /**
-     *
-     */
     public function testCreateFlattenedJWEUsingFactory()
     {
         $jwe = JWEFactory::createJWEToFlattenedJSON(
@@ -140,9 +131,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals('FOO', $loaded->getPayload());
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadFlattenedWithAAD()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A256CBC-HS512'], ['DEF']);
@@ -207,9 +195,6 @@ class EncrypterTest extends TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testMultipleInstructionsNotAllowedWithCompactSerialization()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP', 'RSA-OAEP-256', 'A256CBC-HS512'], ['DEF']);
@@ -235,9 +220,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals(2, $jwe->countRecipients());
     }
 
-    /**
-     *
-     */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF']);
@@ -342,9 +324,6 @@ class EncrypterTest extends TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadFlattenedWithDeflateCompression()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A128CBC-HS256'], ['DEF']);
@@ -467,9 +446,6 @@ class EncrypterTest extends TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadCompactWithDirectKeyEncryption()
     {
         $encrypter = EncrypterFactory::createEncrypter(['dir', 'A192CBC-HS384'], ['DEF']);
@@ -505,9 +481,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadCompactKeyAgreement()
     {
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A192CBC-HS384'], ['DEF']);
@@ -585,9 +558,6 @@ class EncrypterTest extends TestCase
         );
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadCompactKeyAgreementWithWrappingCompact()
     {
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF']);
@@ -623,9 +593,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadWithGCMAndAAD()
     {
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES+A256KW', 'A256GCM'], ['DEF']);
@@ -666,9 +633,6 @@ class EncrypterTest extends TestCase
         $this->assertEquals('Je suis Charlie', $loaded->getPayload());
     }
 
-    /**
-     *
-     */
     public function testEncryptAndLoadCompactKeyAgreementWithWrapping()
     {
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF']);

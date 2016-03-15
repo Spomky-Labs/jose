@@ -31,8 +31,6 @@ use Jose\Object\Recipient;
 use Jose\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 
-/**
- */
 final class Encrypter implements EncrypterInterface
 {
     use HasKeyChecker;

@@ -10,6 +10,7 @@
  */
 
 namespace Jose;
+
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 use Psr\Log\LoggerInterface;

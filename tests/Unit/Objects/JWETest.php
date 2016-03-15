@@ -20,9 +20,6 @@ use Jose\Object\Recipient;
  */
 class JWETest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     *
-     */
     public function testJWE()
     {
         $claims = [

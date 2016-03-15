@@ -49,9 +49,6 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_cek, $pbes2->unwrapKey($key, $wrapped_cek, $header));
     }
 
-    /**
-     *
-     */
     public function testPBES2HS256A128KW_Bis()
     {
         $header = [
@@ -73,9 +70,6 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $pbes2->unwrapKey($key, $encrypted_cek, $header));
     }
 
-    /**
-     *
-     */
     public function testPBES2HS384A192KW()
     {
         $header = [
@@ -97,9 +91,6 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($cek, $pbes2->unwrapKey($key, $encrypted_cek, $header));
     }
 
-    /**
-     *
-     */
     public function testPBES2HS512A256KW()
     {
         $header = [

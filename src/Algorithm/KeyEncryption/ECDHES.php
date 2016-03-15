@@ -28,9 +28,6 @@ final class ECDHES implements KeyAgreementInterface
      */
     private $adapter;
 
-    /**
-     *
-     */
     public function __construct()
     {
         $this->adapter = EccFactory::getAdapter();

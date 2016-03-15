@@ -37,9 +37,6 @@ class DirAlgorithmTest extends TestCase
         $dir->getCEK($key, $header);
     }
 
-    /**
-     *
-     */
     public function testValidCEK()
     {
         $header = [];

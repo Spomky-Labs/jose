@@ -53,7 +53,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $jws->countSignatures());
 
         $checker_manager = CheckerManagerFactory::createClaimCheckerManager();
-        $checker_manager->checkJWS($jws,0);
+        $checker_manager->checkJWS($jws, 0);
     }
 
     /**
