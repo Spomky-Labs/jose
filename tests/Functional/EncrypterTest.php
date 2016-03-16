@@ -235,7 +235,7 @@ class EncrypterTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Foreign key management mode forbidden.
+     * @expectedExceptionMessage Inconsistent "zip" parameter.
      */
     public function testMultipleInstructionsNotAllowedWithFlattenedSerialization2()
     {
