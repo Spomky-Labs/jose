@@ -259,7 +259,7 @@ final class Encrypter implements EncrypterInterface
                     Assertion::eq($method, $complete_headers['zip'], 'Inconsistent "zip" parameter.');
                 }
             } else {
-                Assertion::notNull($method, 'Inconsistent "zip" parameter.');
+                Assertion::eq(null, $method, 'Inconsistent "zip" parameter.');
             }
         }
 
