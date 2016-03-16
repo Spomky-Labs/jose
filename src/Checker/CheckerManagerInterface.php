@@ -26,12 +26,6 @@ interface CheckerManagerInterface
     public function checkJWS(JWSInterface $jws, $signature);
 
     /**
-     * @param \Jose\Object\JWEInterface $jwe
-     * @param int                       $recipient
-     */
-    public function checkJWE(JWEInterface $jwe, $recipient);
-
-    /**
      * @param \Jose\Checker\ClaimCheckerInterface $claim_checker
      */
     public function addClaimChecker(ClaimCheckerInterface $claim_checker);

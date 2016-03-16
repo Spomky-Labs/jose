@@ -9,7 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\JWEFactory;
+use Jose\Object\JWK;
+use Jose\Factory\JWSFactory;
 use Jose\Test\TestCase;
 
 /**
@@ -24,21 +25,19 @@ class CheckerManagerTest extends TestCase
      */
     public function testExpiredJWT()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() - 1,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -47,22 +46,20 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTIssuedInTheFuture()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() + 100,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -71,23 +68,21 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotNow()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() + 100,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -96,24 +91,22 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotForAudience()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
                 'aud' => 'Other Service',
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -122,24 +115,24 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTHasCriticalClaimsNotSatisfied()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss'],
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -148,25 +141,25 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadIssuer()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
                 'iss' => 'foo',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss'],
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -175,26 +168,27 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadSubject()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'foo',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss', 'sub', 'aud'],
-            ],
-            [],
-            'foo,bar,baz'
-        );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+            ]
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -203,7 +197,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadTokenID()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'jti' => 'bad jti',
                 'exp' => time() + 3600,
@@ -211,24 +205,24 @@ class CheckerManagerTest extends TestCase
                 'nbf' => time() - 100,
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss', 'sub', 'aud', 'jti'],
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     public function testJWTSuccessfullyCheckedWithCriticalHeaders()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'jti' => 'JTI1',
                 'exp' => time() + 3600,
@@ -237,24 +231,25 @@ class CheckerManagerTest extends TestCase
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
                 'aud' => 'My Service',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss', 'sub', 'aud', 'jti'],
-            ],
-            [],
-            'foo,bar,baz'
-        );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+            ]
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     public function testJWTSuccessfullyCheckedWithoutCriticalHeaders()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'jti' => 'JTI1',
                 'exp' => time() + 3600,
@@ -263,36 +258,36 @@ class CheckerManagerTest extends TestCase
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
                 'aud' => 'My Service',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     public function testJWTSuccessfullyCheckedWithUnsupportedClaims()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createEmptyJWS(
             [
                 'foo' => 'bar',
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipientWithEncryptedKey();
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 }
