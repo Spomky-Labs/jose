@@ -15,6 +15,7 @@ use Assert\Assertion;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWKInterface;
+use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
 /**
  * Class RSA.
@@ -42,7 +43,7 @@ abstract class RSA implements SignatureAlgorithmInterface
         $rsa = KeyConverter::fromArrayToRSACrypt($values);
 
         $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === \phpseclib\Crypt\RSA::SIGNATURE_PSS) {
+        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());
             $rsa->setSaltLength(0);
         }
@@ -66,16 +67,14 @@ abstract class RSA implements SignatureAlgorithmInterface
         }
 
         $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === \phpseclib\Crypt\RSA::SIGNATURE_PSS) {
+        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
             $rsa->setMGFHash($this->getAlgorithm());
             $rsa->setSaltLength(0);
         }
         $rsa->setSignatureMode($this->getSignatureMethod());
 
         $result = $rsa->sign($input);
-        if ($result === false) {
-            throw new \RuntimeException('An error occurred during the creation of the signature');
-        }
+        Assertion::string($result, 'An error occurred during the creation of the signature');
 
         return $result;
     }
