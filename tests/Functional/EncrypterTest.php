@@ -235,9 +235,9 @@ class EncrypterTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Inconsistent "zip" parameter.
+     * @expectedExceptionMessage Foreign key management mode forbidden.
      */
-    public function testMultipleInstructionsNotAllowedWithFlattenedSerialization2()
+    public function testForeignKeyManagementModeForbidden()
     {
         $encrypter = EncrypterFactory::createEncrypter(['dir', 'ECDH-ES+A256KW', 'A256CBC-HS512'], ['DEF'], new FakeLogger());
 
