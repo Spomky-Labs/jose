@@ -256,12 +256,10 @@ final class Encrypter implements EncrypterInterface
                         throw new \InvalidArgumentException('Inconsistent "zip" parameter.');
                     }
                 } else {
-                    Assertion::eq($method, $complete_headers['enc'], 'Foreign compression methods are not allowed.');
+                    Assertion::eq($method, $complete_headers['zip'], 'Inconsistent "zip" parameter.');
                 }
             } else {
-                if (null !== $method) {
-                    throw new \InvalidArgumentException('Inconsistent "zip" parameter.');
-                }
+                Assertion::notNull($method, 'Inconsistent "zip" parameter.');
             }
         }
 
