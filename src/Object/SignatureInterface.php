@@ -19,16 +19,27 @@ namespace Jose\Object;
 interface SignatureInterface
 {
     /**
-     * @return \Jose\Object\JWKInterface
+     * @param string      $signature
+     * @param string|null $encoded_protected_headers
+     * @param array       $headers
+     *
+     * @return \Jose\Object\Signature
      */
-    public function getSignatureKey();
+    public static function createSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers);
 
     /**
      * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
+     * @param array                     $headers
      *
-     * @return \Jose\Object\SignatureInterface
+     * @return \Jose\Object\Signature
      */
-    public function withSignatureKey(JWKInterface $signature_key);
+    public static function createSignature(JWKInterface $signature_key, array $protected_headers, array $headers);
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function getSignatureKey();
 
     /**
      * The protected header associated with the signature.
@@ -45,15 +56,6 @@ interface SignatureInterface
      * @return array
      */
     public function getProtectedHeaders();
-
-    /**
-     * Set the protected headers associated with the signature.
-     *
-     * @param array $protected_headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withProtectedHeaders(array $protected_headers);
 
     /**
      * Returns the value of the protected header of the specified key.
@@ -77,25 +79,6 @@ interface SignatureInterface
      * @return array
      */
     public function getHeaders();
-
-    /**
-     * Set the headers associated with the signature.
-     *
-     * @param array $headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withHeaders(array $headers);
-
-    /**
-     * Set the header.
-     *
-     * @param string     $key
-     * @param mixed|null $value
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withHeader($key, $value);
 
     /**
      * Returns the value of the unprotected header of the specified key.
@@ -126,11 +109,4 @@ interface SignatureInterface
      * @return string
      */
     public function getSignature();
-
-    /**
-     * @param string $values
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withSignature($values);
 }

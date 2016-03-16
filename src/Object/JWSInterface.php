@@ -31,11 +31,19 @@ interface JWSInterface extends JWTInterface
      * @param \Jose\Object\JWKInterface $signature_key
      * @param array                     $protected_headers
      * @param array                     $headers
-     * @param string|null               $signature
      *
      * @return \Jose\Object\JWSInterface
      */
-    public function addSignature(JWKInterface $signature_key, array $protected_headers = [], array $headers = [], $signature = null);
+    public function addSignature(JWKInterface $signature_key, array $protected_headers, array $headers = []);
+
+    /**
+     * @param string      $signature
+     * @param string|null $encoded_protected_headers
+     * @param array       $headers
+     *
+     * @return \Jose\Object\Signature
+     */
+    public function addSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers);
 
     /**
      * Returns the signature associated with the JWS.

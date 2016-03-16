@@ -33,7 +33,7 @@ final class JWSLoader
             $protected_headers = self::getProtectedHeaders($signature);
             $headers = self::getHeaders($signature);
 
-            $jws = $jws->addSignature(null, $protected_headers, $headers, $bin_signature);
+            $jws = $jws->addSignatureFromLoadedData($bin_signature, $protected_headers, $headers);
         }
 
         return $jws;
@@ -47,10 +47,8 @@ final class JWSLoader
     private static function getProtectedHeaders(array $data)
     {
         if (array_key_exists('protected', $data)) {
-            return json_decode(Base64Url::decode($data['protected']), true);
+            return $data['protected'];
         }
-
-        return [];
     }
 
     /**

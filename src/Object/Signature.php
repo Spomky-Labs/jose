@@ -11,6 +11,7 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 
 /**
@@ -46,6 +47,40 @@ final class Signature implements SignatureInterface
     /**
      * {@inheritdoc}
      */
+    public static function createSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers)
+    {
+        $object = new self();
+        $object->encoded_protected_headers = $encoded_protected_headers;
+        if (null !== $encoded_protected_headers) {
+            $protected_headers = json_decode(Base64Url::decode($encoded_protected_headers), true);
+            Assertion::isArray($protected_headers, 'Unable to decode the protected headers.');
+            $object->protected_headers = $protected_headers;
+        }
+        $object->signature = $signature;
+        $object->headers = $headers;
+
+        return $object;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createSignature(JWKInterface $signature_key, array $protected_headers, array $headers)
+    {
+        $object = new self();
+        $object->protected_headers = $protected_headers;
+        if (!empty($protected_headers)) {
+            $object->encoded_protected_headers = Base64Url::encode(json_encode($protected_headers));
+        }
+        $object->signature_key = $signature_key;
+        $object->headers = $headers;
+
+        return $object;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getProtectedHeaders()
     {
         return $this->protected_headers;
@@ -70,24 +105,10 @@ final class Signature implements SignatureInterface
     /**
      * {@inheritdoc}
      */
-    public function withProtectedHeaders(array $protected_headers)
-    {
-        $signature = clone $this;
-        $signature->protected_headers = $protected_headers;
-        if (!empty($protected_headers)) {
-            $signature->encoded_protected_headers = Base64Url::encode(json_encode($signature->protected_headers));
-        }
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getProtectedHeader($key)
     {
         if ($this->hasProtectedHeader($key)) {
-            return $this->protected_headers[$key];
+            return $this->getProtectedHeaders()[$key];
         }
         throw new \InvalidArgumentException(sprintf('The protected header "%s" does not exist', $key));
     }
@@ -97,29 +118,7 @@ final class Signature implements SignatureInterface
      */
     public function hasProtectedHeader($key)
     {
-        return array_key_exists($key, $this->protected_headers);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeaders(array $headers)
-    {
-        $signature = clone $this;
-        $signature->headers = $headers;
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeader($key, $value)
-    {
-        $signature = clone $this;
-        $signature->headers[$key] = $value;
-
-        return $signature;
+        return array_key_exists($key, $this->getProtectedHeaders());
     }
 
     /**
@@ -158,34 +157,10 @@ final class Signature implements SignatureInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function withSignature($values)
-    {
-        $signature = clone $this;
-        $signature->signature = $values;
-
-        return $signature;
-    }
-
-    /**
      * @return \Jose\Object\JWKInterface
      */
     public function getSignatureKey()
     {
         return $this->signature_key;
-    }
-
-    /**
-     * @param \Jose\Object\JWKInterface $signature_key
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withSignatureKey(JWKInterface $signature_key)
-    {
-        $signature = clone $this;
-        $signature->signature_key = $signature_key;
-
-        return $signature;
     }
 }

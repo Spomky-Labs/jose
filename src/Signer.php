@@ -19,6 +19,7 @@ use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasLogger;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWSInterface;
+use Jose\Object\Signature;
 use Jose\Object\SignatureInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
@@ -88,7 +89,11 @@ final class Signer implements SignerInterface
         $value = $signature_algorithm->sign($signature->getSignatureKey(), $signature->getEncodedProtectedHeaders().'.'.$payload);
         $this->log(LogLevel::DEBUG, 'Signature computation done');
 
-        $signature = $signature->withSignature($value);
+        $signature = Signature::createSignatureFromLoadedData(
+            $value,
+            $signature->getEncodedProtectedHeaders(),
+            $signature->getHeaders()
+        );
 
         $this->log(LogLevel::DEBUG, 'The signature is done', ['signature' => $signature]);
     }

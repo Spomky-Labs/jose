@@ -65,18 +65,21 @@ final class JWS implements JWSInterface
     /**
      * {@inheritdoc}
      */
-    public function addSignature(JWKInterface $signature_key = null, array $protected_headers = [], array $headers = [], $signature = null)
+    public function addSignature(JWKInterface $signature_key, array $protected_headers, array $headers = [])
     {
         $jws = clone $this;
+        $jws->signatures[] = Signature::createSignature($signature_key, $protected_headers, $headers);
 
-        $object = new Signature();
-        if (null !== $signature_key) {
-            $object = $object->withSignatureKey($signature_key);
-        }
-        $object = $object->withProtectedHeaders($protected_headers);
-        $object = $object->withSignature($signature);
-        $object = $object->withHeaders($headers);
-        $jws->signatures[] = $object;
+        return $jws;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers)
+    {
+        $jws = clone $this;
+        $jws->signatures[] = Signature::createSignatureFromLoadedData($signature, $encoded_protected_headers, $headers);
 
         return $jws;
     }

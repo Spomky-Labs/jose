@@ -33,7 +33,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWSWithDetachedPayload($this->getKey3(), $payload);
-        $jws = $jws->addSignature($this->getKey1());
+        $jws = $jws->addSignature($this->getKey1(), []);
 
         $signer->sign($jws);
     }
@@ -47,7 +47,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createEmptyJWS($this->getKey3());
-        $jws = $jws->addSignature($this->getKey1());
+        $jws = $jws->addSignature($this->getKey1(), []);
 
         $signer->sign($jws);
     }
