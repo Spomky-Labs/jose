@@ -29,12 +29,12 @@ interface JWEInterface extends JWTInterface
     public function addRecipient(JWKInterface $recipient_key, $recipient_headers = []);
 
     /**
-     * @param null  $encrypted_key
-     * @param array $recipient_headers
+     * @param string|null $encrypted_key
+     * @param array       $recipient_headers
      *
      * @return \Jose\Object\JWEInterface
      */
-    public function addRecipientWithEncryptedKey($encrypted_key = null, $recipient_headers = []);
+    public function addRecipientWithEncryptedKey($encrypted_key, array $recipient_headers);
 
     /**
      * Returns the recipients associated with the JWS.

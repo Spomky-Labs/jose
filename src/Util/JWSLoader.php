@@ -42,7 +42,7 @@ final class JWSLoader
     /**
      * @param array $data
      *
-     * @return array
+     * @return string|null
      */
     private static function getProtectedHeaders(array $data)
     {

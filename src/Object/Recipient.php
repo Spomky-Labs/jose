@@ -29,13 +29,10 @@ final class Recipient implements RecipientInterface
     /**
      * @var \Jose\Object\JWKInterface
      */
-    private $recipient_key;
+    private $recipient_key = null;
 
     /**
-     * @param array  $headers
-     * @param string $encrypted_key
-     *
-     * @return \Jose\Object\Recipient
+     * {@inheritdoc}
      */
     public static function createRecipientFromLoadedJWE(array $headers, $encrypted_key)
     {
@@ -47,12 +44,9 @@ final class Recipient implements RecipientInterface
     }
 
     /**
-     * @param \Jose\Object\JWKInterface $recipient_key
-     * @param array                     $headers
-     *
-     * @return \Jose\Object\Recipient
+     * {@inheritdoc}
      */
-    public static function createRecipientForJWEEncryption(JWKInterface $recipient_key, array $headers = [])
+    public static function createRecipient(JWKInterface $recipient_key, array $headers = [])
     {
         $recipient = new self();
         $recipient->headers = $headers;
@@ -67,28 +61,6 @@ final class Recipient implements RecipientInterface
     public function getHeaders()
     {
         return $this->headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeaders(array $headers)
-    {
-        $signature = clone $this;
-        $signature->headers = $headers;
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeader($key, $value)
-    {
-        $signature = clone $this;
-        $signature->headers[$key] = $value;
-
-        return $signature;
     }
 
     /**
@@ -121,30 +93,8 @@ final class Recipient implements RecipientInterface
     /**
      * {@inheritdoc}
      */
-    public function withEncryptedKey($encrypted_key)
-    {
-        $recipient = clone $this;
-        $recipient->encrypted_key = $encrypted_key;
-
-        return $recipient;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getRecipientKey()
     {
         return $this->recipient_key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withRecipientKey(JWKInterface $recipient_key)
-    {
-        $recipient = clone $this;
-        $recipient->recipient_key = $recipient_key;
-
-        return $recipient;
     }
 }

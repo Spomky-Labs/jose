@@ -10,7 +10,6 @@
  */
 
 use Jose\Factory\JWEFactory;
-use Jose\Object\Recipient;
 
 /**
  * Class JWETest.
@@ -88,7 +87,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
     public function testCannotGetCompactJSONBecauseAADIsSet()
     {
         $jwe = JWEFactory::createEmptyJWE([], [], [], 'foo');
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jwe = $jwe->addRecipientWithEncryptedKey(null, []);
 
         $jwe->toCompactJSON(0);
     }
@@ -100,7 +99,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
     public function testCannotGetCompactJSONBecauseSharedProtectedHeadersAreNotSet()
     {
         $jwe = JWEFactory::createEmptyJWE([], [], ['foo' => 'bar']);
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jwe = $jwe->addRecipientWithEncryptedKey(null, []);
 
         $jwe->toCompactJSON(0);
     }
@@ -112,7 +111,7 @@ class JWETest extends \PHPUnit_Framework_TestCase
     public function testCannotGetCompactJSONBecauseSharedHeadersAreSet()
     {
         $jwe = JWEFactory::createEmptyJWE([], ['plic' => 'ploc'], ['foo' => 'bar']);
-        $jwe = $jwe->addRecipientWithEncryptedKey();
+        $jwe = $jwe->addRecipientWithEncryptedKey(null, []);
 
         $jwe->toCompactJSON(0);
     }

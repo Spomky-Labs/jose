@@ -27,6 +27,7 @@ use Jose\Compression\CompressionInterface;
 use Jose\Compression\CompressionManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
+use Jose\Object\Recipient;
 use Jose\Object\RecipientInterface;
 use Jose\Util\StringUtil;
 use Psr\Log\LoggerInterface;
@@ -150,14 +151,16 @@ final class Encrypter implements EncrypterInterface
             $recipient->getRecipientKey()
         );
 
+        $recipient_headers = $recipient->getHeaders();
         if (!empty($additional_headers) && 1 !== $jwe->countRecipients()) {
-            foreach ($additional_headers as $key => $value) {
-                $recipient = $recipient->withHeader($key, $value);
-            }
+            $recipient_headers = array_merge(
+                $recipient_headers,
+                $additional_headers
+            );
+            $additional_headers = [];
         }
-        if (null !== $encrypted_content_encryption_key) {
-            $recipient = $recipient->withEncryptedKey($encrypted_content_encryption_key);
-        }
+
+        $recipient = Recipient::createRecipientFromLoadedJWE($recipient_headers, $encrypted_content_encryption_key);
     }
 
     /**
