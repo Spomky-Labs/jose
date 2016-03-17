@@ -13,7 +13,6 @@ use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryption\A128GCM;
 use Jose\Algorithm\ContentEncryption\A192GCM;
 use Jose\Algorithm\ContentEncryption\A256GCM;
-use Jose\Util\StringUtil;
 
 /**
  * Class AESGCMContentEncryptionTest.
@@ -29,8 +28,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $algorithm = new A128GCM();
 
-        $cek = StringUtil::generateRandomBytes(128 / 8);
-        $iv = StringUtil::generateRandomBytes(96 / 8);
+        $cek = random_bytes(128 / 8);
+        $iv = random_bytes(96 / 8);
         $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
@@ -46,8 +45,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $algorithm = new A192GCM();
 
-        $cek = StringUtil::generateRandomBytes(192 / 8);
-        $iv = StringUtil::generateRandomBytes(96 / 8);
+        $cek = random_bytes(192 / 8);
+        $iv = random_bytes(96 / 8);
         $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);
@@ -63,8 +62,8 @@ class AESGCMContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $algorithm = new A256GCM();
 
-        $cek = StringUtil::generateRandomBytes(256 / 8);
-        $iv = StringUtil::generateRandomBytes(96 / 8);
+        $cek = random_bytes(256 / 8);
+        $iv = random_bytes(96 / 8);
         $plaintext = 'Live long and Prosper.';
 
         $cyphertext = $algorithm->encryptContent($plaintext, $cek, $iv, null, $header, $tag);

@@ -38,18 +38,18 @@ final class ConcatKDF
         $apu = !empty($apu) ? Base64Url::decode($apu) : '';
         $apv = !empty($apv) ? Base64Url::decode($apv) : '';
         $encryption_segments = [
-            self::toInt32Bits(1),                             // Round number 1
-            $Z,                                               // Z (shared secret)
-            self::toInt32Bits(strlen($algorithm)).$algorithm, // Size of algorithm's name and algorithm
-            self::toInt32Bits(strlen($apu)).$apu,             // PartyUInfo
-            self::toInt32Bits(strlen($apv)).$apv,             // PartyVInfo
-            self::toInt32Bits($encryption_key_size),          // SuppPubInfo (the encryption key size)
-            '',                                               // SuppPrivInfo
+            self::toInt32Bits(1),                                        // Round number 1
+            $Z,                                                          // Z (shared secret)
+            self::toInt32Bits(mb_strlen($algorithm, '8bit')).$algorithm, // Size of algorithm's name and algorithm
+            self::toInt32Bits(mb_strlen($apu, '8bit')).$apu,             // PartyUInfo
+            self::toInt32Bits(mb_strlen($apv, '8bit')).$apv,             // PartyVInfo
+            self::toInt32Bits($encryption_key_size),                     // SuppPubInfo (the encryption key size)
+            '',                                                          // SuppPrivInfo
         ];
 
         $input = implode('', $encryption_segments);
         $hash = hash('sha256', $input, true);
-        $kdf = substr($hash, 0, $encryption_key_size / 8);
+        $kdf = mb_substr($hash, 0, $encryption_key_size / 8, '8bit');
 
         return $kdf;
     }

@@ -253,7 +253,7 @@ final class KeyConverter
             $element = self::getElement($key);
             $value = strtr($value, '-_', '+/');
 
-            switch (strlen($value) % 4) {
+            switch (mb_strlen($value, '8bit') % 4) {
                 case 0:
                     break; // No pad chars in this case
                 case 2:
@@ -309,8 +309,8 @@ final class KeyConverter
         Assertion::notNull($password, 'Password required for encrypted keys.');
 
         $iv = pack('H*', trim($matches[2]));
-        $symkey = pack('H*', md5($password.substr($iv, 0, 8)));
-        $symkey .= pack('H*', md5($symkey.$password.substr($iv, 0, 8)));
+        $symkey = pack('H*', md5($password.mb_substr($iv, 0, 8, '8bit')));
+        $symkey .= pack('H*', md5($symkey.$password.mb_substr($iv, 0, 8, '8bit')));
         $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
         $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
 

@@ -37,7 +37,7 @@ abstract class HMAC implements SignatureAlgorithmInterface
      */
     public function verify(JWKInterface $key, $input, $signature)
     {
-        return $this->compareHMAC($this->sign($key, $input), $signature);
+        return hash_equals($this->sign($key, $input), $signature);
     }
 
     /**
@@ -47,27 +47,6 @@ abstract class HMAC implements SignatureAlgorithmInterface
     {
         Assertion::eq($key->get('kty'), 'oct', 'Wrong key type.');
         Assertion::true($key->has('k'), 'The key parameter "k" is missing.');
-    }
-
-    protected function compareHMAC($safe, $user)
-    {
-        if (function_exists('hash_equals')) {
-            return hash_equals($safe, $user);
-        }
-        $safeLen = strlen($safe);
-        $userLen = strlen($user);
-
-        if ($userLen !== $safeLen) {
-            return false;
-        }
-
-        $result = 0;
-
-        for ($i = 0; $i < $userLen; $i++) {
-            $result |= (ord($safe[$i]) ^ ord($user[$i]));
-        }
-
-        return $result === 0;
     }
 
     /**

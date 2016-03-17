@@ -31,7 +31,10 @@
         "spomky-labs/aes-key-wrap": "^2.0",
         "phpseclib/phpseclib": "^2.0",
         "beberlei/assert": "^2.0",
-        "psr/log": "^1.0"
+        "psr/log": "^1.0",
+        "symfony/polyfill-php56": "^1.1",
+        "symfony/polyfill-mbstring": "^1.1",
+        "symfony/polyfill-php70": "^1.1"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.5|^5.0",

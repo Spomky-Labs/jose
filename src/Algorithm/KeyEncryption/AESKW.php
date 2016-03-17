@@ -57,7 +57,7 @@ abstract class AESKW implements KeyWrappingInterface
     {
         Assertion::eq($key->get('kty'), 'oct', 'Wrong key type.');
         Assertion::true($key->has('k'), 'The key parameter "k" is missing.');
-        Assertion::eq($this->getKeySize(), strlen(Base64Url::decode($key->get('k'))), 'The key size is not valid');
+        Assertion::eq($this->getKeySize(), mb_strlen(Base64Url::decode($key->get('k')), '8bit'), 'The key size is not valid');
     }
 
     /**

@@ -20,7 +20,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
      */
     public function encryptContent($data, $cek, $iv, $aad, $encoded_protected_header, &$tag)
     {
-        $k = substr($cek, strlen($cek) / 2);
+        $k = mb_substr($cek, mb_strlen($cek, '8bit') / 2, null, '8bit');
 
         $cyphertext = openssl_encrypt($data, $this->getMode($k), $k, OPENSSL_RAW_DATA, $iv);
 
@@ -46,7 +46,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
             return;
         }
 
-        $k = substr($cek, strlen($cek) / 2);
+        $k = mb_substr($cek, mb_strlen($cek, '8bit') / 2, null, '8bit');
 
         return openssl_decrypt($data, self::getMode($k), $k, OPENSSL_RAW_DATA, $iv);
     }
@@ -66,8 +66,8 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         if (null !== $aad) {
             $calculated_aad .= '.'.$aad;
         }
-        $mac_key = substr($cek, 0, strlen($cek) / 2);
-        $auth_data_length = strlen($encoded_header);
+        $mac_key = mb_substr($cek, 0, mb_strlen($cek, '8bit') / 2, '8bit');
+        $auth_data_length = mb_strlen($encoded_header, '8bit');
 
         $secured_input = implode('', [
             $calculated_aad,
@@ -77,7 +77,7 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
         ]);
         $hash = hash_hmac($this->getHashAlgorithm(), $secured_input, $mac_key, true);
 
-        return  substr($hash, 0, strlen($hash) / 2);
+        return  mb_substr($hash, 0, mb_strlen($hash, '8bit') / 2, '8bit');
     }
 
     /**
@@ -115,6 +115,6 @@ abstract class AESCBCHS implements ContentEncryptionAlgorithmInterface
      */
     private function getMode($k)
     {
-        return 'aes-'.(8 *  strlen($k)).'-cbc';
+        return 'aes-'.(8 *  mb_strlen($k, '8bit')).'-cbc';
     }
 }

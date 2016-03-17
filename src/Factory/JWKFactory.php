@@ -250,7 +250,7 @@ final class JWKFactory
             'Invalid URL.'
         );
         Assertion::false(
-            false === $allow_unsecured_connection && 'https://' !==  substr($url, 0, 8),
+            false === $allow_unsecured_connection && 'https://' !==  mb_substr($url, 0, 8, '8bit'),
             'Unsecured connection.'
         );
 

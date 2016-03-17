@@ -70,15 +70,15 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2 * $part_length) {
+        if (mb_strlen($signature, '8bit') !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec(substr($signature, $part_length));
+        $R = $this->convertHexToDec(mb_substr($signature, 0, $part_length, '8bit'));
+        $S = $this->convertHexToDec(mb_substr($signature, $part_length, null, '8bit'));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);

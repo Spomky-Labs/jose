@@ -147,12 +147,12 @@ final class ECKey extends Sequence
 
         $bits = $children[1]->getContent();
 
-        Assertion::eq('04', substr($bits, 0, 2), 'Unsupported key type');
+        Assertion::eq('04', mb_substr($bits, 0, 2, '8bit'), 'Unsupported key type');
 
         $this->values['kty'] = 'EC';
         $this->values['crv'] = $this->getCurve($sub[1]->getContent());
-        $this->values['x'] = Base64Url::encode(hex2bin(substr($bits, 2, (strlen($bits) - 2) / 2)));
-        $this->values['y'] = Base64Url::encode(hex2bin(substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2)));
+        $this->values['x'] = Base64Url::encode(hex2bin(mb_substr($bits, 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit')));
+        $this->values['y'] = Base64Url::encode(hex2bin(mb_substr($bits, (mb_strlen($bits, '8bit') - 2) / 2 + 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit')));
     }
 
     /**
@@ -177,10 +177,10 @@ final class ECKey extends Sequence
 
         $bits = $children->getContent()[0]->getContent();
 
-        Assertion::eq('04', substr($bits, 0, 2), 'Unsupported key type');
+        Assertion::eq('04', mb_substr($bits, 0, 2, '8bit'), 'Unsupported key type');
 
-        $x = substr($bits, 2, (strlen($bits) - 2) / 2);
-        $y = substr($bits, (strlen($bits) - 2) / 2 + 2, (strlen($bits) - 2) / 2);
+        $x = mb_substr($bits, 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit');
+        $y = mb_substr($bits, (mb_strlen($bits, '8bit') - 2) / 2 + 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit');
     }
 
     /**

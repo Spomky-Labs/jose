@@ -29,7 +29,6 @@ use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\Recipient;
 use Jose\Object\RecipientInterface;
-use Jose\Util\StringUtil;
 use Psr\Log\LoggerInterface;
 
 final class Encrypter implements EncrypterInterface
@@ -513,7 +512,7 @@ final class Encrypter implements EncrypterInterface
      */
     private function createCEK($size)
     {
-        return StringUtil::generateRandomBytes($size / 8);
+        return random_bytes($size / 8);
     }
 
     /**
@@ -523,6 +522,6 @@ final class Encrypter implements EncrypterInterface
      */
     private function createIV($size)
     {
-        return StringUtil::generateRandomBytes($size / 8);
+        return random_bytes($size / 8);
     }
 }
