@@ -41,7 +41,7 @@ interface JWSInterface extends JWTInterface
      * @param string|null $encoded_protected_headers
      * @param array       $headers
      *
-     * @return \Jose\Object\Signature
+     * @return \Jose\Object\JWSInterface
      */
     public function addSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers);
 
