@@ -309,8 +309,9 @@ final class KeyConverter
         Assertion::notNull($password, 'Password required for encrypted keys.');
 
         $iv = pack('H*', trim($matches[2]));
-        $symkey = pack('H*', md5($password.mb_substr($iv, 0, 8, '8bit')));
-        $symkey .= pack('H*', md5($symkey.$password.mb_substr($iv, 0, 8, '8bit')));
+        $iv_sub = mb_substr($iv, 0, 8, '8bit');
+        $symkey = pack('H*', md5($password.$iv_sub));
+        $symkey .= pack('H*', md5($symkey.$password.$iv_sub));
         $key = preg_replace('#^(?:Proc-Type|DEK-Info): .*#m', '', $pem);
         $ciphertext = base64_decode(preg_replace('#-.*-|\r|\n#', '', $key));
 

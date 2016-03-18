@@ -245,8 +245,9 @@ final class Encrypter implements EncrypterInterface
     private function getCompressionMethod(JWEInterface $jwe)
     {
         $method = null;
+        $nb_recipients = $jwe->countRecipients();
 
-        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
+        for ($i = 0; $i < $nb_recipients; $i++) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),

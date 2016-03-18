@@ -146,13 +146,14 @@ final class ECKey extends Sequence
         Assertion::isInstanceOf($children[1], BitString::class, 'Unable to load the key');
 
         $bits = $children[1]->getContent();
+        $bits_length = mb_strlen($bits, '8bit');
 
         Assertion::eq('04', mb_substr($bits, 0, 2, '8bit'), 'Unsupported key type');
 
         $this->values['kty'] = 'EC';
         $this->values['crv'] = $this->getCurve($sub[1]->getContent());
-        $this->values['x'] = Base64Url::encode(hex2bin(mb_substr($bits, 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit')));
-        $this->values['y'] = Base64Url::encode(hex2bin(mb_substr($bits, (mb_strlen($bits, '8bit') - 2) / 2 + 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit')));
+        $this->values['x'] = Base64Url::encode(hex2bin(mb_substr($bits, 2, ($bits_length - 2) / 2, '8bit')));
+        $this->values['y'] = Base64Url::encode(hex2bin(mb_substr($bits, ($bits_length - 2) / 2 + 2, ($bits_length - 2) / 2, '8bit')));
     }
 
     /**
@@ -176,11 +177,12 @@ final class ECKey extends Sequence
         Assertion::isInstanceOf($children->getContent()[0], BitString::class, 'Unable to load the key');
 
         $bits = $children->getContent()[0]->getContent();
+        $bits_length = mb_strlen($bits, '8bit');
 
         Assertion::eq('04', mb_substr($bits, 0, 2, '8bit'), 'Unsupported key type');
 
-        $x = mb_substr($bits, 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit');
-        $y = mb_substr($bits, (mb_strlen($bits, '8bit') - 2) / 2 + 2, (mb_strlen($bits, '8bit') - 2) / 2, '8bit');
+        $x = mb_substr($bits, 2, ($bits_length - 2) / 2, '8bit');
+        $y = mb_substr($bits, ($bits_length - 2) / 2 + 2, ($bits_length - 2) / 2, '8bit');
     }
 
     /**
