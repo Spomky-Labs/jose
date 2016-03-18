@@ -46,7 +46,7 @@ class Ed25519SignatureTest extends TestCase
         $input = 'eyJhbGciOiJFZDI1NTE5In0.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc';
         $signature = Base64Url::decode('UxhIYLHGg39NVCLpQAVD_UcfOmnGSCzLFZoXYkLiIbFccmOb_qObsgjzLKsfJw-4NlccUgvYrEHrRbNV0HcZAQ');
 
-        $this->assertTrue($ed25519->verify($key, $input, $signature));
+        $ed25519->verify($key, $input, $signature);
     }
 
     /**
@@ -76,6 +76,6 @@ class Ed25519SignatureTest extends TestCase
 
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals(1, $loaded->countSignatures());
-        $this->assertTrue($verifier->verifyWithKey($loaded, $key));
+        $verifier->verifyWithKey($loaded, $key);
     }
 }

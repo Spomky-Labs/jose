@@ -58,7 +58,7 @@ final class Verifier implements VerifierInterface
         $jwk_set = new JWKSet();
         $jwk_set = $jwk_set->addKey($jwk);
 
-        return $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
+        $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 
     /**
@@ -125,11 +125,11 @@ final class Verifier implements VerifierInterface
             if (true === $result) {
                 $recipient_index = $i;
 
-                return true;
+                return;
             }
         }
 
-        return false;
+        throw new \InvalidArgumentException('Unable to verify the JWS.');
     }
 
     /**

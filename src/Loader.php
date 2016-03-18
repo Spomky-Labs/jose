@@ -80,8 +80,7 @@ final class Loader implements LoaderInterface
         Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
         $verifier = VerifierFactory::createVerifier($allowed_algorithms, $logger);
 
-        $result = $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
-        Assertion::true($result, 'Unable to verify or decrypt the input');
+        $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
 
         return $jwt;
     }

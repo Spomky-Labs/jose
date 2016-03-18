@@ -107,13 +107,13 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
@@ -202,7 +202,7 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
             'kid' => '18ec08e1-bfa9-4d95-b205-2b4dd1d4321d',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers, $headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
         $encrypter = EncrypterFactory::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
@@ -223,13 +223,13 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
         $this->assertEquals($recipient_1_headers, $loaded_json->getRecipient(0)->getHeaders());

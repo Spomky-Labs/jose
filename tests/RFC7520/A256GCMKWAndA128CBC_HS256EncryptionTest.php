@@ -67,13 +67,13 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
@@ -122,7 +122,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
             'enc' => 'A128CBC-HS256',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
@@ -134,13 +134,13 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertTrue(array_key_exists('iv', $loaded_compact_json->getSharedProtectedHeaders()));
         $this->assertTrue(array_key_exists('tag', $loaded_compact_json->getSharedProtectedHeaders()));

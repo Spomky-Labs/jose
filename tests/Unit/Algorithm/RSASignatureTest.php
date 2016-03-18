@@ -212,7 +212,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS256']);
 
@@ -253,7 +253,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWSWithDetachedPayload('Live long and Prosper.', $encoded_payload);
+        $jws = JWSFactory::createJWSWithDetachedPayload('Live long and Prosper.', $encoded_payload);
 
         $signer = SignerFactory::createSigner(['RS256']);
 
@@ -295,7 +295,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS384']);
 
@@ -336,7 +336,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS512']);
 
@@ -379,7 +379,7 @@ class RSASignatureTest extends TestCase
                 'qi'      => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS256']);
 
@@ -420,7 +420,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS384']);
 
@@ -460,7 +460,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS512']);
 
@@ -500,9 +500,8 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
@@ -524,9 +523,8 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128KW', $loaded->getRecipient(1)->getHeader('alg'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
@@ -562,7 +560,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result->getSignature(1)->getProtectedHeader('alg'));
-        $this->assertTrue($verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ');
     }
 
     /**
@@ -579,7 +577,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
 
-        $this->assertTrue($verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ');
     }
 
     /**

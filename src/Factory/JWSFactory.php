@@ -24,7 +24,7 @@ final class JWSFactory
      *
      * @return \Jose\Object\JWSInterface
      */
-    public static function createEmptyJWS($payload)
+    public static function createJWS($payload)
     {
         $jws = new JWS();
         $jws = $jws->withPayload($payload);
@@ -38,7 +38,7 @@ final class JWSFactory
      *
      * @return \Jose\Object\JWSInterface
      */
-    public static function createEmptyJWSWithDetachedPayload($payload, &$encoded_payload)
+    public static function createJWSWithDetachedPayload($payload, &$encoded_payload)
     {
         $encoded_payload = Base64Url::encode(is_string($payload) ? $payload : json_encode($payload));
 
@@ -119,7 +119,7 @@ final class JWSFactory
      */
     private static function createJWSAndSign($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
     {
-        $jws = self::createEmptyJWS($payload);
+        $jws = self::createJWS($payload);
 
         $jws = $jws->addSignature($signature_key, $protected_headers, $headers);
 
@@ -142,7 +142,7 @@ final class JWSFactory
      */
     private static function createJWSWithDetachedPayloadAndSign($payload, JWKInterface $signature_key, &$encoded_payload, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
     {
-        $jws = self::createEmptyJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = self::createJWSWithDetachedPayload($payload, $encoded_payload);
 
         $jws = $jws->addSignature($signature_key, $protected_headers, $headers);
 

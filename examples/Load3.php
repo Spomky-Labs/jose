@@ -51,5 +51,5 @@ $decrypter = DecrypterFactory::createDecrypter(
 );
 
 $is_decrypted = $decrypter->decryptUsingKey($result, $key);
-// The variable $is_decrypted contains a boolean that indicates the decryption succeeded or not.
+// The variable $is_decrypted contains a boolean that indicates if the decryption succeeded or not.
 // If a claim is not verified (e.g. the JWT expired), an exception is thrown.

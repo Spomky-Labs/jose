@@ -11,38 +11,49 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+use Jose\Checker\AudienceChecker;
+use Jose\Factory\CheckerManagerFactory;
 use Jose\Factory\JWKFactory;
-use Jose\Factory\VerifierFactory;
 use Jose\Loader;
-use Jose\Object\JWKSet;
 
 // In this example, our input is a JWS string in compact serialization format
 // See Signature2.php to know to generate such string
 $input = '{"signature":"WXfhjDeRv-PCm-5eIgsTkVkUiCXsVe5FODvYjwKHEofZuzJteiNtiDTuSTOKrbsjXIEDbkP8BvYtToZJikjVvw","protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar","123":"ABC"}}';
 
-// The payload is detached. We will use it later
+// The payload is detached.
 $detached_payload = 'TGl2ZSBsb25nIGFuZCBwcm9zcGVyLg';
 
-// We load the input
-$result = Loader::load($input);
-
-// Please not that at this moment the signature and the claims are not verified
-
-// To verify a JWS, we need a JWKSet that contains public keys.
+// To verify a JWS, we need a key.
 // We create our key object (JWK) using a shared key
 $key = JWKFactory::createFromValues([
     'kty' => 'oct',
     'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
 ]);
 
-// We create our verifier object with a list of authorized signature algorithms (only 'HS512' in this example)
-$verifier = VerifierFactory::createVerifier(
-    [
-        'HS512',
-    ]
+// We load the input and we verify it.
+// HS512 is the only algorithm we allow
+// Now the variable $jws contains a JWSInterface object
+$jws = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload(
+    $input,
+    $key,
+    ['HS512'],
+    $detached_payload
 );
 
-$is_valid = $verifier->verifyWithKey($result, $key, $detached_payload);
+// Note that if the input contain claims, these claims have to be checked.
+// We create a Claim Checker Manager and we want to check the claims 'exp', 'iat' and 'nbf'.
+// We also want to check if the protected header 'crit' is present.
+//
+$checker = CheckerManagerFactory::createClaimCheckerManager(
+    ['exp', 'iat', 'nbf'],
+    ['crit']
+);
 
-// The variable $is_valid contains a boolean that indicates the signature is valid or not.
-// If a claim is not verified (e.g. the JWT expired), an exception is thrown.
+// We can add other claim checkers. We add one for the 'aud' claim.
+$checker->addClaimChecker(new AudienceChecker('You'));
+
+// We check our JWS. The second argument is the index of the signatures headers to check (0 = the first signature headers).
+// This method will throw an exception in case of failure (e.g. expired JWS).
+$checker->checkJWS($jws, 0);
+
+// Our JWS is now verified (signature only as it does not contain claims) and we can use it.

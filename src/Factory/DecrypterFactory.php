@@ -23,7 +23,7 @@ final class DecrypterFactory
      *
      * @return \Jose\DecrypterInterface
      */
-    public static function createDecrypter(array $algorithms, array $compression_methods = ['DEF'], LoggerInterface $logger = null)
+    public static function createDecrypter(array $algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null)
     {
         $algorithm_manager = AlgorithmManagerFactory::createAlgorithmManager($algorithms);
         $compression_manager = CompressionManagerFactory::createCompressionManager($compression_methods);

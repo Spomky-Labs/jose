@@ -61,10 +61,10 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
@@ -110,7 +110,7 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
             'kid' => '81b20965-8332-43d9-a468-82160ad91ac8',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers, $headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
         $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
 
         $jwe = $jwe->addRecipient(
@@ -122,10 +122,10 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
         $this->assertEquals($headers, $loaded_flattened_json->getSharedHeaders());

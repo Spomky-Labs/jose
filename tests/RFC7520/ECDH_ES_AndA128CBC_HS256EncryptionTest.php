@@ -78,11 +78,11 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
 
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
 
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
         $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }
@@ -119,7 +119,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
             'enc' => 'A128CBC-HS256',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
@@ -131,7 +131,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertTrue(array_key_exists('epk', $loaded_json->getSharedProtectedHeaders()));
 

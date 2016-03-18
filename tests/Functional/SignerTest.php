@@ -32,7 +32,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWSWithDetachedPayload($this->getKey3(), $payload);
+        $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
         $jws = $jws->addSignature($this->getKey1(), []);
 
         $signer->sign($jws);
@@ -46,7 +46,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS($this->getKey3());
+        $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature($this->getKey1(), []);
 
         $signer->sign($jws);
@@ -60,7 +60,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS($this->getKey3());
+        $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'foo']
@@ -73,7 +73,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS($this->getKey3());
+        $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
@@ -99,7 +99,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
@@ -146,7 +146,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512']
@@ -197,7 +197,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner([], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey5(),
             ['alg' => 'RS512']
@@ -214,7 +214,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['PS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey4(),
             ['alg' => 'PS512']
@@ -227,7 +227,7 @@ class SignerTest extends TestCase
     {
         $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS(['baz', 'ban']);
+        $jws = JWSFactory::createJWS(['baz', 'ban']);
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
@@ -249,7 +249,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
@@ -267,19 +267,23 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+        $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet());
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  Unable to verify the JWS.
+     */
     public function testSignAndLoadWithWrongKeys()
     {
         $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -293,7 +297,7 @@ class SignerTest extends TestCase
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals('Live long and Prosper.', $loaded->getPayload());
 
-        $this->assertFalse($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
     }
 
     /**
@@ -305,7 +309,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512'], $this->getLogger());
 
-        $jws = JWSFactory::createEmptyJWS('Live long and Prosper.');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
             $this->getKey2(),
             ['alg' => 'RS512']
@@ -365,7 +369,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
-        $jws = JWSFactory::createEmptyJWS($this->getKeyset());
+        $jws = JWSFactory::createJWS($this->getKeyset());
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
@@ -382,8 +386,8 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals($this->getKeyset(), new JWKSet($loaded->getPayload()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet()));
-        $this->assertTrue($verifier->verifyWithKeySet($loaded, $this->getPublicKeySet()));
+        $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+        $verifier->verifyWithKeySet($loaded, $this->getPublicKeySet());
 
         $this->assertEquals('HS512', $loaded->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('RS512', $loaded->getSignature(1)->getProtectedHeader('alg'));
@@ -398,7 +402,7 @@ class SignerTest extends TestCase
         $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
         $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
 
-        $jws = JWSFactory::createEmptyJWS($this->getKeyset());
+        $jws = JWSFactory::createJWS($this->getKeyset());
         $jws = $jws->addSignature(
             $this->getKey1(),
             ['alg' => 'HS512'],
@@ -415,8 +419,8 @@ class SignerTest extends TestCase
         $this->assertEquals(2, $loaded->countSignatures());
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals($this->getKeyset(), new JWKSet($loaded->getPayload()));
-        $this->assertFalse($verifier->verifyWithKeySet($loaded, new JWKSet()));
-        $this->assertFalse($verifier->verifyWithKey($loaded, new JWK(['kty' => 'EC'])));
+        $verifier->verifyWithKeySet($loaded, new JWKSet());
+        $verifier->verifyWithKey($loaded, new JWK(['kty' => 'EC']));
     }
 
     /**

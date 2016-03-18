@@ -37,23 +37,14 @@ $claims = [
     'sub' => 'My friend',
 ];
 
-$jws = JWSFactory::createJWS($claims);
-
-// We create a signer.
-// The first argument is an array of algorithms we will use (we only need 'RS256' for this example).
-// The second argument is an array of payload converters. We do not use them for this example.
-$signer = SignerFactory::createSigner(
-    ['RS256']
-);
-
-// Lastly, we sign our claims with our key and we add protected headers.
-$signer->addSignature(
-    $jws,
+$jws = JWSFactory::createJWSToCompactJSON(
+    $claims,
     $key,
     [
-        'alg' => 'RS256',
+        'crit' => ['exp', 'aud'],
+        'alg'  => 'RS256',
     ]
 );
 
-// Now the variable $jws contains a our JWS
+// Now the variable $jws contains a our claims signed with our private key
 // Please read example Load1.php to know how to load this string and to verify the signature

@@ -25,7 +25,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testExpiredJWT()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() - 1,
             ]
@@ -46,7 +46,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTIssuedInTheFuture()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() + 100,
@@ -68,7 +68,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotNow()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
@@ -91,7 +91,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotForAudience()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
@@ -115,7 +115,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTHasCriticalClaimsNotSatisfied()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
@@ -141,7 +141,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadIssuer()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
@@ -168,7 +168,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadSubject()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
@@ -197,7 +197,7 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTBadTokenID()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'jti' => 'bad jti',
                 'exp' => time() + 3600,
@@ -222,7 +222,7 @@ class CheckerManagerTest extends TestCase
 
     public function testJWTSuccessfullyCheckedWithCriticalHeaders()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'jti' => 'JTI1',
                 'exp' => time() + 3600,
@@ -249,7 +249,7 @@ class CheckerManagerTest extends TestCase
 
     public function testJWTSuccessfullyCheckedWithoutCriticalHeaders()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'jti' => 'JTI1',
                 'exp' => time() + 3600,
@@ -274,7 +274,7 @@ class CheckerManagerTest extends TestCase
 
     public function testJWTSuccessfullyCheckedWithUnsupportedClaims()
     {
-        $jws = JWSFactory::createEmptyJWS(
+        $jws = JWSFactory::createJWS(
             [
                 'foo' => 'bar',
             ]

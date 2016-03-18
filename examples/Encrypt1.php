@@ -11,7 +11,6 @@
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-use Jose\Factory\EncrypterFactory;
 use Jose\Factory\JWEFactory;
 use Jose\Factory\JWKFactory;
 
@@ -27,9 +26,10 @@ $key = JWKFactory::createFromKeyFile(
 );
 
 // We want to encrypt a very important message
-// We define the compression method (DEF) and the algorithm used to encrypt
-$jwe = JWEFactory::createJWE(
+// 
+$jwe = JWEFactory::createJWEToCompactJSON(
     '8:00PM, train station',
+    $key,
     [
         'alg' => 'RSA-OAEP-256',
         'enc' => 'A256CBC-HS512',
@@ -37,18 +37,4 @@ $jwe = JWEFactory::createJWE(
     ]
 );
 
-// We create an encrypter.
-// The argument is an array of algorithms we will use (we only need 'RSA-OAEP-256' and 'A256CBC-HS512' for this example).
-$encrypter = EncrypterFactory::createEncrypter(
-    [
-        'RSA-OAEP-256',  // The algorithm we will use for key encryption
-        'A256CBC-HS512', // The algorithm we will use for content encryption
-    ]
-);
-
-// Lastly, we add a recipient for our message.
-$encrypter->addRecipient($jwe, $key);
-
-// Now the variable $jwe contains our JWE with one recipient
-// Please read example Load3.php to know how to load this string and to decrypt the content.
-$compact_json = $jwe->toCompactJSON(0);
+// Now the variable $jwe contains our message encrypted with the public key passed as argument

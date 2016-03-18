@@ -158,9 +158,8 @@ class RSAKeyEncryptionTest extends TestCase
         $this->assertEquals('A256GCM', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('The true sign of intelligence is not knowledge but imagination.', $loaded->getPayload());
     }
@@ -175,13 +174,10 @@ class RSAKeyEncryptionTest extends TestCase
         $loaded = Loader::load('eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.UGhIOguC7IuEvf_NPVaXsGMoLOmwvc1GyqlIKOK1nN94nHPoltGRhWhw7Zx0-kFm1NJn8LE9XShH59_i8J0PH5ZZyNfGy2xGdULU7sHNF6Gp2vPLgNZ__deLKxGHZ7PcHALUzoOegEI-8E66jX2E4zyJKx-YxzZIItRzC5hlRirb6Y5Cl_p-ko3YvkkysZIFNPccxRU7qve1WYPxqbb2Yw8kZqa2rMWI5ng8OtvzlV7elprCbuPhcCdZ6XDP0_F8rkXds2vE4X-ncOIM8hAYHHi29NX0mcKiRaD0-D-ljQTP-cFPgwCp6X-nZZd9OHBv-B3oWh2TbqmScqXMR4gp_A.AxY8DCtDaGlsbGljb3RoZQ.KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY.9hH0vgRfYgPnAHOd8stkvw');
 
         $this->assertInstanceOf(JWEInterface::class, $loaded);
-        //$this->assertEquals('RSA1_5', $loaded->getHeader('alg'));
-        //$this->assertEquals('A128CBC-HS256', $loaded->getHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
@@ -200,9 +196,8 @@ class RSAKeyEncryptionTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getSymmetricKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
