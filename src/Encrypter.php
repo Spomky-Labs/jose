@@ -85,7 +85,8 @@ final class Encrypter implements EncrypterInterface
             $additional_headers
         );
 
-        for ($i = 0; $i < $jwe->countRecipients(); $i++) {
+        $nb_recipients = $jwe->countRecipients();
+        for ($i = 0; $i < $nb_recipients; $i++) {
             $this->processRecipient(
                 $jwe,
                 $jwe->getRecipient($i),
@@ -210,8 +211,9 @@ final class Encrypter implements EncrypterInterface
     private function getKeyManagementMode(JWEInterface $jwe)
     {
         $mode = null;
-
-        foreach ($jwe->getRecipients() as $recipient) {
+        $recipients = $jwe->getRecipients();
+        
+        foreach ($recipients as $recipient) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $jwe->getSharedHeaders(),

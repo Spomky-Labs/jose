@@ -77,11 +77,13 @@ interface JWEInterface extends JWTInterface
     public function getCiphertext();
 
     /**
+     * 
+     * @param string $ciphertext
      * @internal
      *
      * @return \Jose\Object\JWEInterface
      */
-    public function withCiphertext($ciphertest);
+    public function withCiphertext($ciphertext);
 
     /**
      * @internal

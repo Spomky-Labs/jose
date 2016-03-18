@@ -11,7 +11,6 @@
 
 namespace Jose\Checker;
 
-use Jose\Object\JWEInterface;
 use Jose\Object\JWSInterface;
 
 /**

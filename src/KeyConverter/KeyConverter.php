@@ -147,7 +147,7 @@ final class KeyConverter
     private static function loadKeyFromPEM($pem, $password = null)
     {
         if (preg_match('#DEK-Info: (.+),(.+)#', $pem, $matches)) {
-            $pem = self::decodePEM($pem, $matches, $password);
+            $pem = self::decodePem($pem, $matches, $password);
         }
 
         $res = openssl_pkey_get_private($pem);

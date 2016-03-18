@@ -44,7 +44,7 @@
         "fgrosse/phpasn1": "dev-compat/php5-5 as v1.3.1"
     },
    "suggest":{
-        "ext-crypto": "Required to use AES GCM based algorithms.",
+        "ext-crypto": "Highly recommended if you want to use AES GCM based algorithms.",
         "mdanter/ecc": "Required to use ECC based algorithms (only v0.3 is supported)."
    },
     "extra": {

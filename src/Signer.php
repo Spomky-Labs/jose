@@ -52,8 +52,9 @@ final class Signer implements SignerInterface
     public function signWithDetachedPayload(JWSInterface &$jws, $detached_payload)
     {
         $this->log(LogLevel::INFO, 'Trying to sign the JWS object with detached payload', ['jws' => $jws, 'payload' => $detached_payload]);
-
-        for ($i = 0; $i < $jws->countSignatures(); $i++) {
+        $nb_signatures = $jws->countSignatures();
+        
+        for ($i = 0; $i < $nb_signatures; $i++) {
             $this->computeSignature($detached_payload, $jws->getSignature($i));
         }
 
@@ -67,8 +68,9 @@ final class Signer implements SignerInterface
     {
         $this->log(LogLevel::INFO, 'Trying to sign the JWS object', ['jws' => $jws]);
         Assertion::notNull($jws->getEncodedPayload(), 'No payload.');
+        $nb_signatures = $jws->countSignatures();
 
-        for ($i = 0; $i < $jws->countSignatures(); $i++) {
+        for ($i = 0; $i < $nb_signatures; $i++) {
             $this->computeSignature($jws->getEncodedPayload(), $jws->getSignature($i));
         }
         $this->log(LogLevel::INFO, 'Signature added');
