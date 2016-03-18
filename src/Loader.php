@@ -66,7 +66,13 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string                        $input
+     * @param \Jose\Object\JWKSetInterface  $jwk_set
+     * @param array                         $allowed_algorithms
+     * @param string|null                   $detached_payload
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWEInterface|\Jose\Object\JWSInterface
      */
     private static function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
     {

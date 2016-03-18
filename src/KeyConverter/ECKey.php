@@ -54,7 +54,7 @@ final class ECKey extends Sequence
     }
 
     /**
-     * @param $data
+     * @param string $data
      *
      * @throws \Exception
      * @throws \FG\ASN1\Exception\ParserException
@@ -97,7 +97,7 @@ final class ECKey extends Sequence
     }
 
     /**
-     * @throws \Exception
+     *
      */
     private function initPublicKey()
     {
@@ -112,6 +112,9 @@ final class ECKey extends Sequence
         $this->addChild(new BitString($bits));
     }
 
+    /**
+     *
+     */
     private function initPrivateKey()
     {
         $this->addChild(new Integer(1));
@@ -248,6 +251,9 @@ final class ECKey extends Sequence
         return new self($data);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->toPEM();

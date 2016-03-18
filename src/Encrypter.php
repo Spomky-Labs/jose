@@ -240,7 +240,7 @@ final class Encrypter implements EncrypterInterface
     /**
      * @param \Jose\Object\JWEInterface $jwe
      *
-     * @return \Jose\Algorithm\ContentEncryptionAlgorithmInterface
+     * @return \Jose\Compression\CompressionInterface|null
      */
     private function getCompressionMethod(JWEInterface $jwe)
     {
