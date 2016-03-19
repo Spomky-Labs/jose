@@ -29,3 +29,11 @@ script:
 
 after_success:
     - vendor/bin/coveralls --no-interaction
+    - php ./examples/Encrypt1.php
+    - php ./examples/Encrypt2.php
+    - php ./examples/Signature1.php
+    - php ./examples/Signature2.php
+    - php ./examples/Load1.php
+    - php ./examples/Load2.php
+    - php ./examples/Load3.php
+    - php ./examples/Load4.php

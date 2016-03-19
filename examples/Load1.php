@@ -46,7 +46,7 @@ $jws = Loader::loadAndVerifySignatureUsingKey(
 // We also want to check if the protected header 'crit' is present.
 // 
 $checker = CheckerManagerFactory::createClaimCheckerManager(
-    ['exp', 'iat', 'nbf'],
+    ['iat', 'nbf'], // We should enable 'exp', but this example will fail as the token has already expired
     ['crit']
 );
 

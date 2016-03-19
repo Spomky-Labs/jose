@@ -30,6 +30,7 @@ use Jose\Object\JWKInterface;
 use Jose\Object\Recipient;
 use Jose\Object\RecipientInterface;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 final class Encrypter implements EncrypterInterface
 {
@@ -63,30 +64,43 @@ final class Encrypter implements EncrypterInterface
      */
     public function encrypt(JWEInterface &$jwe)
     {
+        $this->log(LogLevel::INFO, 'Trying to encrypt the JWE object', ['jwe' => $jwe]);
+        Assertion::false($jwe->isEncrypted(), 'The JWE is already encrypted.');
         Assertion::greaterThan($jwe->countRecipients(), 0, 'The JWE does not contain recipient.');
 
         // Content Encryption Algorithm
+        $this->log(LogLevel::DEBUG, 'Trying to find the content encryption algorithm');
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe);
+        $this->log(LogLevel::DEBUG, 'The content encryption algorithm has been found', ['content_encryption_algorithm', $content_encryption_algorithm]);
 
         // Compression Method
+        $this->log(LogLevel::DEBUG, 'Trying to find the compression method (if needed)');
         $compression_method = $this->getCompressionMethod($jwe);
+        $this->log(LogLevel::DEBUG, 'The compression method search is finished', ['compression_method', $compression_method]);
 
         // Key Management Mode
+        $this->log(LogLevel::DEBUG, 'Trying to find the key management mode');
         $key_management_mode = $this->getKeyManagementMode($jwe);
+        $this->log(LogLevel::DEBUG, 'The key management mode has been found', ['key_management_mode', $key_management_mode]);
 
         // Additional Headers
         $additional_headers = [];
 
         // CEK
+        $this->log(LogLevel::DEBUG, 'Trying to determine the content encryption key (CEK)');
         $cek = $this->determineCEK(
             $jwe,
             $content_encryption_algorithm,
             $key_management_mode,
             $additional_headers
         );
+        $this->log(LogLevel::DEBUG, 'The content encryption key has been determined', ['cek', $cek]);
 
         $nb_recipients = $jwe->countRecipients();
+
+        $this->log(LogLevel::DEBUG, 'Trying to encrypt the content encryption key (CEK) for all recipients');
         for ($i = 0; $i < $nb_recipients; $i++) {
+            $this->log(LogLevel::DEBUG, 'Processing with recipient #{index}', ['index', $i]);
             $this->processRecipient(
                 $jwe,
                 $jwe->getRecipient($i),
@@ -94,24 +108,27 @@ final class Encrypter implements EncrypterInterface
                 $content_encryption_algorithm,
                 $additional_headers
             );
+            $this->log(LogLevel::DEBUG, 'Processing done');
         }
 
         if (!empty($additional_headers) && 1 === $jwe->countRecipients()) {
+            $this->log(LogLevel::DEBUG, 'Additional headers will be added to the shared protected headers', ['additional_headers' => $additional_headers]);
             $jwe = $jwe->withSharedProtectedHeaders(array_merge(
                 $jwe->getSharedProtectedHeaders(),
                 $additional_headers
             ));
+            $this->log(LogLevel::DEBUG, 'Additional headers added');
         }
 
         // IV
-        if (null !== $iv_size = $content_encryption_algorithm->getIVSize()) {
-            $iv = $this->createIV($iv_size);
-            $jwe = $jwe->withIV($iv);
-        }
+        $this->log(LogLevel::DEBUG, 'Creating Initialization Vector (IV)');
+        $iv_size = $content_encryption_algorithm->getIVSize();
+        $iv = $this->createIV($iv_size);
+        $this->log(LogLevel::DEBUG, 'Initialization Vector (IV) creation done', ['iv' => $iv]);
 
-        $jwe = $jwe->withContentEncryptionKey($cek);
-
-        $this->encryptJWE($jwe, $content_encryption_algorithm, $compression_method);
+        $this->log(LogLevel::DEBUG, 'Trying to encrypt the JWE object ');
+        $this->encryptJWE($jwe, $content_encryption_algorithm, $cek, $iv, $compression_method);
+        $this->log(LogLevel::DEBUG, 'JWE object encryption done.');
     }
 
     /**
@@ -127,21 +144,30 @@ final class Encrypter implements EncrypterInterface
                                       ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
                                       array &$additional_headers
     ) {
+        if (null === $recipient->getRecipientKey()) {
+            $this->log(LogLevel::WARNING, 'The recipient key is not set. Aborting.');
+            return;
+        }
         $complete_headers = array_merge(
             $jwe->getSharedProtectedHeaders(),
             $jwe->getSharedHeaders(),
             $recipient->getHeaders()
         );
 
+        $this->log(LogLevel::DEBUG, 'Trying to find the key encryption algorithm');
         $key_encryption_algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
+        $this->log(LogLevel::DEBUG, 'The key encryption algorithm has been found', ['key_encryption_algorithm' => $key_encryption_algorithm]);
 
         // We check keys (usage and algorithm if restrictions are set)
+        $this->log(LogLevel::DEBUG, 'Checking recipient key usage');
         $this->checkKeys(
             $key_encryption_algorithm,
             $content_encryption_algorithm,
             $recipient->getRecipientKey()
         );
+        $this->log(LogLevel::DEBUG, 'Recipient key usage checks done');
 
+        $this->log(LogLevel::DEBUG, 'Trying to compute the content encryption key');
         $encrypted_content_encryption_key = $this->getEncryptedKey(
             $complete_headers,
             $cek,
@@ -150,6 +176,7 @@ final class Encrypter implements EncrypterInterface
             $additional_headers,
             $recipient->getRecipientKey()
         );
+        $this->log(LogLevel::DEBUG, 'Content encryption key computation done', ['encrypted_content_encryption_key' => $encrypted_content_encryption_key]);
 
         $recipient_headers = $recipient->getHeaders();
         if (!empty($additional_headers) && 1 !== $jwe->countRecipients()) {
@@ -310,10 +337,14 @@ final class Encrypter implements EncrypterInterface
     /**
      * @param \Jose\Object\JWEInterface                           $jwe
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param string                                              $cek
+     * @param string                                              $iv
      * @param \Jose\Compression\CompressionInterface|null         $compression_method
      */
     private function encryptJWE(JWEInterface &$jwe,
                                 ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
+                                $cek,
+                                $iv,
                                 CompressionInterface $compression_method = null
     ) {
         if (!empty($jwe->getSharedProtectedHeaders())) {
@@ -326,13 +357,15 @@ final class Encrypter implements EncrypterInterface
 
         $ciphertext = $content_encryption_algorithm->encryptContent(
             $payload,
-            $jwe->getContentEncryptionKey(),
-            $jwe->getIV(),
+            $cek,
+            $iv,
             $jwe->getAAD(),
             $jwe->getEncodedSharedProtectedHeaders(),
             $tag
         );
+
         $jwe = $jwe->withCiphertext($ciphertext);
+        $jwe = $jwe->withIV($iv);
 
         // Tag
         if (null !== $tag) {

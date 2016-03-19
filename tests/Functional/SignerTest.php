@@ -191,7 +191,7 @@ class SignerTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The algorithm "RS512" is allowed with this key.
+     * @expectedExceptionMessage The algorithm "RS512" is not allowed with this key.
      */
     public function testAlgorithmNotAllowedForTheKey()
     {

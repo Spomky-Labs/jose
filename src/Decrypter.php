@@ -242,8 +242,6 @@ final class Decrypter implements DecrypterInterface
             return false;
         }
 
-        $jwe = $jwe->withContentEncryptionKey($cek);
-
         $this->decompressIfNeeded($payload, $complete_headers);
 
         $decoded = json_decode($payload, true);

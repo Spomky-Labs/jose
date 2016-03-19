@@ -77,8 +77,17 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
+    public function isEncrypted()
+    {
+        return null !== $this->getCiphertext();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function addRecipient(JWKInterface $recipient_key, $recipient_headers = [])
     {
+        Assertion::true(null === $this->getCiphertext(), 'The JWE is encrypted. No additional recipient allowed.');
         $jwe = clone $this;
         $jwe->recipients[] = Recipient::createRecipient($recipient_key, $recipient_headers);
 
@@ -418,24 +427,5 @@ final class JWE implements JWEInterface
         }
 
         return $json;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContentEncryptionKey()
-    {
-        return $this->content_encryption_key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withContentEncryptionKey($content_encryption_key)
-    {
-        $jwe = clone $this;
-        $jwe->content_encryption_key = $content_encryption_key;
-
-        return $jwe;
     }
 }

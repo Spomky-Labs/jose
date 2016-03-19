@@ -52,7 +52,6 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
 
         $expected_flattened_json = '{"protected":"eyJlbmMiOiJBMTI4R0NNIn0","unprotected":{"alg":"A128KW","kid":"81b20965-8332-43d9-a468-82160ad91ac8"},"encrypted_key":"jJIcM9J-hbx3wnqhf5FlkEYos0sHsF0H","iv":"WgEJsDS9bkoXQ3nR","ciphertext":"lIbCyRmRJxnB2yLQOTqjCDKV3H30ossOw3uD9DPsqLL2DM3swKkjOwQyZtWsFLYMj5YeLht_StAn21tHmQJuuNt64T8D4t6C7kC9OCCJ1IHAolUv4MyOt80MoPb8fZYbNKqplzYJgIL58g8N2v46OgyG637d6uuKPwhAnTGm_zWhqc_srOvgiLkzyFXPq1hBAURbc3-8BqeRb48iR1-_5g5UjWVD3lgiLCN_P7AW8mIiFvUNXBPJK3nOWL4teUPS8yHLbWeL83olU4UAgL48x-8dDkH23JykibVSQju-f7e-1xreHWXzWLHs1NqBbre0dEwK3HX_xM0LjUz77Krppgegoutpf5qaKg3l-_xMINmf","tag":"fNYLqpUe84KD45lvDiaBAQ"}';
         $expected_json = '{"recipients":[{"encrypted_key":"jJIcM9J-hbx3wnqhf5FlkEYos0sHsF0H"}],"unprotected":{"alg":"A128KW","kid":"81b20965-8332-43d9-a468-82160ad91ac8"},"protected":"eyJlbmMiOiJBMTI4R0NNIn0","iv":"WgEJsDS9bkoXQ3nR","ciphertext":"lIbCyRmRJxnB2yLQOTqjCDKV3H30ossOw3uD9DPsqLL2DM3swKkjOwQyZtWsFLYMj5YeLht_StAn21tHmQJuuNt64T8D4t6C7kC9OCCJ1IHAolUv4MyOt80MoPb8fZYbNKqplzYJgIL58g8N2v46OgyG637d6uuKPwhAnTGm_zWhqc_srOvgiLkzyFXPq1hBAURbc3-8BqeRb48iR1-_5g5UjWVD3lgiLCN_P7AW8mIiFvUNXBPJK3nOWL4teUPS8yHLbWeL83olU4UAgL48x-8dDkH23JykibVSQju-f7e-1xreHWXzWLHs1NqBbre0dEwK3HX_xM0LjUz77Krppgegoutpf5qaKg3l-_xMINmf","tag":"fNYLqpUe84KD45lvDiaBAQ"}';
-        $expected_cek = 'WDgEptBmQs9ouUvArz6x6g';
         $expected_iv = 'WgEJsDS9bkoXQ3nR';
         $expected_encrypted_key = 'jJIcM9J-hbx3wnqhf5FlkEYos0sHsF0H';
         $expected_ciphertext = 'lIbCyRmRJxnB2yLQOTqjCDKV3H30ossOw3uD9DPsqLL2DM3swKkjOwQyZtWsFLYMj5YeLht_StAn21tHmQJuuNt64T8D4t6C7kC9OCCJ1IHAolUv4MyOt80MoPb8fZYbNKqplzYJgIL58g8N2v46OgyG637d6uuKPwhAnTGm_zWhqc_srOvgiLkzyFXPq1hBAURbc3-8BqeRb48iR1-_5g5UjWVD3lgiLCN_P7AW8mIiFvUNXBPJK3nOWL4teUPS8yHLbWeL83olU4UAgL48x-8dDkH23JykibVSQju-f7e-1xreHWXzWLHs1NqBbre0dEwK3HX_xM0LjUz77Krppgegoutpf5qaKg3l-_xMINmf';
@@ -72,7 +71,6 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_flattened_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($headers, $loaded_flattened_json->getSharedHeaders());
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_flattened_json->getTag()));
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_flattened_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
@@ -80,7 +78,6 @@ class A128KWAndA128GCMEncryptionWithSpecificProtectedHeaderValuesTest extends \P
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($headers, $loaded_json->getSharedHeaders());
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());

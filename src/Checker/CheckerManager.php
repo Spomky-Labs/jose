@@ -31,18 +31,6 @@ class CheckerManager implements CheckerManagerInterface
     private $header_checkers = [];
 
     /**
-     * ClaimCheckerManager constructor.
-     */
-    public function __construct()
-    {
-        $this->claim_checkers = [
-            new ExpirationTimeChecker(),
-            new IssuedAtChecker(),
-            new NotBeforeChecker(),
-        ];
-    }
-
-    /**
      * @param \Jose\Object\JWTInterface $jwt
      *
      * @return string[]

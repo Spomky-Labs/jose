@@ -73,7 +73,7 @@ final class Signer implements SignerInterface
         for ($i = 0; $i < $nb_signatures; $i++) {
             $this->computeSignature($jws->getEncodedPayload(), $jws->getSignature($i));
         }
-        $this->log(LogLevel::INFO, 'Signature added');
+        $this->log(LogLevel::INFO, 'JWS object signed!');
     }
 
     /**
@@ -83,6 +83,10 @@ final class Signer implements SignerInterface
     private function computeSignature($payload, SignatureInterface &$signature)
     {
         $this->log(LogLevel::DEBUG, 'Creation of the signature');
+        if (null === $signature->getSignatureKey()) {
+            $this->log(LogLevel::DEBUG, 'The signature key is not set. Aborting.');
+            return;
+        }
         $this->checkKeyUsage($signature->getSignatureKey(), 'signature');
 
         $signature_algorithm = $this->getSignatureAlgorithm($signature->getAllHeaders(), $signature->getSignatureKey());
@@ -115,7 +119,7 @@ final class Signer implements SignerInterface
 
         Assertion::false(
             $key->has('alg') && $key->get('alg') !== $complete_header['alg'],
-            sprintf('The algorithm "%s" is allowed with this key.', $complete_header['alg'])
+            sprintf('The algorithm "%s" is not allowed with this key.', $complete_header['alg'])
         );
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
