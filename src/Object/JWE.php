@@ -62,11 +62,6 @@ final class JWE implements JWEInterface
     private $encoded_shared_protected_headers = null;
 
     /**
-     * @var string|null
-     */
-    private $content_encryption_key = null;
-
-    /**
      * {@inheritdoc}
      */
     public function countRecipients()
