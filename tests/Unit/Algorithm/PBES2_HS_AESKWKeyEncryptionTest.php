@@ -114,7 +114,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testBadKeyType()
     {
@@ -136,7 +136,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage The key parameter "k" is missing.
      */
     public function testInvalidKeyType()
     {
@@ -158,7 +158,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The header parameter 'alg' is missing or invalid.
+     * @expectedExceptionMessage The header parameter "alg" is missing.
      */
     public function testAlgorithmParameterIsMissing()
     {
@@ -179,7 +179,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The header is not valid. 'p2s' or 'p2c' parameter is missing or invalid.
+     * @expectedExceptionMessage The header parameter "p2s" is missing.
      */
     public function testP2CParameterIsMissing()
     {
@@ -203,7 +203,7 @@ class PBES2_HS_AESKWKeyEncryptionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The header is not valid. 'p2s' or 'p2c' parameter is missing or invalid.
+     * @expectedExceptionMessage The header parameter "p2c" is missing.
      */
     public function testP2SParameterIsMissing()
     {

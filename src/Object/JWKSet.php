@@ -11,6 +11,8 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
+
 /**
  * Class JWKSet.
  */
@@ -41,9 +43,7 @@ final class JWKSet implements JWKSetInterface
      */
     public function getKey($index)
     {
-        if (!isset($this->keys[$index])) {
-            throw new \InvalidArgumentException('Undefined index.');
-        }
+        Assertion::keyExists($this->keys, $index, 'Undefined index.');
 
         return $this->keys[$index];
     }
@@ -136,5 +136,13 @@ final class JWKSet implements JWKSetInterface
     public function valid()
     {
         return $this->current() instanceof JWKInterface;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function countKeys()
+    {
+        return count($this->keys);
     }
 }

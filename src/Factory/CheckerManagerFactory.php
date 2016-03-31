@@ -106,7 +106,7 @@ final class CheckerManagerFactory
         if (true === self::isClaimSupported($claim)) {
             return self::getSupportedClaims()[$claim];
         }
-        throw new \InvalidArgumentException(sprintf('Claim "%s" is not supported.', $claim));
+        throw new \InvalidArgumentException(sprintf('Claim "%s" is not supported. Please add an instance of ClaimCheckerInterface directly.', $claim));
     }
 
     /**
@@ -121,7 +121,7 @@ final class CheckerManagerFactory
         if (true === self::isHeaderSupported($header)) {
             return self::getSupportedHeaders()[$header];
         }
-        throw new \InvalidArgumentException(sprintf('Header "%s" is not supported.', $header));
+        throw new \InvalidArgumentException(sprintf('Header "%s" is not supported. Please add an instance of HeaderCheckerInterface directly.', $header));
     }
 
     /**

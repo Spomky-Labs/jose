@@ -22,20 +22,8 @@ $key = JWKFactory::createFromValues([
 ]);
 
 // Ou payload is a simple message.
-$jws = JWSFactory::createJWSWithDetachedPayload('Live long and prosper.', $detached_payload);
-
-// We create a signer.
-// The first argument is an array of algorithms we will use (we only need 'HS512' for this example).
-// The second argument is an array of payload converters. We do not use them for this example.
-$signer = SignerFactory::createSigner(
-    ['HS512']
-);
-
-// Lastly, we sign our claims (first argument) with our instructions (only one instruction).
-// We want a JWS in flattened serialization mode (compact serialization mode cannot be used as an unprotected header is set)
-// We also want to detach the payload. The result will not contain the payload. The payload will be set into the last argument
-$signer->addSignatureWithDetachedPayload(
-    $jws,
+$jws = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON(
+    'Live long and prosper.',
     $key,
     $detached_payload,
     [
@@ -47,8 +35,8 @@ $signer->addSignatureWithDetachedPayload(
     ]
 );
 
-// Now the variable $jws contains a our JWS:
-// Compact JSON is not available as the signature contains unprotected headers.
-// We can obtain a flattened JSON ($jws->toFlattenedJSON(0)): {"signature":"WXfhjDeRv-PCm-5eIgsTkVkUiCXsVe5FODvYjwKHEofZuzJteiNtiDTuSTOKrbsjXIEDbkP8BvYtToZJikjVvw","protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar","123":"ABC"}}
-// The variable $detached_payload contains our payload (base 64 url safe encoded): TGl2ZSBsb25nIGFuZCBwcm9zcGVyLg
+
+// Now the variable $jws contains a our message signed with the private key.
+// The payload is not part of the output. It is stored in the variable $detached_payload (base 64 url safe encoded): TGl2ZSBsb25nIGFuZCBwcm9zcGVyLg
 // Please read example Load2.php to know how to load these strings and to verify the signature
+// The output contains unprotected headers. That is why it cannot be converted into compact JSON

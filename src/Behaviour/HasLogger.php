@@ -23,7 +23,7 @@ trait HasLogger
     /**
      * @return \Psr\Log\LoggerInterface
      */
-    protected function getLogger()
+    private function getLogger()
     {
         return $this->logger;
     }
@@ -48,7 +48,7 @@ trait HasLogger
     private function log($level, $message, array $context = [])
     {
         if (null !== $this->logger) {
-            $this->logger->log($level, $message, $context);
+            $this->getLogger()->log($level, $message, $context);
         }
     }
 }

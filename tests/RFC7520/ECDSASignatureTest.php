@@ -58,13 +58,15 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => 'bilbo.baggins@hobbiton.example',
         ];
 
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignature($private_key, $headers);
+
         $signer = SignerFactory::createSigner(['ES512']);
-        $signer->addSignature($jws, $private_key, $headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['ES512']);
 
-        $this->assertTrue($verifer->verifyWithKey($jws, $private_key));
+        $verifer->verifyWithKey($jws, $private_key);
 
         /*
          * Header
@@ -75,12 +77,12 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         $expected_json = '{"payload":"SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4","signatures":[{"protected":"eyJhbGciOiJFUzUxMiIsImtpZCI6ImJpbGJvLmJhZ2dpbnNAaG9iYml0b24uZXhhbXBsZSJ9","signature":"AE_R_YZCChjn4791jSQCrdPZCNYqHXCTZH0-JZGYNlaAjP2kqaluUIIUnC9qvbu9Plon7KRTzoNEuT4Va2cmL1eJAQy3mtPBu_u_sDDyYjnAMDxXPn7XrT0lw-kvAD890jl8e2puQens_IEKBpHABlsbEPX6sFY8OcGDqoRuBomu9xQ2"}]}';
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_compact_json, $private_key));
+        $verifer->verifyWithKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $private_key));
+        $verifer->verifyWithKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $private_key));
+        $verifer->verifyWithKey($loaded_json, $private_key);
     }
 }

@@ -46,4 +46,9 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable
      * @return \Jose\Object\JWKSetInterface
      */
     public function removeKey($index);
+
+    /**
+     * @return int
+     */
+    public function countKeys();
 }

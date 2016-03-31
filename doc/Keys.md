@@ -9,6 +9,7 @@ This page lists algorithms and supported key types.
 * `RS256`, `RS384`,  `RS512`, `PS256`, `PS384` and  `PS512`: `RSA` type,
 * `HS256`, `HS384` and `HS512`: `oct` type,
 * `none`: `none` type,
+* `Ed25519`: `OKP` type,
 
 # Key encryption
 

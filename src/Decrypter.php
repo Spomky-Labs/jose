@@ -68,7 +68,7 @@ final class Decrypter implements DecrypterInterface
         $jwk_set = new JWKSet();
         $jwk_set = $jwk_set->addKey($jwk);
 
-        return $this->decryptUsingKeySet($jwe, $jwk_set, $recipient_index);
+        $this->decryptUsingKeySet($jwe, $jwk_set, $recipient_index);
     }
 
     /**
@@ -88,11 +88,11 @@ final class Decrypter implements DecrypterInterface
             if (is_int($result = $this->decryptRecipientKey($jwe, $jwk_set, $i))) {
                 $recipient_index = $result;
 
-                return true;
+                return;
             }
         }
 
-        return false;
+        throw new \InvalidArgumentException('Unable to decrypt the JWE.');
     }
 
     /**
@@ -194,7 +194,6 @@ final class Decrypter implements DecrypterInterface
                 $content_encryption_algorithm->getCEKSize(),
                 $content_encryption_algorithm->getAlgorithmName(),
                 $key,
-                null,
                 $complete_headers
             );
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
@@ -242,8 +241,6 @@ final class Decrypter implements DecrypterInterface
         if (null === $payload) {
             return false;
         }
-
-        $jwe = $jwe->withContentEncryptionKey($cek);
 
         $this->decompressIfNeeded($payload, $complete_headers);
 

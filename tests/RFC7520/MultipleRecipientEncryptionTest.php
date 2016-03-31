@@ -96,7 +96,6 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $expected_json = '{"recipients":[{"encrypted_key":"dYOD28kab0Vvf4ODgxVAJXgHcSZICSOp8M51zjwj4w6Y5G4XJQsNNIBiqyvUUAOcpL7S7-cFe7Pio7gV_Q06WmCSa-vhW6me4bWrBf7cHwEQJdXihidAYWVajJIaKMXMvFRMV6iDlRr076DFthg2_AV0_tSiV6xSEIFqt1xnYPpmP91tc5WJDOGb-wqjw0-b-S1laS11QVbuP78dQ7Fa0zAVzzjHX-xvyM2wxj_otxr9clN1LnZMbeYSrRicJK5xodvWgkpIdkMHo4LvdhRRvzoKzlic89jFWPlnBq_V4n5trGuExtp_-dbHcGlihqc_wGgho9fLMK8JOArYLcMDNQ","header":{"alg":"RSA1_5","kid":"frodo.baggins@hobbiton.example"}},{"encrypted_key":"ExInT0io9BqBMYF6-maw5tZlgoZXThD1zWKsHixJuw_elY4gSSId_w","header":{"alg":"ECDH-ES+A256KW","kid":"peregrin.took@tuckborough.example","epk":{"kty":"EC","crv":"P-384","x":"Uzdvk3pi5wKCRc1izp5_r0OjeqT-I68i8g2b8mva8diRhsE2xAn2DtMRb25Ma2CX","y":"VDrRyFJh-Kwd1EjAgmj5Eo-CTHAZ53MC7PjjpLioy3ylEjI1pOMbw91fzZ84pbfm"}}},{"encrypted_key":"a7CclAejo_7JSuPB8zeagxXRam8dwCfmkt9-WyTpS1E","header":{"alg":"A256GCMKW","kid":"18ec08e1-bfa9-4d95-b205-2b4dd1d4321d","tag":"59Nqh1LlYtVIhfD3pgRGvw","iv":"AvpeoPZ9Ncn9mkBn"}}],"unprotected":{"cty":"text/plain"},"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","iv":"VgEIHY20EnzUtZFl2RpB1g","ciphertext":"ajm2Q-OpPXCr7-MHXicknb1lsxLdXxK_yLds0KuhJzfWK04SjdxQeSw2L9mu3a_k1C55kCQ_3xlkcVKC5yr__Is48VOoK0k63_QRM9tBURMFqLByJ8vOYQX0oJW4VUHJLmGhF-tVQWB7Kz8mr8zeE7txF0MSaP6ga7-siYxStR7_G07Thd1jh-zGT0wxM5g-VRORtq0K6AXpLlwEqRp7pkt2zRM0ZAXqSpe1O6FJ7FHLDyEFnD-zDIZukLpCbzhzMDLLw2-8I14FQrgi-iEuzHgIJFIJn2wh9Tj0cg_kOZy9BqMRZbmYXMY9YQjorZ_P_JYG3ARAIF3OjDNqpdYe-K_5Q5crGJSDNyij_ygEiItR5jssQVH2ofDQdLChtazE","tag":"BESYyFN7T09KY7i8zKs5_g"}';
-        $expected_cek = 'zXayeJ4gvm8NJr3IUInyokTUO-LbQNKEhe_zWlYbdpQ';
         $expected_iv = 'VgEIHY20EnzUtZFl2RpB1g';
         $expected_recipient_1_encrypted_key = 'dYOD28kab0Vvf4ODgxVAJXgHcSZICSOp8M51zjwj4w6Y5G4XJQsNNIBiqyvUUAOcpL7S7-cFe7Pio7gV_Q06WmCSa-vhW6me4bWrBf7cHwEQJdXihidAYWVajJIaKMXMvFRMV6iDlRr076DFthg2_AV0_tSiV6xSEIFqt1xnYPpmP91tc5WJDOGb-wqjw0-b-S1laS11QVbuP78dQ7Fa0zAVzzjHX-xvyM2wxj_otxr9clN1LnZMbeYSrRicJK5xodvWgkpIdkMHo4LvdhRRvzoKzlic89jFWPlnBq_V4n5trGuExtp_-dbHcGlihqc_wGgho9fLMK8JOArYLcMDNQ';
         $expected_recipient_2_encrypted_key = 'ExInT0io9BqBMYF6-maw5tZlgoZXThD1zWKsHixJuw_elY4gSSId_w';
@@ -107,13 +106,13 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
@@ -126,7 +125,6 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($recipient_3_headers, $loaded_json->getRecipient(2)->getHeaders());
         $this->assertEquals($headers, $loaded_json->getSharedHeaders());
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }
@@ -150,6 +148,15 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
             'dp'  => 'UfYKcL_or492vVc0PzwLSplbg4L3-Z5wL48mwiswbpzOyIgd2xHTHQmjJpFAIZ8q-zf9RmgJXkDrFs9rkdxPtAsL1WYdeCT5c125Fkdg317JVRDo1inX7x2Kdh8ERCreW8_4zXItuTl_KiXZNU5lvMQjWbIw2eTx1lpsflo0rYU',
             'dq'  => 'iEgcO-QfpepdH8FWd7mUFyrXdnOkXJBCogChY6YKuIHGc_p8Le9MbpFKESzEaLlN1Ehf3B6oGBl5Iz_ayUlZj2IoQZ82znoUrpa9fVYNot87ACfzIG7q9Mv7RiPAderZi03tkVXAdaBau_9vs5rS-7HMtxkVrxSUvJY14TkXlHE',
             'qi'  => 'kC-lzZOqoFaZCr5l0tOVtREKoVqaAYhQiqIRGL-MzS4sCmRkxm5vZlXYx6RtE1n_AagjqajlkjieGlxTTThHD8Iga6foGBMaAr5uR1hGQpSc7Gl7CF1DZkBJMTQN6EshYzZfxW08mIO8M6Rzuh0beL6fG9mkDcIyPrBXx2bQ_mM',
+        ]);
+
+        $recipient_2_public_key = new JWK([
+            'kty' => 'EC',
+            'kid' => 'peregrin.took@tuckborough.example',
+            'use' => 'enc',
+            'crv' => 'P-384',
+            'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
+            'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
         ]);
 
         $recipient_2_private_key = new JWK([
@@ -193,46 +200,34 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
             'kid' => '18ec08e1-bfa9-4d95-b205-2b4dd1d4321d',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers, $headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
         $encrypter = EncrypterFactory::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $recipient_1_private_key,
-            null,
             $recipient_1_headers
         );
-        $encrypter->addRecipient(
-            $jwe,
-            $recipient_2_private_key,
-            new JWK([
-                'kty' => 'EC',
-                'kid' => 'peregrin.took@tuckborough.example',
-                'use' => 'enc',
-                'crv' => 'P-384',
-                'x'   => 'YU4rRUzdmVqmRtWOs2OpDE_T5fsNIodcG8G5FWPrTPMyxpzsSOGaQLpe2FpxBmu2',
-                'y'   => 'A8-yxCHxkfBz3hKZfI1jUYMjUhsEveZ9THuwFjH2sCNdtksRJU7D5-SkgaFL1ETP',
-                'd'   => 'iTx2pk7wW-GqJkHcEkFQb2EFyYcO7RugmaW3mRrQVAOUiPommT0IdnYK2xDlZh-j',
-            ]),
+        $jwe = $jwe->addRecipient(
+            $recipient_2_public_key,
             $recipient_2_headers
         );
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $recipient_3_private_key,
-            null,
             $recipient_3_headers
         );
+
+        $encrypter->encrypt($jwe);
 
         $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key));
+        $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
         $this->assertEquals($recipient_1_headers, $loaded_json->getRecipient(0)->getHeaders());

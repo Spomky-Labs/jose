@@ -27,33 +27,40 @@ final class Recipient implements RecipientInterface
     private $encrypted_key = null;
 
     /**
+     * @var \Jose\Object\JWKInterface
+     */
+    private $recipient_key = null;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRecipientFromLoadedJWE(array $headers, $encrypted_key)
+    {
+        $recipient = new self();
+        $recipient->headers = $headers;
+        $recipient->encrypted_key = $encrypted_key;
+
+        return $recipient;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRecipient(JWKInterface $recipient_key, array $headers = [])
+    {
+        $recipient = new self();
+        $recipient->headers = $headers;
+        $recipient->recipient_key = $recipient_key;
+
+        return $recipient;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getHeaders()
     {
         return $this->headers;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeaders(array $headers)
-    {
-        $signature = clone $this;
-        $signature->headers = $headers;
-
-        return $signature;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withHeader($key, $value)
-    {
-        $signature = clone $this;
-        $signature->headers[$key] = $value;
-
-        return $signature;
     }
 
     /**
@@ -86,11 +93,8 @@ final class Recipient implements RecipientInterface
     /**
      * {@inheritdoc}
      */
-    public function withEncryptedKey($encrypted_key)
+    public function getRecipientKey()
     {
-        $recipient = clone $this;
-        $recipient->encrypted_key = $encrypted_key;
-
-        return $recipient;
+        return $this->recipient_key;
     }
 }

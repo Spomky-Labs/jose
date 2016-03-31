@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
@@ -26,9 +27,7 @@ class Ed25519 implements SignatureAlgorithmInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
-        if (!$key->has('d')) {
-            throw new \InvalidArgumentException('The key is not private');
-        }
+        Assertion::true($key->has('d'), 'The key is not private');
 
         $secret = Base64Url::decode($key->get('d'));
         $public = Base64Url::decode($key->get('x'));
@@ -55,15 +54,10 @@ class Ed25519 implements SignatureAlgorithmInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if ('OKP' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
-        if (!$key->has('x') || !$key->has('crv')) {
-            throw new \InvalidArgumentException('Key components ("x" or "crv") missing');
-        }
-        if ('Ed25519' !== $key->get('crv')) {
-            throw new \InvalidArgumentException('Unsupported curve');
-        }
+        Assertion::eq($key->get('kty'), 'OKP', 'Wrong key type.');
+        Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
+        Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
+        Assertion::eq($key->get('crv'), 'Ed25519', 'Unsupported curve');
     }
 
     /**

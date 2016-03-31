@@ -31,12 +31,6 @@ This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org
 
 The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unencoded Payload Option) is not yet supported.
 
-# Important note
-
-> Note 0: please use v2.0.x+ as previous version contain many bugs and are difficult to use.
-
-> Note 1: if you use Symfony, [a bundle](https://github.com/Spomky-Labs/JoseBundle) is in development.
-
 # Provided Features
 
 ## Supported Input Types:
@@ -162,7 +156,7 @@ composer require spomky-labs/jose --prefer-source
 
 ## The Easiest Way To Create JWS/JWE
 
-The easiest way to create a JWS or JWE is to use our factories.
+The easiest way to create a JWS with single signature or JWE with single recipient is to use our factories.
 
 ### Signed JWT (JWS)
 
@@ -187,7 +181,7 @@ $header = [
     'alg' => 'RS512',
 ];
 
-// We load our private key
+// We load our private key used to sign
 $jwk = JWKFactory::createFromKeyFile(/path/to/my/private.rsa.encrypted.key', 'Secret');
 
 // We create our JWS
@@ -215,7 +209,7 @@ $jwk = JWKFactory::createFromKeyFile(/path/to/my/public.rsa.key');
 $jwe = JWEFactory::createJWEToCompactJSON($jws, $jwk, $header);
 ```
 
-Have a look at [How to use](doc/Use.md) to load your JWT and to know all possibilities provided by this library.
+Have a look at [How to use](doc/Use.md) to know how to load your JWT and discover all possibilities provided by this library.
 
 # Performances
 
@@ -226,12 +220,24 @@ We added some tests to verify the performance of each algorithm.
 
 The conclusions reached regarding these results are:
 
-* The HMAC signature performances are very good.
-* The RSA signature performances are good.
-* The ECC signature performances are very bad. This is due to the use of a pure PHP library.
-* The Key 
+* Signature operations:
+  * The HMAC signature performances are very good.
+  * The RSA signature performances are good.
+  * The ECC signature performances are very bad. This is due to the use of a pure PHP library.
+* Key Encryption operations:
+  * The algorithms based on RSA are very good.
+  * The AES GCM Key Wrapping algorithms are very good if the extension is installed, else performances are bad.
+  * The AES Key Wrapping algorithms are good.
+  * The PBES2-* algorithms performances bad, except if you use small salt and low count which is not what you intent to do.
+  * The ECC encryption performances are very bad. This is due to the use of a pure PHP library.
+* Content Encryption operations:
+  * All A128CBC-* algorithms are very good. 
+  * A128GCM-* algorithms are very good if the extension is installed, else performances are bad.
 
-**We do not recommend the use of ECC algorithms.**
+To conclude, if you use shared keys, you will prefer HMAC signature algorithms and AES/AES GCM key wrapping algorithms.
+If you use public/private key pairs, you will prefer RSA algorithms for signature and key encryption.
+
+**At this moment, we do not recommend the use of ECC algorithms.**
 
 ## Signature/Verification Performances
 
@@ -286,20 +292,21 @@ Not tested as there is no ciphering process with this algorithm.
 
 |    Algorithm       |    Wrapping     |    Unwrapping   |
 |--------------------|-----------------|-----------------|
-| A128KW             |   2.684588 msec |   2.543530 msec |
-| A192KW             |   2.597601 msec |   2.532120 msec |
-| A256KW             |   2.644479 msec |   2.608180 msec |
-| A128GCMKW          |   0.022180 msec |   0.015359 msec |
-| A128GCMKW(1)       |   9.724200 msec |   8.727851 msec |
-| A192GCMKW          |   0.020292 msec |   0.014329 msec |
-| A192GCMKW(1)       |   9.288480 msec |   9.948759 msec |
-| A256GCMKW          |   0.020370 msec |   0.014551 msec |
-| A256GCMKW(1)       |   9.685671 msec |   8.994040 msec |
-| PBES2-HS256+A128KW |  12.351940 msec |  12.727599 msec |
-| PBES2-HS384+A192KW |  15.622742 msec |  16.451840 msec |
-| PBES2-HS512+A256KW |  15.600979 msec |  15.592752 msec |
+| A128KW                |   2.684588 msec |   2.543530 msec |
+| A192KW                |   2.597601 msec |   2.532120 msec |
+| A256KW                |   2.644479 msec |   2.608180 msec |
+| A128GCMKW             |   0.022180 msec |   0.015359 msec |
+| A128GCMKW(1)          |   9.724200 msec |   8.727851 msec |
+| A192GCMKW             |   0.020292 msec |   0.014329 msec |
+| A192GCMKW(1)          |   9.288480 msec |   9.948759 msec |
+| A256GCMKW             |   0.020370 msec |   0.014551 msec |
+| A256GCMKW(1)          |   9.685671 msec |   8.994040 msec |
+| PBES2-HS256+A128KW(2) |  12.351940 msec |  12.727599 msec |
+| PBES2-HS384+A192KW(2) |  15.622742 msec |  16.451840 msec |
+| PBES2-HS512+A256KW(2) |  15.600979 msec |  15.592752 msec |
 
-*(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+* *(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+* *(2) Tests using default salt length (512 bits) and counts (4096) values*
 
 ### Key Encryption
 
@@ -323,7 +330,7 @@ Not tested as there is no ciphering process with this algorithm.
 | A256GCM       |   0.070095 msec |   0.034094 msec |
 | A256GCM(1)    |  61.682940 msec |  57.463884 msec |
 
-*(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
+* *(1) Tests using the PHP/Openssl method instead of the PHP Crypto extension*
 
 # Contributing
 

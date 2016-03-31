@@ -11,6 +11,7 @@
 
 namespace Jose\Algorithm\Signature;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Object\JWKInterface;
@@ -39,9 +40,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
     public function sign(JWKInterface $key, $data)
     {
         $this->checkKey($key);
-        if (!$key->has('d')) {
-            throw new \InvalidArgumentException('The EC key is not private');
-        }
+        Assertion::true($key->has('d'), 'The EC key is not private');
 
         $p = $this->getGenerator();
         $d = $this->convertBase64ToDec($key->get('d'));
@@ -59,7 +58,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
         $R = str_pad($this->convertDecToHex($signature->getR()), $part_length, '0', STR_PAD_LEFT);
         $S = str_pad($this->convertDecToHex($signature->getS()), $part_length, '0', STR_PAD_LEFT);
 
-        return $this->convertHextoBin($R.$S);
+        return $this->convertHexToBin($R.$S);
     }
 
     /**
@@ -71,15 +70,15 @@ abstract class ECDSA implements SignatureAlgorithmInterface
 
         $signature = $this->convertBinToHex($signature);
         $part_length = $this->getSignaturePartLength();
-        if (strlen($signature) !== 2 * $part_length) {
+        if (mb_strlen($signature, '8bit') !== 2 * $part_length) {
             return false;
         }
 
         $p = $this->getGenerator();
         $x = $this->convertBase64ToDec($key->get('x'));
         $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(substr($signature, 0, $part_length));
-        $S = $this->convertHexToDec(substr($signature, $part_length));
+        $R = $this->convertHexToDec(mb_substr($signature, 0, $part_length, '8bit'));
+        $S = $this->convertHexToDec(mb_substr($signature, $part_length, null, '8bit'));
         $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
@@ -161,11 +160,9 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function checkKey(JWKInterface $key)
     {
-        if ('EC' !== $key->get('kty')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
-        if (!$key->has('x') || !$key->has('y') || !$key->has('crv')) {
-            throw new \InvalidArgumentException('Key components ("x", "y" or "crv") missing');
-        }
+        Assertion::eq($key->get('kty'), 'EC', 'Wrong key type.');
+        Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
+        Assertion::true($key->has('y'), 'The key parameter "y" is missing.');
+        Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
     }
 }

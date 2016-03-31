@@ -65,10 +65,10 @@ final class GCM
 
     private static function common($K, $IV, $A)
     {
-        $key_length = strlen($K) * 8;
+        $key_length = mb_strlen($K, '8bit') * 8;
         Assertion::inArray($key_length, [128, 192, 256], 'Bad key length.');
 
-        $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.(strlen($K) * 8).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA); //---
+        $H = openssl_encrypt(str_repeat("\0", 16), 'aes-'.($key_length).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA); //---
         $iv_len = self::getLength($IV);
 
         if ($iv_len == 96) {
@@ -115,7 +115,7 @@ final class GCM
      */
     private static function getLength($x)
     {
-        return strlen($x) * 8;
+        return mb_strlen($x, '8bit') * 8;
     }
 
     /**
@@ -128,7 +128,7 @@ final class GCM
     {
         $num_bytes = $num_bits / 8;
 
-        return substr($x, 0, $num_bytes);
+        return mb_substr($x, 0, $num_bytes, '8bit');
     }
 
     /**
@@ -141,7 +141,7 @@ final class GCM
     {
         $num_bytes = ($num_bits / 8);
 
-        return substr($x, -$num_bytes);
+        return mb_substr($x, -$num_bytes, null, '8bit');
     }
 
     /**
@@ -198,7 +198,7 @@ final class GCM
             if ($x[$i]) {
                 $Z = self::getBitXor($Z, $V);
             }
-            $lsb_8 = substr($V, -1);
+            $lsb_8 = mb_substr($V, -1, null, '8bit');
             if (ord($lsb_8 & $lsb_mask)) {
                 $V = self::getBitXor(self::shiftStringToRight($V), $R);
             } else {
@@ -247,9 +247,9 @@ final class GCM
     {
         $Y = [];
         $Y[0] = str_pad('', 16, "\0");
-        $num_blocks = (int) (strlen($X) / 16);
+        $num_blocks = (int) (mb_strlen($X, '8bit') / 16);
         for ($i = 1; $i <= $num_blocks; $i++) {
-            $Y[$i] = self::getProduct(self::getBitXor($Y[$i - 1], substr($X, ($i - 1) * 16, 16)), $H);
+            $Y[$i] = self::getProduct(self::getBitXor($Y[$i - 1], mb_substr($X, ($i - 1) * 16, 16, '8bit')), $H);
         }
 
         return $Y[$num_blocks];
@@ -275,13 +275,15 @@ final class GCM
         for ($i = 2; $i <= $n; $i++) {
             $CB[$i] = self::getInc(32, $CB[$i - 1]);
         }
+        $key_length = strlen($K) * 8;
+        $mode = 'aes-'.($key_length).'-ecb';
         for ($i = 1; $i < $n; $i++) {
-            $C = openssl_encrypt($CB[$i], 'aes-'.(strlen($K) * 8).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA);
-            $Y[$i] = self::getBitXor(substr($X, ($i - 1) * 16, 16), $C);
+            $C = openssl_encrypt($CB[$i], $mode, $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA);
+            $Y[$i] = self::getBitXor(mb_substr($X, ($i - 1) * 16, 16, '8bit'), $C);
         }
 
-        $Xn = substr($X, ($n - 1) * 16);
-        $C = openssl_encrypt($CB[$n], 'aes-'.(strlen($K) * 8).'-ecb', $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA);
+        $Xn = mb_substr($X, ($n - 1) * 16, null, '8bit');
+        $C = openssl_encrypt($CB[$n], $mode, $K, OPENSSL_NO_PADDING | OPENSSL_RAW_DATA);
         $Y[$n] = self::getBitXor($Xn, self::getMSB(self::getLength($Xn), $C));
 
         return implode('', $Y);

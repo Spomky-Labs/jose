@@ -11,11 +11,11 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\Object\JWKInterface;
 use Jose\Util\GCM;
-use Jose\Util\StringUtil;
 
 /**
  * Class AESGCMKW.
@@ -29,7 +29,7 @@ abstract class AESGCMKW implements KeyWrappingInterface
     {
         $this->checkKey($key);
         $kek = Base64Url::decode($key->get('k'));
-        $iv = StringUtil::generateRandomBytes(96 / 8);
+        $iv = random_bytes(96 / 8);
         $additional_headers['iv'] = Base64Url::encode($iv);
 
         if (class_exists('\Crypto\Cipher')) {
@@ -84,7 +84,7 @@ abstract class AESGCMKW implements KeyWrappingInterface
      */
     private function getMode($k)
     {
-        return 'aes-'.(8 *  strlen($k)).'-gcm';
+        return 'aes-'.(8 *  mb_strlen($k, '8bit')).'-gcm';
     }
 
     /**
@@ -100,9 +100,8 @@ abstract class AESGCMKW implements KeyWrappingInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->get('kty') || !$key->has('k')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'oct', 'Wrong key type.');
+        Assertion::true($key->has('k'), 'The key parameter "k" is missing.');
     }
 
     /**
@@ -110,9 +109,8 @@ abstract class AESGCMKW implements KeyWrappingInterface
      */
     protected function checkAdditionalParameters(array $header)
     {
-        if (!array_key_exists('iv', $header) || !array_key_exists('tag', $header)) {
-            throw new \InvalidArgumentException("Missing parameters 'iv' or 'tag'.");
-        }
+        Assertion::keyExists($header, 'iv', 'Parameter "iv" is missing.');
+        Assertion::keyExists($header, 'tag', 'Parameter "tag" is missing.');
     }
 
     /**

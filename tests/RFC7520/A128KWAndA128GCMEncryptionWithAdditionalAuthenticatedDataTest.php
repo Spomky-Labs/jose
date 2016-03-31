@@ -59,10 +59,10 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
@@ -70,7 +70,6 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_flattened_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_flattened_json->getTag()));
         $this->assertEquals($expected_aad, $loaded_flattened_json->getAAD());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_flattened_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
@@ -78,7 +77,6 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
         $this->assertEquals($expected_aad, $loaded_json->getAAD());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
 
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
@@ -105,21 +103,22 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
             'enc' => 'A128GCM',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $private_key
         );
+
+        $encrypter->encrypt($jwe);
 
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
 

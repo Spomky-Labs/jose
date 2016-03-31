@@ -11,6 +11,7 @@
 
 namespace Jose\Checker;
 
+use Assert\Assertion;
 use Jose\Object\JWTInterface;
 
 abstract class SubjectChecker implements ClaimCheckerInterface
@@ -25,9 +26,7 @@ abstract class SubjectChecker implements ClaimCheckerInterface
         }
 
         $subject = $jwt->getClaim('sub');
-        if (!$this->isSubjectAllowed($subject)) {
-            throw new \InvalidArgumentException(sprintf('The subject "%s" is not allowed.', $subject));
-        }
+        Assertion::true($this->isSubjectAllowed($subject), sprintf('The subject "%s" is not allowed.', $subject));
 
         return ['sub'];
     }

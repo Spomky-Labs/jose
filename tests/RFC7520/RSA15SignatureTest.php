@@ -56,9 +56,11 @@ class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => 'bilbo.baggins@hobbiton.example',
         ];
 
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignature($private_key, $headers);
+
         $signer = SignerFactory::createSigner(['RS256']);
-        $signer->addSignature($jws, $private_key, $headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['RS256']);
 
@@ -77,12 +79,12 @@ class RSA15SignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_compact_json, $private_key));
+        $verifer->verifyWithKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $private_key));
+        $verifer->verifyWithKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $private_key));
+        $verifer->verifyWithKey($loaded_json, $private_key);
     }
 }

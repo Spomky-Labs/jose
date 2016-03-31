@@ -21,11 +21,25 @@ interface JWEInterface extends JWTInterface
     public function countRecipients();
 
     /**
-     * @param \Jose\Object\RecipientInterface $recipient
+     * @return bool
+     */
+    public function isEncrypted();
+
+    /**
+     * @param \Jose\Object\JWKInterface $recipient_key
+     * @param array                     $recipient_headers
      *
      * @return \Jose\Object\JWEInterface
      */
-    public function addRecipient(RecipientInterface $recipient);
+    public function addRecipient(JWKInterface $recipient_key, $recipient_headers = []);
+
+    /**
+     * @param string|null $encrypted_key
+     * @param array       $recipient_headers
+     *
+     * @return \Jose\Object\JWEInterface
+     */
+    public function addRecipientWithEncryptedKey($encrypted_key, array $recipient_headers);
 
     /**
      * Returns the recipients associated with the JWS.
@@ -39,7 +53,7 @@ interface JWEInterface extends JWTInterface
      *
      * @return \Jose\Object\RecipientInterface
      */
-    public function getRecipient($id);
+    public function &getRecipient($id);
 
     /**
      * @param int $recipient
@@ -68,11 +82,13 @@ interface JWEInterface extends JWTInterface
     public function getCiphertext();
 
     /**
+     * 
+     * @param string $ciphertext
      * @internal
      *
      * @return \Jose\Object\JWEInterface
      */
-    public function withCiphertext($ciphertest);
+    public function withCiphertext($ciphertext);
 
     /**
      * @internal
@@ -205,16 +221,4 @@ interface JWEInterface extends JWTInterface
      * @return bool
      */
     public function hasSharedHeader($key);
-
-    /**
-     * @return string|null
-     */
-    public function getContentEncryptionKey();
-
-    /**
-     * @param string $content_encryption_key
-     *
-     * @return \Jose\Object\JWEInterface
-     */
-    public function withContentEncryptionKey($content_encryption_key);
 }

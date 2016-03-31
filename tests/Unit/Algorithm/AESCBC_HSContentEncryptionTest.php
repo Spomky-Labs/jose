@@ -44,6 +44,10 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($expected_T, $T);
     }
 
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  Unable to verify the tag.
+     */
     public function testBadTag()
     {
         $header = Base64Url::encode(json_encode(['alg' => 'A128KW', 'enc' => 'A128CBC-HS256']));
@@ -54,7 +58,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
         $cyphertext = $this->convertArrayToBinString([40, 57, 83, 181, 119, 33, 133, 148, 198, 185, 243, 24, 152, 230, 6, 75, 129, 223, 127, 19, 210, 82, 183, 230, 168, 33, 215, 104, 143, 112, 56, 102]);
         $T = $this->convertArrayToBinString([83, 73, 191, 98, 104, 205, 211, 128, 201, 189, 199, 133, 32, 38, 194]);
 
-        $this->assertNull($algorithm->decryptContent($cyphertext, $K, $iv, null, $header, $T));
+        $algorithm->decryptContent($cyphertext, $K, $iv, null, $header, $T);
     }
 
     /**
@@ -93,7 +97,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
         $calc_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'calculateAuthenticationTag');
-        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'checkAuthenticationTag');
+        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'isTagValid');
 
         $T = $calc_method->invokeArgs($algorithm, [$cyphertext, $K, $iv, null, $aad]);
         $this->assertEquals($expected_T, $T);
@@ -127,7 +131,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
         $calc_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'calculateAuthenticationTag');
-        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'checkAuthenticationTag');
+        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'isTagValid');
 
         $T = $calc_method->invokeArgs($algorithm, [$cyphertext, $K, $iv, null, $aad]);
         $this->assertEquals($expected_T, $T);
@@ -161,7 +165,7 @@ class AESCBC_HSContentEncryptionTest extends \PHPUnit_Framework_TestCase
 
         //We invoke protected methods to test vectors directly. This is due to the encryption signature: this test case uses a string as AAD, but the algorithm uses the protected header.
         $calc_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'calculateAuthenticationTag');
-        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'checkAuthenticationTag');
+        $check_method = self::getMethod('\Jose\Algorithm\ContentEncryption\A128CBCHS256', 'isTagValid');
 
         $T = $calc_method->invokeArgs($algorithm, [$cyphertext, $K, $iv, null, $aad]);
         $this->assertEquals($expected_T, $T);

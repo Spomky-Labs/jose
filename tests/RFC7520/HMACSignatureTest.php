@@ -57,9 +57,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignature($key, $headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, $headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -78,13 +80,13 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_compact_json, $key));
+        $verifer->verifyWithKey($loaded_compact_json, $key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $key));
+        $verifer->verifyWithKey($loaded_flattened_json, $key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $key));
+        $verifer->verifyWithKey($loaded_json, $key);
     }
 
     /**
@@ -116,9 +118,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createEmptyJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = $jws->addSignature($key, $headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignatureWithDetachedPayload($jws, $key, $encoded_payload, $headers);
+        $signer->signWithDetachedPayload($jws, $encoded_payload);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -138,13 +142,13 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_compact_json, $key, $encoded_payload));
+        $verifer->verifyWithKey($loaded_compact_json, $key, $encoded_payload);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $key, $encoded_payload));
+        $verifer->verifyWithKey($loaded_flattened_json, $key, $encoded_payload);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $key, $encoded_payload));
+        $verifer->verifyWithKey($loaded_json, $key, $encoded_payload);
     }
 
     /**
@@ -178,9 +182,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignature($key, $protected_headers, $unprotected_headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, $protected_headers, $unprotected_headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -196,10 +202,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $key));
+        $verifer->verifyWithKey($loaded_flattened_json, $key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $key));
+        $verifer->verifyWithKey($loaded_json, $key);
     }
 
     /**
@@ -231,9 +237,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignature($key, [], $unprotected_headers);
+
         $signer = SignerFactory::createSigner(['HS256']);
-        $signer->addSignature($jws, $key, [], $unprotected_headers);
+        $signer->sign($jws);
 
         $verifer = VerifierFactory::createVerifier(['HS256']);
 
@@ -249,9 +257,9 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_flattened_json, $key));
+        $verifer->verifyWithKey($loaded_flattened_json, $key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $key));
+        $verifer->verifyWithKey($loaded_json, $key);
     }
 }

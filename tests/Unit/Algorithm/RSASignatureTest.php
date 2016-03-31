@@ -37,7 +37,7 @@ class RSASignatureTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testInvalidKey()
     {
@@ -46,7 +46,7 @@ class RSASignatureTest extends TestCase
         ]);
 
         $rsa = new RS256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $rsa->sign($key, $data);
     }
@@ -64,7 +64,7 @@ class RSASignatureTest extends TestCase
         ]);
 
         $rsa = new RS256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $rsa->sign($key, $data);
     }
@@ -83,11 +83,11 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
-        $this->assertEquals('eXwZbS3BxgwlwuzZdn046vzAQkKMefQ8f2pyieQ4VIB5QwOyk5hYbgUSB4iyH_LM-C3_Cy2449cWcvD4Ko6CI-w1FBKWVcei7nbKhJxKmJB39qUXUke6meO-_RleuiZHPamugTE_2eyWGK-cUOvHDKMSeeiA6Ifj5FGnmjcbRvHieCycfr6rQ3h-xLgsLSzzcBL6M7oSZVJ5jafXWy4Lrr3QY4otvrVgh0YN9oRPUF3yaw0J4gd-etid6y04kKJZfjmV-EDsqHGdMbsIhgy5FZ5Ai6UHau4QetOrNtZtuHgy6d6Me8E3UOD0neD5RskkA1-UpoxujA9aBDNe09XDbg', Base64Url::encode($signature));
+        $this->assertEquals('FD6TkoJhFl399fPVg9dkr7-bNAPNqNdLrXQohL5zQ62EdFRNrvaK3uYY8CV-G8mxWavuPc2p2FaYijhOTaGXpsatpQNAeO6E7VRX8FkXOUk3ehfN6ODKdhFX943uXZOziRiJVEBt2YEUaVqbwNcLbQysgwrIT8XIlQ4hFSojEbLcF55az4k8sgj8v_YFv28cZUCZP2nlT49uqSjalcACmqdMmfs7sEUKDsGlNA31wpHss9mKBfulMNuJVSRdLx7ZFWTSuvbfx0GtFL5l2VzkE_7KV7CfO-IlKeyi-Uonnj_c_wjqldd-_RKm_7nk5o7picfbrApFaKgFqWv3ag9wPA', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
@@ -105,11 +105,11 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
-        $this->assertEquals('NQS2mSn2hB-y9zkGtXJhRobdMgLQv3SFW229fqazaZC9qk_xDLLTtPKn5GrvusIAp2DqyDRnjJ-DIJNkLOrzdnUpV_xRKmQE65ZxGagZr46u5_QcoOWtCgWopzS7j_ajE5CFEx9TcjmNK5c0fX2ffI8xIcIfTIsgPF8k5QOarh-YZLFBT8x7dDu3mx1Upr_MLdTuPP_ce3F1UFwG-91xtj9fwuPPRxlyPeKaVHKj2JXPWwCuNYYrQF0y0WxTNVKFi0Uu_9WZl0w-jFwxOlB4p2k6etdNshVroYlVGkquLGrQrhRQF6D_j_PQLyftHJ56LkUmjra5v1xI-T5uI6VSEw', Base64Url::encode($signature));
+        $this->assertEquals('ZjdgGhfRAxhhl0CQhQY_ZZz2kKFxtGHtYHpaGGZTzGU5n26qEboaSXFqJW_qWceYfl3C_EWZFJrRH3YI0QF6DyfX2ILfRBi4FXf7GxuSW9lrBtDR2Qen8fDQZ-PHbtFXs_eRVx6D9h_LmTFyDaND9aFj1eiVp7CpHIPq0k9lwErDPsZ6yBwVyzbHyVBL0xUJdGbHXUC5QLzCKWBrX23O0Xm7SOKb6DcdACa_JsLcoOtczjplk8rdpx0W8QlugE_O6j1Aq4pxcjjA8IP5hU6t6cK1GVabnZtoG-lKKl95V1wKRou0Kr0X-KHaIbYOW8IyuzJVppTUBwM5tnuMb5zLEA', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
@@ -127,11 +127,11 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
-        $this->assertEquals('dCFJjJdXUz_0zaOveSvb0aJulgjLwH4cf2d3d_BRfCpUKUjPT9KXiJiBl9JBVaGhLzbHmDmiLu1ZIsC8sAtW1Z0Mt6p4TpNxbGlAG37UtaN8Y5x7RiRpE_4DWNqcUsZJbsQt7eOs0vDl70TXGQzTT465HNmVW-DHw8cZLsxhu2Qia7i0UOhNO0fZScf0t843s0DLQ8hSCN5bbO-Zv33Tv3rx1EuNRSypIQDHWlN6qtX4-K6XO_bNo2-Tole9eTwOkuuQibTh_9Xa7jXP_SI6Qj6nqJZxaZmTO4NdBbNx1kwtYec8jBYqkv1H7E7wfN8EpOdhL1lC2DSq6tR2vP8eIQ', Base64Url::encode($signature));
+        $this->assertEquals('YJucnqnY8ZmHTqGWm59y_1GG54MZgW0dRRR25iTrCZP_OdybajIgMbfKh2ckubhOxDsavdKHTnnmayIBAWPwEIZWeg__Et97GarlofDQ3YymTTVo8HofI74Oy2mwNzD2_u6SWC5Ow_o4uC_-P2acQBmSOLP9xQ2tQwGujjam8KWvoY6F_QyRzOVFo1ETWVTlWLYycInw9GbbovfwvHiJ0EDp-BDN-RDG8VNEwzVCWRMf6zn6GaTntTnMRP6wtHZt4fBlC33DFIzpHdtFZi2EfJwDkJOWtWn4ss6MyaN4FZHsqH4g78ZzHx06EvnD6Q73Q4sfHN8U9xVzmMwOOiThkA', Base64Url::encode($signature));
         $this->assertTrue($rsa->verify($key, $data, $signature));
     }
 
@@ -149,7 +149,7 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
@@ -170,7 +170,7 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
@@ -191,7 +191,7 @@ class RSASignatureTest extends TestCase
                 'dq'  => 'Swz1-m_vmTFN_pu1bK7vF7S5nNVrL4A0OFiEsGliCmuJWzOKdL14DiYxctvnw3H6qT2dKZZfV2tbse5N9-JecdldUjfuqAoLIe7dD7dKi42YOlTC9QXmqvTh1ohnJu8pmRFXEZQGUm_BVhoIb2_WPkjav6YSkguCUHt4HRd2YwE',
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $rsa->sign($key, $data);
 
@@ -212,12 +212,11 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS256']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS256',
@@ -226,13 +225,16 @@ class RSASignatureTest extends TestCase
                     'n'   => 'tpS1ZmfVKVP5KofIhMBP0tSWc4qlh6fm2lrZSkuKxUjEaWjzZSzs72gEIGxraWusMdoRuV54xsWRyf5KeZT0S-I5Prle3Idi3gICiO4NwvMk6JwSBcJWwmSLFEKyUSnB2CtfiGc0_5rQCpcEt_Dn5iM-BNn7fqpoLIbks8rXKUIj8-qMVqkTXsEKeKinE23t1ykMldsNaaOH-hvGti5Jt2DMnH1JjoXdDXfxvSP_0gjUYb0ektudYFXoA6wekmQyJeImvgx4Myz1I4iHtkY_Cp7J4Mn1ejZ6HNmyvoTE_4OuY1uCeYv4UyXFc1s1uUyYtj4z57qsHGsS4dQ3A2MJsw',
                     'e'   => 'AQAB',
                 ],
-            ]);
+            ]
+        );
 
-        $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.j8Ixg1CtPKdjn_nQbzRuFfX2I5i13uOLXDW1bPDMG4glp9ZW7mBi5_8ISnir-JVl93MpveppJo2adN_YkmmQjAgIYBgqO64Z1ltvjT5BwtS54SXCV4_YQDK-Tgy-IM6oG-T7zRz1GL_HowkkcUs9TenmakP3EDHL3MOsK6yo2HKhXgTvQ3ud0zKacdo4RQ_OQBoAle3Dr2rnTBVaF_4YRem2YrdFMzOHN9Luo7RxQJQcQTv99KTUNGih5mZug4k6W4YZPHi9lWfqzSTrlhKnnIc-EkecSsgjgWJzXjH2JQkd5rlKLWB96Al1iGjiGmsanmqcnETjnYZQAK0Hy73Lgw', $jws->toCompactJSON(0));
+        $signer->sign($jws);
+
+        $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.QyRlOCcNBMvCEkJRCQA71y2bVX690g0A6wsC2YXf9_VxOYK-g9-xy-1KjghVXkDPe1gDvYSYnL9oWs1PaFKV0_-ijvvJQE6_5pheKTfIVN3Qbkzjxsm4qXTeChBI5MKeBR8z8iWLFT4xPO8NkelwbS2tSUCHrejio6lDDlWhsqSUP8NjHJhqCSZuCDGu3fMMA24cZrYev3tQRc7HHjyi3q_17NZri7feBd7w3NEDkJp7wT_ZclJrYoucHIo1ypaDPJtM-W1-W-lAVREka6Xq4Bg60zdSZ83ODRQTP_IwQrv7hrIcbrRwn1Za_ORZPRPQDP0CMgkb7TkWDZnbPsAzlQ', $jws->toCompactJSON(0));
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -251,14 +253,12 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWSWithDetachedPayload('Je suis Charlie', $encoded_payload);
+        $jws = JWSFactory::createJWSWithDetachedPayload('Live long and Prosper.', $encoded_payload);
 
         $signer = SignerFactory::createSigner(['RS256']);
 
-        $signer->addSignatureWithDetachedPayload(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
-            $encoded_payload,
             [
                 'alg' => 'RS256',
                 'jwk' => [
@@ -269,8 +269,10 @@ class RSASignatureTest extends TestCase
             ]
         );
 
-        $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0..j8Ixg1CtPKdjn_nQbzRuFfX2I5i13uOLXDW1bPDMG4glp9ZW7mBi5_8ISnir-JVl93MpveppJo2adN_YkmmQjAgIYBgqO64Z1ltvjT5BwtS54SXCV4_YQDK-Tgy-IM6oG-T7zRz1GL_HowkkcUs9TenmakP3EDHL3MOsK6yo2HKhXgTvQ3ud0zKacdo4RQ_OQBoAle3Dr2rnTBVaF_4YRem2YrdFMzOHN9Luo7RxQJQcQTv99KTUNGih5mZug4k6W4YZPHi9lWfqzSTrlhKnnIc-EkecSsgjgWJzXjH2JQkd5rlKLWB96Al1iGjiGmsanmqcnETjnYZQAK0Hy73Lgw', $jws->toCompactJSON(0));
-        $this->assertEquals('SmUgc3VpcyBDaGFybGll', $encoded_payload);
+        $signer->signWithDetachedPayload($jws, $encoded_payload);
+
+        $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0..QyRlOCcNBMvCEkJRCQA71y2bVX690g0A6wsC2YXf9_VxOYK-g9-xy-1KjghVXkDPe1gDvYSYnL9oWs1PaFKV0_-ijvvJQE6_5pheKTfIVN3Qbkzjxsm4qXTeChBI5MKeBR8z8iWLFT4xPO8NkelwbS2tSUCHrejio6lDDlWhsqSUP8NjHJhqCSZuCDGu3fMMA24cZrYev3tQRc7HHjyi3q_17NZri7feBd7w3NEDkJp7wT_ZclJrYoucHIo1ypaDPJtM-W1-W-lAVREka6Xq4Bg60zdSZ83ODRQTP_IwQrv7hrIcbrRwn1Za_ORZPRPQDP0CMgkb7TkWDZnbPsAzlQ', $jws->toCompactJSON(0));
+        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload);
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
@@ -293,12 +295,11 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS384']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS384',
@@ -310,11 +311,13 @@ class RSASignatureTest extends TestCase
             ]
         );
 
-        $this->assertEquals('eyJhbGciOiJSUzM4NCIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.hITAAg42Vdp6y-3TdaCU939bMNgN4XlJ0YDKrCgexIvqYPorMjLEnldMnq-0-Xp4T7CrXJd_2Abbv1216gqRGwmtXIeWXWaZ8jaEejtdiRIAsxN2HLCDdX8ofmXMzvJC0uO4MP6hAgxBpDtL2Czc37kh4D7b8hHIvaXq0RbtP2fF62Db9mMJijjDLmxzWaElAcr8ks49aI-xfXgKnDw7LxVKjnEbjQubHnrbqsaonGagWc2SwDPzMrRebCplcf1UAv0daGXj4KZoL00grT-fpUyDYTFlH4ihuCHSFyo7_EmVFSfttaa8OcBo7xKOPrrc1hZw8GzkA5QHLFPaWERBmg', $jws->toCompactJSON(0));
+        $signer->sign($jws);
+
+        $this->assertEquals('eyJhbGciOiJSUzM4NCIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.gsBhyBOEDPpHBR8OM2Xb5tybKGeijREZN-smEkvI2188pytujFevbDQJ10afbcdjh5LNKO7U_VD3hGPrC7MIkdtJw4c2d0JnVyhiZT5sFnncnCFjll-Y9GkK7a7jWJJTgF_5LmVEeJSFEEgwT1Stxb-TtZCGqc5ExYizLiuQ2IGB6Sq-hTkpWAXJfmHchE_TxV9A4iLWCMTVM6LsLV6NzDtf2a0iu9XvN1MEdzqM7FNdqNCGN43FveTA0hX8OoFfB2ZjYAjbixUCT4VVI2PuuRyu_Lr8cA73eisolBQLQemPyrCo1s560v2tKD7ICS8Teo1PCJ4HnCuO8bvufI2dKA', $jws->toCompactJSON(0));
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('RS384', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -333,12 +336,11 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['RS512']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'RS512',
@@ -350,12 +352,14 @@ class RSASignatureTest extends TestCase
             ]
         );
 
-        $this->assertEquals('eyJhbGciOiJSUzUxMiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.SmUgc3VpcyBDaGFybGll.iOFHV9kmm5Sx6fVhSLpoJRUnfGftKLO8QKvG6b1yiUGg8EPolw4uKcF7e9jlNFPSkB_oF8vTLkdIXQ-ux7VIfVwV5XocU7--tWP69UqfqLcBpVe01TNeKBXE82uILYoo599LiLE-pLIM0nXjD43KVUv7_D2jJ5xd2TJdfdgU-3CLFit-5wiJ_ut1hByX_YT7KZwM6soIBoqedfPfe99mlENJ1FbqNuK9weQQeotKU4EvOFVMRRm4ZAAZHWcimUfLIJmH3pcOL0p4LXj93rJtHkUzK1XZGkff1WQkCq_6GTToPhhC8xRO8uV2np3NFxQuPNx6fBkJsQjWGGum0d3MOA', $jws->toCompactJSON(0));
+        $signer->sign($jws);
+
+        $this->assertEquals('eyJhbGciOiJSUzUxMiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.OMttEbx9fWoJl4gJwp8m249P87nNENhy5RzH84S1iR8b-upQNy8dqHoIVsQ6qINDjDL5YTl4UWvChIr5AO433LjNUimIeEp2cfiqrszTTwhv-EF3Lp3Ft9NmTb-3ZWvDo1WwwUrD0qro7bynaz5O06DxQfTROcrC6hNX05y6nW_-21exs2_w2OoOWA0Ebx9ev1ayZJh1AQ6q18Ajb0Gk1RST1PFjz0Sk_YiUIYRSVJzgv2Lf7R_Lyi5A5OkIfLOyJmKBi6m0FOLoynq_fT96wCbf5Nkhx-RiuFEcefGhgDav7Wfim3zA3ZAHeNWe58BZOf-8v1kXsV-yd6zQlVa8iw', $jws->toCompactJSON(0));
 
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('RS512', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -375,12 +379,11 @@ class RSASignatureTest extends TestCase
                 'qi'      => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS256']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS256',
@@ -391,12 +394,14 @@ class RSASignatureTest extends TestCase
                     'e'       => 'AQAB',
                 ],
             ]
-    );
+        );
+
+        $signer->sign($jws);
 
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('PS256', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -415,12 +420,11 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS384']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS384',
@@ -432,10 +436,12 @@ class RSASignatureTest extends TestCase
             ]
         );
 
+        $signer->sign($jws);
+
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('PS384', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -454,12 +460,11 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createEmptyJWS('Je suis Charlie');
+        $jws = JWSFactory::createJWS('Live long and Prosper.');
 
         $signer = SignerFactory::createSigner(['PS512']);
 
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $key,
             [
                 'alg' => 'PS512',
@@ -471,10 +476,12 @@ class RSASignatureTest extends TestCase
             ]
         );
 
+        $signer->sign($jws);
+
         $result = Loader::load($jws->toCompactJSON(0));
 
         $this->assertInstanceOf(JWSInterface::class, $result);
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertEquals('PS512', $result->getSignature(0)->getProtectedHeader('alg'));
     }
@@ -493,9 +500,8 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128CBC-HS256', $loaded->getSharedProtectedHeader('enc'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
@@ -517,9 +523,8 @@ class RSASignatureTest extends TestCase
         $this->assertEquals('A128KW', $loaded->getRecipient(1)->getHeader('alg'));
         $this->assertNull($loaded->getPayload());
 
-        $result = $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
+        $decrypter->decryptUsingKeySet($loaded, $this->getPrivateKeySet(), $index);
 
-        $this->assertTrue($result);
         $this->assertEquals(0, $index);
         $this->assertEquals('Live long and prosper.', $loaded->getPayload());
     }
@@ -555,7 +560,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result->getSignature(1)->getProtectedHeader('alg'));
-        $this->assertTrue($verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ');
     }
 
     /**
@@ -572,7 +577,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
 
-        $this->assertTrue($verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
+        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ');
     }
 
     /**

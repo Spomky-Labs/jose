@@ -17,24 +17,25 @@ namespace Jose\Object;
 interface RecipientInterface
 {
     /**
+     * @param array       $headers
+     * @param string|null $encrypted_key
+     *
+     * @return \Jose\Object\Recipient
+     */
+    public static function createRecipientFromLoadedJWE(array $headers, $encrypted_key);
+
+    /**
+     * @param \Jose\Object\JWKInterface $recipient_key
+     * @param array                     $headers
+     *
+     * @return \Jose\Object\Recipient
+     */
+    public static function createRecipient(JWKInterface $recipient_key, array $headers = []);
+
+    /**
      * @return array
      */
     public function getHeaders();
-
-    /**
-     * @param array $headers
-     *
-     * @return \Jose\Object\RecipientInterface
-     */
-    public function withHeaders(array $headers);
-
-    /**
-     * @param string     $key
-     * @param mixed|null $value
-     *
-     * @return \Jose\Object\RecipientInterface
-     */
-    public function withHeader($key, $value);
 
     /**
      * Returns the value of the unprotected header of the specified key.
@@ -58,9 +59,7 @@ interface RecipientInterface
     public function getEncryptedKey();
 
     /**
-     * @param string $encrypted_key
-     *
-     * @return \Jose\Object\RecipientInterface
+     * @return \Jose\Object\JWKInterface
      */
-    public function withEncryptedKey($encrypted_key);
+    public function getRecipientKey();
 }

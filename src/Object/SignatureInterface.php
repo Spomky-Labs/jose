@@ -19,6 +19,29 @@ namespace Jose\Object;
 interface SignatureInterface
 {
     /**
+     * @param string      $signature
+     * @param string|null $encoded_protected_headers
+     * @param array       $headers
+     *
+     * @return \Jose\Object\Signature
+     */
+    public static function createSignatureFromLoadedData($signature, $encoded_protected_headers, array $headers);
+
+    /**
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
+     * @param array                     $headers
+     *
+     * @return \Jose\Object\Signature
+     */
+    public static function createSignature(JWKInterface $signature_key, array $protected_headers, array $headers);
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    public function getSignatureKey();
+
+    /**
      * The protected header associated with the signature.
      *
      * @internal
@@ -28,41 +51,11 @@ interface SignatureInterface
     public function getEncodedProtectedHeaders();
 
     /**
-     * Set the encoded protected headers associated with the signature.
-     *
-     * @internal
-     *
-     * @param string $encoded_protected_headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withEncodedProtectedHeaders($encoded_protected_headers);
-
-    /**
      * The protected header associated with the signature.
      *
      * @return array
      */
     public function getProtectedHeaders();
-
-    /**
-     * Set the protected headers associated with the signature.
-     *
-     * @param array $protected_headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withProtectedHeaders(array $protected_headers);
-
-    /**
-     * Set the protected header.
-     *
-     * @param string     $key
-     * @param mixed|null $value
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withProtectedHeader($key, $value);
 
     /**
      * Returns the value of the protected header of the specified key.
@@ -86,25 +79,6 @@ interface SignatureInterface
      * @return array
      */
     public function getHeaders();
-
-    /**
-     * Set the headers associated with the signature.
-     *
-     * @param array $headers
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withHeaders(array $headers);
-
-    /**
-     * Set the header.
-     *
-     * @param string     $key
-     * @param mixed|null $value
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withHeader($key, $value);
 
     /**
      * Returns the value of the unprotected header of the specified key.
@@ -135,11 +109,4 @@ interface SignatureInterface
      * @return string
      */
     public function getSignature();
-
-    /**
-     * @param string $values
-     *
-     * @return \Jose\Object\SignatureInterface
-     */
-    public function withSignature($values);
 }

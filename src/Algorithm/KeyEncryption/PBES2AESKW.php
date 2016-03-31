@@ -11,9 +11,9 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 
 /**
  * Class PBES2AESKW.
@@ -50,7 +50,7 @@ abstract class PBES2AESKW implements KeyWrappingInterface
         $wrapper = $this->getWrapper();
         $hash_algorithm = $this->getHashAlgorithm();
         $key_size = $this->getKeySize();
-        $salt = StringUtil::generateRandomBytes($this->salt_size);
+        $salt = random_bytes($this->salt_size);
         $password = Base64Url::decode($key->get('k'));
 
         // We set headers parameters
@@ -95,9 +95,8 @@ abstract class PBES2AESKW implements KeyWrappingInterface
      */
     protected function checkKey(JWKInterface $key)
     {
-        if ('oct' !== $key->get('kty') || !$key->has('k')) {
-            throw new \InvalidArgumentException('The key is not valid');
-        }
+        Assertion::eq($key->get('kty'), 'oct', 'Wrong key type.');
+        Assertion::true($key->has('k'), 'The key parameter "k" is missing.');
     }
 
     /**
@@ -105,9 +104,8 @@ abstract class PBES2AESKW implements KeyWrappingInterface
      */
     protected function checkHeaderAlgorithm(array $header)
     {
-        if (!isset($header['alg']) || empty($header['alg'])) {
-            throw new \InvalidArgumentException("The header parameter 'alg' is missing or invalid.");
-        }
+        Assertion::keyExists($header, 'alg', 'The header parameter "alg" is missing.');
+        Assertion::notEmpty($header['alg'], 'The header parameter "alg" is not valid.');
     }
 
     /**
@@ -115,9 +113,10 @@ abstract class PBES2AESKW implements KeyWrappingInterface
      */
     protected function checkHeaderAdditionalParameters(array $header)
     {
-        if (!array_key_exists('p2s', $header) || !array_key_exists('p2c', $header) || empty($header['p2s']) || empty($header['p2c'])) {
-            throw new \InvalidArgumentException("The header is not valid. 'p2s' or 'p2c' parameter is missing or invalid.");
-        }
+        Assertion::keyExists($header, 'p2s', 'The header parameter "p2s" is missing.');
+        Assertion::notEmpty($header['p2s'], 'The header parameter "p2s" is not valid.');
+        Assertion::keyExists($header, 'p2c', 'The header parameter "p2c" is missing.');
+        Assertion::notEmpty($header['p2c'], 'The header parameter "p2c" is not valid.');
     }
 
     /**

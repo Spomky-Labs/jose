@@ -14,8 +14,6 @@ namespace Jose\Util;
 use Base64Url\Base64Url;
 use Jose\Object\JWE;
 use Jose\Object\JWEInterface;
-use Jose\Object\Recipient;
-use Jose\Object\RecipientInterface;
 
 final class JWELoader
 {
@@ -36,11 +34,10 @@ final class JWELoader
         self::populateSharedHeaders($jwe, $data);
 
         foreach ($data['recipients'] as $recipient) {
-            $object = new Recipient();
-            self::populateRecipientHeaders($object, $recipient);
-            self::populateRecipientEncryptedKey($object, $recipient);
+            $encrypted_key = self::getRecipientEncryptedKey($recipient);
+            $recipient_headers = self::getRecipientHeaders($recipient);
 
-            $jwe = $jwe->addRecipient($object);
+            $jwe = $jwe->addRecipientWithEncryptedKey($encrypted_key, $recipient_headers);
         }
 
         return $jwe;
@@ -103,24 +100,28 @@ final class JWELoader
     }
 
     /**
-     * @param \Jose\Object\RecipientInterface $recipient
-     * @param array                           $data
+     * @param array $data
+     *
+     * @return array
      */
-    private static function populateRecipientHeaders(RecipientInterface &$recipient, array $data)
+    private static function getRecipientHeaders(array $data)
     {
         if (array_key_exists('header', $data)) {
-            $recipient = $recipient->withHeaders($data['header']);
+            return $data['header'];
         }
+
+        return [];
     }
 
     /**
-     * @param \Jose\Object\RecipientInterface $recipient
-     * @param array                           $data
+     * @param array $data
+     *
+     * @return null|string
      */
-    private static function populateRecipientEncryptedKey(RecipientInterface &$recipient, array $data)
+    private static function getRecipientEncryptedKey(array $data)
     {
         if (array_key_exists('encrypted_key', $data)) {
-            $recipient = $recipient->withEncryptedKey(Base64Url::decode($data['encrypted_key']));
+            return Base64Url::decode($data['encrypted_key']);
         }
     }
 }

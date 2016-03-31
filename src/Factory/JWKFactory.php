@@ -11,9 +11,12 @@
 
 namespace Jose\Factory;
 
+use Assert\Assertion;
+use Base64Url\Base64Url;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
 
@@ -27,11 +30,38 @@ final class JWKFactory
      */
     public static function createRandomECPrivateKey($curve, array $additional_values = [])
     {
-        throw new \Exception('Not implemented');
+        $curve_name = self::getNistName($curve);
+        $generator = CurveFactory::getGeneratorByName($curve_name);
+        $private_key = $generator->createPrivateKey();
+
+        $values = [
+            'kty' => 'EC',
+            'crv' => $curve,
+            'x'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getX()),
+            'y'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getY()),
+            'd'   => self::encodeValue($private_key->getSecret()),
+        ];
+
+        $values = array_merge(
+            $values,
+            $additional_values
+        );
+
+        return new JWK($values);
     }
 
     /**
-     * @param $value
+     * @param string $value
+     *
+     * @return string
+     */
+    private static function encodeValue($value)
+    {
+        return Base64Url::encode(self::convertDecToBin($value));
+    }
+
+    /**
+     * @param string $value
      *
      * @return string
      */
@@ -159,9 +189,8 @@ final class JWKFactory
     {
         $content = self::downloadContent($jku, $allow_unsecured_connection);
         $content = json_decode($content, true);
-        if (!is_array($content) || !array_key_exists('keys', $content)) {
-            throw new \InvalidArgumentException('Invalid content.');
-        }
+        Assertion::isArray($content, 'Invalid content.');
+        Assertion::keyExists($content, 'keys', 'Invalid content.');
 
         return new JWKSet($content);
     }
@@ -176,16 +205,12 @@ final class JWKFactory
     {
         $content = self::downloadContent($x5u, $allow_unsecured_connection);
         $content = json_decode($content, true);
-        if (!is_array($content)) {
-            throw new \InvalidArgumentException('Invalid content.');
-        }
+        Assertion::isArray($content, 'Invalid content.');
 
         $jwkset = new JWKSet();
         foreach ($content as $kid => $cert) {
             $jwk = KeyConverter::loadKeyFromCertificate($cert);
-            if (empty($jwk)) {
-                throw new \InvalidArgumentException('Invalid content.');
-            }
+            Assertion::notEmpty($jwk, 'Invalid content.');
             if (is_string($kid)) {
                 $jwk['kid'] = $kid;
             }
@@ -220,12 +245,14 @@ final class JWKFactory
     private static function downloadContent($url, $allow_unsecured_connection)
     {
         // The URL must be a valid URL and scheme must be https
-        if (false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
-            throw new \InvalidArgumentException('Invalid URL.');
-        }
-        if (false === $allow_unsecured_connection && 'https://' !==  substr($url, 0, 8)) {
-            throw new \InvalidArgumentException('Unsecured connection.');
-        }
+        Assertion::false(
+            false === filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED),
+            'Invalid URL.'
+        );
+        Assertion::false(
+            false === $allow_unsecured_connection && 'https://' !==  mb_substr($url, 0, 8, '8bit'),
+            'Unsecured connection.'
+        );
 
         $params = [
             CURLOPT_RETURNTRANSFER => true,
@@ -241,9 +268,7 @@ final class JWKFactory
         $content = curl_exec($ch);
         curl_close($ch);
 
-        if (empty($content)) {
-            throw new \InvalidArgumentException('Unable to get content.');
-        }
+        Assertion::notEmpty($content, 'Unable to get content.');
 
         return $content;
     }

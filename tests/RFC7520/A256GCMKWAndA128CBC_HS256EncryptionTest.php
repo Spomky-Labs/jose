@@ -58,7 +58,6 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
          */
         $expected_flattened_json = '{"protected":"eyJhbGciOiJBMjU2R0NNS1ciLCJraWQiOiIxOGVjMDhlMS1iZmE5LTRkOTUtYjIwNS0yYjRkZDFkNDMyMWQiLCJ0YWciOiJrZlBkdVZRM1QzSDZ2bmV3dC0ta3N3IiwiaXYiOiJLa1lUMEdYXzJqSGxmcU5fIiwiZW5jIjoiQTEyOENCQy1IUzI1NiJ9","encrypted_key":"lJf3HbOApxMEBkCMOoTnnABxs_CvTWUmZQ2ElLvYNok","iv":"gz6NjyEFNm_vm8Gj6FwoFQ","ciphertext":"Jf5p9-ZhJlJy_IQ_byKFmI0Ro7w7G1QiaZpI8OaiVgD8EqoDZHyFKFBupS8iaEeVIgMqWmsuJKuoVgzR3YfzoMd3GxEm3VxNhzWyWtZKX0gxKdy6HgLvqoGNbZCzLjqcpDiF8q2_62EVAbr2uSc2oaxFmFuIQHLcqAHxy51449xkjZ7ewzZaGV3eFqhpco8o4DijXaG5_7kp3h2cajRfDgymuxUbWgLqaeNQaJtvJmSMFuEOSAzw9Hdeb6yhdTynCRmu-kqtO5Dec4lT2OMZKpnxc_F1_4yDJFcqb5CiDSmA-psB2k0JtjxAj4UPI61oONK7zzFIu4gBfjJCndsZfdvG7h8wGjV98QhrKEnR7xKZ3KCr0_qR1B-gxpNk3xWU","tag":"DKW7jrb4WaRSNfbXVPlT5g"}';
         $expected_json = '{"recipients":[{"encrypted_key":"lJf3HbOApxMEBkCMOoTnnABxs_CvTWUmZQ2ElLvYNok"}],"protected":"eyJhbGciOiJBMjU2R0NNS1ciLCJraWQiOiIxOGVjMDhlMS1iZmE5LTRkOTUtYjIwNS0yYjRkZDFkNDMyMWQiLCJ0YWciOiJrZlBkdVZRM1QzSDZ2bmV3dC0ta3N3IiwiaXYiOiJLa1lUMEdYXzJqSGxmcU5fIiwiZW5jIjoiQTEyOENCQy1IUzI1NiJ9","iv":"gz6NjyEFNm_vm8Gj6FwoFQ","ciphertext":"Jf5p9-ZhJlJy_IQ_byKFmI0Ro7w7G1QiaZpI8OaiVgD8EqoDZHyFKFBupS8iaEeVIgMqWmsuJKuoVgzR3YfzoMd3GxEm3VxNhzWyWtZKX0gxKdy6HgLvqoGNbZCzLjqcpDiF8q2_62EVAbr2uSc2oaxFmFuIQHLcqAHxy51449xkjZ7ewzZaGV3eFqhpco8o4DijXaG5_7kp3h2cajRfDgymuxUbWgLqaeNQaJtvJmSMFuEOSAzw9Hdeb6yhdTynCRmu-kqtO5Dec4lT2OMZKpnxc_F1_4yDJFcqb5CiDSmA-psB2k0JtjxAj4UPI61oONK7zzFIu4gBfjJCndsZfdvG7h8wGjV98QhrKEnR7xKZ3KCr0_qR1B-gxpNk3xWU","tag":"DKW7jrb4WaRSNfbXVPlT5g"}';
-        $expected_cek = 'UWxARpat23nL9ReIj4WG3D1ee9I4r-Mv5QLuFXdy_rE';
         $expected_iv = 'gz6NjyEFNm_vm8Gj6FwoFQ';
         $expected_encrypted_key = 'lJf3HbOApxMEBkCMOoTnnABxs_CvTWUmZQ2ElLvYNok';
         $expected_ciphertext = 'Jf5p9-ZhJlJy_IQ_byKFmI0Ro7w7G1QiaZpI8OaiVgD8EqoDZHyFKFBupS8iaEeVIgMqWmsuJKuoVgzR3YfzoMd3GxEm3VxNhzWyWtZKX0gxKdy6HgLvqoGNbZCzLjqcpDiF8q2_62EVAbr2uSc2oaxFmFuIQHLcqAHxy51449xkjZ7ewzZaGV3eFqhpco8o4DijXaG5_7kp3h2cajRfDgymuxUbWgLqaeNQaJtvJmSMFuEOSAzw9Hdeb6yhdTynCRmu-kqtO5Dec4lT2OMZKpnxc_F1_4yDJFcqb5CiDSmA-psB2k0JtjxAj4UPI61oONK7zzFIu4gBfjJCndsZfdvG7h8wGjV98QhrKEnR7xKZ3KCr0_qR1B-gxpNk3xWU';
@@ -67,31 +66,28 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_compact_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_compact_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_compact_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_flattened_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_flattened_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_flattened_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_flattened_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
@@ -122,28 +118,36 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
             'enc' => 'A128CBC-HS256',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A256GCMKW', 'A128CBC-HS256']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $private_key
         );
 
+        $encrypter->encrypt($jwe);
+
         $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
 
-        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
-        $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('iv', $loaded_compact_json->getSharedProtectedHeaders()));
+        $this->assertTrue(array_key_exists('tag', $loaded_compact_json->getSharedProtectedHeaders()));
 
-        $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
+        $this->assertTrue(array_key_exists('iv', $loaded_flattened_json->getSharedProtectedHeaders()));
+        $this->assertTrue(array_key_exists('tag', $loaded_flattened_json->getSharedProtectedHeaders()));
 
-        //$this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
+        $this->assertTrue(array_key_exists('iv', $loaded_json->getSharedProtectedHeaders()));
+        $this->assertTrue(array_key_exists('tag', $loaded_json->getSharedProtectedHeaders()));
+
+        $this->assertEquals($expected_payload, $loaded_compact_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_flattened_json->getPayload());
         $this->assertEquals($expected_payload, $loaded_json->getPayload());
     }

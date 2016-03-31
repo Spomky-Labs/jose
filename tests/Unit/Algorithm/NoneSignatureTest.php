@@ -31,7 +31,7 @@ class NoneSignatureTest extends TestCase
         ]);
 
         $none = new None();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $none->sign($key, $data);
 
@@ -41,7 +41,7 @@ class NoneSignatureTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testInvalidKey()
     {
@@ -50,7 +50,7 @@ class NoneSignatureTest extends TestCase
         ]);
 
         $none = new None();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $none->sign($key, $data);
     }
@@ -61,11 +61,11 @@ class NoneSignatureTest extends TestCase
             'kty' => 'none',
         ]);
 
+        $jws = \Jose\Factory\JWSFactory::createJWS('Live long and Prosper.');
+        $jws = $jws->addSignature($jwk, ['alg' => 'none']);
+
         $signer = SignerFactory::createSigner(['none']);
-
-        $jws = \Jose\Factory\JWSFactory::createEmptyJWS('Je suis Charlie');
-
-        $signer->addSignature($jws, $jwk, ['alg' => 'none']);
+        $signer->sign($jws);
 
         $this->assertEquals(1, $jws->countSignatures());
 
@@ -76,7 +76,7 @@ class NoneSignatureTest extends TestCase
 
         $this->assertInstanceOf(JWSInterface::class, $result);
 
-        $this->assertEquals('Je suis Charlie', $result->getPayload());
+        $this->assertEquals('Live long and Prosper.', $result->getPayload());
         $this->assertEquals(1, $result->countSignatures());
         $this->assertTrue($result->getSignature(0)->hasProtectedHeader('alg'));
         $this->assertEquals('none', $result->getSignature(0)->getProtectedHeader('alg'));

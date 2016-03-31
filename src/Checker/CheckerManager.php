@@ -12,7 +12,6 @@
 namespace Jose\Checker;
 
 use Assert\Assertion;
-use Jose\Object\JWEInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\JWTInterface;
 
@@ -30,18 +29,6 @@ class CheckerManager implements CheckerManagerInterface
      * @var \Jose\Checker\HeaderCheckerInterface[]
      */
     private $header_checkers = [];
-
-    /**
-     * ClaimCheckerManager constructor.
-     */
-    public function __construct()
-    {
-        $this->claim_checkers = [
-            new ExpirationTimeChecker(),
-            new IssuedAtChecker(),
-            new NotBeforeChecker(),
-        ];
-    }
 
     /**
      * @param \Jose\Object\JWTInterface $jwt
@@ -85,24 +72,6 @@ class CheckerManager implements CheckerManagerInterface
         $checked_claims = $this->checkJWT($jws);
         $protected_headers = $jws->getSignature($signature)->getProtectedHeaders();
         $headers = $jws->getSignature($signature)->getHeaders();
-
-        $this->checkHeaders($protected_headers, $headers, $checked_claims);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function checkJWE(JWEInterface $jwe, $recipient)
-    {
-        Assertion::integer($recipient);
-        Assertion::lessThan($recipient, $jwe->countRecipients());
-
-        $checked_claims = $this->checkJWT($jwe);
-        $protected_headers = $jwe->getSharedProtectedHeaders();
-        $headers = array_merge(
-            $jwe->getSharedHeaders(),
-            $jwe->getRecipient($recipient)->getHeaders()
-        );
 
         $this->checkHeaders($protected_headers, $headers, $checked_claims);
     }

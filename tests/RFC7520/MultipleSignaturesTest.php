@@ -26,14 +26,12 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
 {
     public function testMultipleSignatures()
     {
-        $signer = SignerFactory::createSigner(['RS256', 'ES512', 'HS256']);
-
         /*
          * Payload,
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.1
          */
         $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
-        $jws = JWSFactory::createEmptyJWS($payload);
+        $jws = JWSFactory::createJWS($payload);
 
         $rsa_private_key = new JWK([
             'kty' => 'RSA',
@@ -53,8 +51,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.2
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $rsa_private_key,
             [
                 'alg' => 'RS256',
@@ -78,8 +75,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.3
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $ecdsa_private_key,
             [],
             [
@@ -100,8 +96,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.4
          */
-        $signer->addSignature(
-            $jws,
+        $jws = $jws->addSignature(
             $symmetric_key,
             [
                 'alg' => 'HS256',
@@ -109,13 +104,16 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
+        $signer = SignerFactory::createSigner(['RS256', 'ES512', 'HS256']);
+        $signer->sign($jws);
+
         $this->assertEquals(3, $jws->countSignatures());
 
         $verifer = VerifierFactory::createVerifier(['RS256', 'ES512', 'HS256']);
 
-        $this->assertTrue($verifer->verifyWithKey($jws, $rsa_private_key));
-        $this->assertTrue($verifer->verifyWithKey($jws, $ecdsa_private_key));
-        $this->assertTrue($verifer->verifyWithKey($jws, $symmetric_key));
+        $verifer->verifyWithKey($jws, $rsa_private_key);
+        $verifer->verifyWithKey($jws, $ecdsa_private_key);
+        $verifer->verifyWithKey($jws, $symmetric_key);
 
         /*
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.5
@@ -126,8 +124,8 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(3, $loaded_json->countSignatures());
 
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $rsa_private_key));
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $ecdsa_private_key));
-        $this->assertTrue($verifer->verifyWithKey($loaded_json, $symmetric_key));
+        $verifer->verifyWithKey($loaded_json, $rsa_private_key);
+        $verifer->verifyWithKey($loaded_json, $ecdsa_private_key);
+        $verifer->verifyWithKey($loaded_json, $symmetric_key);
     }
 }

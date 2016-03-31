@@ -26,7 +26,7 @@ final class JWEFactory
      *
      * @return \Jose\Object\JWEInterface
      */
-    public static function createEmptyJWE($payload, array $shared_protected_headers = [], array $shared_headers = [], $aad = null)
+    public static function createJWE($payload, array $shared_protected_headers = [], array $shared_headers = [], $aad = null)
     {
         $jwe = new JWE();
         $jwe = $jwe->withSharedProtectedHeaders($shared_protected_headers);
@@ -89,12 +89,14 @@ final class JWEFactory
         $complete_headers = array_merge($shared_protected_headers, $shared_headers, $recipient_headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
         Assertion::keyExists($complete_headers, 'enc', 'No "enc" parameter set in the header');
-        $encrypter = EncrypterFactory::createEncrypter([$complete_headers['alg'], $complete_headers['enc']], ['DEF'], $logger);
+        $encrypter = EncrypterFactory::createEncrypter([$complete_headers['alg'], $complete_headers['enc']], ['DEF', 'ZLIB', 'GZ'], $logger);
 
-        $jws = self::createEmptyJWE($payload, $shared_protected_headers, $shared_headers, $aad);
+        $jwe = self::createJWE($payload, $shared_protected_headers, $shared_headers, $aad);
 
-        $encrypter->addRecipient($jws, $recipient_key, null, $recipient_headers);
+        $jwe = $jwe->addRecipient($recipient_key, $recipient_headers);
 
-        return $jws;
+        $encrypter->encrypt($jwe);
+
+        return $jwe;
     }
 }

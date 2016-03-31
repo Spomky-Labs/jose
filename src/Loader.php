@@ -17,6 +17,7 @@ use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
+use Jose\Object\JWEInterface;
 use Jose\Util\JWELoader;
 use Jose\Util\JWSLoader;
 use Psr\Log\LoggerInterface;
@@ -27,6 +28,25 @@ use Psr\Log\LoggerInterface;
  */
 final class Loader implements LoaderInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
+    {
+        $jwk_set = new JWKSet();
+        $jwk_set = $jwk_set->addKey($jwk);
+
+        return self::loadAndDecrypt($input, $jwk_set, $allowed_algorithms, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    {
+        return self::loadAndDecrypt($input, $jwk_set, $allowed_algorithms, $logger);
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -66,7 +86,32 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param string                        $input
+     * @param \Jose\Object\JWKSetInterface  $jwk_set
+     * @param array                         $allowed_algorithms
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWEInterface
+     */
+    private static function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    {
+        $jwt = self::load($input);
+        Assertion::isInstanceOf($jwt, JWEInterface::class, 'The input is not a valid JWE');
+        $decrypted = DecrypterFactory::createDecrypter($allowed_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
+
+        $decrypted->decryptUsingKeySet($jwt, $jwk_set);
+
+        return $jwt;
+    }
+
+    /**
+     * @param string                        $input
+     * @param \Jose\Object\JWKSetInterface  $jwk_set
+     * @param array                         $allowed_algorithms
+     * @param string|null                   $detached_payload
+     * @param \Psr\Log\LoggerInterface|null $logger
+     *
+     * @return \Jose\Object\JWSInterface
      */
     private static function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
     {
@@ -74,8 +119,7 @@ final class Loader implements LoaderInterface
         Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
         $verifier = VerifierFactory::createVerifier($allowed_algorithms, $logger);
 
-        $result = $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
-        Assertion::true($result, 'Unable to verify or decrypt the input');
+        $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
 
         return $jwt;
     }

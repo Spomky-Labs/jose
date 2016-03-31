@@ -48,7 +48,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new Deflate(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -59,7 +59,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new GZip(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -70,7 +70,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
     {
         $compression = new ZLib(9);
 
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
         $compressed = $compression->compress($data);
         $uncompressed = $compression->uncompress($compressed);
         $this->assertNotNull($compressed);
@@ -79,7 +79,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
+     * @expectedExceptionMessage The compression level can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
      */
     public function testDeflateInvalidCompressionLevel()
     {
@@ -88,7 +88,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
+     * @expectedExceptionMessage The compression level can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
      */
     public function testGZipInvalidCompressionLevel()
     {
@@ -97,7 +97,7 @@ class CompressionTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The level of compression can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
+     * @expectedExceptionMessage The compression level can be given as 0 for no compression up to 9 for maximum compression. If -1 given, the default compression level will be the default compression level of the zlib library.
      */
     public function testZLibInvalidCompressionLevel()
     {

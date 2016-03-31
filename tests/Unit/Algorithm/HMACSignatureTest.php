@@ -24,7 +24,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The key is not valid
+     * @expectedExceptionMessage Wrong key type.
      */
     public function testInvalidKey()
     {
@@ -33,7 +33,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $hmac = new HS256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $hmac->sign($key, $data);
     }
@@ -45,7 +45,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'k'   => 'foo',
         ]);
         $hmac = new HS256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $this->assertFalse($hmac->verify($key, $data, hex2bin('326eb338c465d3587f3349df0b96ba81')));
     }
@@ -57,11 +57,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'k'   => 'foo',
         ]);
         $hmac = new HS256();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals(hex2bin('326eb338c465d3587f3349df0b96ba813670376cab1dfe0fd4ce126ab50ae354'), $signature);
+        $this->assertEquals(hex2bin('89f750759cb8ad9315d7ec6bd8d5dc5899e0a97bc12f9e355f383776f53f025c'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -72,11 +72,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'k'   => 'foo',
         ]);
         $hmac = new HS384();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals(hex2bin('7074ed8ec356ce7d61d99b86caabccc741def9f3d0881c822b775dfe91520fdcb037b1b7f8bcf425796ec209decb760e'), $signature);
+        $this->assertEquals(hex2bin('8985f2c6efef1c1b9baf7d7b0b17ce6db65184044bdeaa01296fe6d61900224fc783f4bb7b7aadfdfb4d0663b1284e66'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 
@@ -87,11 +87,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'k'   => 'foo',
         ]);
         $hmac = new HS512();
-        $data = 'Je suis Charlie';
+        $data = 'Live long and Prosper.';
 
         $signature = $hmac->sign($key, $data);
 
-        $this->assertEquals(hex2bin('13d07b012d7a31369a0c12eccaeb40e79e5e2d11183a00f977fce075722206f45cdd77096d7ed719626868701076654cf03565c25a3f6b9e698e466717c3b0ca'), $signature);
+        $this->assertEquals(hex2bin('6f91ca09dc2e655d089f1018fb447f16c68d65f32f54ea84542edb1db5dfbbda141cbb41741b7383a7dff6af56be564fd74a8857eab6a680094bbcb41b2f29e1'), $signature);
         $this->assertTrue($hmac->verify($key, $data, $signature));
     }
 }

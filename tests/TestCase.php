@@ -16,6 +16,9 @@ use Jose\Checker\AudienceChecker;
 use Jose\Factory\CheckerManagerFactory;
 use Jose\Object\JWKSet;
 use Jose\Test\Stub\FakeLogger;
+use Jose\Test\Stub\IssuerChecker;
+use Jose\Test\Stub\JtiChecker;
+use Jose\Test\Stub\SubjectChecker;
 
 /**
  * Class TestCase.
@@ -35,6 +38,9 @@ class TestCase extends \PHPUnit_Framework_TestCase
         if (null === $this->checker_manager) {
             $this->checker_manager = CheckerManagerFactory::createClaimCheckerManager();
             $this->checker_manager->addClaimChecker(new AudienceChecker('My Service'));
+            $this->checker_manager->addClaimChecker(new SubjectChecker());
+            $this->checker_manager->addClaimChecker(new IssuerChecker());
+            $this->checker_manager->addClaimChecker(new JtiChecker());
         }
 
         return $this->checker_manager;

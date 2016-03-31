@@ -60,31 +60,28 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($expected_json);
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_compact_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_compact_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_compact_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_compact_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_flattened_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_flattened_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_flattened_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_flattened_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_flattened_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_flattened_json->getTag()));
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
-        $this->assertEquals($expected_cek, Base64Url::encode($loaded_json->getContentEncryptionKey()));
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_json->getTag()));
@@ -116,24 +113,25 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
             'zip' => 'DEF',
         ];
 
-        $jwe = JWEFactory::createEmptyJWE($expected_payload, $protected_headers);
+        $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
 
-        $encrypter->addRecipient(
-            $jwe,
+        $jwe = $jwe->addRecipient(
             $private_key
         );
+
+        $encrypter->encrypt($jwe);
 
         $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_compact_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_flattened_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
         $loaded_json = Loader::load($jwe->toJSON());
-        $this->assertTrue($decrypter->decryptUsingKey($loaded_json, $private_key));
+        $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($protected_headers, $loaded_compact_json->getSharedProtectedHeaders());
 

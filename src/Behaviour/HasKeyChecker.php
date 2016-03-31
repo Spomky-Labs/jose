@@ -11,6 +11,7 @@
 
 namespace Jose\Behaviour;
 
+use Assert\Assertion;
 use Jose\Object\JWKInterface;
 
 trait HasKeyChecker
@@ -94,8 +95,6 @@ trait HasKeyChecker
             return;
         }
 
-        if ($key->get('alg') !== $algorithm) {
-            throw new \InvalidArgumentException(sprintf('Key is only allowed for algorithm "%s".', $key->get('alg')));
-        }
+        Assertion::eq($key->get('alg'), $algorithm, sprintf('Key is only allowed for algorithm "%s".', $key->get('alg')));
     }
 }

@@ -11,6 +11,7 @@
 
 namespace Jose\Object;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 
 /**
@@ -61,11 +62,6 @@ final class JWE implements JWEInterface
     private $encoded_shared_protected_headers = null;
 
     /**
-     * @var string|null
-     */
-    private $content_encryption_key = null;
-
-    /**
      * {@inheritdoc}
      */
     public function countRecipients()
@@ -76,10 +72,30 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function addRecipient(RecipientInterface $recipient)
+    public function isEncrypted()
+    {
+        return null !== $this->getCiphertext();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecipient(JWKInterface $recipient_key, $recipient_headers = [])
+    {
+        Assertion::true(null === $this->getCiphertext(), 'The JWE is encrypted. No additional recipient allowed.');
+        $jwe = clone $this;
+        $jwe->recipients[] = Recipient::createRecipient($recipient_key, $recipient_headers);
+
+        return $jwe;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecipientWithEncryptedKey($encrypted_key, array $recipient_headers)
     {
         $jwe = clone $this;
-        $jwe->recipients[] = $recipient;
+        $jwe->recipients[] = Recipient::createRecipientFromLoadedJWE($recipient_headers, $encrypted_key);
 
         return $jwe;
     }
@@ -95,11 +111,9 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function getRecipient($id)
+    public function &getRecipient($id)
     {
-        if (!isset($this->recipients[$id])) {
-            throw new \InvalidArgumentException('The recipient does not exist.');
-        }
+        Assertion::keyExists($this->recipients, $id, 'The recipient does not exist.');
 
         return $this->recipients[$id];
     }
@@ -320,9 +334,7 @@ final class JWE implements JWEInterface
 
     private function checkHasNoAAD()
     {
-        if (!empty($this->getAAD())) {
-            throw new \InvalidArgumentException('This JWE has AAD and cannot be converted into Compact JSON.');
-        }
+        Assertion::true(empty($this->getAAD()), 'This JWE has AAD and cannot be converted into Compact JSON.');
     }
 
     /**
@@ -330,16 +342,18 @@ final class JWE implements JWEInterface
      */
     private function checkRecipientHasNoHeaders($id)
     {
-        if (!empty($this->getSharedHeaders()) || !empty($this->getRecipient($id)->getHeaders())) {
-            throw new \InvalidArgumentException('This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.');
-        }
+        Assertion::true(
+            empty($this->getSharedHeaders()) && empty($this->getRecipient($id)->getHeaders()),
+            'This JWE has shared headers or recipient headers and cannot be converted into Compact JSON.'
+        );
     }
 
     private function checkHasSharedProtectedHeaders()
     {
-        if (empty($this->getSharedProtectedHeaders())) {
-            throw new \InvalidArgumentException('This JWE does not have shared protected headers and cannot be converted into Compact JSON.');
-        }
+        Assertion::notEmpty(
+            $this->getSharedProtectedHeaders(),
+            'This JWE does not have shared protected headers and cannot be converted into Compact JSON.'
+        );
     }
 
     /**
@@ -408,24 +422,5 @@ final class JWE implements JWEInterface
         }
 
         return $json;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContentEncryptionKey()
-    {
-        return $this->content_encryption_key;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function withContentEncryptionKey($content_encryption_key)
-    {
-        $jwe = clone $this;
-        $jwe->content_encryption_key = $content_encryption_key;
-
-        return $jwe;
     }
 }

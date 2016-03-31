@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\JWEFactory;
-use Jose\Object\Recipient;
+use Jose\Object\JWK;
+use Jose\Factory\JWSFactory;
 use Jose\Test\TestCase;
 
 /**
@@ -25,21 +25,19 @@ class CheckerManagerTest extends TestCase
      */
     public function testExpiredJWT()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() - 1,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -48,47 +46,43 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTIssuedInTheFuture()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() + 100,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Can not use this JWT yet.
+     * @expectedExceptionMessage The JWT can not be used yet.
      */
     public function testJWTNotNow()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() + 100,
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -97,24 +91,22 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTNotForAudience()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
                 'aud' => 'Other Service',
-            ],
-            [
-                'enc' => 'A256CBC-HS512',
-                'alg' => 'RSA-OAEP-256',
-                'zip' => 'DEF',
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipient(new Recipient());
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 
     /**
@@ -123,23 +115,179 @@ class CheckerManagerTest extends TestCase
      */
     public function testJWTHasCriticalClaimsNotSatisfied()
     {
-        $jwe = JWEFactory::createEmptyJWE(
+        $jws = JWSFactory::createJWS(
             [
                 'exp' => time() + 3600,
                 'iat' => time() - 100,
                 'nbf' => time() - 100,
-            ],
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
             [
                 'enc'  => 'A256CBC-HS512',
-                'alg'  => 'RSA-OAEP-256',
+                'alg'  => 'HS512',
                 'zip'  => 'DEF',
                 'crit' => ['exp', 'iss'],
-            ],
-            [],
-            'foo,bar,baz'
+            ]
         );
-        $jwe = $jwe->addRecipient(new Recipient());
 
-        $this->getCheckerManager()->checkJWE($jwe, 0);
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The issuer "foo" is not allowed.
+     */
+    public function testJWTBadIssuer()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'foo',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+                'crit' => ['exp', 'iss'],
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The subject "foo" is not allowed.
+     */
+    public function testJWTBadSubject()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'ISS1',
+                'sub' => 'foo',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+                'crit' => ['exp', 'iss', 'sub', 'aud'],
+            ]
+
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Invalid token ID "bad jti".
+     */
+    public function testJWTBadTokenID()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'jti' => 'bad jti',
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'ISS1',
+                'sub' => 'SUB1',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+                'crit' => ['exp', 'iss', 'sub', 'aud', 'jti'],
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    public function testJWTSuccessfullyCheckedWithCriticalHeaders()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'jti' => 'JTI1',
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'ISS1',
+                'sub' => 'SUB1',
+                'aud' => 'My Service',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+                'crit' => ['exp', 'iss', 'sub', 'aud', 'jti'],
+            ]
+
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    public function testJWTSuccessfullyCheckedWithoutCriticalHeaders()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'jti' => 'JTI1',
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'ISS1',
+                'sub' => 'SUB1',
+                'aud' => 'My Service',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    public function testJWTSuccessfullyCheckedWithUnsupportedClaims()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'foo' => 'bar',
+            ]
+        );
+        $jws = $jws->addSignature(
+            new JWK(['kty'=>'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
     }
 }
