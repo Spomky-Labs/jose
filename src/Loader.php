@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Assert\Assertion;
+use Jose\Factory\DecrypterFactory;
 use Jose\Factory\VerifierFactory;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
