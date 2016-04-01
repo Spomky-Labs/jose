@@ -32,10 +32,17 @@ final class JWKSet implements JWKSetInterface
     {
         if (array_key_exists('keys', $keys)) {
             foreach ($keys['keys'] as $value) {
-                $key = new JWK($value);
-                $this->keys[] = $key;
+                $this->addKey(new JWK($value));
             }
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function hasKey($index)
+    {
+        return array_key_exists($index, $this->keys);
     }
 
     /**
@@ -61,10 +68,7 @@ final class JWKSet implements JWKSetInterface
      */
     public function addKey(JWKInterface $key)
     {
-        $keyset = clone $this;
-        $keyset->keys[] = $key;
-
-        return $keyset;
+        $this->keys[] = $key;
     }
 
     /**
@@ -73,13 +77,8 @@ final class JWKSet implements JWKSetInterface
     public function removeKey($key)
     {
         if (isset($this->keys[$key])) {
-            $keyset = clone $this;
-            unset($keyset->keys[$key]);
-
-            return $keyset;
+            unset($this->keys[$key]);
         }
-
-        return $this;
     }
 
     /**
@@ -144,5 +143,36 @@ final class JWKSet implements JWKSetInterface
     public function countKeys()
     {
         return count($this->keys);
+    }
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return $this->hasKey($offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->getKey($offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->addKey($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        $this->removeKey($offset);
     }
 }

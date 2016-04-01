@@ -35,7 +35,7 @@ final class Loader implements LoaderInterface
     public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
-        $jwk_set = $jwk_set->addKey($jwk);
+        $jwk_set->addKey($jwk);
 
         return self::loadAndDecrypt($input, $jwk_set, $allowed_algorithms, $logger);
     }
@@ -54,7 +54,7 @@ final class Loader implements LoaderInterface
     public static function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
-        $jwk_set = $jwk_set->addKey($jwk);
+        $jwk_set->addKey($jwk);
 
         return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
     }
@@ -73,7 +73,7 @@ final class Loader implements LoaderInterface
     public static function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
-        $jwk_set = $jwk_set->addKey($jwk);
+        $jwk_set->addKey($jwk);
 
         return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
     }

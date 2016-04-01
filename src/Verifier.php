@@ -56,7 +56,7 @@ final class Verifier implements VerifierInterface
     {
         $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key', ['jws' => $jws, 'jwk' => $jwk, 'detached_payload' => $detached_payload]);
         $jwk_set = new JWKSet();
-        $jwk_set = $jwk_set->addKey($jwk);
+        $jwk_set->addKey($jwk);
 
         $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }

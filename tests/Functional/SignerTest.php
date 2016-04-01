@@ -526,8 +526,8 @@ class SignerTest extends TestCase
     protected function getKeyset()
     {
         $keyset = new JWKSet();
-        $keyset = $keyset->addKey($this->getKey1());
-        $keyset = $keyset->addKey($this->getKey2());
+        $keyset->addKey($this->getKey1());
+        $keyset->addKey($this->getKey2());
 
         return $keyset;
     }

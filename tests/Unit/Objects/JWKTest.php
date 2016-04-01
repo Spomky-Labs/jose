@@ -104,12 +104,15 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $jwkset = new JWKSet();
-        $jwkset = $jwkset->addKey($jwk1);
-        $jwkset = $jwkset->addKey($jwk2);
+        $jwkset->addKey($jwk1);
+        $jwkset[] = $jwk2;
 
         $this->assertEquals('{"keys":[{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","use":"sign","key_ops":["sign"],"alg":"ES256","kid":"0123456789"},{"kty":"EC","crv":"P-256","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0","d":"jpsQnnGQmL-YBIffH1136cspYG6-0iY7X1fCE9-E9LI","use":"sign","key_ops":["verify"],"alg":"ES256","kid":"9876543210"}]}', json_encode($jwkset));
         $this->assertEquals(2, count($jwkset));
         $this->assertEquals(2, $jwkset->count());
+        $this->assertTrue($jwkset->hasKey(0));
+        $this->assertTrue($jwkset->hasKey(1));
+        $this->assertFalse($jwkset->hasKey(2));
 
         foreach ($jwkset as $key) {
             $this->assertEquals('EC', $key->get('kty'));
@@ -117,13 +120,17 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $jwkset->key());
 
         $this->assertEquals('9876543210', $jwkset->getKey(1)->get('kid'));
-        $jwkset = $jwkset->removeKey(1);
-        $jwkset = $jwkset->removeKey(1);
+        $jwkset->removeKey(1);
+        $jwkset->removeKey(1);
 
         $this->assertEquals(1, count($jwkset));
         $this->assertEquals(1, $jwkset->count());
-
         $this->assertInstanceOf(JWKInterface::class, $jwkset->getKey(0));
+        $this->assertInstanceOf(JWKInterface::class, $jwkset[0]);
+
+        unset($jwkset[0]);
+        $this->assertEquals(0, count($jwkset));
+        $this->assertEquals(0, $jwkset->count());
     }
 
     /**
@@ -156,8 +163,8 @@ class JWKTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $jwkset = new JWKSet();
-        $jwkset = $jwkset->addKey($jwk1);
-        $jwkset = $jwkset->addKey($jwk2);
+        $jwkset->addKey($jwk1);
+        $jwkset->addKey($jwk2);
 
         $jwkset->getKey(2);
     }
