@@ -11,6 +11,7 @@
 
 namespace Jose;
 
+use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
 use Jose\Algorithm\JWAInterface;
 use Jose\Algorithm\JWAManagerInterface;
@@ -234,7 +235,7 @@ final class Decrypter implements DecrypterInterface
             $jwe->getCiphertext(),
             $cek,
             $jwe->getIV(),
-            $jwe->getAAD(),
+            null === $jwe->getAAD() ? null : Base64Url::encode($jwe->getAAD()),
             $jwe->getEncodedSharedProtectedHeaders(),
             $jwe->getTag()
         );

@@ -412,7 +412,7 @@ final class JWE implements JWEInterface
             $json['tag'] = Base64Url::encode($this->getTag());
         }
         if (null !== $this->getAAD()) {
-            $json['aad'] = $this->getAAD();
+            $json['aad'] = Base64Url::encode($this->getAAD());
         }
         if (!empty($this->getSharedProtectedHeaders())) {
             $json['protected'] = $this->getEncodedSharedProtectedHeaders();
