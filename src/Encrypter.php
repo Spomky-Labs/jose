@@ -359,7 +359,7 @@ final class Encrypter implements EncrypterInterface
             $payload,
             $cek,
             $iv,
-            $jwe->getAAD(),
+            null === $jwe->getAAD() ? null : Base64Url::encode($jwe->getAAD()),
             $jwe->getEncodedSharedProtectedHeaders(),
             $tag
         );

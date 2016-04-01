@@ -61,7 +61,7 @@ final class JWELoader
     private static function populateAAD(JWEInterface &$jwe, array $data)
     {
         if (array_key_exists('aad', $data)) {
-            $jwe = $jwe->withAAD($data['aad']);
+            $jwe = $jwe->withAAD(Base64Url::decode($data['aad']));
         }
     }
 
