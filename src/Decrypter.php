@@ -66,7 +66,7 @@ final class Decrypter implements DecrypterInterface
     public function decryptUsingKey(JWEInterface &$jwe, JWKInterface $jwk, &$recipient_index = null)
     {
         $jwk_set = new JWKSet();
-        $jwk_set = $jwk_set->addKey($jwk);
+        $jwk_set->addKey($jwk);
 
         $this->decryptUsingKeySet($jwe, $jwk_set, $recipient_index);
     }

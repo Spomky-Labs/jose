@@ -309,7 +309,7 @@ class EncrypterTest extends TestCase
         $encrypter = EncrypterFactory::createEncrypter(['RSA-OAEP-256', 'A128CBC-HS256'], ['DEF'], new FakeLogger());
         $decrypter = DecrypterFactory::createDecrypter(['RSA-OAEP-256', 'A128CBC-HS256'], ['DEF'], new FakeLogger());
 
-        $jwe = JWEFactory::createJWE($this->getKeyToEncrypt());
+        $jwe = JWEFactory::createJWE($this->getKeySetToEncrypt());
         $jwe = $jwe->withSharedProtectedHeaders([
             'kid' => '123456789',
             'enc' => 'A128CBC-HS256',
@@ -441,7 +441,6 @@ class EncrypterTest extends TestCase
         $jwe = $jwe->addRecipient(
             $this->getDirectKey()
         );
-
         $encrypter->encrypt($jwe);
 
         $encrypted = $jwe->toFlattenedJSON(0);
@@ -458,7 +457,7 @@ class EncrypterTest extends TestCase
 
         $this->assertEquals(0, $index);
         $this->assertTrue(is_array($loaded->getPayload()));
-        $this->assertEquals($this->getKeySetToEncrypt(), new JWKSet($loaded->getPayload()));
+        $this->assertEquals($this->getKeyToEncrypt(), new JWK($loaded->getPayload()));
     }
 
     public function testEncryptAndLoadCompactKeyAgreement()

@@ -214,7 +214,7 @@ final class JWKFactory
             if (is_string($kid)) {
                 $jwk['kid'] = $kid;
             }
-            $jwkset = $jwkset->addKey(new JWK($jwk));
+            $jwkset->addKey(new JWK($jwk));
         }
 
         return $jwkset;

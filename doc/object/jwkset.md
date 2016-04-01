@@ -14,7 +14,10 @@ Note that a JWKSet object
 * is countable: you can call method `count()`,
 * is traversable: you can use a JWK as `foreach` argument
 * is serializable: You can call `json_encode($jwkset)` to display the key set as a string (e.g. `{'keys':[{'kty':'oct', 'k':'abcdef...'}]}`). Such string is mainly used to share public keys through an URL.
-* is immutable: when you add a key, you receive a new object
+* can be used like an array
+    * `$jwkset[] = $jwk;`: Add a new key in the key set
+    * `$jwkset[$index];`: Return the key at the index `$index`
+    * `unset($jwkset[$index]);`: Remove the key at the index `$index`
 
 This library provides a class that implements this interface: `Jose\Object\JWKSet`.
 
