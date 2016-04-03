@@ -28,7 +28,7 @@ interface VerifierInterface
      * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
      * @param \Psr\Log\LoggerInterface|null                          $logger
      *
-     * @return \Jose\SignerInterface
+     * @return \Jose\VerifierInterface
      */
     public static function createVerifier(array $signature_algorithms, LoggerInterface $logger = null);
 

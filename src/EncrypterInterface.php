@@ -20,12 +20,12 @@ use Psr\Log\LoggerInterface;
 interface EncrypterInterface
 {
     /**
-     * @param string[]|\Jose\Algorithm\JWAInterface[]           $key_encryption_algorithms
-     * @param string[]|\Jose\Algorithm\JWAInterface[]           $content_encryption_algorithms
-     * @param string[]|\Jose\Compression\CompressionInterface[] $compression_methods
-     * @param \Psr\Log\LoggerInterface|null                     $logger
+     * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $key_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $content_encryption_algorithms
+     * @param string[]|\Jose\Compression\CompressionInterface[]              $compression_methods
+     * @param \Psr\Log\LoggerInterface|null                                  $logger
      *
-     * @return \Jose\DecrypterInterface
+     * @return \Jose\EncrypterInterface
      */
     public static function createEncrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null);
 
