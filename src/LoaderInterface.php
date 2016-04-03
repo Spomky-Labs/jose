@@ -34,22 +34,24 @@ interface LoaderInterface
     /**
      * @param string                        $input
      * @param \Jose\Object\JWKInterface     $jwk
-     * @param string[]                      $allowed_algorithms
+     * @param string[]                      $allowed_key_encryption_algorithms
+     * @param string[]                      $allowed_content_encryption_algorithms
      * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
      */
-    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null);
+    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null);
 
     /**
      * @param string                        $input
      * @param \Jose\Object\JWKSetInterface  $jwk_set
-     * @param string[]                      $allowed_algorithms
+     * @param string[]                      $allowed_key_encryption_algorithms
+     * @param string[]                      $allowed_content_encryption_algorithms
      * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWEInterface If the data has been loaded.
      */
-    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null);
+    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null);
 
     /**
      * @param string                        $input

@@ -30,20 +30,20 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
+    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
         $jwk_set->addKey($jwk);
 
-        return self::loadAndDecrypt($input, $jwk_set, $allowed_algorithms, $logger);
+        return self::loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
     {
-        return self::loadAndDecrypt($input, $jwk_set, $allowed_algorithms, $logger);
+        return self::loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
     }
     
     /**
@@ -87,16 +87,17 @@ final class Loader implements LoaderInterface
     /**
      * @param string                        $input
      * @param \Jose\Object\JWKSetInterface  $jwk_set
-     * @param array                         $allowed_algorithms
+     * @param array                         $allowed_key_encryption_algorithms
+     * @param array                         $allowed_content_encryption_algorithms
      * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWEInterface
      */
-    private static function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    private static function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
     {
         $jwt = self::load($input);
         Assertion::isInstanceOf($jwt, JWEInterface::class, 'The input is not a valid JWE');
-        $decrypted = Decrypter::createDecrypter($allowed_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
+        $decrypted = Decrypter::createDecrypter($allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
 
         $decrypted->decryptUsingKeySet($jwt, $jwk_set);
 
