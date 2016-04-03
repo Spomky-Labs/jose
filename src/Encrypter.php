@@ -52,10 +52,10 @@ final class Encrypter implements EncrypterInterface
     /**
      * Decrypter constructor.
      *
-     * @param string[]|\Jose\Algorithm\JWAInterface[]           $key_encryption_algorithms
-     * @param string[]|\Jose\Algorithm\JWAInterface[]           $content_encryption_algorithms
-     * @param string[]|\Jose\Compression\CompressionInterface[] $compression_methods
-     * @param \Psr\Log\LoggerInterface|null                     $logger
+     * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $key_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $content_encryption_algorithms
+     * @param string[]|\Jose\Compression\CompressionInterface[]              $compression_methods
+     * @param \Psr\Log\LoggerInterface|null                                  $logger
      */
     public function __construct(
         array $key_encryption_algorithms,
