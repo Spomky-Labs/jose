@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -53,7 +53,7 @@ class DirAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_ciphertext = 'JW_i_f52hww_ELQPGaYyeAB6HYGcR559l9TYnSovc23XJoBcW29rHP8yZOZG7YhLpT1bjFuvZPjQS-m0IFtVcXkZXdH_lr_FrdYt9HRUYkshtrMmIUAyGmUnd9zMDB2n0cRDIHAzFVeJUDxkUwVAE7_YGRPdcqMyiBoCO-FBdE-Nceb4h3-FtBP-c_BIwCPTjb9o0SbdcdREEMJMyZBH8ySWMVi1gPD9yxi-aQpGbSv_F9N4IZAxscj5g-NJsUPbjk29-s7LJAGb15wEBtXphVCgyy53CoIKLHHeJHXex45Uz9aKZSRSInZI-wjsY0yu3cT4_aQ3i1o-tiE-F8Ios61EKgyIQ4CWao8PFMj8TTnp';
         $expected_tag = 'vbb32Xvllea2OtmHAdccRQ';
 
-        $decrypter = DecrypterFactory::createDecrypter(['dir', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['dir'], ['A128GCM']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
@@ -97,7 +97,7 @@ class DirAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['dir', 'A128GCM']);
+        $encrypter = Encrypter::createEncrypter(['dir'], ['A128GCM']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -105,7 +105,7 @@ class DirAndA128GCMEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['dir', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['dir'], ['A128GCM']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);

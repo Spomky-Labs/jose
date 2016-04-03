@@ -14,17 +14,18 @@ namespace Jose;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Algorithm\KeyEncryption\KeyEncryptionInterface;
 use Jose\Algorithm\KeyEncryption\KeyWrappingInterface;
 use Jose\Algorithm\KeyEncryptionAlgorithmInterface;
+use Jose\Behaviour\CommonCipheringMethods;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasLogger;
 use Jose\Compression\CompressionInterface;
-use Jose\Compression\CompressionManagerInterface;
+use Jose\Factory\AlgorithmManagerFactory;
+use Jose\Factory\CompressionManagerFactory;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\Recipient;
@@ -38,21 +39,38 @@ final class Encrypter implements EncrypterInterface
     use HasJWAManager;
     use HasCompressionManager;
     use HasLogger;
+    use CommonCipheringMethods;
+    
+    /**
+     * {@inheritdoc}
+     */
+    public static function createEncrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null)
+    {
+        return new self($key_encryption_algorithms, $content_encryption_algorithms, $compression_methods, $logger);
+    }
 
     /**
-     * Encrypter constructor.
+     * Decrypter constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface           $jwa_manager
-     * @param \Jose\Compression\CompressionManagerInterface $compression_manager
-     * @param \Psr\Log\LoggerInterface|null                 $logger
+     * @param string[]|\Jose\Algorithm\JWAInterface[]           $key_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\JWAInterface[]           $content_encryption_algorithms
+     * @param string[]|\Jose\Compression\CompressionInterface[] $compression_methods
+     * @param \Psr\Log\LoggerInterface|null                     $logger
      */
     public function __construct(
-        JWAManagerInterface $jwa_manager,
-        CompressionManagerInterface $compression_manager,
+        array $key_encryption_algorithms,
+        array $content_encryption_algorithms,
+        array $compression_methods,
         LoggerInterface $logger = null
     ) {
-        $this->setJWAManager($jwa_manager);
-        $this->setCompressionManager($compression_manager);
+        $this->setKeyEncryptionAlgorithms($key_encryption_algorithms);
+        $this->setContentEncryptionAlgorithms($content_encryption_algorithms);
+        $this->setCompressionMethods($compression_methods);
+        $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager(array_merge(
+            $key_encryption_algorithms,
+            $content_encryption_algorithms
+        )));
+        $this->setCompressionManager(CompressionManagerFactory::createCompressionManager($compression_methods));
 
         if (null !== $logger) {
             $this->setLogger($logger);

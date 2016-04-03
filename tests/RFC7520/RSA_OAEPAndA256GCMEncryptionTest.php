@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -62,7 +62,7 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_ciphertext = 'o4k2cnGN8rSSw3IDo1YuySkqeS_t2m1GXklSgqBdpACm6UJuJowOHC5ytjqYgRL-I-soPlwqMUf4UgRWWeaOGNw6vGW-xyM01lTYxrXfVzIIaRdhYtEMRBvBWbEwP7ua1DRfvaOjgZv6Ifa3brcAM64d8p5lhhNcizPersuhw5f-pGYzseva-TUaL8iWnctc-sSwy7SQmRkfhDjwbz0fz6kFovEgj64X1I5s7E6GLp5fnbYGLa1QUiML7Cc2GxgvI7zqWo0YIEc7aCflLG1-8BboVWFdZKLK9vNoycrYHumwzKluLWEbSVmaPpOslY2n525DxDfWaVFUfKQxMF56vn4B9QMpWAbnypNimbM8zVOw';
         $expected_tag = 'UCGiqJxhBI3IFVdPalHHvA';
 
-        $decrypter = DecrypterFactory::createDecrypter(['A256GCM', 'RSA-OAEP']);
+        $decrypter = Decrypter::createDecrypter(['A256GCM'], ['RSA-OAEP']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
@@ -125,7 +125,7 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['A256GCM', 'RSA-OAEP']);
+        $encrypter = Encrypter::createEncrypter(['RSA-OAEP'], ['A256GCM']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -133,7 +133,7 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['A256GCM', 'RSA-OAEP']);
+        $decrypter = Decrypter::createDecrypter(['A256GCM'], ['RSA-OAEP']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);

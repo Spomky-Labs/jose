@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -61,7 +61,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_ciphertext = 'BoDlwPnTypYq-ivjmQvAYJLb5Q6l-F3LIgQomlz87yW4OPKbWE1zSTEFjDfhU9IPIOSA9Bml4m7iDFwA-1ZXvHteLDtw4R1XRGMEsDIqAYtskTTmzmzNa-_q4F_evAPUmwlO-ZG45Mnq4uhM1fm_D9rBtWolqZSF3xGNNkpOMQKF1Cl8i8wjzRli7-IXgyirlKQsbhhqRzkv8IcY6aHl24j03C-AR2le1r7URUhArM79BY8soZU0lzwI-sD5PZ3l4NDCCei9XkoIAfsXJWmySPoeRb2Ni5UZL4mYpvKDiwmyzGd65KqVw7MsFfI_K767G9C9Azp73gKZD0DyUn1mn0WW5LmyX_yJ-3AROq8p1WZBfG-ZyJ6195_JGG2m9Csg';
         $expected_tag = 'WCCkNa-x4BeB9hIDIfFuhg';
 
-        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['ECDH-ES'], ['A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
 
@@ -117,7 +117,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['ECDH-ES', 'A128CBC-HS256']);
+        $encrypter = Encrypter::createEncrypter(['ECDH-ES'], ['A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
             $public_key
@@ -125,7 +125,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['ECDH-ES', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['ECDH-ES'], ['A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $private_key);

@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -56,7 +56,7 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         $expected_ciphertext = 'Z_3cbr0k3bVM6N3oSNmHz7Lyf3iPppGf3Pj17wNZqteJ0Ui8p74SchQP8xygM1oFRWCNzeIa6s6BcEtp8qEFiqTUEyiNkOWDNoF14T_4NFqF-p2Mx8zkbKxI7oPK8KNarFbyxIDvICNqBLba-v3uzXBdB89fzOI-Lv4PjOFAQGHrgv1rjXAmKbgkft9cB4WeyZw8MldbBhc-V_KWZslrsLNygon_JJWd_ek6LQn5NRehvApqf9ZrxB4aq3FXBxOxCys35PhCdaggy2kfUfl2OkwKnWUbgXVD1C6HxLIlqHhCwXDG59weHrRDQeHyMRoBljoV3X_bUTJDnKBFOod7nLz-cj48JMx3SnCZTpbQAkFV';
         $expected_tag = 'vOaH_Rajnpy_3hOtqvZHRA';
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
@@ -104,7 +104,7 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
+        $encrypter = Encrypter::createEncrypter(['A128KW'], ['A128GCM']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -112,7 +112,7 @@ class A128KWAndA128GCMEncryptionWithAdditionalAuthenticatedDataTest extends \PHP
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);

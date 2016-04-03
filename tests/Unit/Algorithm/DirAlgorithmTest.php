@@ -27,19 +27,17 @@ class DirAlgorithmTest extends TestCase
      */
     public function testInvalidKey()
     {
-        $header = [];
         $key = new JWK([
             'kty' => 'EC',
         ]);
 
         $dir = new Dir();
 
-        $dir->getCEK($key, $header);
+        $dir->getCEK($key);
     }
 
     public function testValidCEK()
     {
-        $header = [];
         $key = new JWK([
             'kty' => 'oct',
             'k'   => Base64Url::encode('ABCD'),
@@ -47,6 +45,6 @@ class DirAlgorithmTest extends TestCase
 
         $dir = new Dir();
 
-        $this->assertEquals('ABCD', $dir->getCEK($key, $header));
+        $this->assertEquals('ABCD', $dir->getCEK($key));
     }
 }

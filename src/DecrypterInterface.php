@@ -14,12 +14,38 @@ namespace Jose;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Decrypter Interface.
  */
 interface DecrypterInterface
 {
+    /**
+     * @param string[]|\Jose\Algorithm\JWAInterface[]           $key_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\JWAInterface[]           $content_encryption_algorithms
+     * @param string[]|\Jose\Compression\CompressionInterface[] $compression_methods
+     * @param \Psr\Log\LoggerInterface|null                     $logger
+     *
+     * @return \Jose\DecrypterInterface
+     */
+    public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null);
+    
+    /**
+     * @return string[]
+     */
+    public function getSupportedKeyEncryptionAlgorithms();
+    
+    /**
+     * @return string[]
+     */
+    public function getSupportedContentEncryptionAlgorithms();
+    
+    /**
+     * @return string[]
+     */
+    public function getSupportedCompressionMethods();
+    
     /**
      * @param \Jose\Object\JWEInterface $input           A JWE object to decrypt
      * @param \Jose\Object\JWKInterface $jwk             The key used to decrypt the input

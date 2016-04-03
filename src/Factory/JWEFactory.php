@@ -12,6 +12,7 @@
 namespace Jose\Factory;
 
 use Assert\Assertion;
+use Jose\Encrypter;
 use Jose\Object\JWE;
 use Jose\Object\JWKInterface;
 use Psr\Log\LoggerInterface;
@@ -89,7 +90,7 @@ final class JWEFactory
         $complete_headers = array_merge($shared_protected_headers, $shared_headers, $recipient_headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
         Assertion::keyExists($complete_headers, 'enc', 'No "enc" parameter set in the header');
-        $encrypter = EncrypterFactory::createEncrypter([$complete_headers['alg'], $complete_headers['enc']], ['DEF', 'ZLIB', 'GZ'], $logger);
+        $encrypter = Encrypter::createEncrypter([$complete_headers['alg']], [$complete_headers['enc']], ['DEF', 'ZLIB', 'GZ'], $logger);
 
         $jwe = self::createJWE($payload, $shared_protected_headers, $shared_headers, $aad);
 

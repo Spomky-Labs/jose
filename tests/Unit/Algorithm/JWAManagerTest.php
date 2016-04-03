@@ -56,7 +56,7 @@ class JWAManagerTest extends TestCase
     public function testBadArgument()
     {
         $jwa_manager = new JWAManager();
-        $jwa_manager->removeAlgorithm(new \StdClass());
+        $jwa_manager->removeAlgorithm(new \stdClass());
     }
 
     public function testAllAlgorithms()

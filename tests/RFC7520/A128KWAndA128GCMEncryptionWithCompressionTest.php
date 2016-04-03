@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -57,7 +57,7 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
         $expected_ciphertext = 'HbDtOsdai1oYziSx25KEeTxmwnh8L8jKMFNc1k3zmMI6VB8hry57tDZ61jXyezSPt0fdLVfe6Jf5y5-JaCap_JQBcb5opbmT60uWGml8blyiMQmOn9J--XhhlYg0m-BHaqfDO5iTOWxPxFMUedx7WCy8mxgDHj0aBMG6152PsM-w5E_o2B3jDbrYBKhpYA7qi3AyijnCJ7BP9rr3U8kxExCpG3mK420TjOw';
         $expected_tag = 'VILuUwuIxaLVmh5X-T7kmA';
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
@@ -114,7 +114,7 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
+        $encrypter = Encrypter::createEncrypter(['A128KW'], ['A128GCM']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -122,7 +122,7 @@ class A128KWAndA128GCMEncryptionWithCompressionTest extends \PHPUnit_Framework_T
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);

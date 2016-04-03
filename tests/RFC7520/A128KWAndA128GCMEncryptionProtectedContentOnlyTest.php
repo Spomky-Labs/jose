@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -52,13 +52,12 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
 
         $expected_flattened_json = '{"unprotected":{"alg":"A128KW","kid":"81b20965-8332-43d9-a468-82160ad91ac8","enc":"A128GCM"},"encrypted_key":"244YHfO_W7RMpQW81UjQrZcq5LSyqiPv","iv":"YihBoVOGsR1l7jCD","ciphertext":"qtPIMMaOBRgASL10dNQhOa7Gqrk7Eal1vwht7R4TT1uq-arsVCPaIeFwQfzrSS6oEUWbBtxEasE0vC6r7sphyVziMCVJEuRJyoAHFSP3eqQPb4Ic1SDSqyXjw_L3svybhHYUGyQuTmUQEDjgjJfBOifwHIsDsRPeBz1NomqeifVPq5GTCWFo5k_MNIQURR2Wj0AHC2k7JZfu2iWjUHLF8ExFZLZ4nlmsvJu_mvifMYiikfNfsZAudISOa6O73yPZtL04k_1FI7WDfrb2w7OqKLWDXzlpcxohPVOLQwpA3mFNRKdY-bQz4Z4KX9lfz1cne31N4-8BKmojpw-OdQjKdLOGkC445Fb_K1tlDQXw2sBF","tag":"e2m0Vm7JvjK2VpCKXS-kyg"}';
         $expected_json = '{"recipients":[{"encrypted_key":"244YHfO_W7RMpQW81UjQrZcq5LSyqiPv"}],"unprotected":{"alg":"A128KW","kid":"81b20965-8332-43d9-a468-82160ad91ac8","enc":"A128GCM"},"iv":"YihBoVOGsR1l7jCD","ciphertext":"qtPIMMaOBRgASL10dNQhOa7Gqrk7Eal1vwht7R4TT1uq-arsVCPaIeFwQfzrSS6oEUWbBtxEasE0vC6r7sphyVziMCVJEuRJyoAHFSP3eqQPb4Ic1SDSqyXjw_L3svybhHYUGyQuTmUQEDjgjJfBOifwHIsDsRPeBz1NomqeifVPq5GTCWFo5k_MNIQURR2Wj0AHC2k7JZfu2iWjUHLF8ExFZLZ4nlmsvJu_mvifMYiikfNfsZAudISOa6O73yPZtL04k_1FI7WDfrb2w7OqKLWDXzlpcxohPVOLQwpA3mFNRKdY-bQz4Z4KX9lfz1cne31N4-8BKmojpw-OdQjKdLOGkC445Fb_K1tlDQXw2sBF","tag":"e2m0Vm7JvjK2VpCKXS-kyg"}';
-        $expected_cek = 'KBooAFl30QPV3vkcZlXnzQ';
         $expected_iv = 'YihBoVOGsR1l7jCD';
         $expected_encrypted_key = '244YHfO_W7RMpQW81UjQrZcq5LSyqiPv';
         $expected_ciphertext = 'qtPIMMaOBRgASL10dNQhOa7Gqrk7Eal1vwht7R4TT1uq-arsVCPaIeFwQfzrSS6oEUWbBtxEasE0vC6r7sphyVziMCVJEuRJyoAHFSP3eqQPb4Ic1SDSqyXjw_L3svybhHYUGyQuTmUQEDjgjJfBOifwHIsDsRPeBz1NomqeifVPq5GTCWFo5k_MNIQURR2Wj0AHC2k7JZfu2iWjUHLF8ExFZLZ4nlmsvJu_mvifMYiikfNfsZAudISOa6O73yPZtL04k_1FI7WDfrb2w7OqKLWDXzlpcxohPVOLQwpA3mFNRKdY-bQz4Z4KX9lfz1cne31N4-8BKmojpw-OdQjKdLOGkC445Fb_K1tlDQXw2sBF';
         $expected_tag = 'e2m0Vm7JvjK2VpCKXS-kyg';
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_flattened_json = Loader::load($expected_flattened_json);
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
@@ -109,7 +108,7 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
-        $encrypter = EncrypterFactory::createEncrypter(['A128KW', 'A128GCM']);
+        $encrypter = Encrypter::createEncrypter(['A128KW'], ['A128GCM']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -117,7 +116,7 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128GCM']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128GCM']);
 
         $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);

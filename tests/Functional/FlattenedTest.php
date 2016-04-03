@@ -9,7 +9,7 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\DecrypterFactory;
+use Jose\Decrypter;
 use Jose\Loader;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWSInterface;
@@ -27,7 +27,7 @@ class FlattenedTest extends TestCase
      */
     public function testLoadFlattenedJWE()
     {
-        $decrypter = DecrypterFactory::createDecrypter(['A128KW', 'A128CBC-HS256'], ['DEF']);
+        $decrypter = Decrypter::createDecrypter(['A128KW'], ['A128CBC-HS256'], ['DEF']);
 
         $loaded = Loader::load('{"protected":"eyJlbmMiOiJBMTI4Q0JDLUhTMjU2In0","unprotected":{"jku":"https://server.example.com/keys.jwks"},"header":{"alg":"A128KW","kid":"7"},"encrypted_key":"6KB707dM9YTIgHtLvtgWQ8mKwboJW3of9locizkDTHzBC2IlrT1oOQ","iv":"AxY8DCtDaGlsbGljb3RoZQ","ciphertext":"KDlTtXchhZTGufMYmOYGS4HffxPSUrfmqCHXaI9wOGY","tag":"Mz-VPPyU4RlcuYv1IwIvzw"}');
 

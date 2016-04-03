@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -103,7 +103,7 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $expected_ciphertext = 'ajm2Q-OpPXCr7-MHXicknb1lsxLdXxK_yLds0KuhJzfWK04SjdxQeSw2L9mu3a_k1C55kCQ_3xlkcVKC5yr__Is48VOoK0k63_QRM9tBURMFqLByJ8vOYQX0oJW4VUHJLmGhF-tVQWB7Kz8mr8zeE7txF0MSaP6ga7-siYxStR7_G07Thd1jh-zGT0wxM5g-VRORtq0K6AXpLlwEqRp7pkt2zRM0ZAXqSpe1O6FJ7FHLDyEFnD-zDIZukLpCbzhzMDLLw2-8I14FQrgi-iEuzHgIJFIJn2wh9Tj0cg_kOZy9BqMRZbmYXMY9YQjorZ_P_JYG3ARAIF3OjDNqpdYe-K_5Q5crGJSDNyij_ygEiItR5jssQVH2ofDQdLChtazE';
         $expected_tag = 'BESYyFN7T09KY7i8zKs5_g';
 
-        $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
         $loaded_json = Loader::load($expected_json);
         $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
@@ -201,7 +201,7 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
-        $encrypter = EncrypterFactory::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
+        $encrypter = Encrypter::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
             $recipient_1_private_key,
@@ -218,7 +218,7 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
         $loaded_json = Loader::load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);

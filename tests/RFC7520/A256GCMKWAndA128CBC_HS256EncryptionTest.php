@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Base64Url\Base64Url;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\EncrypterFactory;
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\Factory\JWEFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -63,7 +63,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         $expected_ciphertext = 'Jf5p9-ZhJlJy_IQ_byKFmI0Ro7w7G1QiaZpI8OaiVgD8EqoDZHyFKFBupS8iaEeVIgMqWmsuJKuoVgzR3YfzoMd3GxEm3VxNhzWyWtZKX0gxKdy6HgLvqoGNbZCzLjqcpDiF8q2_62EVAbr2uSc2oaxFmFuIQHLcqAHxy51449xkjZ7ewzZaGV3eFqhpco8o4DijXaG5_7kp3h2cajRfDgymuxUbWgLqaeNQaJtvJmSMFuEOSAzw9Hdeb6yhdTynCRmu-kqtO5Dec4lT2OMZKpnxc_F1_4yDJFcqb5CiDSmA-psB2k0JtjxAj4UPI61oONK7zzFIu4gBfjJCndsZfdvG7h8wGjV98QhrKEnR7xKZ3KCr0_qR1B-gxpNk3xWU';
         $expected_tag = 'DKW7jrb4WaRSNfbXVPlT5g';
 
-        $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($expected_compact_json);
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
@@ -119,7 +119,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
         ];
 
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
-        $encrypter = EncrypterFactory::createEncrypter(['A256GCMKW', 'A128CBC-HS256']);
+        $encrypter = Encrypter::createEncrypter(['A256GCMKW'], ['A128CBC-HS256']);
 
         $jwe = $jwe->addRecipient(
             $private_key
@@ -127,7 +127,7 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
 
         $encrypter->encrypt($jwe);
 
-        $decrypter = DecrypterFactory::createDecrypter(['A256GCMKW', 'A128CBC-HS256']);
+        $decrypter = Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256']);
 
         $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
