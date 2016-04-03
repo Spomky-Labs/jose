@@ -12,7 +12,7 @@
 use Base64Url\Base64Url;
 use Jose\Algorithm\Signature\Ed25519;
 use Jose\Factory\JWSFactory;
-use Jose\Factory\VerifierFactory;
+use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWSInterface;
@@ -72,7 +72,7 @@ class Ed25519SignatureTest extends TestCase
 
         $this->assertEquals('eyJhbGciOiJFZDI1NTE5In0.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc.UxhIYLHGg39NVCLpQAVD_UcfOmnGSCzLFZoXYkLiIbFccmOb_qObsgjzLKsfJw-4NlccUgvYrEHrRbNV0HcZAQ', $jws);
         $loaded = Loader::load($jws);
-        $verifier = VerifierFactory::createVerifier(['Ed25519']);
+        $verifier = Verifier::createVerifier(['Ed25519']);
 
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals(1, $loaded->countSignatures());

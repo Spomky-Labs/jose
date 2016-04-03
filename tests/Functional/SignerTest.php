@@ -10,8 +10,8 @@
  */
 
 use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
-use Jose\Factory\VerifierFactory;
+use Jose\Signer;
+use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
@@ -30,7 +30,7 @@ class SignerTest extends TestCase
      */
     public function testNoPayload()
     {
-        $signer = SignerFactory::createSigner([], $this->getLogger());
+        $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
         $jws = $jws->addSignature($this->getKey1(), []);
@@ -44,7 +44,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsMissing()
     {
-        $signer = SignerFactory::createSigner([], $this->getLogger());
+        $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature($this->getKey1(), []);
@@ -58,7 +58,7 @@ class SignerTest extends TestCase
      */
     public function testAlgParameterIsNotSupported()
     {
-        $signer = SignerFactory::createSigner([], $this->getLogger());
+        $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature(
@@ -71,7 +71,7 @@ class SignerTest extends TestCase
 
     public function testSignAndLoadCompact()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
         $jws = $jws->addSignature(
@@ -97,7 +97,7 @@ class SignerTest extends TestCase
 
     public function testSignMultipleInstructionWithCompactRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -144,7 +144,7 @@ class SignerTest extends TestCase
 
     public function testSignMultipleInstructionWithFlattenedRepresentation()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -195,7 +195,7 @@ class SignerTest extends TestCase
      */
     public function testAlgorithmNotAllowedForTheKey()
     {
-        $signer = SignerFactory::createSigner([], $this->getLogger());
+        $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -212,7 +212,7 @@ class SignerTest extends TestCase
      */
     public function testOperationNotAllowedForTheKey()
     {
-        $signer = SignerFactory::createSigner(['PS512'], $this->getLogger());
+        $signer = Signer::createSigner(['PS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -225,7 +225,7 @@ class SignerTest extends TestCase
 
     public function testSignAndLoadFlattened()
     {
-        $signer = SignerFactory::createSigner(['HS512'], $this->getLogger());
+        $signer = Signer::createSigner(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS(['baz', 'ban']);
         $jws = $jws->addSignature(
@@ -246,8 +246,8 @@ class SignerTest extends TestCase
 
     public function testSignAndLoad()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512'], $this->getLogger());
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -280,8 +280,8 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadWithWrongKeys()
     {
-        $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+        $signer = Signer::createSigner(['RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -306,8 +306,8 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadWithUnsupportedAlgorithm()
     {
-        $signer = SignerFactory::createSigner(['RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['HS512'], $this->getLogger());
+        $signer = Signer::createSigner(['RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature(
@@ -332,7 +332,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadWithJWSWithoutSignatures()
     {
-        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['RS512'], $this->getLogger());
         $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
         $jws = '{"payload":"SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4","signatures":[]}';
 
@@ -351,7 +351,7 @@ class SignerTest extends TestCase
      */
     public function testSignAndLoadWithoutAlgParameterInTheHeader()
     {
-        $verifier = VerifierFactory::createVerifier(['RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['RS512'], $this->getLogger());
         $payload = "It\xe2\x80\x99s a dangerous business, Frodo, going out your door. You step onto the road, and if you don't keep your feet, there\xe2\x80\x99s no knowing where you might be swept off to.";
         $jws = 'eyJraWQiOiJiaWxiby5iYWdnaW5zQGhvYmJpdG9uLmV4YW1wbGUifQ.SXTigJlzIGEgZGFuZ2Vyb3VzIGJ1c2luZXNzLCBGcm9kbywgZ29pbmcgb3V0IHlvdXIgZG9vci4gWW91IHN0ZXAgb250byB0aGUgcm9hZCwgYW5kIGlmIHlvdSBkb24ndCBrZWVwIHlvdXIgZmVldCwgdGhlcmXigJlzIG5vIGtub3dpbmcgd2hlcmUgeW91IG1pZ2h0IGJlIHN3ZXB0IG9mZiB0by4.MRjdkly7_-oTPTS3AXP41iQIGKa80A0ZmTuV5MEaHoxnW2e5CZ5NlKtainoFmKZopdHM1O2U4mwzJdQx996ivp83xuglII7PNDi84wnB-BDkoBwA78185hX-Es4JIwmDLJK3lfWRa-XtL0RnltuYv746iYTh_qHRD68BNt1uSNCrUCTJDt5aAE6x8wW1Kt9eRo4QPocSadnHXFxnt8Is9UzpERV0ePPQdLuW3IS_de3xyIrDaLGdjluPxUAhb6L2aXic1U12podGU0KLUQSE_oI-ZnmKJ3F4uOZDnd6QZWJushZ41Axf_fcIe8u9ipH84ogoree7vjbU5y18kDquDg';
 
@@ -366,8 +366,8 @@ class SignerTest extends TestCase
 
     public function testSignAndLoadJWKSet()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
         $jws = $jws->addSignature(
@@ -399,8 +399,8 @@ class SignerTest extends TestCase
      */
     public function testKeySetIsEmpty()
     {
-        $signer = SignerFactory::createSigner(['HS512', 'RS512'], $this->getLogger());
-        $verifier = VerifierFactory::createVerifier(['HS512', 'RS512']);
+        $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
+        $verifier = Verifier::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
         $jws = $jws->addSignature(

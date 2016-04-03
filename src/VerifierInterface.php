@@ -14,12 +14,29 @@ namespace Jose;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Verifier Interface.
  */
 interface VerifierInterface
 {
+    /**
+    /**
+     * Signer constructor.
+     *
+     * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
+     * @param \Psr\Log\LoggerInterface|null                          $logger
+     *
+     * @return \Jose\SignerInterface
+     */
+    public static function createVerifier(array $signature_algorithms, LoggerInterface $logger = null);
+
+    /**
+     * @return string[]
+     */
+    public function getSupportedSignatureAlgorithms();
+    
     /**
      * Verify the signature of the input.
      * The input must be a valid JWS. This method is usually called after the "load" method.

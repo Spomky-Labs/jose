@@ -41,7 +41,7 @@ trait CommonCipheringMethods
     }
 
     /**
-     * @param string[]|\Jose\Algorithm\JWAInterface[] $key_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[] $key_encryption_algorithms
      */
     private function setKeyEncryptionAlgorithms($key_encryption_algorithms)
     {
@@ -67,7 +67,7 @@ trait CommonCipheringMethods
     }
 
     /**
-     * @param string[]|\Jose\Algorithm\JWAInterface[] $content_encryption_algorithms
+     * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $content_encryption_algorithms
      */
     private function setContentEncryptionAlgorithms($content_encryption_algorithms)
     {

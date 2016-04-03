@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
-use Jose\Factory\VerifierFactory;
+use Jose\Signer;
+use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -65,10 +65,10 @@ class RSAPSSSignatureTest extends \PHPUnit_Framework_TestCase
         $jws = JWSFactory::createJWS($payload);
         $jws = $jws->addSignature($private_key, $headers);
 
-        $signer = SignerFactory::createSigner(['PS384']);
+        $signer = Signer::createSigner(['PS384']);
         $signer->sign($jws);
 
-        $verifer = VerifierFactory::createVerifier(['PS384']);
+        $verifer = Verifier::createVerifier(['PS384']);
 
         $verifer->verifyWithKey($jws, $private_key);
 

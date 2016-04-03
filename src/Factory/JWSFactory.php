@@ -15,6 +15,7 @@ use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWS;
+use Jose\Signer;
 use Psr\Log\LoggerInterface;
 
 final class JWSFactory
@@ -125,7 +126,7 @@ final class JWSFactory
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
-        $signer = SignerFactory::createSigner([$complete_headers['alg']], $logger);
+        $signer = Signer::createSigner([$complete_headers['alg']], $logger);
         $signer->sign($jws);
 
         return $jws;
@@ -148,7 +149,7 @@ final class JWSFactory
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
-        $signer = SignerFactory::createSigner([$complete_headers['alg']], $logger);
+        $signer = Signer::createSigner([$complete_headers['alg']], $logger);
         $signer->signWithDetachedPayload($jws, $encoded_payload);
 
         return $jws;

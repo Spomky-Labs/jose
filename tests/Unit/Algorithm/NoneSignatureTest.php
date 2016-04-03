@@ -10,7 +10,7 @@
  */
 
 use Jose\Algorithm\Signature\None;
-use Jose\Factory\SignerFactory;
+use Jose\Signer;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWSInterface;
@@ -64,7 +64,7 @@ class NoneSignatureTest extends TestCase
         $jws = \Jose\Factory\JWSFactory::createJWS('Live long and Prosper.');
         $jws = $jws->addSignature($jwk, ['alg' => 'none']);
 
-        $signer = SignerFactory::createSigner(['none']);
+        $signer = Signer::createSigner(['none']);
         $signer->sign($jws);
 
         $this->assertEquals(1, $jws->countSignatures());

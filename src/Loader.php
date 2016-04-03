@@ -12,8 +12,6 @@
 namespace Jose;
 
 use Assert\Assertion;
-use Jose\Factory\DecrypterFactory;
-use Jose\Factory\VerifierFactory;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
@@ -98,7 +96,7 @@ final class Loader implements LoaderInterface
     {
         $jwt = self::load($input);
         Assertion::isInstanceOf($jwt, JWEInterface::class, 'The input is not a valid JWE');
-        $decrypted = DecrypterFactory::createDecrypter($allowed_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
+        $decrypted = Decrypter::createDecrypter($allowed_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
 
         $decrypted->decryptUsingKeySet($jwt, $jwk_set);
 
@@ -118,7 +116,7 @@ final class Loader implements LoaderInterface
     {
         $jwt = self::load($input);
         Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
-        $verifier = VerifierFactory::createVerifier($allowed_algorithms, $logger);
+        $verifier = Verifier::createVerifier($allowed_algorithms, $logger);
 
         $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
 

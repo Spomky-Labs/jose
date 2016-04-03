@@ -12,12 +12,29 @@
 namespace Jose;
 
 use Jose\Object\JWSInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Signer Interface.
  */
 interface SignerInterface
 {
+    /**
+    /**
+     * Signer constructor.
+     *
+     * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
+     * @param \Psr\Log\LoggerInterface|null                          $logger
+     * 
+     * @return \Jose\SignerInterface
+     */
+    public static function createSigner(array $signature_algorithms, LoggerInterface $logger = null);
+    
+    /**
+     * @return string[]
+     */
+    public function getSupportedSignatureAlgorithms();
+
     /**
      * @param \Jose\Object\JWSInterface $jws
      * @param null|string               $detached_payload

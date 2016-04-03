@@ -12,11 +12,12 @@
 namespace Jose;
 
 use Assert\Assertion;
-use Jose\Algorithm\JWAManagerInterface;
 use Jose\Algorithm\SignatureAlgorithmInterface;
+use Jose\Behaviour\CommonSigningMethods;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
 use Jose\Behaviour\HasLogger;
+use Jose\Factory\AlgorithmManagerFactory;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\Signature;
@@ -29,21 +30,31 @@ final class Signer implements SignerInterface
     use HasKeyChecker;
     use HasJWAManager;
     use HasLogger;
+    use CommonSigningMethods;
 
     /**
      * Signer constructor.
      *
-     * @param \Jose\Algorithm\JWAManagerInterface $jwa_manager
-     * @param \Psr\Log\LoggerInterface|null       $logger
+     * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
+     * @param \Psr\Log\LoggerInterface|null                          $logger
      */
-    public function __construct(JWAManagerInterface $jwa_manager,
+    public function __construct(array $signature_algorithms,
                                 LoggerInterface $logger = null
     ) {
-        $this->setJWAManager($jwa_manager);
+        $this->setSignatureAlgorithms($signature_algorithms);
 
+        $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager($signature_algorithms));
         if (null !== $logger) {
             $this->setLogger($logger);
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createSigner(array $signature_algorithms, LoggerInterface $logger = null)
+    {
+        return new self($signature_algorithms, $logger);
     }
 
     /**

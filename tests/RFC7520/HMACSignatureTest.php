@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
-use Jose\Factory\VerifierFactory;
+use Jose\Signer;
+use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -60,10 +60,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $jws = JWSFactory::createJWS($payload);
         $jws = $jws->addSignature($key, $headers);
 
-        $signer = SignerFactory::createSigner(['HS256']);
+        $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);
 
-        $verifer = VerifierFactory::createVerifier(['HS256']);
+        $verifer = Verifier::createVerifier(['HS256']);
 
         /*
          * Header
@@ -121,10 +121,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
         $jws = $jws->addSignature($key, $headers);
 
-        $signer = SignerFactory::createSigner(['HS256']);
+        $signer = Signer::createSigner(['HS256']);
         $signer->signWithDetachedPayload($jws, $encoded_payload);
 
-        $verifer = VerifierFactory::createVerifier(['HS256']);
+        $verifer = Verifier::createVerifier(['HS256']);
 
         /*
          * Header
@@ -185,10 +185,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $jws = JWSFactory::createJWS($payload);
         $jws = $jws->addSignature($key, $protected_headers, $unprotected_headers);
 
-        $signer = SignerFactory::createSigner(['HS256']);
+        $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);
 
-        $verifer = VerifierFactory::createVerifier(['HS256']);
+        $verifer = Verifier::createVerifier(['HS256']);
 
         /*
          * Header
@@ -240,10 +240,10 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $jws = JWSFactory::createJWS($payload);
         $jws = $jws->addSignature($key, [], $unprotected_headers);
 
-        $signer = SignerFactory::createSigner(['HS256']);
+        $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);
 
-        $verifer = VerifierFactory::createVerifier(['HS256']);
+        $verifer = Verifier::createVerifier(['HS256']);
 
         /*
          * Header

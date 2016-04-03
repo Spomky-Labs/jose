@@ -12,8 +12,8 @@
 namespace Jose\Test\RFC7520;
 
 use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
-use Jose\Factory\VerifierFactory;
+use Jose\Signer;
+use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 
@@ -104,12 +104,12 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
-        $signer = SignerFactory::createSigner(['RS256', 'ES512', 'HS256']);
+        $signer = Signer::createSigner(['RS256', 'ES512', 'HS256']);
         $signer->sign($jws);
 
         $this->assertEquals(3, $jws->countSignatures());
 
-        $verifer = VerifierFactory::createVerifier(['RS256', 'ES512', 'HS256']);
+        $verifer = Verifier::createVerifier(['RS256', 'ES512', 'HS256']);
 
         $verifer->verifyWithKey($jws, $rsa_private_key);
         $verifer->verifyWithKey($jws, $ecdsa_private_key);
