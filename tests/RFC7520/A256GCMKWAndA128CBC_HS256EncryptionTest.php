@@ -65,13 +65,14 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
 
         $decrypter = Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256']);
 
-        $loaded_compact_json = Loader::load($expected_compact_json);
+        $loader = new Loader();
+        $loaded_compact_json = $loader->load($expected_compact_json);
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
-        $loaded_flattened_json = Loader::load($expected_flattened_json);
+        $loaded_flattened_json = $loader->load($expected_flattened_json);
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_compact_json->getCiphertext()));
@@ -129,13 +130,14 @@ class A256GCMKWAndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCas
 
         $decrypter = Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256']);
 
-        $loaded_compact_json = Loader::load($jwe->toCompactJSON(0));
+        $loader = new Loader();
+        $loaded_compact_json = $loader->load($jwe->toCompactJSON(0));
         $decrypter->decryptUsingKey($loaded_compact_json, $private_key);
 
-        $loaded_flattened_json = Loader::load($jwe->toFlattenedJSON(0));
+        $loaded_flattened_json = $loader->load($jwe->toFlattenedJSON(0));
         $decrypter->decryptUsingKey($loaded_flattened_json, $private_key);
 
-        $loaded_json = Loader::load($jwe->toJSON());
+        $loaded_json = $loader->load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $private_key);
 
         $this->assertTrue(array_key_exists('iv', $loaded_compact_json->getSharedProtectedHeaders()));

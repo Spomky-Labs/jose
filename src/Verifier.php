@@ -74,8 +74,6 @@ final class Verifier implements VerifierInterface
 
     /**
      * {@inheritdoc}
-     *
-     * @throws \InvalidArgumentException
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {

@@ -72,7 +72,8 @@ class NoneSignatureTest extends TestCase
         $compact = $jws->toCompactJSON(0);
         $this->assertTrue(is_string($compact));
 
-        $result = Loader::load($compact);
+        $loader = new Loader();
+        $result = $loader->load($compact);
 
         $this->assertInstanceOf(JWSInterface::class, $result);
 

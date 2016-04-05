@@ -79,13 +79,14 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
-        $loaded_compact_json = Loader::load($expected_compact_json);
+        $loader = new Loader();
+        $loaded_compact_json = $loader->load($expected_compact_json);
         $verifer->verifyWithKey($loaded_compact_json, $key);
 
-        $loaded_flattened_json = Loader::load($expected_flattened_json);
+        $loaded_flattened_json = $loader->load($expected_flattened_json);
         $verifer->verifyWithKey($loaded_flattened_json, $key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $verifer->verifyWithKey($loaded_json, $key);
     }
 
@@ -141,13 +142,14 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
-        $loaded_compact_json = Loader::load($expected_compact_json);
+        $loader = new Loader();
+        $loaded_compact_json = $loader->load($expected_compact_json);
         $verifer->verifyWithKey($loaded_compact_json, $key, $encoded_payload);
 
-        $loaded_flattened_json = Loader::load($expected_flattened_json);
+        $loaded_flattened_json = $loader->load($expected_flattened_json);
         $verifer->verifyWithKey($loaded_flattened_json, $key, $encoded_payload);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $verifer->verifyWithKey($loaded_json, $key, $encoded_payload);
     }
 
@@ -201,10 +203,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
-        $loaded_flattened_json = Loader::load($expected_flattened_json);
+        $loader = new Loader();
+        $loaded_flattened_json = $loader->load($expected_flattened_json);
         $verifer->verifyWithKey($loaded_flattened_json, $key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $verifer->verifyWithKey($loaded_json, $key);
     }
 
@@ -256,10 +259,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(json_decode($expected_flattened_json, true), json_decode($jws->toFlattenedJSON(0), true));
         $this->assertEquals(json_decode($expected_json, true), json_decode($jws->toJSON(), true));
 
-        $loaded_flattened_json = Loader::load($expected_flattened_json);
+        $loader = new Loader();
+        $loaded_flattened_json = $loader->load($expected_flattened_json);
         $verifer->verifyWithKey($loaded_flattened_json, $key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $verifer->verifyWithKey($loaded_json, $key);
     }
 }

@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Assert\Assertion;
+use Jose\Behaviour\HasLogger;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
@@ -27,61 +28,70 @@ use Psr\Log\LoggerInterface;
  */
 final class Loader implements LoaderInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
-    {
-        $jwk_set = new JWKSet();
-        $jwk_set->addKey($jwk);
+    use HasLogger;
 
-        return self::loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
+    public function __construct(LoggerInterface $logger = null)
+    {
+        if (null !== $logger) {
+            $this->setLogger($logger);
+        }
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
+    public function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
     {
-        return self::loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
+        $jwk_set = new JWKSet();
+        $jwk_set->addKey($jwk);
+
+        return $this->loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
+    {
+        return $this->loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $logger);
     }
     
     /**
      * {@inheritdoc}
      */
-    public static function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
+    public function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
         $jwk_set->addKey($jwk);
 
-        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
+        return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
+    public function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, LoggerInterface $logger = null)
     {
-        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
+        return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $logger);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
+    public function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
     {
         $jwk_set = new JWKSet();
         $jwk_set->addKey($jwk);
 
-        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
+        return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
     }
 
     /**
      * {@inheritdoc}
      */
-    public static function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
+    public function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, LoggerInterface $logger = null)
     {
-        return self::loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
+        return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $logger);
     }
 
     /**
@@ -93,9 +103,9 @@ final class Loader implements LoaderInterface
      *
      * @return \Jose\Object\JWEInterface
      */
-    private static function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
+    private function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, LoggerInterface $logger = null)
     {
-        $jwt = self::load($input);
+        $jwt = $this->load($input);
         Assertion::isInstanceOf($jwt, JWEInterface::class, 'The input is not a valid JWE');
         $decrypted = Decrypter::createDecrypter($allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, ['DEF', 'ZLIB', 'GZ'], $logger);
 
@@ -113,9 +123,9 @@ final class Loader implements LoaderInterface
      *
      * @return \Jose\Object\JWSInterface
      */
-    private static function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
+    private function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
     {
-        $jwt = self::load($input);
+        $jwt = $this->load($input);
         Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
         $verifier = Verifier::createVerifier($allowed_algorithms, $logger);
 
@@ -127,9 +137,9 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public static function load($input)
+    public function load($input)
     {
-        $json = self::convert($input);
+        $json = $this->convert($input);
         if (array_key_exists('signatures', $json)) {
             return JWSLoader::loadSerializedJsonJWS($json);
         }
@@ -143,18 +153,18 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function convert($input)
+    private function convert($input)
     {
         if (is_array($data = json_decode($input, true))) {
             if (array_key_exists('signatures', $data) || array_key_exists('recipients', $data)) {
                 return $data;
             } elseif (array_key_exists('signature', $data)) {
-                return self::fromFlattenedSerializationSignatureToSerialization($data);
+                return $this->fromFlattenedSerializationSignatureToSerialization($data);
             } elseif (array_key_exists('ciphertext', $data)) {
-                return self::fromFlattenedSerializationRecipientToSerialization($data);
+                return $this->fromFlattenedSerializationRecipientToSerialization($data);
             }
         } elseif (is_string($input)) {
-            return self::fromCompactSerializationToSerialization($input);
+            return $this->fromCompactSerializationToSerialization($input);
         }
         throw new \InvalidArgumentException('Unsupported input');
     }
@@ -164,7 +174,7 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function fromFlattenedSerializationRecipientToSerialization($input)
+    private function fromFlattenedSerializationRecipientToSerialization($input)
     {
         $recipient = [];
         foreach (['header', 'encrypted_key'] as $key) {
@@ -190,7 +200,7 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function fromFlattenedSerializationSignatureToSerialization($input)
+    private function fromFlattenedSerializationSignatureToSerialization($input)
     {
         $signature = [
             'signature' => $input['signature'],
@@ -215,14 +225,14 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function fromCompactSerializationToSerialization($input)
+    private function fromCompactSerializationToSerialization($input)
     {
         $parts = explode('.', $input);
         switch (count($parts)) {
             case 3:
-                return self::fromCompactSerializationSignatureToSerialization($parts);
+                return $this->fromCompactSerializationSignatureToSerialization($parts);
             case 5:
-                return self::fromCompactSerializationRecipientToSerialization($parts);
+                return $this->fromCompactSerializationRecipientToSerialization($parts);
             default:
                 throw new \InvalidArgumentException('Unsupported input');
         }
@@ -233,7 +243,7 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function fromCompactSerializationRecipientToSerialization(array $parts)
+    private function fromCompactSerializationRecipientToSerialization(array $parts)
     {
         $recipient = [];
         if (!empty($parts[1])) {
@@ -257,7 +267,7 @@ final class Loader implements LoaderInterface
      *
      * @return array
      */
-    private static function fromCompactSerializationSignatureToSerialization(array $parts)
+    private function fromCompactSerializationSignatureToSerialization(array $parts)
     {
         $temp = [];
 

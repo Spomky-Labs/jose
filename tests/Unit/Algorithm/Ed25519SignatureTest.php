@@ -71,7 +71,9 @@ class Ed25519SignatureTest extends TestCase
         $jws = JWSFactory::createJWSToCompactJSON($input, $key, $header);
 
         $this->assertEquals('eyJhbGciOiJFZDI1NTE5In0.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc.UxhIYLHGg39NVCLpQAVD_UcfOmnGSCzLFZoXYkLiIbFccmOb_qObsgjzLKsfJw-4NlccUgvYrEHrRbNV0HcZAQ', $jws);
-        $loaded = Loader::load($jws);
+
+        $loader = new Loader();
+        $loaded = $loader->load($jws);
         $verifier = Verifier::createVerifier(['Ed25519']);
 
         $this->assertInstanceOf(JWSInterface::class, $loaded);

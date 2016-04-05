@@ -105,13 +105,14 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $decrypter = Decrypter::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
-        $loaded_json = Loader::load($expected_json);
+        $loader = new Loader();
+        $loaded_json = $loader->load($expected_json);
         $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
-        $loaded_json = Loader::load($expected_json);
+        $loaded_json = $loader->load($expected_json);
         $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
@@ -220,13 +221,14 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
 
         $decrypter = Decrypter::createDecrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
-        $loaded_json = Loader::load($jwe->toJSON());
+        $loader = new Loader();
+        $loaded_json = $loader->load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $recipient_1_private_key);
 
-        $loaded_json = Loader::load($jwe->toJSON());
+        $loaded_json = $loader->load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $recipient_2_private_key);
 
-        $loaded_json = Loader::load($jwe->toJSON());
+        $loaded_json = $loader->load($jwe->toJSON());
         $decrypter->decryptUsingKey($loaded_json, $recipient_3_private_key);
 
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
