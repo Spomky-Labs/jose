@@ -20,6 +20,11 @@ use Psr\Log\LoggerInterface;
 final class JWTCreator
 {
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @var \Jose\EncrypterInterface|null
      */
     private $encrypter = null;
@@ -39,6 +44,7 @@ final class JWTCreator
     {
         Assertion::notEmpty($supported_signature_algorithms, $logger);
 
+        $this->logger = $logger;
         $this->signer = Signer::createSigner($supported_signature_algorithms, $logger);
     }
 
@@ -46,12 +52,10 @@ final class JWTCreator
      * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $supported_key_encryption_algorithms
      * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $supported_content_encryption_algorithms
      * @param string[]|\Jose\Compression\CompressionInterface                $supported_compression_methods
-     * @param \Psr\Log\LoggerInterface|null                                  $logger
      */
     public function enableEncryptionSupport(array $supported_key_encryption_algorithms,
                                             array $supported_content_encryption_algorithms,
-                                            array $supported_compression_methods = ['DEF', 'ZLIB', 'GZ'],
-                                            LoggerInterface $logger = null
+                                            array $supported_compression_methods = ['DEF', 'ZLIB', 'GZ']
     ) {
         Assertion::notEmpty($supported_key_encryption_algorithms, 'At least one key encryption algorithm must be set.');
         Assertion::notEmpty($supported_content_encryption_algorithms, 'At least one content encryption algorithm must be set.');
@@ -60,7 +64,7 @@ final class JWTCreator
             $supported_key_encryption_algorithms,
             $supported_content_encryption_algorithms,
             $supported_compression_methods,
-            $logger
+            $this->logger
         );
     }
 

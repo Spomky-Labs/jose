@@ -17,6 +17,8 @@ use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Jose\Object\JWSInterface;
 use Jose\Test\TestCase;
+use Jose\Factory\JWTCreator;
+use Jose\Factory\JWTLoader;
 
 /**
  * @group Signer
