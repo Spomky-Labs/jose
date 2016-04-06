@@ -42,7 +42,7 @@ final class JWTCreator
      */
     public function __construct(array $supported_signature_algorithms, LoggerInterface $logger = null)
     {
-        Assertion::notEmpty($supported_signature_algorithms, $logger);
+        Assertion::notEmpty($supported_signature_algorithms, 'At least one signature algorithm must be set.');
 
         $this->logger = $logger;
         $this->signer = Signer::createSigner($supported_signature_algorithms, $logger);
