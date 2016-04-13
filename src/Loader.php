@@ -21,6 +21,7 @@ use Jose\Object\JWEInterface;
 use Jose\Util\JWELoader;
 use Jose\Util\JWSLoader;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 /**
  * Class able to load JWS or JWE.
@@ -126,7 +127,7 @@ final class Loader implements LoaderInterface
     private function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, LoggerInterface $logger = null)
     {
         $jwt = $this->load($input);
-        Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS');
+        Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS.');
         $verifier = Verifier::createVerifier($allowed_algorithms, $logger);
 
         $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload);
@@ -139,11 +140,14 @@ final class Loader implements LoaderInterface
      */
     public function load($input)
     {
+        $this->log(LogLevel::INFO, 'Trying to load the input.', ['input' => $input]);
         $json = $this->convert($input);
         if (array_key_exists('signatures', $json)) {
+            $this->log(LogLevel::DEBUG, 'The input is a JWS.', ['json' => $json]);
             return JWSLoader::loadSerializedJsonJWS($json);
         }
         if (array_key_exists('recipients', $json)) {
+            $this->log(LogLevel::DEBUG, 'The input is a JWE.', ['json' => $json]);
             return JWELoader::loadSerializedJsonJWE($json);
         }
     }
@@ -157,15 +161,20 @@ final class Loader implements LoaderInterface
     {
         if (is_array($data = json_decode($input, true))) {
             if (array_key_exists('signatures', $data) || array_key_exists('recipients', $data)) {
+                $this->log(LogLevel::DEBUG, 'The input seems to be a JWS or a JWE.');
                 return $data;
             } elseif (array_key_exists('signature', $data)) {
+                $this->log(LogLevel::DEBUG, 'The input seems to be a flattened JWS.');
                 return $this->fromFlattenedSerializationSignatureToSerialization($data);
             } elseif (array_key_exists('ciphertext', $data)) {
+                $this->log(LogLevel::DEBUG, 'The input seems to be a flattened JWE.');
                 return $this->fromFlattenedSerializationRecipientToSerialization($data);
             }
         } elseif (is_string($input)) {
+            $this->log(LogLevel::DEBUG, 'The input may be a compact JWS or JWE.');
             return $this->fromCompactSerializationToSerialization($input);
         }
+        $this->log(LogLevel::ERROR, 'The input is not supported');
         throw new \InvalidArgumentException('Unsupported input');
     }
 
@@ -186,12 +195,14 @@ final class Loader implements LoaderInterface
             'ciphertext' => $input['ciphertext'],
             'recipients' => [$recipient],
         ];
-        foreach (['ciphertext', 'protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
+        foreach (['protected', 'unprotected', 'iv', 'aad', 'tag'] as $key) {
             if (array_key_exists($key, $input)) {
                 $recipients[$key] = $input[$key];
             }
         }
 
+        $this->log(LogLevel::INFO, 'JWE in Flattened JSON Serialization mode loaded.');
+        
         return $recipients;
     }
 
@@ -217,6 +228,8 @@ final class Loader implements LoaderInterface
         }
         $temp['signatures'] = [$signature];
 
+        $this->log(LogLevel::INFO, 'JWS in Flattened JSON Serialization mode loaded.');
+        
         return $temp;
     }
 
@@ -230,8 +243,12 @@ final class Loader implements LoaderInterface
         $parts = explode('.', $input);
         switch (count($parts)) {
             case 3:
+                $this->log(LogLevel::DEBUG, 'The input seems to be a compact JWS.');
+                
                 return $this->fromCompactSerializationSignatureToSerialization($parts);
             case 5:
+                $this->log(LogLevel::DEBUG, 'The input seems to be a compact JWE.');
+                
                 return $this->fromCompactSerializationRecipientToSerialization($parts);
             default:
                 throw new \InvalidArgumentException('Unsupported input');
@@ -253,11 +270,13 @@ final class Loader implements LoaderInterface
         $recipients = [
             'recipients' => [$recipient],
         ];
-        foreach ([3 => 'ciphertext', 0 => 'protected', 2 => 'iv', 4 => 'tag'] as $part => $key) {
+        foreach ([0 => 'protected', 2 => 'iv', 3 => 'ciphertext', 4 => 'tag'] as $part => $key) {
             if (!empty($parts[$part])) {
                 $recipients[$key] = $parts[$part];
             }
         }
+        
+        $this->log(LogLevel::INFO, 'JWE in Compact JSON Serialization mode loaded.');
 
         return $recipients;
     }
@@ -279,6 +298,8 @@ final class Loader implements LoaderInterface
             'signature' => $parts[2],
         ]];
 
+        $this->log(LogLevel::INFO, 'JWS in Compact JSON Serialization mode loaded.');
+        
         return $temp;
     }
 }
