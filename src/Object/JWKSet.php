@@ -177,11 +177,7 @@ final class JWKSet implements JWKSetInterface
     }
 
     /**
-     * @param string      $type
-     * @param string|null $algorithm
-     * @param array       $restrictions
-     *
-     * @return \Jose\Object\JWKInterface|null
+     * {@inheritdoc}
      */
     public function selectKey($type, $algorithm = null, array $restrictions = [])
     {
