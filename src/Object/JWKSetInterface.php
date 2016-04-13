@@ -52,4 +52,13 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable, \Arr
      * @return int
      */
     public function countKeys();
+    
+    /**
+     * @param string      $type         Must be 'sig' (signature) or 'enc' (encryption)
+     * @param string|null $algorithm    Specifies the algorithm to be used
+     * @param array       $restrictions More restrictions such as 'kid' or 'kty'
+     *
+     * @return \Jose\Object\JWKInterface|null
+     */
+    public function selectKey($type, $algorithm = null, array $restrictions = []);
 }
