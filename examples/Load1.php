@@ -35,7 +35,8 @@ $key = JWKFactory::createFromKeyFile(
 // We load the input and we verify it.
 // RS256 is the only algorithm we allow
 // Now the variable $jws contains a JWSInterface object
-$jws = Loader::loadAndVerifySignatureUsingKey(
+$loader = new Loader();
+$jws = $loader->loadAndVerifySignatureUsingKey(
     $input,
     $key,
     ['RS256']

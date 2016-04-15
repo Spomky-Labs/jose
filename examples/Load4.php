@@ -36,6 +36,12 @@ $input = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIn0..QwM0qVoagkgHE
 // The first argument is our input
 // The second argument is our private key
 // The third argument is a list of allowed algorithms.
-$jwe = Loader::loadAndDecryptUsingKey($input, $key, ['dir', 'A256GCM']);
+$loader = new Loader();
+$jwe = $loader->loadAndDecryptUsingKey(
+    $input,
+    $key,
+    ['dir'],
+    ['A256GCM']
+);
 
 // Now the variable $jwe is a decrypted JWE

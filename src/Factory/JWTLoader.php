@@ -132,7 +132,7 @@ final class JWTLoader
         Assertion::boolean($is_encryption_required);
         $jwt = $this->loader->load($assertion);
         if ($jwt instanceof JWEInterface) {
-            Assertion::notNull($encryption_key_set, 'Encryption key set must is not available.');
+            Assertion::notNull($encryption_key_set, 'Encryption key set is not available.');
             Assertion::true($this->isEncryptionSupportEnabled(), 'Encryption support is not enabled.');
             $key_encryption_algorithms = array_intersect($allowed_key_encryption_algorithms, $this->getSupportedKeyEncryptionAlgorithms());
             $content_encryption_algorithms = array_intersect($allowed_content_encryption_algorithms, $this->getSupportedContentEncryptionAlgorithms());

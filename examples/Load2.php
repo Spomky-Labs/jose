@@ -33,7 +33,8 @@ $key = JWKFactory::createFromValues([
 // We load the input and we verify it.
 // HS512 is the only algorithm we allow
 // Now the variable $jws contains a JWSInterface object
-$jws = Loader::loadAndVerifySignatureUsingKeyAndDetachedPayload(
+$loader = new Loader();
+$jws = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload(
     $input,
     $key,
     ['HS512'],
