@@ -42,10 +42,12 @@ $input = 'eyJhbGciOiJSU0EtT0FFUC0yNTYiLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIiwiemlwIjoiRE
 // The first argument is our input
 // The second argument is our private key
 // The third argument is a list of allowed algorithms.
-$jwe = Loader::loadAndDecryptUsingKey(
+$loader = new Loader();
+$jwe = $loader->loadAndDecryptUsingKey(
     $input,
     $key,
-    ['RSA-OAEP-256', 'A256CBC-HS512']
+    ['RSA-OAEP-256'],
+    ['A256CBC-HS512']
 );
 
 // Now the variable $jwe is a decrypted JWE
