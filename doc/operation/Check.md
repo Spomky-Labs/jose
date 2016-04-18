@@ -1,2 +1,2 @@
-The Verifier
+Check claims
 ============

@@ -79,7 +79,7 @@ final class JWTCreator
     {
         $jws = JWSFactory::createJWS($payload);
 
-        $jws = $jws->addSignature($signature_key, $signature_protected_headers);
+        $jws = $jws->addSignatureInformation($signature_key, $signature_protected_headers);
         $this->signer->sign($jws);
 
         return $jws->toCompactJSON(0);
@@ -97,7 +97,7 @@ final class JWTCreator
         Assertion::notNull($this->encrypter, 'The encryption support is not enabled');
 
         $jwe = JWEFactory::createJWE($payload, $encryption_protected_headers);
-        $jwe = $jwe->addRecipient($encryption_key);
+        $jwe = $jwe->addRecipientInformation($encryption_key);
         $this->encrypter->encrypt($jwe);
 
         return $jwe->toCompactJSON(0);

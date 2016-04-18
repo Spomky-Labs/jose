@@ -31,7 +31,7 @@ trait HasLogger
     /**
      * @param \Psr\Log\LoggerInterface $logger
      */
-    private function setLogger(LoggerInterface $logger)
+    public function enableLogging(LoggerInterface $logger)
     {
         $this->logger = $logger;
     }

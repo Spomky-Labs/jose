@@ -37,6 +37,37 @@ print_r(json_encode($jwkset)); // {'keys':[{'kty':'oct', 'k':'abcdef...'}]}
 Your key sets may be stored in a json encoded string or are available through an URL.
 You can easily load and create key sets from several sources using the `Jose\Factory\JWKFactory` factory provided with this library.
 
-## Create a Key from a X509 Certificate File
+## Create a Key from values
 
-## Create a Key from a X509 Certificate
+## Create a Key from a JWKSet Url (`jku`)
+
+## Create a Key from a X509 Certificate Url (`x5u`)
+
+# Key Selection
+
+JWKSet object can contain several keys. To easily find a key according to constraint, a method `selectKey` is available.
+
+```php
+// Find a key used to encrypt/decrypt
+$jwk_set->selectKey('enc');
+
+// Find a key used to sign/verify
+$jwk_set->selectKey('sig');
+
+// Find a key used to sign/verify using the algorithm 'RS256'
+$jwk_set->selectKey('sig', 'RS256');
+
+// Find a key used to encrypt/decrypt with kid = '0123456789'
+$jwk_set->selectKey('enc', null, ['kid'=>'0123456789']);
+
+// Find a key used to sign/verify with sha256 thumbprint = '0123456789'
+$jwk_set->selectKey('sig', null, ['x5t#256'=>'0123456789']);
+```
+
+Again, we recommend you to use key/value pairs:
+
+* `kid`: the ID of the key
+* `use`: the usage of the key (`sig` for signature or `enc` for encryption operations)
+* `alg`: the algorithm allowed for this key
+
+The selection of the best key to use will be more efficient.

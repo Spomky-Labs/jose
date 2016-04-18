@@ -128,7 +128,7 @@ class RSA_OAEPAndA256GCMEncryptionTest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = Encrypter::createEncrypter(['RSA-OAEP'], ['A256GCM']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $private_key
         );
 

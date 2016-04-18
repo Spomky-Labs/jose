@@ -37,17 +37,11 @@ final class Verifier implements VerifierInterface
      * Verifier constructor.
      *
      * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
-     * @param \Psr\Log\LoggerInterface|null                          $logger
      */
-    public function __construct(array $signature_algorithms,
-                                LoggerInterface $logger = null
-    ) {
+    public function __construct(array $signature_algorithms)
+    {
         $this->setSignatureAlgorithms($signature_algorithms);
         $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager($signature_algorithms));
-
-        if (null !== $logger) {
-            $this->setLogger($logger);
-        }
     }
 
     /**

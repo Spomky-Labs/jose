@@ -51,7 +51,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.2
          */
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $rsa_private_key,
             [
                 'alg' => 'RS256',
@@ -75,7 +75,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.3
          */
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $ecdsa_private_key,
             [],
             [
@@ -96,7 +96,7 @@ class MultipleSignaturesTest extends \PHPUnit_Framework_TestCase
          * Header
          * @see https://tools.ietf.org/html/rfc7520#section-4.8.4
          */
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $symmetric_key,
             [
                 'alg' => 'HS256',

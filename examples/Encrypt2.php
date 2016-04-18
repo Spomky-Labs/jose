@@ -14,11 +14,12 @@ require_once __DIR__.'/../vendor/autoload.php';
 use Jose\Factory\JWEFactory;
 use Jose\Factory\JWKFactory;
 
-// We create our key object (JWK) using a public EC key stored in a file
+// We create our key object (JWK) using an octet key.
 // Additional parameters ('kid' and 'use') are set for this key.
 $key = JWKFactory::createFromValues([
     'kty' => 'oct',
     'k'   => 'saH0gFSP4XM_tAP_a5rU9ooHbltwLiJpL4LLLnrqQPw',
+    'alg' => 'A256GCM',
 ]);
 
 // We want to encrypt a very important message

@@ -188,8 +188,6 @@ final class JWKFactory
     public static function createFromJKU($jku, $allow_unsecured_connection = false)
     {
         $content = self::downloadContent($jku, $allow_unsecured_connection);
-        $content = json_decode($content, true);
-        Assertion::isArray($content, 'Invalid content.');
         Assertion::keyExists($content, 'keys', 'Invalid content.');
 
         return new JWKSet($content);
@@ -204,8 +202,6 @@ final class JWKFactory
     public static function createFromX5U($x5u, $allow_unsecured_connection = false)
     {
         $content = self::downloadContent($x5u, $allow_unsecured_connection);
-        $content = json_decode($content, true);
-        Assertion::isArray($content, 'Invalid content.');
 
         $jwkset = new JWKSet();
         foreach ($content as $kid => $cert) {
@@ -266,9 +262,13 @@ final class JWKFactory
         $ch = curl_init();
         curl_setopt_array($ch, $params);
         $content = curl_exec($ch);
+        $content_type = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        Assertion::eq(1, preg_match('/^application\/json([\s|;].*)?$/', $content_type), sprintf('Content type is not "application/json". It is "%s".', $content_type));
         curl_close($ch);
 
         Assertion::notEmpty($content, 'Unable to get content.');
+        $content = json_decode($content, true);
+        Assertion::isArray($content, 'Invalid content.');
 
         return $content;
     }

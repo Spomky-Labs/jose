@@ -120,7 +120,7 @@ class ECDH_ES_AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = Encrypter::createEncrypter(['ECDH-ES'], ['A128CBC-HS256']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $public_key
         );
 

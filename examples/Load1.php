@@ -35,11 +35,15 @@ $key = JWKFactory::createFromKeyFile(
 // We load the input and we verify it.
 // RS256 is the only algorithm we allow
 // Now the variable $jws contains a JWSInterface object
+// The last variable will be populated if the verification succeeded by an integer. Else it is let unchanged.
+// This integer represents the index of the verified signature. 0 means that the signature à the index 0 is verified
+// (it occurs very often as most JWS input strings have only one signature).
 $loader = new Loader();
 $jws = $loader->loadAndVerifySignatureUsingKey(
     $input,
     $key,
-    ['RS256']
+    ['RS256'],
+    $signature_index
 );
 
 // Note that if the input contain claims, these claims have to be checked.

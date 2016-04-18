@@ -58,7 +58,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createJWS($payload);
-        $jws = $jws->addSignature($key, $headers);
+        $jws = $jws->addSignatureInformation($key, $headers);
 
         $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);
@@ -120,7 +120,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
-        $jws = $jws->addSignature($key, $headers);
+        $jws = $jws->addSignatureInformation($key, $headers);
 
         $signer = Signer::createSigner(['HS256']);
         $signer->signWithDetachedPayload($jws, $encoded_payload);
@@ -185,7 +185,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createJWS($payload);
-        $jws = $jws->addSignature($key, $protected_headers, $unprotected_headers);
+        $jws = $jws->addSignatureInformation($key, $protected_headers, $unprotected_headers);
 
         $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);
@@ -241,7 +241,7 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createJWS($payload);
-        $jws = $jws->addSignature($key, [], $unprotected_headers);
+        $jws = $jws->addSignatureInformation($key, [], $unprotected_headers);
 
         $signer = Signer::createSigner(['HS256']);
         $signer->sign($jws);

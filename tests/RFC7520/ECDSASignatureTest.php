@@ -59,7 +59,7 @@ class ECDSASignatureTest extends \PHPUnit_Framework_TestCase
         ];
 
         $jws = JWSFactory::createJWS($payload);
-        $jws = $jws->addSignature($private_key, $headers);
+        $jws = $jws->addSignatureInformation($private_key, $headers);
 
         $signer = Signer::createSigner(['ES512']);
         $signer->sign($jws);

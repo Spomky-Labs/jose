@@ -35,7 +35,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
-        $jws = $jws->addSignature($this->getKey1(), []);
+        $jws = $jws->addSignatureInformation($this->getKey1(), []);
 
         $signer->sign($jws);
     }
@@ -49,7 +49,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
-        $jws = $jws->addSignature($this->getKey1(), []);
+        $jws = $jws->addSignatureInformation($this->getKey1(), []);
 
         $signer->sign($jws);
     }
@@ -63,7 +63,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'foo']
         );
@@ -76,11 +76,11 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS($this->getKey3());
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -103,11 +103,11 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -151,11 +151,11 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -203,7 +203,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner([], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey5(),
             ['alg' => 'RS512']
         );
@@ -220,7 +220,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner(['PS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey4(),
             ['alg' => 'PS512']
         );
@@ -233,7 +233,7 @@ class SignerTest extends TestCase
         $signer = Signer::createSigner(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS(['baz', 'ban']);
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
@@ -256,12 +256,12 @@ class SignerTest extends TestCase
         $verifier = Verifier::createVerifier(['HS512', 'RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -291,7 +291,7 @@ class SignerTest extends TestCase
         $verifier = Verifier::createVerifier(['RS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -318,7 +318,7 @@ class SignerTest extends TestCase
         $verifier = Verifier::createVerifier(['HS512'], $this->getLogger());
 
         $jws = JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -381,12 +381,12 @@ class SignerTest extends TestCase
         $verifier = Verifier::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );
@@ -415,12 +415,12 @@ class SignerTest extends TestCase
         $verifier = Verifier::createVerifier(['HS512', 'RS512']);
 
         $jws = JWSFactory::createJWS($this->getKeyset());
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey1(),
             ['alg' => 'HS512'],
             ['foo' => 'bar']
         );
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $this->getKey2(),
             ['alg' => 'RS512']
         );

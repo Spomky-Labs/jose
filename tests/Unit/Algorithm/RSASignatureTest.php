@@ -216,7 +216,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['RS256']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'RS256',
@@ -258,7 +258,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['RS256']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'RS256',
@@ -301,7 +301,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['RS384']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'RS384',
@@ -343,7 +343,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['RS512']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'RS512',
@@ -387,7 +387,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['PS256']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'PS256',
@@ -429,7 +429,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['PS384']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'PS384',
@@ -470,7 +470,7 @@ class RSASignatureTest extends TestCase
 
         $signer = Signer::createSigner(['PS512']);
 
-        $jws = $jws->addSignature(
+        $jws = $jws->addSignatureInformation(
             $key,
             [
                 'alg' => 'PS512',

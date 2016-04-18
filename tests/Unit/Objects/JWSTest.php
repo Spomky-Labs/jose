@@ -48,7 +48,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($claims, $jws->getClaims());
         $this->assertEquals(0, $jws->countSignatures());
 
-        $jws = $jws->addSignature(new JWK(['kty' => 'none']), ['crit' => ['nbf', 'iat', 'exp', 'iss']]);
+        $jws = $jws->addSignatureInformation(new JWK(['kty' => 'none']), ['crit' => ['nbf', 'iat', 'exp', 'iss']]);
         $this->assertEquals(1, $jws->countSignatures());
 
         $checker_manager = CheckerManagerFactory::createClaimCheckerManager();
@@ -146,7 +146,7 @@ class JWSTest extends \PHPUnit_Framework_TestCase
     {
         $jws = JWSFactory::createJWS('Hello');
 
-        $jws = $jws->addSignature(new JWK(['kty' => 'none']), [], ['foo' => 'bar']);
+        $jws = $jws->addSignatureInformation(new JWK(['kty' => 'none']), [], ['foo' => 'bar']);
 
         $jws->toCompactJSON(0);
     }

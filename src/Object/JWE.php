@@ -80,7 +80,7 @@ final class JWE implements JWEInterface
     /**
      * {@inheritdoc}
      */
-    public function addRecipient(JWKInterface $recipient_key, $recipient_headers = [])
+    public function addRecipientInformation(JWKInterface $recipient_key, $recipient_headers = [])
     {
         Assertion::true(null === $this->getCiphertext(), 'The JWE is encrypted. No additional recipient allowed.');
         $jwe = clone $this;

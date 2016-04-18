@@ -111,7 +111,7 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
         $encrypter = Encrypter::createEncrypter(['A128KW'], ['A128GCM']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $private_key
         );
 

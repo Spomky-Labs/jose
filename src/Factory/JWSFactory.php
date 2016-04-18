@@ -122,7 +122,7 @@ final class JWSFactory
     {
         $jws = self::createJWS($payload);
 
-        $jws = $jws->addSignature($signature_key, $protected_headers, $headers);
+        $jws = $jws->addSignatureInformation($signature_key, $protected_headers, $headers);
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
@@ -145,7 +145,7 @@ final class JWSFactory
     {
         $jws = self::createJWSWithDetachedPayload($payload, $encoded_payload);
 
-        $jws = $jws->addSignature($signature_key, $protected_headers, $headers);
+        $jws = $jws->addSignatureInformation($signature_key, $protected_headers, $headers);
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');

@@ -48,7 +48,13 @@ final class Decrypter implements DecrypterInterface
      */
     public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null)
     {
-        return new self($key_encryption_algorithms, $content_encryption_algorithms, $compression_methods, $logger);
+        $decrypter = new self($key_encryption_algorithms, $content_encryption_algorithms, $compression_methods);
+        
+        if (null !== $logger) {
+            $decrypter->enableLogging($logger);
+        }
+        
+        return $decrypter;
     }
 
     /**
@@ -57,13 +63,11 @@ final class Decrypter implements DecrypterInterface
      * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $key_encryption_algorithms
      * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $content_encryption_algorithms
      * @param string[]|\Jose\Compression\CompressionInterface[]              $compression_methods
-     * @param \Psr\Log\LoggerInterface|null                                  $logger
      */
     public function __construct(
         array $key_encryption_algorithms,
         array $content_encryption_algorithms,
-        array $compression_methods,
-        LoggerInterface $logger = null
+        array $compression_methods
     ) {
         $this->setKeyEncryptionAlgorithms($key_encryption_algorithms);
         $this->setContentEncryptionAlgorithms($content_encryption_algorithms);
@@ -73,10 +77,6 @@ final class Decrypter implements DecrypterInterface
             $content_encryption_algorithms
         )));
         $this->setCompressionManager(CompressionManagerFactory::createCompressionManager($compression_methods));
-
-        if (null !== $logger) {
-            $this->setLogger($logger);
-        }
     }
 
     /**

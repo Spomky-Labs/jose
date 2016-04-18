@@ -13,7 +13,6 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Jose\Factory\JWKFactory;
 use Jose\Factory\JWSFactory;
-use Jose\Factory\SignerFactory;
 
 // We create our key object (JWK) using an encrypted RSA key stored in a file
 // Additional parameters ('kid' and 'use') are set for this key.

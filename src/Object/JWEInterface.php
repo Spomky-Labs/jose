@@ -31,7 +31,7 @@ interface JWEInterface extends JWTInterface
      *
      * @return \Jose\Object\JWEInterface
      */
-    public function addRecipient(JWKInterface $recipient_key, $recipient_headers = []);
+    public function addRecipientInformation(JWKInterface $recipient_key, $recipient_headers = []);
 
     /**
      * @param string|null $encrypted_key

@@ -94,7 +94,7 @@ final class JWEFactory
 
         $jwe = self::createJWE($payload, $shared_protected_headers, $shared_headers, $aad);
 
-        $jwe = $jwe->addRecipient($recipient_key, $recipient_headers);
+        $jwe = $jwe->addRecipientInformation($recipient_key, $recipient_headers);
 
         $encrypter->encrypt($jwe);
 

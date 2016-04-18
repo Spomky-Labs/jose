@@ -34,7 +34,7 @@ interface JWSInterface extends JWTInterface
      *
      * @return \Jose\Object\JWSInterface
      */
-    public function addSignature(JWKInterface $signature_key, array $protected_headers, array $headers = []);
+    public function addSignatureInformation(JWKInterface $signature_key, array $protected_headers, array $headers = []);
 
     /**
      * @param string      $signature

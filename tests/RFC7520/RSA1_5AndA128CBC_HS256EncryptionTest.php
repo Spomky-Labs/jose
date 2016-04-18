@@ -126,7 +126,7 @@ class RSA1_5AndA128CBC_HS256EncryptionTest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers);
         $encrypter = Encrypter::createEncrypter(['RSA1_5'], ['A128CBC-HS256']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $private_key
         );
 

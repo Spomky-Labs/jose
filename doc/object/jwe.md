@@ -3,7 +3,7 @@ The JWE object
 
 When you want to encrypt a payload (claims, key, message...), you will need to create a JWE object and add recipients.
 
-A JWE object can be easily create using the `JWEFactory` provided by this library:
+A JWE object can be easily created using the `JWEFactory` provided by this library:
 
 ```php
 use Jose\Factory\JWEFactory;
@@ -18,7 +18,7 @@ $jwe = JWEFactory::createJWE(
     );
 ```
 
-The first parameter is the payload (in this exemple, this is a message).
+The first parameter is the payload (in this example, this is a message).
 The second parameter is the shared protected header. This header indicates the key encryption algorithm ('RSA-OAEP-256'), the content encryption algorithm ('A256CBC-HS512') and that the payload is compressed before encryption using the method 'DEF' (deflate).
 
 The variable `$jwe` now contains an object that implements `Jose\Object\JWEInterface`.
@@ -34,13 +34,9 @@ The methods available are:
 * `getRecipients()`: Return the all recipients
 * `getRecipient($index)`: Return the recipient at the index `$index`
 * `getSharedProtectedHeaders()`: Return the shared protected headers
-* `withSharedProtectedHeaders(array $shared_protected_headers)`: Change the shared protected headers
-* `withSharedProtectedHeader($key, $value)`: Change the shared protected header at index `$index` with value `$value`
 * `getSharedProtectedHeader($key)`: Return the shared protected header at index `$index`
 * `hasSharedProtectedHeader($key)`: Return true if the shared protected header at index `$index` exists, else false
 * `getSharedHeaders()`: Return the shared headers
-* `withSharedHeaders(array $shared_headers)`: Change the shared headers
-* `withSharedHeader($key, $value)`: Change the shared header at index `$index` with value `$value`
 * `getSharedHeader($key)`: Return the shared header at index `$index`
 * `hasSharedHeader($key)`: Return true if the shared header at index `$index` exists, else false
 * `toCompactJSON($index)`: Return the compact JSON representation of the signature at index $index.

@@ -204,15 +204,15 @@ class MultipleRecipientEncryptionTest extends \PHPUnit_Framework_TestCase
         $jwe = JWEFactory::createJWE($expected_payload, $protected_headers, $headers);
         $encrypter = Encrypter::createEncrypter(['RSA1_5', 'ECDH-ES+A256KW', 'A256GCMKW'], ['A128CBC-HS256']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $recipient_1_private_key,
             $recipient_1_headers
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $recipient_2_public_key,
             $recipient_2_headers
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $recipient_3_private_key,
             $recipient_3_headers
         );

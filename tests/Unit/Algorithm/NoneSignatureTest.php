@@ -62,7 +62,7 @@ class NoneSignatureTest extends TestCase
         ]);
 
         $jws = \Jose\Factory\JWSFactory::createJWS('Live long and Prosper.');
-        $jws = $jws->addSignature($jwk, ['alg' => 'none']);
+        $jws = $jws->addSignatureInformation($jwk, ['alg' => 'none']);
 
         $signer = Signer::createSigner(['none']);
         $signer->sign($jws);

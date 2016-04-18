@@ -44,7 +44,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $jwe->addRecipient($this->getRSARecipientKey());
+        $jwe = $jwe->addRecipientInformation($this->getRSARecipientKey());
 
         $encrypter->encrypt($jwe);
 
@@ -147,7 +147,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $jwe->addRecipient($this->getRSARecipientKey());
+        $jwe = $jwe->addRecipientInformation($this->getRSARecipientKey());
 
         $encrypter->encrypt($jwe);
 
@@ -188,7 +188,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $jwe->addRecipient($this->getRSARecipientKey());
+        $jwe = $jwe->addRecipientInformation($this->getRSARecipientKey());
 
         $encrypter->encrypt($jwe);
     }
@@ -202,8 +202,8 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $jwe->addRecipient($this->getRSARecipientKeyWithAlgorithm(), ['alg' => 'RSA-OAEP']);
-        $jwe = $jwe->addRecipient($this->getRSARecipientKey(), ['alg' => 'RSA-OAEP-256']);
+        $jwe = $jwe->addRecipientInformation($this->getRSARecipientKeyWithAlgorithm(), ['alg' => 'RSA-OAEP']);
+        $jwe = $jwe->addRecipientInformation($this->getRSARecipientKey(), ['alg' => 'RSA-OAEP-256']);
 
         $encrypter->encrypt($jwe);
 
@@ -219,11 +219,11 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey(),
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );
@@ -246,11 +246,11 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getDirectKey(),
             ['kid' => 'DIR_1', 'alg' => 'dir']
         );
@@ -276,7 +276,7 @@ class EncrypterTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getSigningKey()
         );
 
@@ -301,7 +301,7 @@ class EncrypterTest extends TestCase
             [],
             'foo,bar,baz'
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKeyWithAlgorithm()
         );
 
@@ -320,7 +320,7 @@ class EncrypterTest extends TestCase
             'alg' => 'RSA-OAEP-256',
             'zip' => 'DEF',
         ]);
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey()
         );
 
@@ -358,7 +358,7 @@ class EncrypterTest extends TestCase
             'enc' => 'A256CBC-HS512',
             'zip' => 'DEF',
         ]);
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey()
         );
 
@@ -379,7 +379,7 @@ class EncrypterTest extends TestCase
             'alg' => 'RSA-OAEP-256',
             'zip' => 'DEF',
         ]);
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey()
         );
 
@@ -401,7 +401,7 @@ class EncrypterTest extends TestCase
             'alg' => 'A256CBC-HS512',
             'zip' => 'DEF',
         ]);
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey()
         );
 
@@ -424,7 +424,7 @@ class EncrypterTest extends TestCase
             'zip' => 'DEF',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey()
         );
 
@@ -443,7 +443,7 @@ class EncrypterTest extends TestCase
             'alg' => 'dir',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getDirectKey()
         );
         $encrypter->encrypt($jwe);
@@ -478,7 +478,7 @@ class EncrypterTest extends TestCase
             'alg' => 'ECDH-ES',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey()
         );
 
@@ -513,7 +513,7 @@ class EncrypterTest extends TestCase
             'alg' => 'ECDH-ES+A256KW',
         ]);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey()
         );
 
@@ -551,7 +551,7 @@ class EncrypterTest extends TestCase
             'foo,bar,baz'
         );
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey()
         );
 
@@ -584,11 +584,11 @@ class EncrypterTest extends TestCase
         $jwe = JWEFactory::createJWE('Live long and Prosper.');
         $jwe = $jwe->withSharedProtectedHeaders(['enc' => 'A256CBC-HS512']);
 
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getECDHRecipientPublicKey(),
             ['kid' => 'e9bc097a-ce51-4036-9562-d2ade882db0d', 'alg' => 'ECDH-ES+A256KW']
         );
-        $jwe = $jwe->addRecipient(
+        $jwe = $jwe->addRecipientInformation(
             $this->getRSARecipientKey(),
             ['kid' => '123456789', 'alg' => 'RSA-OAEP-256']
         );

@@ -4,12 +4,12 @@ The JWK object
 # Overview
 
 The JWK object represents a key. Depending on the key properties, it can be used to sign, verify a signature, encrypt or decrypt.
-This object implements the interface `Jose\Object\JWKInterface` and provides the following methods:
-* `get($name)`: get the value at key `$name`
+This object must implement the interface `Jose\Object\JWKInterface` and must provide the following methods:
+* `get($name)`: get the value at key `$name`. Throws an exception if the key does not exist.
 * `has($name)`: return true if the key has a key/value pair `$name`
 * `getAll()`: get all key/value pairs
 * `thumbprint($algorithm)`: returns the thumbprint of the key using the hash algorithm `$algorithm`
-* `toPublic()`: if the key is private, this method returns the public key.
+* `toPublic()`: if the key is private (RSA or EC private key), this method returns the public key.
 
 Note that a JWK object
 * is serializable: You can call `json_encode($jwk)` to display the key set as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
@@ -38,6 +38,7 @@ Values depend on the key type. [Read this page](../Keys.md) to know which key ty
 
 ## None key (`none`)
 
+The value `kty` is mandatory.
 ```php
 $jwk = new JWK([
     'kty' => 'none',
@@ -46,14 +47,6 @@ $jwk = new JWK([
 
 ## Asymmetric key (`oct`)
 
-```php
-$jwk = new JWK([
-    'kty' => 'oct',
-    'k'   => 'abcdef',
-]);
-```
-
-The value of `k` is your binary key encoded in base 64 url safe. This value is mandatory.
 
 ```php
 use Base64Url\Base64Url;
@@ -64,12 +57,14 @@ $jwk = new JWK([
 ]);
 ```
 
+The value of `k` is your binary key encoded in base 64 url safe. This value is mandatory.
+
 ## Symmetric key
 
 ### RSA key
 
 `RSA` public and private keys are very similar. The difference is that a public key only contains `n` (modulus) and `e` (exponent) values.
-The values `n` and `e` are mandatory.
+The values `kty`, `n` and `e` are mandatory.
 The key is considered as private when it contains a `d` value.
 
 ```php
@@ -96,10 +91,12 @@ $jwk = new JWK([
 $public_key = $jwk->toPublic();
 ```
 
+The values of `n`, `e`, `d`, `dp`, `dq` and `qi` are encoded in base 64 url safe.
+
 ### ECC key
 
 As `RSA` keys, `EC` public and private keys are very similar. The difference is that a public key only contains `x` and `y` (coordinates) values.
-The values `x` and `y` are mandatory.
+The values `kty`, x` and `y` are mandatory.
 A private key contains a `d` value.
 
 ```php
@@ -124,6 +121,37 @@ $jwk = new JWK([
 
 $public_key = $jwk->toPublic();
 ```
+
+The values of `x`, `y` and `d` are encoded in base 64 url safe.
+
+## Octet key pair (`OKP`)
+
+This kind of key is used by the:
+- signature algorithms Ed25519 and Ed448
+- encryption algorithms X25519 nd X448
+
+At the moment, only algorithm Ed25519 is supported.
+
+A private key contains a `d` value.
+
+```php
+// A private OKP key
+$public = new JWK([
+   'kty' => 'OKP',
+   'crv' => 'Ed25519',
+   'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+]);
+
+// A private OKP key
+$private = new JWK([
+   'kty' => 'OKP',
+   'crv' => 'Ed25519',
+   'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
+   'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
+]);
+```
+
+The values of `x` and `d` are encoded in base 64 url safe.
 
 ## Other Key/Value Pairs
 
