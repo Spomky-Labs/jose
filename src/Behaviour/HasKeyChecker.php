@@ -51,15 +51,19 @@ trait HasKeyChecker
         switch ($usage) {
             case 'verification':
                 Assertion::inArray('verify', $ops, 'Key cannot be used to verify a signature');
+
                 return true;
             case 'signature':
                 Assertion::inArray('sign', $ops, 'Key cannot be used to sign');
+
                 return true;
             case 'encryption':
                 Assertion::true(in_array('encrypt', $ops) || in_array('wrapKey', $ops), 'Key cannot be used to encrypt');
+
                 return true;
             case 'decryption':
                 Assertion::true(in_array('decrypt', $ops) || in_array('unwrapKey', $ops), 'Key cannot be used to decrypt');
+
                 return true;
             default:
                 throw new \InvalidArgumentException('Unsupported key usage.');
@@ -79,10 +83,12 @@ trait HasKeyChecker
             case 'verification':
             case 'signature':
                 Assertion::eq('sig', $use, 'Key cannot be used to sign or verify a signature');
+
                 return true;
             case 'encryption':
             case 'decryption':
                 Assertion::eq('enc', $use, 'Key cannot be used to encrypt or decrypt');
+
                 return true;
             default:
                 throw new \InvalidArgumentException('Unsupported key usage.');

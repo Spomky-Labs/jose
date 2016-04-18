@@ -22,7 +22,7 @@ use Psr\Log\LoggerInterface;
 interface VerifierInterface
 {
     /**
-    /**
+     /**
      * Signer constructor.
      *
      * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
@@ -36,7 +36,7 @@ interface VerifierInterface
      * @return string[]
      */
     public function getSupportedSignatureAlgorithms();
-    
+
     /**
      * Verify the signature of the input.
      * The input must be a valid JWS. This method is usually called after the "load" method.

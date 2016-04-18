@@ -72,7 +72,7 @@ class A128KWAndA128GCMEncryptionProtectedContentOnlyTest extends \PHPUnit_Framew
         $this->assertEquals($expected_encrypted_key, Base64Url::encode($loaded_flattened_json->getRecipient(0)->getEncryptedKey()));
         $this->assertEquals($headers, $loaded_flattened_json->getSharedHeaders());
         $this->assertEquals($expected_tag, Base64Url::encode($loaded_flattened_json->getTag()));
-        
+
         $this->assertEquals($expected_ciphertext, Base64Url::encode($loaded_json->getCiphertext()));
         $this->assertEquals($protected_headers, $loaded_json->getSharedProtectedHeaders());
         $this->assertEquals($expected_iv, Base64Url::encode($loaded_json->getIV()));

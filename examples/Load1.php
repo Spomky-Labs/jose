@@ -49,7 +49,7 @@ $jws = $loader->loadAndVerifySignatureUsingKey(
 // Note that if the input contain claims, these claims have to be checked.
 // We create a Claim Checker Manager and we want to check the claims 'exp', 'iat' and 'nbf'.
 // We also want to check if the protected header 'crit' is present.
-// 
+//
 $checker = CheckerManagerFactory::createClaimCheckerManager(
     ['iat', 'nbf'], // We should enable 'exp', but this example will fail as the token has already expired
     ['crit']

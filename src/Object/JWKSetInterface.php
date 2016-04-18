@@ -19,7 +19,7 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable, \Arr
      * @return \Jose\Object\JWKInterface
      */
     public function getKey($index);
-    
+
     /**
      * @param $index
      *
@@ -52,7 +52,7 @@ interface JWKSetInterface extends \Countable, \Iterator, \JsonSerializable, \Arr
      * @return int
      */
     public function countKeys();
-    
+
     /**
      * @param string      $type         Must be 'sig' (signature) or 'enc' (encryption)
      * @param string|null $algorithm    Specifies the algorithm to be used

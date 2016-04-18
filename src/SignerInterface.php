@@ -20,16 +20,16 @@ use Psr\Log\LoggerInterface;
 interface SignerInterface
 {
     /**
-    /**
+     /**
      * Signer constructor.
      *
      * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
      * @param \Psr\Log\LoggerInterface|null                          $logger
-     * 
+     *
      * @return \Jose\SignerInterface
      */
     public static function createSigner(array $signature_algorithms, LoggerInterface $logger = null);
-    
+
     /**
      * @return string[]
      */

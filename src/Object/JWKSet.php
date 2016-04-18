@@ -144,6 +144,7 @@ final class JWKSet implements JWKSetInterface
     {
         return count($this->keys);
     }
+
     /**
      * {@inheritdoc}
      */
@@ -187,26 +188,26 @@ final class JWKSet implements JWKSetInterface
         $result = [];
         foreach ($this->keys as $key) {
             $ind = 0;
-            
+
             // Check usage
             $can_use = $this->canKeyBeUsedFor($type, $key);
             if (false === $can_use) {
                 continue;
             }
             $ind += $can_use;
-            
+
             // Check algorithm
             $alg = $this->canKeyBeUsedWithAlgorithm($algorithm, $key);
             if (false === $alg) {
                 continue;
             }
             $ind += $alg;
-            
+
             // Validate restrictions
             if (false === $this->doesKeySatisfyRestrictions($restrictions, $key)) {
                 continue;
             }
-            
+
             // Add to the list with trust indicator
             $result[] = ['key' => $key, 'ind' => $ind];
         }
@@ -236,7 +237,7 @@ final class JWKSet implements JWKSetInterface
         if ($key->has('key_ops')) {
             return $type === self::convertKeyOpsToKeyUse($key->get('use')) ? 1 : false;
         }
-        
+
         return 0;
     }
 
@@ -254,7 +255,7 @@ final class JWKSet implements JWKSetInterface
         if ($key->has('alg')) {
             return $algorithm === $key->get('alg') ? 1 : false;
         }
-        
+
         return 0;
     }
 
@@ -266,18 +267,18 @@ final class JWKSet implements JWKSetInterface
      */
     private function doesKeySatisfyRestrictions(array $restrictions, JWKInterface $key)
     {
-        foreach ($restrictions as $k=>$v) {
+        foreach ($restrictions as $k => $v) {
             if (!$key->has($k) || $v !== $key->get($k)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
      * @param string $key_ops
-     * 
+     *
      * @return string
      */
     private static function convertKeyOpsToKeyUse($key_ops)
@@ -307,6 +308,7 @@ final class JWKSet implements JWKSetInterface
         if ($a['ind'] === $b['ind']) {
             return 0;
         }
+
         return ($a['ind'] > $b['ind']) ? -1 : 1;
     }
 }

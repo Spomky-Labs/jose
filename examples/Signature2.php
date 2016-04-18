@@ -34,7 +34,6 @@ $jws = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON(
     ]
 );
 
-
 // Now the variable $jws contains a our message signed with the private key.
 // The payload is not part of the output. It is stored in the variable $detached_payload (base 64 url safe encoded): TGl2ZSBsb25nIGFuZCBwcm9zcGVyLg
 // Please read example Load2.php to know how to load these strings and to verify the signature

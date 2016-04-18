@@ -49,7 +49,7 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt($jwe);
 
         $encrypted = $jwe->toFlattenedJSON(0);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($encrypted);
 
@@ -76,7 +76,7 @@ class EncrypterTest extends TestCase
                 'zip' => 'DEF',
             ]
         );
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe);
 
@@ -111,7 +111,7 @@ class EncrypterTest extends TestCase
             ],
             'A,B,C,D'
         );
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe);
 
@@ -152,7 +152,7 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt($jwe);
 
         $encrypted = $jwe->toFlattenedJSON(0);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($encrypted);
 
@@ -327,7 +327,7 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt($jwe);
 
         $encrypted = $jwe->toCompactJSON(0);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($encrypted);
 
@@ -449,7 +449,7 @@ class EncrypterTest extends TestCase
         $encrypter->encrypt($jwe);
 
         $encrypted = $jwe->toFlattenedJSON(0);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($encrypted);
 
@@ -483,7 +483,7 @@ class EncrypterTest extends TestCase
         );
 
         $encrypter->encrypt($jwe);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe->toFlattenedJSON(0));
 
@@ -518,7 +518,7 @@ class EncrypterTest extends TestCase
         );
 
         $encrypter->encrypt($jwe);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe->toFlattenedJSON(0));
 
@@ -556,7 +556,7 @@ class EncrypterTest extends TestCase
         );
 
         $encrypter->encrypt($jwe);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe->toFlattenedJSON(0));
 
@@ -594,7 +594,7 @@ class EncrypterTest extends TestCase
         );
 
         $encrypter->encrypt($jwe);
-        
+
         $loader = new Loader(new FakeLogger());
         $loaded = $loader->load($jwe->toJSON());
 

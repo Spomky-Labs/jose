@@ -49,11 +49,11 @@ final class Decrypter implements DecrypterInterface
     public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null)
     {
         $decrypter = new self($key_encryption_algorithms, $content_encryption_algorithms, $compression_methods);
-        
+
         if (null !== $logger) {
             $decrypter->enableLogging($logger);
         }
-        
+
         return $decrypter;
     }
 
@@ -147,7 +147,7 @@ final class Decrypter implements DecrypterInterface
                 if (null !== $cek) {
                     if (true === $this->decryptPayload($jwe, $cek, $content_encryption_algorithm, $complete_headers)) {
                         return $i;
-                    };
+                    }
                 }
             } catch (\Exception $e) {
                 //We do nothing, we continue with other keys

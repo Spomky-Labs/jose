@@ -19,7 +19,7 @@ trait CommonSigningMethods
      * @var string[]
      */
     private $signature_algorithms;
-    
+
     /**
      * {@inheritdoc}
      */

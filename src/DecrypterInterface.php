@@ -30,22 +30,22 @@ interface DecrypterInterface
      * @return \Jose\DecrypterInterface
      */
     public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null);
-    
+
     /**
      * @return string[]
      */
     public function getSupportedKeyEncryptionAlgorithms();
-    
+
     /**
      * @return string[]
      */
     public function getSupportedContentEncryptionAlgorithms();
-    
+
     /**
      * @return string[]
      */
     public function getSupportedCompressionMethods();
-    
+
     /**
      * @param \Jose\Object\JWEInterface $input           A JWE object to decrypt
      * @param \Jose\Object\JWKInterface $jwk             The key used to decrypt the input

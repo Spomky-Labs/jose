@@ -9,16 +9,11 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\JWSFactory;
-use Jose\Signer;
-use Jose\Verifier;
-use Jose\Loader;
-use Jose\Object\JWK;
-use Jose\Object\JWKSet;
-use Jose\Object\JWSInterface;
-use Jose\Test\TestCase;
 use Jose\Factory\JWTCreator;
 use Jose\Factory\JWTLoader;
+use Jose\Object\JWK;
+use Jose\Object\JWKSet;
+use Jose\Test\TestCase;
 
 /**
  * @group JWTLoader
@@ -68,8 +63,8 @@ class LoaderAndCreatorTest extends TestCase
                 [
                     'kty' => 'oct',
                     'k'   => 'hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg',
-                ]
-            ]
+                ],
+            ],
         ]);
         $loaded_jwe = $jwt_loader->load(
             $jwe,

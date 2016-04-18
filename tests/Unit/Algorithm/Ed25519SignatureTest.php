@@ -12,11 +12,11 @@
 use Base64Url\Base64Url;
 use Jose\Algorithm\Signature\Ed25519;
 use Jose\Factory\JWSFactory;
-use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWSInterface;
 use Jose\Test\TestCase;
+use Jose\Verifier;
 
 /**
  * Class Ed25519SignatureTest.

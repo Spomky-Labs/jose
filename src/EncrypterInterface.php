@@ -43,7 +43,7 @@ interface EncrypterInterface
      * @return string[]
      */
     public function getSupportedCompressionMethods();
-    
+
     /**
      * @param \Jose\Object\JWEInterface $jwe
      */

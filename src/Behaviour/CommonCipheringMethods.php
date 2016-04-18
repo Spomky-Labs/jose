@@ -31,7 +31,7 @@ trait CommonCipheringMethods
      * @var string[]
      */
     private $compression_methods;
-    
+
     /**
      * {@inheritdoc}
      */
