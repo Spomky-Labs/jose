@@ -49,7 +49,12 @@ final class Verifier implements VerifierInterface
      */
     public static function createVerifier(array $signature_algorithms, LoggerInterface $logger = null)
     {
-        return new self($signature_algorithms, $logger);
+        $verifier = new self($signature_algorithms);
+        if (null !== $logger) {
+            $verifier->enableLogging($logger);
+        }
+
+        return $verifier;
     }
 
     /**

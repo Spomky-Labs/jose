@@ -236,7 +236,7 @@ final class JWKFactory
      *
      * @throws \InvalidArgumentException
      *
-     * @return string
+     * @return array
      */
     private static function downloadContent($url, $allow_unsecured_connection)
     {

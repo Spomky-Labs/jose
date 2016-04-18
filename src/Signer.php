@@ -49,7 +49,12 @@ final class Signer implements SignerInterface
      */
     public static function createSigner(array $signature_algorithms, LoggerInterface $logger = null)
     {
-        return new self($signature_algorithms, $logger);
+        $signer = new self($signature_algorithms);
+        if (null !== $logger) {
+            $signer->enableLogging($logger);
+        }
+        
+        return $signer;
     }
 
     /**

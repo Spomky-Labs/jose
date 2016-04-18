@@ -61,7 +61,10 @@ final class JWTLoader
         
         $this->checker_manager = $checker_manager;
         $this->logger = $logger;
-        $this->loader = new Loader($logger);
+        $this->loader = new Loader();
+        if (null !== $logger) {
+            $this->loader->enableLogging($logger);
+        }
         $this->verifier = Verifier::createVerifier($supported_signature_algorithms, $logger);
     }
 

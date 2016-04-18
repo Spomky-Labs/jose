@@ -93,6 +93,6 @@ And a compatibility table between Key Management Modes:
 |---------------------------------|----------------|--------------|----------------------|---------------------------------|-------------------|
 | Key Encryption                  |     YES        |     YES      |        NO            |            YES                  |       NO          |
 | Key Wrapping                    |     YES        |     YES      |        NO            |            YES                  |       NO          |
-| Direct Key Agreement            |     NO         |     NO       |        YES           |            NO                   |       NO          |
-| Key Agreement with Key Wrapping |     YES        |     YES      |        NO            |            YES                  |       NO          |
-| Direct Encryption               |     NO         |     NO       |        NO            |            NO                   |       YES         |
+| Direct Key Agreement            |     NO         |     NO       |        NO            |            NO                   |       NO          |
+| Key Agreement with Key Wrapping |     YES        |     YES      |        NO            |            NO                   |       NO          |
+| Direct Encryption               |     NO         |     NO       |        NO            |            NO                   |       NO          |
