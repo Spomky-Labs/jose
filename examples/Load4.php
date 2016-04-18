@@ -27,7 +27,6 @@ $key = JWKFactory::createFromValues([
 //The JWE
 $input = 'eyJhbGciOiJkaXIiLCJlbmMiOiJBMjU2R0NNIiwiemlwIjoiREVGIn0..QwM0qVoagkgHEoMC.RmuWAHKe69RxZJEE4zibnWeAeX8Ib_o.K2F65di0R7F_jOu9hdrsBQ';
 
-
 /******************/
 /*    LET'S GO!   */
 /******************/

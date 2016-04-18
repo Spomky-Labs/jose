@@ -53,7 +53,7 @@ final class Signer implements SignerInterface
         if (null !== $logger) {
             $signer->enableLogging($logger);
         }
-        
+
         return $signer;
     }
 
@@ -64,7 +64,7 @@ final class Signer implements SignerInterface
     {
         $this->log(LogLevel::INFO, 'Trying to sign the JWS object with detached payload', ['jws' => $jws, 'payload' => $detached_payload]);
         $nb_signatures = $jws->countSignatures();
-        
+
         for ($i = 0; $i < $nb_signatures; $i++) {
             $this->computeSignature($detached_payload, $jws->getSignature($i));
         }
@@ -96,6 +96,7 @@ final class Signer implements SignerInterface
         $this->log(LogLevel::DEBUG, 'Creation of the signature');
         if (null === $signature->getSignatureKey()) {
             $this->log(LogLevel::DEBUG, 'The signature key is not set. Aborting.');
+
             return;
         }
         $this->checkKeyUsage($signature->getSignatureKey(), 'signature');

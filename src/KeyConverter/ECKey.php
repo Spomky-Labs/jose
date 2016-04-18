@@ -96,9 +96,6 @@ final class ECKey extends Sequence
         }
     }
 
-    /**
-     *
-     */
     private function initPublicKey()
     {
         $oid_sequence = new Sequence();

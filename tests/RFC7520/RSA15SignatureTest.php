@@ -12,10 +12,10 @@
 namespace Jose\Test\RFC7520;
 
 use Jose\Factory\JWSFactory;
-use Jose\Signer;
-use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
+use Jose\Signer;
+use Jose\Verifier;
 
 /**
  * @see https://tools.ietf.org/html/rfc7520#section-4.1

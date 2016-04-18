@@ -13,11 +13,11 @@ namespace Jose;
 
 use Assert\Assertion;
 use Jose\Behaviour\HasLogger;
+use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Jose\Object\JWEInterface;
 use Jose\Util\JWELoader;
 use Jose\Util\JWSLoader;
 use Psr\Log\LoggerInterface;
@@ -49,7 +49,7 @@ final class Loader implements LoaderInterface
     {
         return $this->loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $recipient_index, $logger);
     }
-    
+
     /**
      * {@inheritdoc}
      */
@@ -139,10 +139,12 @@ final class Loader implements LoaderInterface
         $json = $this->convert($input);
         if (array_key_exists('signatures', $json)) {
             $this->log(LogLevel::DEBUG, 'The input is a JWS.', ['json' => $json]);
+
             return JWSLoader::loadSerializedJsonJWS($json);
         }
         if (array_key_exists('recipients', $json)) {
             $this->log(LogLevel::DEBUG, 'The input is a JWE.', ['json' => $json]);
+
             return JWELoader::loadSerializedJsonJWE($json);
         }
     }
@@ -157,16 +159,20 @@ final class Loader implements LoaderInterface
         if (is_array($data = json_decode($input, true))) {
             if (array_key_exists('signatures', $data) || array_key_exists('recipients', $data)) {
                 $this->log(LogLevel::DEBUG, 'The input seems to be a JWS or a JWE.');
+
                 return $data;
             } elseif (array_key_exists('signature', $data)) {
                 $this->log(LogLevel::DEBUG, 'The input seems to be a flattened JWS.');
+
                 return $this->fromFlattenedSerializationSignatureToSerialization($data);
             } elseif (array_key_exists('ciphertext', $data)) {
                 $this->log(LogLevel::DEBUG, 'The input seems to be a flattened JWE.');
+
                 return $this->fromFlattenedSerializationRecipientToSerialization($data);
             }
         } elseif (is_string($input)) {
             $this->log(LogLevel::DEBUG, 'The input may be a compact JWS or JWE.');
+
             return $this->fromCompactSerializationToSerialization($input);
         }
         $this->log(LogLevel::ERROR, 'The input is not supported');
@@ -197,7 +203,7 @@ final class Loader implements LoaderInterface
         }
 
         $this->log(LogLevel::INFO, 'JWE in Flattened JSON Serialization mode loaded.');
-        
+
         return $recipients;
     }
 
@@ -224,7 +230,7 @@ final class Loader implements LoaderInterface
         $temp['signatures'] = [$signature];
 
         $this->log(LogLevel::INFO, 'JWS in Flattened JSON Serialization mode loaded.');
-        
+
         return $temp;
     }
 
@@ -239,11 +245,11 @@ final class Loader implements LoaderInterface
         switch (count($parts)) {
             case 3:
                 $this->log(LogLevel::DEBUG, 'The input seems to be a compact JWS.');
-                
+
                 return $this->fromCompactSerializationSignatureToSerialization($parts);
             case 5:
                 $this->log(LogLevel::DEBUG, 'The input seems to be a compact JWE.');
-                
+
                 return $this->fromCompactSerializationRecipientToSerialization($parts);
             default:
                 throw new \InvalidArgumentException('Unsupported input');
@@ -270,7 +276,7 @@ final class Loader implements LoaderInterface
                 $recipients[$key] = $parts[$part];
             }
         }
-        
+
         $this->log(LogLevel::INFO, 'JWE in Compact JSON Serialization mode loaded.');
 
         return $recipients;
@@ -294,7 +300,7 @@ final class Loader implements LoaderInterface
         ]];
 
         $this->log(LogLevel::INFO, 'JWS in Compact JSON Serialization mode loaded.');
-        
+
         return $temp;
     }
 }

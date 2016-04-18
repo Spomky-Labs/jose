@@ -58,7 +58,7 @@ final class JWTLoader
     public function __construct(CheckerManagerInterface $checker_manager, array $supported_signature_algorithms, LoggerInterface $logger = null)
     {
         Assertion::notEmpty($supported_signature_algorithms, 'At least one signature algorithm must be set.');
-        
+
         $this->checker_manager = $checker_manager;
         $this->logger = $logger;
         $this->loader = new Loader();

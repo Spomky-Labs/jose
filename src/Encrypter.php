@@ -40,7 +40,7 @@ final class Encrypter implements EncrypterInterface
     use HasCompressionManager;
     use HasLogger;
     use CommonCipheringMethods;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -51,7 +51,7 @@ final class Encrypter implements EncrypterInterface
         if (null !== $logger) {
             $encrypter->enableLogging($logger);
         }
-        
+
         return $encrypter;
     }
 
@@ -164,6 +164,7 @@ final class Encrypter implements EncrypterInterface
     ) {
         if (null === $recipient->getRecipientKey()) {
             $this->log(LogLevel::WARNING, 'The recipient key is not set. Aborting.');
+
             return;
         }
         $complete_headers = array_merge(
@@ -257,7 +258,7 @@ final class Encrypter implements EncrypterInterface
     {
         $mode = null;
         $recipients = $jwe->getRecipients();
-        
+
         foreach ($recipients as $recipient) {
             $complete_headers = array_merge(
                 $jwe->getSharedProtectedHeaders(),

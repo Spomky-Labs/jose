@@ -10,10 +10,10 @@
  */
 
 use Jose\Algorithm\Signature\None;
-use Jose\Signer;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWSInterface;
+use Jose\Signer;
 use Jose\Test\TestCase;
 
 /**

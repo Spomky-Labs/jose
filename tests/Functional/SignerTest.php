@@ -10,15 +10,13 @@
  */
 
 use Jose\Factory\JWSFactory;
-use Jose\Signer;
-use Jose\Verifier;
 use Jose\Loader;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Jose\Object\JWSInterface;
+use Jose\Signer;
 use Jose\Test\TestCase;
-use Jose\Factory\JWTCreator;
-use Jose\Factory\JWTLoader;
+use Jose\Verifier;
 
 /**
  * @group Signer

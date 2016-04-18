@@ -23,7 +23,7 @@ $key = JWKFactory::createFromValues([
 ]);
 
 // We want to encrypt a very important message
-// 
+//
 $jwe = JWEFactory::createJWEToCompactJSON(
     '8:00PM, train station',
     $key,

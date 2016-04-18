@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Object\JWK;
 use Jose\Factory\JWSFactory;
+use Jose\Object\JWK;
 use Jose\Test\TestCase;
 
 /**
@@ -31,7 +31,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'alg' => 'HS512',
             ]
@@ -53,7 +53,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'alg' => 'HS512',
             ]
@@ -76,7 +76,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'alg' => 'HS512',
             ]
@@ -100,7 +100,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'alg' => 'HS512',
             ]
@@ -123,7 +123,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -150,7 +150,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -178,7 +178,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -208,7 +208,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -234,7 +234,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -261,7 +261,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',
@@ -280,7 +280,7 @@ class CheckerManagerTest extends TestCase
             ]
         );
         $jws = $jws->addSignatureInformation(
-            new JWK(['kty'=>'none']),
+            new JWK(['kty' => 'none']),
             [
                 'enc'  => 'A256CBC-HS512',
                 'alg'  => 'HS512',

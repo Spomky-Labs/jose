@@ -18,14 +18,14 @@ use Jose\Algorithm\Signature\RS384;
 use Jose\Algorithm\Signature\RS512;
 use Jose\Decrypter;
 use Jose\Factory\JWSFactory;
-use Jose\Signer;
-use Jose\Verifier;
 use Jose\KeyConverter\KeyConverter;
 use Jose\Loader;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWSInterface;
+use Jose\Signer;
 use Jose\Test\TestCase;
+use Jose\Verifier;
 
 /**
  * Class RSASignatureTest.
