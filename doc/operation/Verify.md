@@ -1,7 +1,7 @@
 Verify JWS Signatures
 =====================
 
-This library provides a `Loader` object able to verify load and verify signatures of a JWS.
+This library provides a `Loader` object able to load and verify signatures of a JWS.
 If the JWS contains claims, **these claims are not verified by this loader. This step is done by the [Checker](Check.md)**.
 
 # The Most Common Way

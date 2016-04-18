@@ -58,12 +58,109 @@ The methods to use are `createJWEToFlattenedJSON` but also allow you to define u
 
 ## Multiple Recipients
 
-*To be completed*
+Compact and Flattened JWE allow only one recipient. You may need to produce JWE with multiple recipients.
 
-With this library, you can create encrypt an input using multiple recipients.
-In this case, the Key Management Mode is determined according to the used algorithms.
+```php
+use Jose\Factory\JWKFactory;
+use Jose\Factory\JWEFactory;
 
-You cannot create multiple recipients if the Key Management Mode are not compatible.
+// We load the key of the recipient #1. It will be used to encrypt with the algorithm RSA-OAEP-256
+$key1 = JWKFactory::createFromKeyFile(
+    '/Path/To/My/RSA/recipient#1.public.key',
+    null,
+    [
+        'kid' => 'Recipient #1 Public RSA key',
+        'use' => 'enc',
+        'alg' => 'RSA-OAEP-256',
+    ]
+);
+
+// We load the second key to sign using algorithm A256GCMKW
+$key1 = JWKFactory::createFromValues(
+    [
+        'kty' => 'oct',
+        'kid' => 'Recipient #2 Shared key',
+        'use' => 'enc',
+        'alg' => 'A256GCMKW',
+        'k'   => 'qC57l_uxcm7Nm3K-ct4GFjx8tM1U8CZ0NLBvdQstiS8',
+    ]
+);
+
+// We want to encrypt the following massage
+$message = 'Today, 8:00PM, train station.'
+
+// We have to create a JWE class using the JWEFactory.
+// The payload of this object contains our message.
+$jwe = JWEFactory::createJWE(
+    $message,                     // The payload
+    [                             // The shared protected header
+        'enc' => 'A128CBC-HS256', // We encrypt the payload using the content encryption algorithm A128CBC-HS256
+        'zip' => 'DEF',           // We want to compress the payload before encryption (not mandatory, but useful for a large payload
+    ],
+    [                             // The shared unprotected header
+        'other' => 'This is an unprotected payload for all recipients',
+    ]
+);
+
+// We add information to create the first recipient 
+$jwe = $jwe->addRecipientInformation(
+    key1,                        // The recipient #1 key
+    [                            // The recipient #1 unprotected header
+        'alg' => 'RSA-OAEP-256',
+    ]
+);
+
+// Then the information for the second signature
+$jwe = $jwe->addRecipientInformation(
+    key2,                        // The recipient #2 key
+    [                            // The recipient #2 unprotected header
+        'alg' => 'A256GCMKW',
+    ]
+);
+```
+
+Now, the variable `$jwe` contains an object that implements `Jose\Object\JWEInterface` and contain information to encrypt the payload and the content encryption key for all recipients.
+It is important to note that nothing is encrypted at this moment.
+
+We need to create a `Encrypter` object that will done this step.
+
+```php
+use Jose\Encrypter;
+
+// We create a Encrypter object with the key encryption and content encryption algorithms we want to use
+$encrypter = Signer::createEncrypter(
+    ['RSA-OAEP-256', 'A256GCMKW'], // The Key Encryption Algorithms to be used
+    ['A128CBC-HS256'],             // The Content Encryption Algorithms to be used
+    ['DEF']                        // The Compression Methods to be used
+);
+
+// Then we encrypt
+$encrypter->encrypt($jwe);
+```
+
+Now you can export it into the JSON General Serialization Mode:
+
+```php
+$jwe->toJSON();
+```
+
+You can also get each encryption into Flattened Serialization Mode:
+
+```php
+// The first signature into Flattened Serialization Mode
+$jwe->toFlattenedJSON(0);
+
+// The second one into Flattened Serialization Mode
+$jwe->toFlattenedJSON(1);
+```
+
+It is not possible to export into Compact Serialization Mode as unprotected headers (shared and per recipient) have been defined.
+
+### Key Management Modes
+
+Each Key Encryption Algorithm has its own Key Management Mode.
+
+You cannot create a JWE with multiple recipients if the Key Management Modes are not compatible.
 Hereafter, a table with algorithms and associated Key Management Mode.
 
 | Algorithm \ Key Management Mode | Key Encryption | Key Wrapping | Direct Key Agreement | Key Agreement with Key Wrapping | Direct Encryption |
@@ -96,3 +193,25 @@ And a compatibility table between Key Management Modes:
 | Direct Key Agreement            |     NO         |     NO       |        NO            |            NO                   |       NO          |
 | Key Agreement with Key Wrapping |     YES        |     YES      |        NO            |            NO                   |       NO          |
 | Direct Encryption               |     NO         |     NO       |        NO            |            NO                   |       NO          |
+
+If you try to mix incompatible Key Management Mode, an error will be thrown by the encrypter.
+
+### Additional Authenticated Data
+
+This library supports Additional Authenticated Data (AAD).
+
+```php
+$jws = JWEFactory::createJWE(
+    $message,                     // The payload
+    [                             // The shared protected header
+        'enc' => 'A128CBC-HS256', // We encrypt the payload using the content encryption algorithm A128CBC-HS256
+        'zip' => 'DEF',           // We want to compress the payload before encryption (not mandatory, but useful for a large payload
+    ],
+    [                             // The shared unprotected header
+        'other' => 'This is an unprotected payload for all recipients',
+    ],                            // The Additional Authenticated Data
+    'This is an AAD'
+);
+```
+
+Please note that when a JWE object contains an AAD, it cannot be converted into Compact JSON.
