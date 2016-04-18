@@ -76,9 +76,7 @@ JWKSet is fully supported.
 * [x] PS256, PS384, PS512
 * [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
 * [x] Ed25519 (third party extension needed)
-* [ ] Ed25519ph
 * [ ] Ed448
-* [ ] Ed448ph
 
 ## Supported Key Encryption Algorithms
 
@@ -142,81 +140,33 @@ Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-L
 
 The preferred way to install this library is to rely on Composer:
 
-```sh
-composer require spomky-labs/jose
+```json
+{
+    ....
+    "require": {
+        "spomky-labs/jose": "^3.0",
+        "fgrosse/phpasn1": "dev-compat/php5-5 as v1.3.1"
+    },
+    ...
+}
 ```
 
-By default, tests and documentation files are not included. If you want to test this project or read the documentation, please add the option `--prefer-source`.
+Then, you have to update your project dependencies:
 
 ```sh
-composer require spomky-labs/jose --prefer-source
+composer update
 ```
 
 # How to use
-
-## The Easiest Way To Create JWS/JWE
-
-The easiest way to create a JWS with single signature or JWE with single recipient is to use our factories.
-
-### Signed JWT (JWS)
-
-```php
-use Jose\Factory\JWKFactory;
-use Jose\Factory\JWSFactory;
-
-// We create our payload
-$payload = [
-    'exp' => time()+3600, // Expiration claim (expires in 3600 seconds)
-    'iat' => time(),      // Issued At claim
-    'nbf' => time(),      // Not Before claim
-    'aud' => 'My client', // Audience claim
-    'iss' => 'My Server', // Issuer claim
-    'sub' => 'My User',   // Subject claim
-    'root'=> true,        // Custom claim
-];
-
-// We create our header
-$header = [
-    'cty' => 'JWT',
-    'alg' => 'RS512',
-];
-
-// We load our private key used to sign
-$jwk = JWKFactory::createFromKeyFile(/path/to/my/private.rsa.encrypted.key', 'Secret');
-
-// We create our JWS
-$jws = JWSFactory::createJWSToCompactJSON($payload, $jwk, $header);
-```
-
-### Encrypted JWT (JWE)
-
-```php
-use Jose\Factory\JWKFactory;
-use Jose\Factory\JWEFactory;
-
-// In this example, the payload will be the JWS created above
-
-// We create our header
-$header = [
-    'alg' => 'RSA1_5',
-    'enc' => 'A256GCM',
-];
-
-// We load the public key of the recipient
-$jwk = JWKFactory::createFromKeyFile(/path/to/my/public.rsa.key');
-
-// We create our JWE
-$jwe = JWEFactory::createJWEToCompactJSON($jws, $jwk, $header);
-```
 
 Have a look at [How to use](doc/Use.md) to know how to load your JWT and discover all possibilities provided by this library.
 
 # Performances
 
-Take a look on the test results performed by [Travis-CI](https://travis-ci.org/Spomky-Labs/jose).
 We added some tests to verify the performance of each algorithm.
+These tests are not executed during unit and functional testing as they may take a very long time.
 
-*Please note that the time per signature will be different on your platform.*
+*Please note that the time per operation will be different on your platform.*
 
 The conclusions reached regarding these results are:
 
@@ -228,7 +178,7 @@ The conclusions reached regarding these results are:
   * The algorithms based on RSA are very good.
   * The AES GCM Key Wrapping algorithms are very good if the extension is installed, else performances are bad.
   * The AES Key Wrapping algorithms are good.
-  * The PBES2-* algorithms performances bad, except if you use small salt and low count which is not what you intent to do.
+  * The PBES2-* algorithms performances are bad, except if you use small salt and low count which is not what you intent to do.
   * The ECC encryption performances are very bad. This is due to the use of a pure PHP library.
 * Content Encryption operations:
   * All A128CBC-* algorithms are very good. 
@@ -237,7 +187,7 @@ The conclusions reached regarding these results are:
 To conclude, if you use shared keys, you will prefer HMAC signature algorithms and AES/AES GCM key wrapping algorithms.
 If you use public/private key pairs, you will prefer RSA algorithms for signature and key encryption.
 
-**At this moment, we do not recommend the use of ECC algorithms.**
+**At this moment, we do not recommend the use of ECC algorithms with our library.**
 
 ## Signature/Verification Performances
 

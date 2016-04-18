@@ -106,7 +106,7 @@ class JWKFactoryTest extends \PHPUnit_Framework_TestCase
         $result = JWKFactory::createFromJKU('https://www.googleapis.com/oauth2/v3/certs');
 
         $this->assertInstanceOf(JWKSetInterface::class, $result);
-        $this->assertEquals(2, $result->count());
+        $this->assertTrue(0 !== $result->count());
     }
 
     public function testCreateFromX5U()
@@ -117,7 +117,7 @@ class JWKFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(0 !== $result->count());
     }
 
-    public function testCreateFromJKU2()
+    public function testCreateFromValues()
     {
         $result = JWKFactory::createFromValues([
             'kty' => 'EC',
