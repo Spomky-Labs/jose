@@ -93,6 +93,7 @@ final class Loader implements LoaderInterface
      * @param \Jose\Object\JWKSetInterface  $jwk_set
      * @param array                         $allowed_key_encryption_algorithms
      * @param array                         $allowed_content_encryption_algorithms
+     * @param null|int                      $recipient_index
      * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWEInterface
@@ -113,6 +114,7 @@ final class Loader implements LoaderInterface
      * @param \Jose\Object\JWKSetInterface  $jwk_set
      * @param array                         $allowed_algorithms
      * @param string|null                   $detached_payload
+     * @param null|int                      $signature_index
      * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWSInterface

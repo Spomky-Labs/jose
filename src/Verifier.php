@@ -78,7 +78,7 @@ final class Verifier implements VerifierInterface
     {
         $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key set', ['jwk' => $jws, 'jwk_set' => $jwk_set, 'detached_payload' => $detached_payload]);
 
-        return $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
+        $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 
     /**
@@ -115,8 +115,6 @@ final class Verifier implements VerifierInterface
      * @param \Jose\Object\JWKSetInterface $jwk_set
      * @param string|null                  $detached_payload
      * @param int|null                     $recipient_index
-     *
-     * @return bool
      */
     private function verifySignatures(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
