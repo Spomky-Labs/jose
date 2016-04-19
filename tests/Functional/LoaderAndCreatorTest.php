@@ -9,10 +9,14 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Factory\JWTCreator;
-use Jose\Factory\JWTLoader;
+use Jose\JWTCreator;
+use Jose\JWTLoader;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Signer;
+use Jose\Verifier;
+use Jose\Encrypter;
+use Jose\Decrypter;
 use Jose\Test\TestCase;
 
 /**
@@ -25,11 +29,15 @@ class LoaderAndCreatorTest extends TestCase
     public function testSignAndLoadUsingJWTCreatorAndJWTLoader()
     {
         $checker = \Jose\Factory\CheckerManagerFactory::createClaimCheckerManager();
-        $jwt_creator = new JWTCreator(['HS512'], $this->getLogger());
-        $jwt_creator->enableEncryptionSupport(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']);
+        $jwt_creator = new JWTCreator(Signer::createSigner(['HS512'], $this->getLogger()));
+        $jwt_creator->enableEncryptionSupport(Encrypter::createEncrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
 
-        $jwt_loader = new JWTLoader($checker, ['HS512', 'RS512'], $this->getLogger());
-        $jwt_loader->enableEncryptionSupport(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']);
+        $jwt_loader = new JWTLoader(
+            $checker,
+            Verifier::createVerifier(['HS512', 'RS512']),
+            $this->getLogger()
+        );
+        $jwt_loader->enableEncryptionSupport(Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
 
         $jws = $jwt_creator->sign(
             'Live long and Prosper.',
