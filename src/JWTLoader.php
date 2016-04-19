@@ -9,16 +9,13 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Factory;
+namespace Jose;
 
 use Assert\Assertion;
 use Jose\Checker\CheckerManagerInterface;
-use Jose\Decrypter;
-use Jose\Loader;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Jose\Verifier;
 use Psr\Log\LoggerInterface;
 
 final class JWTLoader
@@ -51,41 +48,27 @@ final class JWTLoader
     /**
      * JWTLoader constructor.
      *
-     * @param \Jose\Checker\CheckerManagerInterface                  $checker_manager
-     * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $supported_signature_algorithms
-     * @param \Psr\Log\LoggerInterface|null                          $logger
+     * @param \Jose\Checker\CheckerManagerInterface $checker_manager
+     * @param \Jose\VerifierInterface               $verifier
+     * @param \Psr\Log\LoggerInterface|null         $logger
      */
-    public function __construct(CheckerManagerInterface $checker_manager, array $supported_signature_algorithms, LoggerInterface $logger = null)
+    public function __construct(CheckerManagerInterface $checker_manager, VerifierInterface $verifier, LoggerInterface $logger = null)
     {
-        Assertion::notEmpty($supported_signature_algorithms, 'At least one signature algorithm must be set.');
-
         $this->checker_manager = $checker_manager;
+        $this->verifier = $verifier;
         $this->logger = $logger;
         $this->loader = new Loader();
         if (null !== $logger) {
             $this->loader->enableLogging($logger);
         }
-        $this->verifier = Verifier::createVerifier($supported_signature_algorithms, $logger);
     }
 
     /**
-     * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $supported_key_encryption_algorithms
-     * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $supported_content_encryption_algorithms
-     * @param string[]|\Jose\Compression\CompressionInterface                $supported_compression_methods
+     * @param \Jose\DecrypterInterface $decrypter
      */
-    public function enableEncryptionSupport(array $supported_key_encryption_algorithms,
-                                            array $supported_content_encryption_algorithms,
-                                            array $supported_compression_methods = ['DEF', 'ZLIB', 'GZ']
-    ) {
-        Assertion::notEmpty($supported_key_encryption_algorithms, 'At least one key encryption algorithm must be set.');
-        Assertion::notEmpty($supported_content_encryption_algorithms, 'At least one content encryption algorithm must be set.');
-
-        $this->decrypter = Decrypter::createDecrypter(
-            $supported_key_encryption_algorithms,
-            $supported_content_encryption_algorithms,
-            $supported_compression_methods,
-            $this->logger
-        );
+    public function enableEncryptionSupport(DecrypterInterface $decrypter)
+    {
+        $this->decrypter = $decrypter;
     }
 
     /**

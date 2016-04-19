@@ -9,21 +9,15 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-namespace Jose\Factory;
+namespace Jose;
 
 use Assert\Assertion;
-use Jose\Encrypter;
+use Jose\Factory\JWEFactory;
+use Jose\Factory\JWSFactory;
 use Jose\Object\JWKInterface;
-use Jose\Signer;
-use Psr\Log\LoggerInterface;
 
 final class JWTCreator
 {
-    /**
-     * @var \Psr\Log\LoggerInterface
-     */
-    private $logger;
-
     /**
      * @var \Jose\EncrypterInterface|null
      */
@@ -37,35 +31,19 @@ final class JWTCreator
     /**
      * JWTCreator constructor.
      *
-     * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $supported_signature_algorithms
-     * @param \Psr\Log\LoggerInterface|null                          $logger
+     * @param \Jose\SignerInterface $signer
      */
-    public function __construct(array $supported_signature_algorithms, LoggerInterface $logger = null)
+    public function __construct(SignerInterface $signer)
     {
-        Assertion::notEmpty($supported_signature_algorithms, 'At least one signature algorithm must be set.');
-
-        $this->logger = $logger;
-        $this->signer = Signer::createSigner($supported_signature_algorithms, $logger);
+        $this->signer = $signer;
     }
 
     /**
-     * @param string[]|\Jose\Algorithm\KeyEncryptionAlgorithmInterface[]     $supported_key_encryption_algorithms
-     * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $supported_content_encryption_algorithms
-     * @param string[]|\Jose\Compression\CompressionInterface                $supported_compression_methods
+     * @param \Jose\EncrypterInterface $encrypter
      */
-    public function enableEncryptionSupport(array $supported_key_encryption_algorithms,
-                                            array $supported_content_encryption_algorithms,
-                                            array $supported_compression_methods = ['DEF', 'ZLIB', 'GZ']
-    ) {
-        Assertion::notEmpty($supported_key_encryption_algorithms, 'At least one key encryption algorithm must be set.');
-        Assertion::notEmpty($supported_content_encryption_algorithms, 'At least one content encryption algorithm must be set.');
-
-        $this->encrypter = Encrypter::createEncrypter(
-            $supported_key_encryption_algorithms,
-            $supported_content_encryption_algorithms,
-            $supported_compression_methods,
-            $this->logger
-        );
+    public function enableEncryptionSupport(EncrypterInterface $encrypter)
+    {
+        $this->encrypter = $encrypter;
     }
 
     /**
