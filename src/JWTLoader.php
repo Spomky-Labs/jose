@@ -21,11 +21,6 @@ use Psr\Log\LoggerInterface;
 final class JWTLoader
 {
     /**
-     * @var null|\Psr\Log\LoggerInterface
-     */
-    private $logger;
-
-    /**
      * @var \Jose\LoaderInterface
      */
     private $loader;
@@ -56,7 +51,6 @@ final class JWTLoader
     {
         $this->checker_manager = $checker_manager;
         $this->verifier = $verifier;
-        $this->logger = $logger;
         $this->loader = new Loader();
         if (null !== $logger) {
             $this->loader->enableLogging($logger);
