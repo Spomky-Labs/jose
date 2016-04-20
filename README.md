@@ -46,9 +46,9 @@ The [detached content](https://tools.ietf.org/html/rfc7515#appendix-F) is also s
 
 ## Supported Serialization Modes
 
-* [x] JSON Compact Serialization Overview (JWS/JWE creation and loading)
-* [x] JSON Flattened Serialization Overview (JWS/JWE creation and loading)
-* [x] JSON General Serialization Overview (JWS/JWE creation and loading)
+* [x] Compact JSON Serialization Syntax (JWS/JWE creation and loading)
+* [x] Flattened JSON Serialization Syntax (JWS/JWE creation and loading)
+* [x] General JSON Serialization Syntax (JWS/JWE creation and loading)
 
 ## Supported Compression Methods
 
