@@ -35,11 +35,11 @@ $input = 'eyJhbGciOiJSU0EtT0FFUCIsImtpZCI6InNhbXdpc2UuZ2FtZ2VlQGhvYmJpdG9uLmV4YW
 
 // The payload is decrypted using our key.
 $jws = $loader->loadAndDecryptUsingKey(
-    $input,
-    $jwk,
-    ['RSA-OAEP'],
-    ['A256GCM'],
-    $recipient_index
+    $input,            // The input to load and decrypt
+    $jwk,              // The symmetric or private key 
+    ['RSA-OAEP'],      // A list of allowed key encryption algorithms
+    ['A256GCM'],       // A list of allowed content encryption algorithms
+    $recipient_index   // If decrypted, this variable will be set with the recipient index used to decrypt
 );
 ```
 
