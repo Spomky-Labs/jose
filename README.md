@@ -35,12 +35,14 @@ The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unen
 
 ## Supported Input Types:
 
+JWS or JWE objects support every input that can be serialized:
+
 * [x] Plain text
 * [x] Array
-* [x] JWTInterface object
 * [x] jwk+json content type (JWKInterface object)
 * [x] jwkset+json content type (JWKSetInterface object)
-* [x] Detached content
+
+The [detached content](https://tools.ietf.org/html/rfc7515#appendix-F) is also supported.
 
 ## Supported Serialization Modes
 
