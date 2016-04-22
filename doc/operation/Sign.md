@@ -136,7 +136,7 @@ $key1 = JWKFactory::createFromKeyFile(
 );
 
 // We load the second key to sign using algorithm HS512
-$key1 = JWKFactory::createFromValues(
+$key2 = JWKFactory::createFromValues(
     [
         'kty' => 'oct,
         'kid' => 'My Shared key',
