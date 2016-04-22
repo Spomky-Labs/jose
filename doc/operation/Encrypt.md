@@ -49,12 +49,12 @@ Now the variable `$jwe` contains a string that represents our JWE.
 
 # The JWEFactory In Details
 
-## Flattened JWE with/without Detached Payload
+## Flattened JWE
 
 The flattened JWE JSON Serialization syntax is based upon the general syntax but flattens it, optimizing it for the single digital signature/MAC case.
 You can produce such JWE the same way as Compact JWE.
 
-The methods to use are `createJWEToFlattenedJSON` but also allow you to define unprotected headers and Additional Authenticated Data.
+The method to use is `createJWEToFlattenedJSON`. This method allows you to define unprotected headers and Additional Authenticated Data.
 
 ## Multiple Recipients
 
