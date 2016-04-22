@@ -76,7 +76,7 @@ $key1 = JWKFactory::createFromKeyFile(
 );
 
 // We load the second key to sign using algorithm A256GCMKW
-$key1 = JWKFactory::createFromValues(
+$key2 = JWKFactory::createFromValues(
     [
         'kty' => 'oct',
         'kid' => 'Recipient #2 Shared key',
