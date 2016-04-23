@@ -76,8 +76,6 @@ class LoaderAndCreatorTest extends TestCase
         ]);
         $loaded_jwe = $jwt_loader->load(
             $jwe,
-            ['A256GCMKW'],
-            ['A128CBC-HS256'],
             $key_set,
             true
         );
