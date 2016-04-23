@@ -105,14 +105,12 @@ final class JWTLoader
 
     /**
      * @param string                            $assertion
-     * @param array                             $allowed_key_encryption_algorithms
-     * @param array                             $allowed_content_encryption_algorithms
      * @param \Jose\Object\JWKSetInterface|null $encryption_key_set
      * @param bool                              $is_encryption_required
      *
      * @return \Jose\Object\JWSInterface
      */
-    public function load($assertion, array $allowed_key_encryption_algorithms = [], array $allowed_content_encryption_algorithms = [], JWKSetInterface $encryption_key_set = null, $is_encryption_required = false)
+    public function load($assertion, JWKSetInterface $encryption_key_set = null, $is_encryption_required = false)
     {
         Assertion::string($assertion);
         Assertion::boolean($is_encryption_required);
@@ -120,10 +118,8 @@ final class JWTLoader
         if ($jwt instanceof JWEInterface) {
             Assertion::notNull($encryption_key_set, 'Encryption key set is not available.');
             Assertion::true($this->isEncryptionSupportEnabled(), 'Encryption support is not enabled.');
-            $key_encryption_algorithms = array_intersect($allowed_key_encryption_algorithms, $this->getSupportedKeyEncryptionAlgorithms());
-            $content_encryption_algorithms = array_intersect($allowed_content_encryption_algorithms, $this->getSupportedContentEncryptionAlgorithms());
-            Assertion::inArray($jwt->getSharedProtectedHeader('alg'), $key_encryption_algorithms, sprintf('The key encryption algorithm "%s" is not allowed.', $jwt->getSharedProtectedHeader('alg')));
-            Assertion::inArray($jwt->getSharedProtectedHeader('enc'), $content_encryption_algorithms, sprintf('The content encryption algorithm "%s" is not allowed or not supported.', $jwt->getSharedProtectedHeader('enc')));
+            Assertion::inArray($jwt->getSharedProtectedHeader('alg'), $this->getSupportedKeyEncryptionAlgorithms(), sprintf('The key encryption algorithm "%s" is not allowed.', $jwt->getSharedProtectedHeader('alg')));
+            Assertion::inArray($jwt->getSharedProtectedHeader('enc'), $this->getSupportedContentEncryptionAlgorithms(), sprintf('The content encryption algorithm "%s" is not allowed or not supported.', $jwt->getSharedProtectedHeader('enc')));
             $jwt = $this->decryptAssertion($jwt, $encryption_key_set);
         } elseif (true === $is_encryption_required) {
             throw new \InvalidArgumentException('The assertion must be encrypted.');
@@ -159,15 +155,10 @@ final class JWTLoader
     /**
      * @param \Jose\Object\JWSInterface    $jws
      * @param \Jose\Object\JWKSetInterface $signature_key_set
-     * @param array                        $allowed_signature_algorithms
      */
-    public function verifySignature(JWSInterface $jws, JWKSetInterface $signature_key_set, array $allowed_signature_algorithms)
+    public function verifySignature(JWSInterface $jws, JWKSetInterface $signature_key_set)
     {
-        $algorithms = array_intersect(
-            $allowed_signature_algorithms,
-            $this->getSupportedSignatureAlgorithms()
-        );
-        Assertion::inArray($jws->getSignature(0)->getProtectedHeader('alg'), $algorithms, sprintf('The signature algorithm "%s" is not supported or not allowed.', $jws->getSignature(0)->getProtectedHeader('alg')));
+        Assertion::inArray($jws->getSignature(0)->getProtectedHeader('alg'), $this->getSupportedSignatureAlgorithms(), sprintf('The signature algorithm "%s" is not supported or not allowed.', $jws->getSignature(0)->getProtectedHeader('alg')));
 
         $index = null;
         $this->verifier->verifyWithKeySet($jws, $signature_key_set, null, $index);
