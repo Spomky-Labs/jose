@@ -47,14 +47,31 @@ final class ECDHES implements KeyAgreementInterface
         } else {
             $this->checkKey($recipient_key, false);
             $public_key = $recipient_key;
-            $private_key = JWKFactory::createRandomECPrivateKey($public_key->get('crv'));
+            switch ($public_key->get('crv')) {
+                case 'P-256':
+                case 'P-384':
+                case 'P-521':
+                    $private_key = JWKFactory::createRandomECPrivateKey($public_key->get('crv'));
+                    $epk = [
+                        'kty' => $private_key->get('kty'),
+                        'crv' => $private_key->get('crv'),
+                        'x'   => $private_key->get('x'),
+                        'y'   => $private_key->get('y'),
+                    ];
+                    break;
+                case 'X25519':
+                    $private_key = JWKFactory::createRandomX25519PrivateKey();
+                    $epk = [
+                        'kty' => $private_key->get('kty'),
+                        'crv' => $private_key->get('crv'),
+                        'x'   => $private_key->get('x'),
+                    ];
+                    break;
+                default:
+                    throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported', $public_key->get('crv')));
+            }
             $additional_header_values = array_merge($additional_header_values, [
-                'epk' => [
-                    'kty' => $private_key->get('kty'),
-                    'crv' => $private_key->get('crv'),
-                    'x'   => $private_key->get('x'),
-                    'y'   => $private_key->get('y'),
-                ],
+                'epk' => $epk,
             ]);
         }
         Assertion::eq($private_key->get('crv'), $public_key->get('crv'), 'Curves are different');
@@ -64,7 +81,7 @@ final class ECDHES implements KeyAgreementInterface
         $apu = array_key_exists('apu', $complete_header) ? $complete_header['apu'] : '';
         $apv = array_key_exists('apv', $complete_header) ? $complete_header['apv'] : '';
 
-        return ConcatKDF::generate($this->convertDecToBin($agreed_key), $algorithm, $encryption_key_length, $apu, $apv);
+        return ConcatKDF::generate($agreed_key, $algorithm, $encryption_key_length, $apu, $apv);
     }
 
     /**
@@ -77,19 +94,31 @@ final class ECDHES implements KeyAgreementInterface
      */
     public function calculateAgreementKey(JWKInterface $private_key, JWKInterface $public_key)
     {
-        $p = $this->getGenerator($private_key);
+        switch ($public_key->get('crv')) {
+            case 'P-256':
+            case 'P-384':
+            case 'P-521':
+                $p = $this->getGenerator($private_key);
 
-        $rec_x = $this->convertBase64ToDec($public_key->get('x'));
-        $rec_y = $this->convertBase64ToDec($public_key->get('y'));
-        $sen_d = $this->convertBase64ToDec($private_key->get('d'));
+                $rec_x = $this->convertBase64ToDec($public_key->get('x'));
+                $rec_y = $this->convertBase64ToDec($public_key->get('y'));
+                $sen_d = $this->convertBase64ToDec($private_key->get('d'));
 
-        $priv_key = $p->getPrivateKeyFrom($sen_d);
-        $pub_key = $p->getPublicKeyFrom($rec_x, $rec_y);
+                $priv_key = $p->getPrivateKeyFrom($sen_d);
+                $pub_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
-        $message = new MessageFactory($this->adapter);
-        $exchange = $priv_key->createExchange($message, $pub_key);
+                $message = new MessageFactory($this->adapter);
+                $exchange = $priv_key->createExchange($message, $pub_key);
 
-        return $exchange->calculateSharedKey();
+                return $this->convertDecToBin($exchange->calculateSharedKey());
+            case 'X25519':
+                return curve25519_shared(
+                    Base64Url::decode($private_key->get('d')),
+                    Base64Url::decode($public_key->get('x'))
+                );
+            default:
+                throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported', $public_key->get('crv')));
+        }
     }
 
     /**
@@ -130,11 +159,22 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function checkKey(JWKInterface $key, $is_private)
     {
-        Assertion::eq($key->get('kty'), 'EC', 'Wrong key type.');
         Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
-        Assertion::true($key->has('y'), 'The key parameter "y" is missing.');
         Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
 
+        switch ($key->get('crv')) {
+            case 'P-256':
+            case 'P-384':
+            case 'P-521':
+                Assertion::eq($key->get('kty'), 'EC', 'Wrong key type.');
+                Assertion::true($key->has('y'), 'The key parameter "y" is missing.');
+                break;
+            case 'X25519':
+                Assertion::eq($key->get('kty'), 'OKP', 'Wrong key type.');
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported', $key->get('crv')));
+        }
         if (true === $is_private) {
             Assertion::true($key->has('d'), 'The key parameter "d" is missing.');
         }
@@ -159,7 +199,7 @@ final class ECDHES implements KeyAgreementInterface
             case 'P-521':
                 return EccFactory::getNistCurves()->generator521();
             default:
-                throw new \InvalidArgumentException(sprintf('Curve "%s" is not supported', $crv));
+                throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported', $crv));
         }
     }
 

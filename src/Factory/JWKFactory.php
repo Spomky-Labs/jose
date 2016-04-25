@@ -51,6 +51,34 @@ final class JWKFactory
     }
 
     /**
+     * @param array  $additional_values
+     *
+     * @return \Jose\Object\JWKInterface
+     */
+    public static function createRandomX25519PrivateKey(array $additional_values = [])
+    {
+        if (!function_exists('curve25519_public')) {
+            throw new \InvalidArgumentException('Unsupported X25519 curves.');
+        }
+        $d = random_bytes(32);
+        $x = curve25519_public($d);
+        
+        $values = [
+            'kty' => 'OKP',
+            'crv' => 'X25519',
+            'x'   => Base64Url::encode($x),
+            'd'   => Base64Url::encode($d),
+        ];
+
+        $values = array_merge(
+            $values,
+            $additional_values
+        );
+
+        return new JWK($values);
+    }
+
+    /**
      * @param string $value
      *
      * @return string

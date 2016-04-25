@@ -15,6 +15,7 @@ use Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 use Jose\Object\JWK;
+use Jose\Factory\JWKFactory;
 
 /**
  * Class ECDHESKeyAgreementTest.
@@ -202,21 +203,6 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Wrong key type.
-     */
-    public function testNotAnECKey()
-    {
-        $receiver = new JWK([
-            'kty' => 'dir',
-            'dir' => Base64Url::encode('ABCD'),
-        ]);
-
-        $ecdh_es = new ECDHES();
-        $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage The key parameter "x" is missing.
      */
     public function testECKeyHasMissingParameters()
@@ -251,5 +237,31 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
 
         $ecdh_es = new ECDHES();
         $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver, $header);
+    }
+    /**
+     * @see https://tools.ietf.org/html/rfc7518#appendix-C
+     */
+    public function testGetAgreementKeyWithX25519Curve()
+    {
+        if (!function_exists('curve25519_public')) {
+            $this->markTestSkipped('X25519 extension not available');
+        }
+        $receiver_private_key = JWKFactory::createRandomX25519PrivateKey();
+        $receiver_public_key = $receiver_private_key->toPublic();
+
+        $header = [
+            'enc' => 'A128GCM',
+            'apu' => 'QWxpY2U',
+            'apv' => 'Qm9i',
+        ];
+
+        $ecdh_es = new ECDHES();
+        $additional_header_values = [];
+
+        $agreement_key_from_sender = $ecdh_es->getAgreementKey(128, 'A128GCM', $receiver_public_key, $header, $additional_header_values);
+        $agreement_key_from_receiver = $ecdh_es->getAgreementKey(128, 'A128GCM', $receiver_private_key, array_merge($header, $additional_header_values));
+
+        $this->assertTrue(array_key_exists('epk', $additional_header_values));
+        $this->assertEquals($agreement_key_from_receiver, $agreement_key_from_sender);
     }
 }
