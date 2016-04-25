@@ -20,7 +20,6 @@ use Psr\Log\LoggerInterface;
 interface SignerInterface
 {
     /**
-     /**
      * Signer constructor.
      *
      * @param string[]|\Jose\Algorithm\SignatureAlgorithmInterface[] $signature_algorithms
