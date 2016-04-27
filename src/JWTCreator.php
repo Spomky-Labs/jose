@@ -84,7 +84,7 @@ final class JWTCreator
     /**
      * @return string[]
      */
-    public function getSignatureAlgorithms()
+    public function getSupportedSignatureAlgorithms()
     {
         return $this->signer->getSupportedSignatureAlgorithms();
     }
