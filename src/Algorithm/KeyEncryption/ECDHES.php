@@ -26,16 +26,6 @@ use Mdanter\Ecc\Message\MessageFactory;
 final class ECDHES implements KeyAgreementInterface
 {
     /**
-     * @var \Mdanter\Ecc\Math\MathAdapterInterface
-     */
-    private $adapter;
-
-    public function __construct()
-    {
-        $this->adapter = EccFactory::getAdapter();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getAgreementKey($encryption_key_length, $algorithm, JWKInterface $recipient_key, array $complete_header = [], array &$additional_header_values = [])
@@ -107,7 +97,7 @@ final class ECDHES implements KeyAgreementInterface
                 $priv_key = $p->getPrivateKeyFrom($sen_d);
                 $pub_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
-                $message = new MessageFactory($this->adapter);
+                $message = new MessageFactory(EccFactory::getAdapter());
                 $exchange = $priv_key->createExchange($message, $pub_key);
 
                 return $this->convertDecToBin($exchange->calculateSharedKey());
@@ -210,7 +200,7 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function convertHexToDec($value)
     {
-        return $this->adapter->hexDec($value);
+        return EccFactory::getAdapter()->hexDec($value);
     }
 
     /**

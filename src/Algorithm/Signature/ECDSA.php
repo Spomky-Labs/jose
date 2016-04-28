@@ -25,16 +25,6 @@ use Mdanter\Ecc\Random\RandomGeneratorFactory;
 abstract class ECDSA implements SignatureAlgorithmInterface
 {
     /**
-     * @var \Mdanter\Ecc\Math\MathAdapterInterface
-     */
-    private $adapter;
-
-    public function __construct()
-    {
-        $this->adapter = EccFactory::getAdapter();
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function sign(JWKInterface $key, $data)
@@ -130,7 +120,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function convertDecToHex($value)
     {
-        return $this->adapter->decHex($value);
+        return EccFactory::getAdapter()->decHex($value);
     }
 
     /**
@@ -140,7 +130,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function convertHexToDec($value)
     {
-        return $this->adapter->hexDec($value);
+        return EccFactory::getAdapter()->hexDec($value);
     }
 
     /**
