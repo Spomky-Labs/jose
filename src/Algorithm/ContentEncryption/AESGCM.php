@@ -13,7 +13,7 @@ namespace Jose\Algorithm\ContentEncryption;
 
 use Crypto\Cipher;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use Jose\Util\GCM;
+use AESGCM\AESGCM as GCM;
 
 abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 {
@@ -27,7 +27,9 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $calculated_aad .= '.'.$aad;
         }
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_encrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad, 16);
+        } elseif (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $calculated_aad = $encoded_protected_header;
             if (null !== $aad) {
@@ -39,8 +41,6 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $tag = $cipher->getTag();
 
             return $cyphertext;
-        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_encrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad, 16);
         }
 
         list($cyphertext, $tag) = GCM::encrypt($cek, $iv, $data, $calculated_aad);
@@ -58,7 +58,9 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $calculated_aad .= '.'.$aad;
         }
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_decrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad);
+        } elseif (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setTag($tag);
             $cipher->setAAD($calculated_aad);
@@ -66,8 +68,6 @@ abstract class AESGCM implements ContentEncryptionAlgorithmInterface
             $plaintext = $cipher->decrypt($data, $cek, $iv);
 
             return $plaintext;
-        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_decrypt($data, $this->getMode($cek), $cek, OPENSSL_RAW_DATA, $iv, $tag, $calculated_aad);
         }
 
         return GCM::decrypt($cek, $iv, $data, $calculated_aad, $tag);

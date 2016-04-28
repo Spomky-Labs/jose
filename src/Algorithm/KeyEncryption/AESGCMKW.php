@@ -15,7 +15,7 @@ use Assert\Assertion;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\Object\JWKInterface;
-use Jose\Util\GCM;
+use AESGCM\AESGCM;
 
 /**
  * Class AESGCMKW.
@@ -32,18 +32,18 @@ abstract class AESGCMKW implements KeyWrappingInterface
         $iv = random_bytes(96 / 8);
         $additional_headers['iv'] = Base64Url::encode($iv);
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            $tag = null;
+            $encrypted_cek = openssl_encrypt($cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag, null, 16);
+            $additional_headers['tag'] = Base64Url::encode($tag);
+        } elseif (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setAAD(null);
             $encrypted_cek = $cipher->encrypt($cek, $kek, $iv);
 
             $additional_headers['tag'] = Base64Url::encode($cipher->getTag());
-        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            $tag = null;
-            $encrypted_cek = openssl_encrypt($cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag, null, 16);
-            $additional_headers['tag'] = Base64Url::encode($tag);
         } else {
-            list($encrypted_cek, $tag) = GCM::encrypt($kek, $iv, $cek, null);
+            list($encrypted_cek, $tag) = AESGCM::encrypt($kek, $iv, $cek, null);
             $additional_headers['tag'] = Base64Url::encode($tag);
         }
 
@@ -62,7 +62,9 @@ abstract class AESGCMKW implements KeyWrappingInterface
         $tag = Base64Url::decode($header['tag']);
         $iv = Base64Url::decode($header['iv']);
 
-        if (class_exists('\Crypto\Cipher')) {
+        if (version_compare(PHP_VERSION, '7.1.0') >= 0) {
+            return openssl_decrypt($encrypted_cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag, null);
+        } elseif (class_exists('\Crypto\Cipher')) {
             $cipher = Cipher::aes(Cipher::MODE_GCM, $this->getKeySize());
             $cipher->setTag($tag);
             $cipher->setAAD(null);
@@ -70,11 +72,9 @@ abstract class AESGCMKW implements KeyWrappingInterface
             $cek = $cipher->decrypt($encrypted_cek, $kek, $iv);
 
             return $cek;
-        } elseif (version_compare(PHP_VERSION, '7.1.0') >= 0) {
-            return openssl_decrypt($encrypted_cek, $this->getMode($kek), $kek, OPENSSL_RAW_DATA, $iv, $tag, null);
         }
 
-        return GCM::decrypt($kek, $iv, $encrypted_cek, null, $tag);
+        return AESGCM::decrypt($kek, $iv, $encrypted_cek, null, $tag);
     }
 
     /**

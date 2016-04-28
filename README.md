@@ -99,7 +99,7 @@ JWKSet is fully supported.
 * [x] A128GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A192GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A256GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
-* [ ] X25519
+* [x] X25519 ([third party extension reauired](https://github.com/encedo/php-curve25519-ext)
 * [ ] X448
 
 ## Supported Content Encryption Algorithms
@@ -125,6 +125,7 @@ Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
 * For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only).
 * For Ed25519 algorithm: [php-ed25519-ext](https://github.com/encedo/php-ed25519-ext) required
+* For X25519 algorithm: [php-curve25519-ext](https://github.com/encedo/php-curve25519-ext) required
 
 Please read performance test results below concerning the ECC based algorithms. As the time needed to perform operation is very long compared to the other algorithms, we do not recommend their use.
 
