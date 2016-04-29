@@ -51,7 +51,7 @@ final class JWKFactory
     }
 
     /**
-     * @param array  $additional_values
+     * @param array $additional_values
      *
      * @return \Jose\Object\JWKInterface
      */
@@ -62,7 +62,7 @@ final class JWKFactory
         }
         $d = random_bytes(32);
         $x = curve25519_public($d);
-        
+
         $values = [
             'kty' => 'OKP',
             'crv' => 'X25519',

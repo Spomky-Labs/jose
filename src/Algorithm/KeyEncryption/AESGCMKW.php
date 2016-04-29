@@ -11,11 +11,11 @@
 
 namespace Jose\Algorithm\KeyEncryption;
 
+use AESGCM\AESGCM;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use Crypto\Cipher;
 use Jose\Object\JWKInterface;
-use AESGCM\AESGCM;
 
 /**
  * Class AESGCMKW.

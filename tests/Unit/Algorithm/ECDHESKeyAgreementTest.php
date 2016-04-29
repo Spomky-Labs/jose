@@ -14,8 +14,8 @@ use Jose\Algorithm\KeyEncryption\ECDHES;
 use Jose\Algorithm\KeyEncryption\ECDHESA128KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA192KW;
 use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
-use Jose\Object\JWK;
 use Jose\Factory\JWKFactory;
+use Jose\Object\JWK;
 
 /**
  * Class ECDHESKeyAgreementTest.
@@ -238,6 +238,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         $ecdh_es = new ECDHES();
         $ecdh_es->getAgreementKey(256, 'A128GCM', $receiver, $header);
     }
+
     /**
      * @see https://tools.ietf.org/html/rfc7518#appendix-C
      */
