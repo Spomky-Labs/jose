@@ -9,15 +9,15 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Decrypter;
+use Jose\Encrypter;
 use Jose\JWTCreator;
 use Jose\JWTLoader;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Jose\Signer;
-use Jose\Verifier;
-use Jose\Encrypter;
-use Jose\Decrypter;
 use Jose\Test\TestCase;
+use Jose\Verifier;
 
 /**
  * @group JWTLoader

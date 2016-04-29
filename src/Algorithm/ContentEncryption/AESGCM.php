@@ -11,9 +11,9 @@
 
 namespace Jose\Algorithm\ContentEncryption;
 
+use AESGCM\AESGCM as GCM;
 use Crypto\Cipher;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use AESGCM\AESGCM as GCM;
 
 abstract class AESGCM implements ContentEncryptionAlgorithmInterface
 {
