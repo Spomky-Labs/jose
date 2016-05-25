@@ -9,8 +9,8 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Jose\Test\TestCase;
 use Jose\Object\JWKInterface;
+use Jose\Test\TestCase;
 
 /**
  * Class JWKTest.

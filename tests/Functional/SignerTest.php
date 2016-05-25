@@ -343,20 +343,20 @@ class SignerTest extends TestCase
     {
         $payload = '$.02';
         $protected_header = [
-            "alg" => "HS256",
-            "b64" => false,
-            "crit" => ["b64"],
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
         ];
 
         $key = new JWK([
-            "kty" => "oct",
-            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
         ]);
 
         $expected_result = [
-            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
-            "payload" => "$.02",
-            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19',
+            'payload'   => '$.02',
+            'signature' => 'A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY',
         ];
 
         JWSFactory::createJWSToCompactJSON($payload, $key, $protected_header);
@@ -370,20 +370,20 @@ class SignerTest extends TestCase
     {
         $payload = '$.02';
         $protected_header = [
-            "alg" => "HS256",
-            "b64" => false,
-            "crit" => ["b64"],
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
         ];
 
         $key = new JWK([
-            "kty" => "oct",
-            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
         ]);
 
         $expected_result = [
-            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
-            "payload" => "$.02",
-            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19',
+            'payload'   => '$.02',
+            'signature' => 'A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY',
         ];
 
         $jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
@@ -411,20 +411,20 @@ class SignerTest extends TestCase
     {
         $payload = '$.02';
         $protected_header = [
-            "alg" => "HS256",
-            "b64" => false,
-            "crit" => ["b64"],
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
         ];
 
         $key = new JWK([
-            "kty" => "oct",
-            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
         ]);
 
         $expected_result = [
-            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
-            "payload" => "$.02",
-            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19',
+            'payload'   => '$.02',
+            'signature' => 'A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY',
         ];
 
         $jws = JWSFactory::createJWSToFlattenedJSON($payload, $key, $protected_header);
@@ -453,19 +453,19 @@ class SignerTest extends TestCase
     {
         $payload = '$.02';
         $protected_header = [
-            "alg" => "HS256",
-            "b64" => false,
-            "crit" => ["b64"],
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
         ];
 
         $key = new JWK([
-            "kty" => "oct",
-            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
         ]);
 
         $expected_result = [
-            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
-            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+            'protected' => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19',
+            'signature' => 'A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY',
         ];
 
         $jws = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON($payload, $key, $protected_header);

@@ -114,20 +114,21 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\JWSInterface       $jws
      * @param \Jose\Object\SignatureInterface $signature
-     * @param mixed|null $detached_payload
+     * @param mixed|null                      $detached_payload
      *
      * @return string
      */
     private function getInputToVerify(JWSInterface $jws, SignatureInterface $signature, $detached_payload)
     {
         $encoded_protected_headers = $signature->getEncodedProtectedHeaders();
-        $payload =  empty($jws->getPayload()) ? $detached_payload : $jws->getPayload();
+        $payload = empty($jws->getPayload()) ? $detached_payload : $jws->getPayload();
         $payload = is_string($payload) ? $payload : json_encode($payload);
         if (!$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64')) {
             $encoded_payload = Base64Url::encode($payload);
+
             return sprintf('%s.%s', $encoded_protected_headers, $encoded_payload);
         }
-        
+
         return sprintf('%s.%s', $encoded_protected_headers, $payload);
     }
 

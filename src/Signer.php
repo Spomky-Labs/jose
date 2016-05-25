@@ -90,7 +90,7 @@ final class Signer implements SignerInterface
 
         $this->log(LogLevel::DEBUG, 'Trying to compute the signature');
         $input = $this->getInputToSign($jws, $signature);
-        
+
         $value = $signature_algorithm->sign(
             $signature->getSignatureKey(),
             $input
@@ -116,9 +116,10 @@ final class Signer implements SignerInterface
     private function getInputToSign(JWSInterface $jws, SignatureInterface $signature)
     {
         $encoded_protected_headers = $signature->getEncodedProtectedHeaders();
-        $payload =  $jws->getPayload();
+        $payload = $jws->getPayload();
         if (!$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64')) {
             $encoded_payload = Base64Url::encode(is_string($payload) ? $payload : json_encode($payload));
+
             return sprintf('%s.%s', $encoded_protected_headers, $encoded_payload);
         }
 
