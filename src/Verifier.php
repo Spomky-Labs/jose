@@ -114,7 +114,7 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\JWSInterface       $jws
      * @param \Jose\Object\SignatureInterface $signature
-     * @param mixed|null                      $detached_payload
+     * @param string|null                     $detached_payload
      *
      * @return string
      */

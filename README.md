@@ -77,7 +77,7 @@ JWKSet is fully supported.
 * [x] RS256, RS384, RS512
 * [x] PS256, PS384, PS512
 * [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
-* [x] Ed25519 ([third party extension reauired](https://github.com/encedo/php-ed25519-ext))
+* [x] Ed25519 ([third party extension required](https://github.com/encedo/php-ed25519-ext))
 * [ ] Ed448
 
 ## Supported Key Encryption Algorithms
@@ -99,7 +99,7 @@ JWKSet is fully supported.
 * [x] A128GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A192GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A256GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
-* [x] X25519 ([third party extension reauired](https://github.com/encedo/php-curve25519-ext)
+* [x] X25519 ([third party extension required](https://github.com/encedo/php-curve25519-ext)
 * [ ] X448
 
 ## Supported Content Encryption Algorithms
