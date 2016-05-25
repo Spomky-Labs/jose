@@ -20,7 +20,7 @@ use Base64Url\Base64Url;
 final class JWS implements JWSInterface
 {
     use JWT;
-    
+
     private $is_payload_detached;
 
     /**
@@ -217,7 +217,7 @@ final class JWS implements JWSInterface
     private function checkPayloadEncoding()
     {
         $is_encoded = null;
-        foreach($this->getSignatures() as $signature) {
+        foreach ($this->getSignatures() as $signature) {
             if (null === $is_encoded) {
                 $is_encoded = $this->isPayloadEncoded($signature);
             }

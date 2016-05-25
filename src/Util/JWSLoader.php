@@ -28,7 +28,6 @@ final class JWSLoader
     {
         $jws = new JWS();
 
-
         foreach ($data['signatures'] as $signature) {
             $bin_signature = Base64Url::decode($signature['signature']);
             $protected_headers = self::getProtectedHeaders($signature);
@@ -75,7 +74,7 @@ final class JWSLoader
     private static function populatePayload(JWSInterface &$jws, array $data)
     {
         $is_encoded = null;
-        foreach($jws->getSignatures() as $signature) {
+        foreach ($jws->getSignatures() as $signature) {
             if (null === $is_encoded) {
                 $is_encoded = self::isPayloadEncoded($signature);
             }

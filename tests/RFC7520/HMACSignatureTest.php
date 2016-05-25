@@ -11,7 +11,6 @@
 
 namespace Jose\Test\RFC7520;
 
-use Base64Url\Base64Url;
 use Jose\Factory\JWSFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
