@@ -29,6 +29,22 @@ class JWKFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('{"kty":"EC","crv":"P-256","x":"xEsr_55aqgFXdrbRNz1_WSNI8UaSUxCka2kGEN1bXsI","y":"SM45Hsr9dnUR6Ox-TpmNv2fbDX4CoVo-3patMUpXANA","x5c":["MIIB0jCCAXegAwIBAgIJAK2o1kQ5JwpUMAoGCCqGSM49BAMCMEUxCzAJBgNVBAYT\nAkFVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEwHwYDVQQKDBhJbnRlcm5ldCBXaWRn\naXRzIFB0eSBMdGQwHhcNMTUxMTA4MTUxMTU2WhcNMTYxMTA3MTUxMTU2WjBFMQsw\nCQYDVQQGEwJBVTETMBEGA1UECAwKU29tZS1TdGF0ZTEhMB8GA1UECgwYSW50ZXJu\nZXQgV2lkZ2l0cyBQdHkgTHRkMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAExEsr\n\/55aqgFXdrbRNz1\/WSNI8UaSUxCka2kGEN1bXsJIzjkeyv12dRHo7H5OmY2\/Z9sN\nfgKhWj7elq0xSlcA0KNQME4wHQYDVR0OBBYEFKIGgCZoS388STT0qjoX\/swKYBXh\nMB8GA1UdIwQYMBaAFKIGgCZoS388STT0qjoX\/swKYBXhMAwGA1UdEwQFMAMBAf8w\nCgYIKoZIzj0EAwIDSQAwRgIhAK5OqQoBGR\/pj2NOb+PyRKK4k4d3Muj9z\/6LsJK+\nkkgUAiEA+FY4SWKv4mfe0gsOBId0Aah\/HtVZxDBe3bCXOQM8MMM="],"x5t":"ZnnaQDssCKJQZLp6zyHssIZOa7o","x5t#256":"v7VlokKTGL3anRk8Nl0VcqVC9u5j2Fb5tdlQntUgDT4"}', json_encode($result));
     }
 
+    public function testCreateFromKey()
+    {
+        $jwk = JWKFactory::createFromKey(file_get_contents(__DIR__ . '/../Keys/EC/private.es256.encrypted.key'), 'test');
+        $this->assertEquals('{"kty":"EC","crv":"P-256","d":"q_VkzNnxTG39jHB0qkwA_SeVXud7yCHT7kb7kZv-0xQ","x":"vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U","y":"oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE"}', json_encode($jwk));
+    }
+
+    public function testCreateFromResource()
+    {
+        $res = openssl_x509_read(file_get_contents(__DIR__.'/../Certificates/RSA/PEM/1024b-rsa-example-cert.pem'));
+
+        $jwk = JWKFactory::createFromX509Resource($res);
+
+        $this->assertInstanceOf(JWKInterface::class, $jwk);
+        $this->assertEquals('{"kty":"RSA","n":"xgEGvHk-U_RY0j9l3MP7o-S2a6uf4XaRBhu1ztdCHz8tMG8Kj4_qJmgsSZQD17sRctHGBTUJWp4CLtBwCf0zAGVzySwUkcHSu1_2mZ_w7Nr0TQHKeWr_j8pvXH534DKEvugr21DAHbi4c654eLUL-JW_wJJYqJh7qHM3W3Fh7ys","e":"AQAB","x5c":["MIICVjCCAb8CAg37MA0GCSqGSIb3DQEBBQUAMIGbMQswCQYDVQQGEwJKUDEOMAwG\nA1UECBMFVG9reW8xEDAOBgNVBAcTB0NodW8ta3UxETAPBgNVBAoTCEZyYW5rNERE\nMRgwFgYDVQQLEw9XZWJDZXJ0IFN1cHBvcnQxGDAWBgNVBAMTD0ZyYW5rNEREIFdl\nYiBDQTEjMCEGCSqGSIb3DQEJARYUc3VwcG9ydEBmcmFuazRkZC5jb20wHhcNMTIw\nODIyMDUyNzIzWhcNMTcwODIxMDUyNzIzWjBKMQswCQYDVQQGEwJKUDEOMAwGA1UE\nCAwFVG9reW8xETAPBgNVBAoMCEZyYW5rNEREMRgwFgYDVQQDDA93d3cuZXhhbXBs\nZS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAMYBBrx5PlP0WNI\/ZdzD\n+6Pktmurn+F2kQYbtc7XQh8\/LTBvCo+P6iZoLEmUA9e7EXLRxgU1CVqeAi7QcAn9\nMwBlc8ksFJHB0rtf9pmf8Oza9E0Bynlq\/4\/Kb1x+d+AyhL7oK9tQwB24uHOueHi1\nC\/iVv8CSWKiYe6hzN1txYe8rAgMBAAEwDQYJKoZIhvcNAQEFBQADgYEAASPdjigJ\nkXCqKWpnZ\/Oc75EUcMi6HztaW8abUMlYXPIgkV2F7YanHOB7K4f7OOLjiz8DTPFf\njC9UeuErhaA\/zzWi8ewMTFZW\/WshOrm3fNvcMrMLKtH534JKvcdMg6qIdjTFINIr\nevnAhf0cwULaebn+lMs8Pdl7y37+sfluVok="],"x5t":"4bK45ewZ00Wk-a_shpTw2cCqJc8","x5t#256":"5F5GTPOxBGAOsVyuYzqUBjri0R2YDTiDowiQbs6oGgU"}', json_encode($jwk));
+    }
+
     public function testCreateFromECCertificateFileInPEMFormat()
     {
         $result = JWKFactory::createFromCertificateFile(__DIR__.'/../Certificates/EC/PEM/prime256v1-cert.pem');
