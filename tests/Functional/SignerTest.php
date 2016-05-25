@@ -26,20 +26,6 @@ class SignerTest extends TestCase
 {
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage No payload.
-     */
-    public function testNoPayload()
-    {
-        $signer = Signer::createSigner([], $this->getLogger());
-
-        $jws = JWSFactory::createJWSWithDetachedPayload($this->getKey3(), $payload);
-        $jws = $jws->addSignatureInformation($this->getKey1(), []);
-
-        $signer->sign($jws);
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage No "alg" parameter set in the header.
      */
     public function testAlgParameterIsMissing()
@@ -121,22 +107,19 @@ class SignerTest extends TestCase
     {
         $jws0 = JWSFactory::createJWSToCompactJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512']);
         $jws1 = JWSFactory::createJWSToCompactJSON('Live long and Prosper.', $this->getKey2(), ['alg' => 'RS512']);
-        $jws2 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Live long and Prosper.', $this->getKey1(), $encoded_payload_2, ['alg' => 'HS512']);
-        $jws3 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Live long and Prosper.', $this->getKey2(), $encoded_payload_3, ['alg' => 'RS512']);
+        $jws2 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512']);
+        $jws3 = JWSFactory::createJWSWithDetachedPayloadToCompactJSON('Live long and Prosper.', $this->getKey2(), ['alg' => 'RS512']);
 
         $this->assertEquals('eyJhbGciOiJIUzUxMiJ9.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.TjxvVLKLc1kU5XW1NjZlI6_kQHjeU2orTWBZ7p0KuRzq_9lyPWR04PAUpbYkaLJLsmIJ8Fxi8Gsrc0khPtFxfQ', $jws0);
         $this->assertEquals('eyJhbGciOiJSUzUxMiJ9.TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg.cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA', $jws1);
         $this->assertEquals('eyJhbGciOiJIUzUxMiJ9..TjxvVLKLc1kU5XW1NjZlI6_kQHjeU2orTWBZ7p0KuRzq_9lyPWR04PAUpbYkaLJLsmIJ8Fxi8Gsrc0khPtFxfQ', $jws2);
         $this->assertEquals('eyJhbGciOiJSUzUxMiJ9..cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA', $jws3);
 
-        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload_2);
-        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload_3);
-
         $loader = new Loader();
         $loaded_0 = $loader->loadAndVerifySignatureUsingKey($jws0, $this->getKey1(), ['HS512']);
         $loaded_1 = $loader->loadAndVerifySignatureUsingKey($jws1, $this->getKey2(), ['RS512']);
-        $loaded_2 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg');
-        $loaded_3 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg');
+        $loaded_2 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'Live long and Prosper.');
+        $loaded_3 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'Live long and Prosper.');
 
         $this->assertInstanceOf(JWSInterface::class, $loaded_0);
         $this->assertInstanceOf(JWSInterface::class, $loaded_1);
@@ -169,22 +152,19 @@ class SignerTest extends TestCase
     {
         $jws0 = JWSFactory::createJWSToFlattenedJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512'], ['foo' => 'bar']);
         $jws1 = JWSFactory::createJWSToFlattenedJSON('Live long and Prosper.', $this->getKey2(), ['alg' => 'RS512'], ['plic' => 'ploc']);
-        $jws2 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Live long and Prosper.', $this->getKey1(), $encoded_payload_2, ['alg' => 'HS512'], ['foo' => 'bar']);
-        $jws3 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Live long and Prosper.', $this->getKey2(), $encoded_payload_3, ['alg' => 'RS512'], ['plic' => 'ploc']);
+        $jws2 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Live long and Prosper.', $this->getKey1(), ['alg' => 'HS512'], ['foo' => 'bar']);
+        $jws3 = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON('Live long and Prosper.', $this->getKey2(), ['alg' => 'RS512'], ['plic' => 'ploc']);
 
         $this->assertEquals('{"payload":"TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg","protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar"},"signature":"TjxvVLKLc1kU5XW1NjZlI6_kQHjeU2orTWBZ7p0KuRzq_9lyPWR04PAUpbYkaLJLsmIJ8Fxi8Gsrc0khPtFxfQ"}', $jws0);
         $this->assertEquals('{"payload":"TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg","protected":"eyJhbGciOiJSUzUxMiJ9","header":{"plic":"ploc"},"signature":"cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA"}', $jws1);
         $this->assertEquals('{"protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar"},"signature":"TjxvVLKLc1kU5XW1NjZlI6_kQHjeU2orTWBZ7p0KuRzq_9lyPWR04PAUpbYkaLJLsmIJ8Fxi8Gsrc0khPtFxfQ"}', $jws2);
         $this->assertEquals('{"protected":"eyJhbGciOiJSUzUxMiJ9","header":{"plic":"ploc"},"signature":"cR-npy2oEi275rpeTAKooLRzOhIOFMewpzE38CLx4_CtdkN4Y7EUlca9ryV6yGMH8SswUqosMnmUU8XYg7xkuNAc6mCODJVF2exfb_Mulmr9YolQrLFrFRsMk1rztXMinCMQeCe5ue3Ck4E4aJlIkjf-d0DJktoIhH6d2gZ-iJeLQ32wcBhPcEbj2gr7K_wYKlEXhKFwG59OE-hIi9IHXEKvK-2V5vzZLVC80G4aWYd3D-2eX3LF1K69NP04jGcu1D4l9UV8zTz1gOWe697iZG0JyKhSccUaHZ0TfEa8cT0tm6xTz6tpUGSDdvPQU8JCU8GTOsi9ifxTsI-GlWE3YA"}', $jws3);
 
-        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload_2);
-        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload_3);
-
         $loader = new Loader();
         $loaded_0 = $loader->loadAndVerifySignatureUsingKey($jws0, $this->getKey1(), ['HS512']);
         $loaded_1 = $loader->loadAndVerifySignatureUsingKey($jws1, $this->getKey2(), ['RS512']);
-        $loaded_2 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg');
-        $loaded_3 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg');
+        $loaded_2 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws2, $this->getKey1(), ['HS512'], 'Live long and Prosper.');
+        $loaded_3 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload($jws3, $this->getKey2(), ['RS512'], 'Live long and Prosper.');
 
         $this->assertInstanceOf(JWSInterface::class, $loaded_0);
         $this->assertInstanceOf(JWSInterface::class, $loaded_1);
@@ -351,6 +331,146 @@ class SignerTest extends TestCase
         $this->assertEquals($payload, $loaded->getPayload());
 
         $verifier->verifyWithKeySet($loaded, $this->getSymmetricKeySet());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/rfc7797#section-4
+     * @see https://tools.ietf.org/html/rfc7797#section-4.2
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Unable to convert the JWS with non-encoded payload.
+     */
+    public function testCompactJSONWithUnencodedPayload()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            "alg" => "HS256",
+            "b64" => false,
+            "crit" => ["b64"],
+        ];
+
+        $key = new JWK([
+            "kty" => "oct",
+            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        ]);
+
+        $expected_result = [
+            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+            "payload" => "$.02",
+            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+        ];
+
+        JWSFactory::createJWSToCompactJSON($payload, $key, $protected_header);
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/rfc7797#section-4
+     * @see https://tools.ietf.org/html/rfc7797#section-4.2
+     */
+    public function testCompactJSONWithUnencodedDetachedPayload()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            "alg" => "HS256",
+            "b64" => false,
+            "crit" => ["b64"],
+        ];
+
+        $key = new JWK([
+            "kty" => "oct",
+            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        ]);
+
+        $expected_result = [
+            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+            "payload" => "$.02",
+            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+        ];
+
+        $jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
+        $this->assertEquals('eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY', $jws);
+
+        $loader = new Loader();
+        $loaded = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload(
+            $jws,
+            $key,
+            ['HS256'],
+            $payload,
+            $index
+        );
+
+        $this->assertInstanceOf(JWSInterface::class, $loaded);
+        $this->assertEquals(0, $index);
+        $this->assertEquals($protected_header, $loaded->getSignature(0)->getProtectedHeaders());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/rfc7797#section-4
+     * @see https://tools.ietf.org/html/rfc7797#section-4.2
+     */
+    public function testFlattenedJSONWithUnencodedPayload()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            "alg" => "HS256",
+            "b64" => false,
+            "crit" => ["b64"],
+        ];
+
+        $key = new JWK([
+            "kty" => "oct",
+            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        ]);
+
+        $expected_result = [
+            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+            "payload" => "$.02",
+            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+        ];
+
+        $jws = JWSFactory::createJWSToFlattenedJSON($payload, $key, $protected_header);
+
+        $this->assertEquals($expected_result, json_decode($jws, true));
+
+        $loader = new Loader();
+        $loaded = $loader->loadAndVerifySignatureUsingKey(
+            $jws,
+            $key,
+            ['HS256'],
+            $index
+        );
+
+        $this->assertInstanceOf(JWSInterface::class, $loaded);
+        $this->assertEquals($payload, $loaded->getPayload());
+        $this->assertEquals(0, $index);
+        $this->assertEquals($protected_header, $loaded->getSignature(0)->getProtectedHeaders());
+    }
+
+    /**
+     * @see https://tools.ietf.org/html/rfc7797#section-4
+     * @see https://tools.ietf.org/html/rfc7797#section-4.2
+     */
+    public function testFlattenedJSONWithUnencodedDetachedPayload()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            "alg" => "HS256",
+            "b64" => false,
+            "crit" => ["b64"],
+        ];
+
+        $key = new JWK([
+            "kty" => "oct",
+            "k" => "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow",
+        ]);
+
+        $expected_result = [
+            "protected" => "eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19",
+            "signature" => "A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY",
+        ];
+
+        $jws = JWSFactory::createJWSWithDetachedPayloadToFlattenedJSON($payload, $key, $protected_header);
+
+        $this->assertEquals($expected_result, json_decode($jws, true));
     }
 
     /**

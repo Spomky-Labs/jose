@@ -9,7 +9,6 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
-use Base64Url\Base64Url;
 use Jose\Factory\CheckerManagerFactory;
 use Jose\Factory\JWSFactory;
 use Jose\Object\JWK;
@@ -43,7 +42,6 @@ class JWSTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($jws->hasClaim('nbf'));
         $this->assertTrue($jws->hasClaim('iss'));
         $this->assertEquals('Me', $jws->getClaim('iss'));
-        $this->assertEquals($claims, json_decode(Base64Url::decode($jws->getEncodedPayload()), true));
         $this->assertEquals($claims, $jws->getPayload());
         $this->assertEquals($claims, $jws->getClaims());
         $this->assertEquals(0, $jws->countSignatures());

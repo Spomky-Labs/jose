@@ -11,6 +11,7 @@
 
 namespace Jose\Test\RFC7520;
 
+use Base64Url\Base64Url;
 use Jose\Factory\JWSFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -119,11 +120,11 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
             'kid' => '018c0ae5-4d9b-471b-bfd6-eef314bc7037',
         ];
 
-        $jws = JWSFactory::createJWSWithDetachedPayload($payload, $encoded_payload);
+        $jws = JWSFactory::createJWS($payload, true);
         $jws = $jws->addSignatureInformation($key, $headers);
 
         $signer = Signer::createSigner(['HS256']);
-        $signer->signWithDetachedPayload($jws, $encoded_payload);
+        $signer->sign($jws);
 
         $verifer = Verifier::createVerifier(['HS256']);
 
@@ -144,13 +145,13 @@ class HMACSignatureTest extends \PHPUnit_Framework_TestCase
 
         $loader = new Loader();
         $loaded_compact_json = $loader->load($expected_compact_json);
-        $verifer->verifyWithKey($loaded_compact_json, $key, $encoded_payload);
+        $verifer->verifyWithKey($loaded_compact_json, $key, $payload);
 
         $loaded_flattened_json = $loader->load($expected_flattened_json);
-        $verifer->verifyWithKey($loaded_flattened_json, $key, $encoded_payload);
+        $verifer->verifyWithKey($loaded_flattened_json, $key, $payload);
 
         $loaded_json = $loader->load($expected_json);
-        $verifer->verifyWithKey($loaded_json, $key, $encoded_payload);
+        $verifer->verifyWithKey($loaded_json, $key, $payload);
     }
 
     /**

@@ -254,7 +254,7 @@ class RSASignatureTest extends TestCase
                 'qi'  => 'BocuCOEOq-oyLDALwzMXU8gOf3IL1Q1_BWwsdoANoh6i179psxgE4JXToWcpXZQQqub8ngwE6uR9fpd3m6N_PL4T55vbDDyjPKmrL2ttC2gOtx9KrpPh-Z7LQRo4BE48nHJJrystKHfFlaH2G7JxHNgMBYVADyttN09qEoav8Os',
         ]);
 
-        $jws = JWSFactory::createJWSWithDetachedPayload('Live long and Prosper.', $encoded_payload);
+        $jws = JWSFactory::createJWS('Live long and Prosper.', true);
 
         $signer = Signer::createSigner(['RS256']);
 
@@ -270,10 +270,9 @@ class RSASignatureTest extends TestCase
             ]
         );
 
-        $signer->signWithDetachedPayload($jws, $encoded_payload);
+        $signer->sign($jws);
 
         $this->assertEquals('eyJhbGciOiJSUzI1NiIsImp3ayI6eyJrdHkiOiJSU0EiLCJuIjoidHBTMVptZlZLVlA1S29mSWhNQlAwdFNXYzRxbGg2Zm0ybHJaU2t1S3hVakVhV2p6WlN6czcyZ0VJR3hyYVd1c01kb1J1VjU0eHNXUnlmNUtlWlQwUy1JNVBybGUzSWRpM2dJQ2lPNE53dk1rNkp3U0JjSld3bVNMRkVLeVVTbkIyQ3RmaUdjMF81clFDcGNFdF9EbjVpTS1CTm43ZnFwb0xJYmtzOHJYS1VJajgtcU1WcWtUWHNFS2VLaW5FMjN0MXlrTWxkc05hYU9ILWh2R3RpNUp0MkRNbkgxSmpvWGREWGZ4dlNQXzBnalVZYjBla3R1ZFlGWG9BNndla21ReUplSW12Z3g0TXl6MUk0aUh0a1lfQ3A3SjRNbjFlalo2SE5teXZvVEVfNE91WTF1Q2VZdjRVeVhGYzFzMXVVeVl0ajR6NTdxc0hHc1M0ZFEzQTJNSnN3IiwiZSI6IkFRQUIifX0..QyRlOCcNBMvCEkJRCQA71y2bVX690g0A6wsC2YXf9_VxOYK-g9-xy-1KjghVXkDPe1gDvYSYnL9oWs1PaFKV0_-ijvvJQE6_5pheKTfIVN3Qbkzjxsm4qXTeChBI5MKeBR8z8iWLFT4xPO8NkelwbS2tSUCHrejio6lDDlWhsqSUP8NjHJhqCSZuCDGu3fMMA24cZrYev3tQRc7HHjyi3q_17NZri7feBd7w3NEDkJp7wT_ZclJrYoucHIo1ypaDPJtM-W1-W-lAVREka6Xq4Bg60zdSZ83ODRQTP_IwQrv7hrIcbrRwn1Za_ORZPRPQDP0CMgkb7TkWDZnbPsAzlQ', $jws->toCompactJSON(0));
-        $this->assertEquals('TGl2ZSBsb25nIGFuZCBQcm9zcGVyLg', $encoded_payload);
         $loader = new Loader();
         $result = $loader->load($jws->toCompactJSON(0));
 
@@ -571,7 +570,7 @@ class RSASignatureTest extends TestCase
         $this->assertEquals(2, $result->countSignatures());
         $this->assertEquals('RS256', $result->getSignature(0)->getProtectedHeader('alg'));
         $this->assertEquals('ES256', $result->getSignature(1)->getProtectedHeader('alg'));
-        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), 'eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ');
+        $verifier->verifyWithKeySet($result, $this->getPrivateKeySet(), Base64Url::decode('eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ'));
     }
 
     /**

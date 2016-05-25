@@ -11,9 +11,11 @@
 
 namespace Jose\Util;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Object\JWS;
 use Jose\Object\JWSInterface;
+use Jose\Object\SignatureInterface;
 
 final class JWSLoader
 {
@@ -26,7 +28,6 @@ final class JWSLoader
     {
         $jws = new JWS();
 
-        self::populatePayload($jws, $data);
 
         foreach ($data['signatures'] as $signature) {
             $bin_signature = Base64Url::decode($signature['signature']);
@@ -35,6 +36,8 @@ final class JWSLoader
 
             $jws = $jws->addSignatureFromLoadedData($bin_signature, $protected_headers, $headers);
         }
+
+        self::populatePayload($jws, $data);
 
         return $jws;
     }
@@ -71,13 +74,33 @@ final class JWSLoader
      */
     private static function populatePayload(JWSInterface &$jws, array $data)
     {
+        $is_encoded = null;
+        foreach($jws->getSignatures() as $signature) {
+            if (null === $is_encoded) {
+                $is_encoded = self::isPayloadEncoded($signature);
+            }
+            Assertion::eq($is_encoded, self::isPayloadEncoded($signature), 'Foreign payload encoding detected. The JWS cannot be loaded.');
+        }
         if (array_key_exists('payload', $data)) {
-            $payload = Base64Url::decode($data['payload']);
+            $payload = $data['payload'];
+            if (false !== $is_encoded) {
+                $payload = Base64Url::decode($payload);
+            }
             $json = json_decode($payload, true);
             if (null !== $json && !empty($payload)) {
                 $payload = $json;
             }
             $jws = $jws->withPayload($payload);
         }
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return bool
+     */
+    private static function isPayloadEncoded(SignatureInterface $signature)
+    {
+        return !$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64');
     }
 }

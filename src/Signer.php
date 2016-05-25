@@ -12,6 +12,7 @@
 namespace Jose;
 
 use Assert\Assertion;
+use Base64Url\Base64Url;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\CommonSigningMethods;
 use Jose\Behaviour\HasJWAManager;
@@ -60,38 +61,22 @@ final class Signer implements SignerInterface
     /**
      * {@inheritdoc}
      */
-    public function signWithDetachedPayload(JWSInterface &$jws, $detached_payload)
-    {
-        $this->log(LogLevel::INFO, 'Trying to sign the JWS object with detached payload', ['jws' => $jws, 'payload' => $detached_payload]);
-        $nb_signatures = $jws->countSignatures();
-
-        for ($i = 0; $i < $nb_signatures; $i++) {
-            $this->computeSignature($detached_payload, $jws->getSignature($i));
-        }
-
-        $this->log(LogLevel::INFO, 'Signature added');
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function sign(JWSInterface &$jws)
     {
         $this->log(LogLevel::INFO, 'Trying to sign the JWS object', ['jws' => $jws]);
-        Assertion::notNull($jws->getEncodedPayload(), 'No payload.');
         $nb_signatures = $jws->countSignatures();
 
         for ($i = 0; $i < $nb_signatures; $i++) {
-            $this->computeSignature($jws->getEncodedPayload(), $jws->getSignature($i));
+            $this->computeSignature($jws, $jws->getSignature($i));
         }
         $this->log(LogLevel::INFO, 'JWS object signed!');
     }
 
     /**
-     * @param string                          $payload
+     * @param \Jose\Object\JWSInterface       $jws
      * @param \Jose\Object\SignatureInterface $signature
      */
-    private function computeSignature($payload, SignatureInterface &$signature)
+    private function computeSignature(JWSInterface $jws, SignatureInterface &$signature)
     {
         $this->log(LogLevel::DEBUG, 'Creation of the signature');
         if (null === $signature->getSignatureKey()) {
@@ -104,7 +89,13 @@ final class Signer implements SignerInterface
         $signature_algorithm = $this->getSignatureAlgorithm($signature->getAllHeaders(), $signature->getSignatureKey());
 
         $this->log(LogLevel::DEBUG, 'Trying to compute the signature');
-        $value = $signature_algorithm->sign($signature->getSignatureKey(), $signature->getEncodedProtectedHeaders().'.'.$payload);
+        $input = $this->getInputToSign($jws, $signature);
+        
+        $value = $signature_algorithm->sign(
+            $signature->getSignatureKey(),
+            $input
+        );
+
         $this->log(LogLevel::DEBUG, 'Signature computation done');
 
         $signature = Signature::createSignatureFromLoadedData(
@@ -114,6 +105,24 @@ final class Signer implements SignerInterface
         );
 
         $this->log(LogLevel::DEBUG, 'The signature is done', ['signature' => $signature]);
+    }
+
+    /**
+     * @param \Jose\Object\JWSInterface       $jws
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return string
+     */
+    private function getInputToSign(JWSInterface $jws, SignatureInterface $signature)
+    {
+        $encoded_protected_headers = $signature->getEncodedProtectedHeaders();
+        $payload =  $jws->getPayload();
+        if (!$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64')) {
+            $encoded_payload = Base64Url::encode(is_string($payload) ? $payload : json_encode($payload));
+            return sprintf('%s.%s', $encoded_protected_headers, $encoded_payload);
+        }
+
+        return sprintf('%s.%s', $encoded_protected_headers, $payload);
     }
 
     /**

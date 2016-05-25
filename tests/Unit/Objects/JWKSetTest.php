@@ -1,0 +1,99 @@
+<?php
+
+/*
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2014-2016 Spomky-Labs
+ *
+ * This software may be modified and distributed under the terms
+ * of the MIT license.  See the LICENSE file for details.
+ */
+
+use Jose\Test\TestCase;
+use Jose\Object\JWKInterface;
+
+/**
+ * Class JWKTest.
+ *
+ * @group Unit
+ * @group JWKSet
+ */
+class JWKSetTest extends TestCase
+{
+    public function testKeySelection()
+    {
+        $jwkset = $this->getPublicKeySet();
+
+        $jwk = $jwkset->selectKey('enc');
+        $this->assertInstanceOf(JWKInterface::class, $jwk);
+        $this->assertEquals([
+                'kty' => 'RSA',
+                'n'   => 'oahUIoWw0K0usKNuOR6H4wkf4oBUXHTxRvgb48E-BVvxkeDNjbC4he8rUWcJoZmds2h7M70imEVhRU5djINXtqllXI4DFqcI1DgjT9LewND8MW2Krf3Spsk_ZkoFnilakGygTwpZ3uesH-PFABNIUYpOiN15dsQRkgr0vEhxN92i2asbOenSZeyaxziK72UwxrrKoExv6kc5twXTq4h-QChLOln0_mtUZwfsRaMStPs6mS6XrgxnxbWhojf663tuEQueGC-FCMfra36C9knDFGzKsNa7LZK2djYgyD3JR_MB_4NUJW_TqOQtwHYbxevoJArm-L5StowjzGy-_bq6Gw',
+                'e'   => 'AQAB',
+            ],
+            $jwk->getAll()
+        );
+    }
+
+    public function testKeySelectionWithAlgorithm()
+    {
+        $jwkset = $this->getPublicKeySet();
+
+        $jwk = $jwkset->selectKey('sig', 'RS256');
+        $this->assertInstanceOf(JWKInterface::class, $jwk);
+        $this->assertEquals([
+                'kid' => '71ee230371d19630bc17fb90ccf20ae632ad8cf8',
+                'kty' => 'RSA',
+                'alg' => 'RS256',
+                'use' => 'sig',
+                'n'   => 'vnMTRCMvsS04M1yaKR112aB8RxOkWHFixZO68wCRlVLxK4ugckXVD_Ebcq-kms1T2XpoWntVfBuX40r2GvcD9UsTFt_MZlgd1xyGwGV6U_tfQUll5mKxCPjr60h83LXKJ_zmLXIqkV8tAoIg78a5VRWoms_0Bn09DKT3-RBWFjk=',
+                'e'   => 'AQAB',
+            ],
+            $jwk->getAll()
+        );
+    }
+
+    public function testKeySelectionWithAlgorithmAndKeyId()
+    {
+        $jwkset = $this->getPublicKeySet();
+
+        $jwk = $jwkset->selectKey('sig', 'RS256', ['kid' => '02491f945c951adf156f370788e8ccdabf8877a8']);
+        $this->assertInstanceOf(JWKInterface::class, $jwk);
+        $this->assertEquals([
+                'kid' => '02491f945c951adf156f370788e8ccdabf8877a8',
+                'kty' => 'RSA',
+                'alg' => 'RS256',
+                'use' => 'sig',
+                'n'   => 'rI67uHIDWDgCy_Ut-FhhjTCkEcqzoO80IRgdpk_fJHlDmXhMTJKPizxbIEMs0wRHRZpwH-4D20thpnQB5Mgx6-XM9kOvcYpHSdcYME77BwX6uQG-hw2w77NOhYiCSZCLzx-5ld5Wjy0dympL-ExqQw-wrWipMX7NQhIbJqVbZ18=',
+                'e'   => 'AQAB',
+            ],
+            $jwk->getAll()
+        );
+    }
+
+    public function testKeySelectionWithKeyId()
+    {
+        $jwkset = $this->getPublicKeySet();
+
+        $jwk = $jwkset->selectKey('sig', null, ['kid' => '02491f945c951adf156f370788e8ccdabf8877a8']);
+        $this->assertInstanceOf(JWKInterface::class, $jwk);
+        $this->assertEquals([
+                'kid' => '02491f945c951adf156f370788e8ccdabf8877a8',
+                'kty' => 'RSA',
+                'alg' => 'RS256',
+                'use' => 'sig',
+                'n'   => 'rI67uHIDWDgCy_Ut-FhhjTCkEcqzoO80IRgdpk_fJHlDmXhMTJKPizxbIEMs0wRHRZpwH-4D20thpnQB5Mgx6-XM9kOvcYpHSdcYME77BwX6uQG-hw2w77NOhYiCSZCLzx-5ld5Wjy0dympL-ExqQw-wrWipMX7NQhIbJqVbZ18=',
+                'e'   => 'AQAB',
+            ],
+            $jwk->getAll()
+        );
+    }
+
+    public function testKeySelectionReturnsNothing()
+    {
+        $jwkset = $this->getPublicKeySet();
+
+        $jwk = $jwkset->selectKey('enc', null, ['kid' => '02491f945c951adf156f370788e8ccdabf8877a8']);
+        $this->assertNull($jwk);
+    }
+}

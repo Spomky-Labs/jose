@@ -36,12 +36,6 @@ interface SignerInterface
 
     /**
      * @param \Jose\Object\JWSInterface $jws
-     * @param null|string               $detached_payload
-     */
-    public function signWithDetachedPayload(JWSInterface &$jws, $detached_payload);
-
-    /**
-     * @param \Jose\Object\JWSInterface $jws
      */
     public function sign(JWSInterface &$jws);
 }

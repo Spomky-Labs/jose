@@ -14,11 +14,19 @@ namespace Jose\Object;
 interface JWSInterface extends JWTInterface
 {
     /**
-     * @internal
-     *
-     * @return null|string
+     * @return bool
      */
-    public function getEncodedPayload();
+    public function isPayloadDetached();
+
+    /**
+     * @return \Jose\Object\JWTInterface
+     */
+    public function withDetachedPayload();
+
+    /**
+     * @return \Jose\Object\JWTInterface
+     */
+    public function withAttachedPayload();
 
     /**
      * Returns the number of signature associated with the JWS.

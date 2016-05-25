@@ -20,6 +20,8 @@ use Base64Url\Base64Url;
 final class JWS implements JWSInterface
 {
     use JWT;
+    
+    private $is_payload_detached;
 
     /**
      * @var \Jose\Object\SignatureInterface[]
@@ -29,18 +31,50 @@ final class JWS implements JWSInterface
     /**
      * {@inheritdoc}
      */
-    public function getEncodedPayload()
+    public function isPayloadDetached()
     {
-        $payload = $this->getPayload();
-        if (null === $payload) {
-            return;
-        } elseif (is_string($payload)) {
-            return Base64Url::encode($payload);
-        }
-        $encoded = json_encode($payload);
-        Assertion::notNull($encoded, 'Unsupported payload.');
+        return $this->is_payload_detached;
+    }
 
-        return Base64Url::encode($encoded);
+    /**
+     * {@inheritdoc}
+     */
+    public function withDetachedPayload()
+    {
+        $jwt = clone $this;
+        $jwt->is_payload_detached = true;
+
+        return $jwt;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withAttachedPayload()
+    {
+        $jwt = clone $this;
+        $jwt->is_payload_detached = false;
+
+        return $jwt;
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return string|null
+     */
+    private function getEncodedPayload(SignatureInterface $signature)
+    {
+        if (true === $this->isPayloadDetached()) {
+            return;
+        }
+        $payload = $this->getPayload();
+        if (!is_string($payload)) {
+            $payload = json_encode($payload);
+        }
+        Assertion::notNull($payload, 'Unsupported payload.');
+
+        return $this->isPayloadEncoded($signature) ? Base64Url::encode($payload) : $payload;
     }
 
     /**
@@ -103,11 +137,12 @@ final class JWS implements JWSInterface
             empty($signature->getHeaders()),
             'The signature contains unprotected headers and cannot be converted into compact JSON'
         );
+        Assertion::true($this->isPayloadEncoded($signature) || empty($this->getEncodedPayload($signature)), 'Unable to convert the JWS with non-encoded payload.');
 
         return sprintf(
             '%s.%s.%s',
             $signature->getEncodedProtectedHeaders(),
-            $this->getEncodedPayload(),
+            $this->getEncodedPayload($signature),
             Base64Url::encode($signature->getSignature())
         );
     }
@@ -121,7 +156,7 @@ final class JWS implements JWSInterface
 
         $data = [];
         $values = [
-            'payload'   => $this->getEncodedPayload(),
+            'payload'   => $this->getEncodedPayload($signature),
             'protected' => $signature->getEncodedProtectedHeaders(),
             'header'    => $signature->getHeaders(),
         ];
@@ -144,8 +179,10 @@ final class JWS implements JWSInterface
         Assertion::greaterThan($this->countSignatures(), 0, 'No signature.');
 
         $data = [];
-        if (!empty($this->getEncodedPayload())) {
-            $data['payload'] = $this->getEncodedPayload();
+        $this->checkPayloadEncoding();
+
+        if (false === $this->isPayloadDetached()) {
+            $data['payload'] = $this->getEncodedPayload($this->getSignature(0));
         }
 
         $data['signatures'] = [];
@@ -165,5 +202,26 @@ final class JWS implements JWSInterface
         }
 
         return json_encode($data);
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     *
+     * @return bool
+     */
+    private function isPayloadEncoded(SignatureInterface $signature)
+    {
+        return !$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64');
+    }
+
+    private function checkPayloadEncoding()
+    {
+        $is_encoded = null;
+        foreach($this->getSignatures() as $signature) {
+            if (null === $is_encoded) {
+                $is_encoded = $this->isPayloadEncoded($signature);
+            }
+            Assertion::eq($is_encoded, $this->isPayloadEncoded($signature), 'Foreign payload encoding detected. The JWS cannot be converted.');
+        }
     }
 }
