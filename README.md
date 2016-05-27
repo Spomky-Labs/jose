@@ -25,11 +25,11 @@ This library aims to provide an implementation of:
 * JW**A** [JSON Web Algorithms (RFC 7518)](http://tools.ietf.org/html/rfc7518).
 * JW**K** [JSON Web Key (RFC 7517)](http://tools.ietf.org/html/rfc7517).
 
-Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are fully implemented and all test pass.
+It also implements the following specifications:
 
-This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
-
-The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unencoded Payload Option) is also supported.
+* Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) (fully implemented and all test pass).
+* JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
+* Unencoded Payload Option [RFC7797](https://tools.ietf.org/html/rfc7797).
 
 # Provided Features
 
