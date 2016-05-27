@@ -41,7 +41,7 @@ JWS or JWE objects support every input that can be serialized:
 * [x] Any variable of object that can be encoded/decoded into JSON:
     * [x] Primitives: integer, float...
     * [x] Array
-    * [x] Objects that implement the `` interface such as:
+    * [x] Objects that implement the `\JsonSerializable` interface such as:
         * [x] jwk+json content type (JWKInterface object)
         * [x] jwkset+json content type (JWKSetInterface object)
 
