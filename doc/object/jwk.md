@@ -4,18 +4,16 @@ The JWK object
 # Overview
 
 The JWK object represents a key. Depending on the key properties, it can be used to sign, verify a signature, encrypt or decrypt.
-This object must implement the interface `Jose\Object\JWKInterface` and must provide the following methods:
+The class `Jose\Object\JWK` implements the interface `Jose\Object\JWKInterface` and provides the following methods:
 * `get($name)`: get the value at key `$name`. Throws an exception if the key does not exist.
 * `has($name)`: return true if the key has a key/value pair `$name`
 * `getAll()`: get all key/value pairs
-* `thumbprint($algorithm)`: returns the thumbprint of the key using the hash algorithm `$algorithm`
+* `thumbprint($algorithm)`: returns the thumbprint of the key using the hash algorithm `$algorithm`. You can use any algorithm return by the `hash_algos()` method. 
 * `toPublic()`: if the key is private (RSA or EC private key), this method returns the public key.
 
 Note that a JWK object
 * is serializable: You can call `json_encode($jwk)` to display the key set as a string (e.g. `{'kty':'oct', 'k':'abcdef...'}`).
 * is immutable: you cannot modify it
-
-This library provides a class that implements this interface: `Jose\Object\JWK`.
 
 # Create a `JWK` object
 
@@ -23,7 +21,7 @@ To create a `JWK` object, simply instantiate the class and set values.
 Please note that the key/value pair `kty` MUST be set. 
 
 ```php
-use Jose\JWK;
+use `Jose\Object\JWK`;
 
 $jwk = new JWK([
     'kty' => 'oct',
@@ -180,7 +178,7 @@ $jwk = new JWK([
 # JWK Methods
 
 ```php
-use Jose\JWK;
+use `Jose\Object\JWK`;
 
 $jwk = new JWK([
     'kty' => 'oct',

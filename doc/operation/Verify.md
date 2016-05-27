@@ -59,6 +59,10 @@ $jws = $loader->loadAndVerifySignatureUsingKeySetAndDetachedPayload(
 );
 ```
 
+# Unencoded Payload
+
+The verification of the signature is automatically performed depending on the header parameters.
+
 # Signature Index and Security
 
 As explained before, the verified signature index is set in the variable passed as argument.

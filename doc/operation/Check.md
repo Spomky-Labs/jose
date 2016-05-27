@@ -66,6 +66,7 @@ class AnimalChecker implements ClaimCheckerInterface
 # The Checker Manager
 
 The Checker Manager will handle all checkers and verify a JWS.
+After the manager is created, you have to add the checkers. Then, you will be able to check the JWS.
 
 ```php
 use Jose\Factory\CheckerManager;
@@ -91,6 +92,9 @@ $checker_manager->addHeaderChecker(new CriticalHeaderChecker());
 // If the verification failed, an exception will be thrown.
 $checker_manager->checkJWS($jws, $signature_index);
 ```
+
+We highly recommend you to use the index returned by the [Verifier](../Verify.md#signature-index-and-security) to be sure to
+check claims of the verified signature.
 
 # The Checker Manager Factory
 

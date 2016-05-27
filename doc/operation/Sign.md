@@ -95,7 +95,6 @@ $claims = [
 $jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON(
     $claims,                      // The payload or claims to sign
     $key,                         // The key used to sign
-    $encoded_payload              // This variable will contain the encoded payload used as input for the signature
     [                             // Protected headers. Muse contains at least the algorithm
         'crit' => ['exp', 'aud'],
         'alg'  => 'RS256',
@@ -104,7 +103,6 @@ $jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON(
 ```
 
 Now the variable `$jws` contains a string that represents our JWS, but the payload is not included.
-
 
 ## Flattened JWS with/without Detached Payload
 
@@ -160,9 +158,8 @@ $claims = [
 // We have to create a JWS class using the JWSFactory.
 // The payload of this object contains our claims.
 $jws = JWSFactory::createJWS($claims);
-// Note that if you want to create a JWS with a detached payload, you can use the following method:
-// $jws = JWSFactory::createJWSWithDetachedPayload($claims, $detached_payload);
-// The variable $detached_payload will contain the encoded payload used to calculate the signature
+// Note that if you want to create a JWS with a detached payload, you just have to set the second parameter as true.
+// $jws = JWSFactory::createJWS($claims, true);
 
 // We add information to create the first signature
 $jws = $jws->addSignatureInformation(
@@ -210,4 +207,57 @@ $jws->toCompactJSON(0);
 
 // The second one into Flattened Serialization Mode
 $jws->toFlattenedJSON(1);
+```
+
+## Dealing with Unencoded Payload
+
+This library supports unencoded payload (see [RFC7797](https://tools.ietf.org/html/rfc7797)).
+You will be able to create JWS with such payload.
+
+```php
+use Jose\Factory\JWKFactory;
+use Jose\Factory\JWSFactory;
+
+// We load our key (JWK). It is an encrypted RSA key stored in a file
+// Additional parameters ('kid', 'alg' and 'use') are set for this key (not mandatory but recommended).
+$key = JWKFactory::createFromKeyFile(
+    '/Path/To/My/RSA/private.encrypted.key',
+    'Password',
+    [
+        'kid' => 'My Private RSA key',
+        'alg' => 'RS256',
+        'use' => 'sig',
+    ]
+);
+
+// We want to sign the following claims
+$claims = [
+    'nbf'     => time(),        // Not before
+    'iat'     => time(),        // Issued at
+    'exp'     => time() + 3600, // Expires at
+    'iss'     => 'Me',          // Issuer
+    'aud'     => 'You',         // Audience
+    'sub'     => 'My friend',   // Subject
+    'is_root' => true           // Custom claim
+];
+
+$jws = JWSFactory::createJWSToFlattenedJSON(
+    $claims,                      // The payload or claims to sign
+    $key,                         // The key used to sign
+    [                             // Protected headers. Muse contains at least the algorithm
+        'b64'  => false,                 // We indicates the payload must not be encoded
+        'crit' => ['exp', 'aud', 'b64'], // When 'b64' header is used, the 'crit' header must contain the 'b64' value
+        'alg'  => 'RS256',
+    ]
+);
+```
+
+**Please note that you can create a JWS in compact JSON when payload is not encoded only if the payload is detached.**
+
+```php
+// Will throw an exception
+jws = JWSFactory::createJWSToCompactJSON(...);
+
+// Will return the expected JWS in compact JSON
+jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON(...);
 ```

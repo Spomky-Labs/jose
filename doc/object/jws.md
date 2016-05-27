@@ -18,9 +18,18 @@ $jws = JWSFactory::createJWS([
 ]);
 ```
 
+If you want to create a JWS with a detaceh payload, just set `true` as second argument
+```php
+use Jose\Factory\JWSFactory;
+
+$jws = JWSFactory::createJWS('A JWS with a detached payload', true);
+```
+
 The variable `$jws` now contains an object that implements `Jose\Object\JWSInterface`.
 
-The methods available are:
+If the payload is detached, it will not be included when converted into the JSON representations.
+
+The available methods are:
 
 * `getPayload()`: Return the payload of the JWS.
 * `hasClaims()`: Return true if the payload is an array, else false.

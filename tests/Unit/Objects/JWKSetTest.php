@@ -94,16 +94,17 @@ class JWKSetTest extends TestCase
 
     public function testCreateKeySetFromValues()
     {
-        $values = [
+        $values = [ 'keys' => [[
             'kid' => '71ee230371d19630bc17fb90ccf20ae632ad8cf8',
             'kty' => 'RSA',
             'alg' => 'RS256',
             'use' => 'sig',
             'n'   => 'vnMTRCMvsS04M1yaKR112aB8RxOkWHFixZO68wCRlVLxK4ugckXVD_Ebcq-kms1T2XpoWntVfBuX40r2GvcD9UsTFt_MZlgd1xyGwGV6U_tfQUll5mKxCPjr60h83LXKJ_zmLXIqkV8tAoIg78a5VRWoms_0Bn09DKT3-RBWFjk=',
             'e'   => 'AQAB',
-        ];
+        ]]];
         $jwkset = JWKFactory::createFromValues($values);
         $this->assertInstanceOf(JWKSetInterface::class, $jwkset);
-        $this->assertEquals($values, $jwkset->getAll());
+        $this->assertEquals(1, $jwkset->countKeys());
+        $this->assertEquals($values['keys'][0], $jwkset[0]->getAll());
     }
 }

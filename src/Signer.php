@@ -115,6 +115,7 @@ final class Signer implements SignerInterface
      */
     private function getInputToSign(JWSInterface $jws, SignatureInterface $signature)
     {
+        $this->checkB64HeaderAndCrit($signature);
         $encoded_protected_headers = $signature->getEncodedProtectedHeaders();
         $payload = $jws->getPayload();
         if (!$signature->hasProtectedHeader('b64') || true === $signature->getProtectedHeader('b64')) {
@@ -124,6 +125,22 @@ final class Signer implements SignerInterface
         }
 
         return sprintf('%s.%s', $encoded_protected_headers, $payload);
+    }
+
+    /**
+     * @param \Jose\Object\SignatureInterface $signature
+     * 
+     * @throws \InvalidArgumentException
+     */
+    private function checkB64HeaderAndCrit(SignatureInterface $signature)
+    {
+        if (!$signature->hasProtectedHeader('b64')) {
+            return;
+        }
+        
+        Assertion::true($signature->hasProtectedHeader('crit'), 'The protected header parameter "crit" is mandatory when protected header parameter "b64" is set.');
+        Assertion::isArray($signature->getProtectedHeader('crit'), 'The protected header parameter "crit" must be an array.');
+        Assertion::inArray('b64', $signature->getProtectedHeader('crit'), 'The protected header parameter "crit" must contain "b64" when protected header parameter "b64" is set.');
     }
 
     /**

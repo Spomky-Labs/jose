@@ -4,7 +4,7 @@ The JWKSet object
 # Overview
 
 The JWKSet object represents a key set and is able to store multiple keys.
-This object implements the interface `Jose\Object\JWKSetInterface` and provides the following methods:
+The class `Jose\Object\JWKSet` implements the interface `Jose\Object\JWKSetInterface` and provides the following methods:
 * `getKey($index)`: get the key at index `$index`
 * `getKeys()`: get all keys
 * `addKey(JWKInterface $key)`: add a key
@@ -19,8 +19,6 @@ Note that a JWKSet object
     * `$jwkset[$index];`: Return the key at the index `$index`
     * `unset($jwkset[$index]);`: Remove the key at the index `$index`
 
-This library provides a class that implements this interface: `Jose\Object\JWKSet`.
-
 Example:
 
 ```php
@@ -28,7 +26,7 @@ use Jose\Object\JWKSet;
 
 $jwkset = new JWKSet();
 
-$jwkset = $jwkset->addKey($key1); // Remember that the object is immutable. The method 'addKey' returns a new JWKSet object.
+$jwkset->addKey($key1); // or $jwkset[] = $key1;
 print_r(json_encode($jwkset)); // {'keys':[{'kty':'oct', 'k':'abcdef...'}]}
 ```
 

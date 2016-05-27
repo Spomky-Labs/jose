@@ -380,12 +380,6 @@ class SignerTest extends TestCase
             'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
         ]);
 
-        $expected_result = [
-            'protected' => 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19',
-            'payload'   => '$.02',
-            'signature' => 'A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY',
-        ];
-
         $jws = JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
         $this->assertEquals('eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY', $jws);
 
@@ -401,6 +395,156 @@ class SignerTest extends TestCase
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals(0, $index);
         $this->assertEquals($protected_header, $loaded->getSignature(0)->getProtectedHeaders());
+    }
+
+    /**
+     * The library is able to support multiple payload encoding and conversion in JSON is available if payload is detached
+     */
+    public function testCompactJSONWithUnencodedDetachedPayloadAndMultipleSignatures()
+    {
+        $payload = '$.02';
+        $protected_header1 = [
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
+        ];
+        $protected_header2 = [
+            'alg'  => 'HS256',
+        ];
+
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+        ]);
+
+        $jws = JWSFactory::createJWS($payload, true);
+        $jws = $jws->addSignatureInformation($key, $protected_header1);
+        $jws = $jws->addSignatureInformation($key, $protected_header2);
+
+        $signer = new Signer(['HS256']);
+        $signer->sign($jws);
+
+        $expected_result = '{"signatures":[{"signature":"A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY","protected":"eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19"},{"signature":"5mvfOroL-g7HyqJoozehmsaqmvTYGEq5jTI1gVvoEoQ","protected":"eyJhbGciOiJIUzI1NiJ9"}]}';
+
+        $this->assertEquals($expected_result, $jws->toJSON());
+
+        $loader = new Loader();
+        $loaded1 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload(
+            $jws->toCompactJSON(0),
+            $key,
+            ['HS256'],
+            $payload,
+            $index1
+        );
+        $loaded2 = $loader->loadAndVerifySignatureUsingKeyAndDetachedPayload(
+            $jws->toCompactJSON(1),
+            $key,
+            ['HS256'],
+            $payload,
+            $index2
+        );
+
+        $this->assertInstanceOf(JWSInterface::class, $loaded1);
+        $this->assertInstanceOf(JWSInterface::class, $loaded2);
+        $this->assertEquals(0, $index1);
+        $this->assertEquals(0, $index2);
+        $this->assertEquals($protected_header1, $loaded1->getSignature(0)->getProtectedHeaders());
+        $this->assertEquals($protected_header2, $loaded2->getSignature(0)->getProtectedHeaders());
+    }
+
+    /**
+     * The library is able to support multiple payload encoding and conversion in JSON is not available if payload is not detached
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage  Foreign payload encoding detected. The JWS cannot be converted.
+     */
+    public function testCompactJSONWithUnencodedPayloadAndMultipleSignatures()
+    {
+        $payload = '$.02';
+        $protected_header1 = [
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['b64'],
+        ];
+        $protected_header2 = [
+            'alg'  => 'HS256',
+        ];
+
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+        ]);
+
+        $jws = JWSFactory::createJWS($payload);
+        $jws = $jws->addSignatureInformation($key, $protected_header1);
+        $jws = $jws->addSignatureInformation($key, $protected_header2);
+
+        $signer = new Signer(['HS256']);
+        $signer->sign($jws);
+
+        $jws->toJSON();
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected header parameter "crit" is mandatory when protected header parameter "b64" is set.
+     */
+    public function testJWSWithUnencodedPayloadButNoCritHeader()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            'alg'  => 'HS256',
+            'b64'  => false,
+        ];
+
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+        ]);
+
+        JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected header parameter "crit" must be an array.
+     */
+    public function testJWSWithUnencodedPayloadButCritHeaderIsNotAnArray()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => 'foo',
+        ];
+
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+        ]);
+
+        JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The protected header parameter "crit" must contain "b64" when protected header parameter "b64" is set.
+     */
+    public function testJWSWithUnencodedPayloadButCritHeaderDoesNotContainB64()
+    {
+        $payload = '$.02';
+        $protected_header = [
+            'alg'  => 'HS256',
+            'b64'  => false,
+            'crit' => ['foo'],
+        ];
+
+        $key = new JWK([
+            'kty' => 'oct',
+            'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
+        ]);
+
+        JWSFactory::createJWSWithDetachedPayloadToCompactJSON($payload, $key, $protected_header);
     }
 
     /**

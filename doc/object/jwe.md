@@ -42,4 +42,3 @@ The methods available are:
 * `toCompactJSON($index)`: Return the compact JSON representation of the signature at index $index.
 * `toFlattenedJSON($index)`: Return the flattened JSON representation of the signature at index $index.
 * `toJSON()`: Return the general JSON representation of the JWS.
-

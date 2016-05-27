@@ -221,7 +221,9 @@ final class JWS implements JWSInterface
             if (null === $is_encoded) {
                 $is_encoded = $this->isPayloadEncoded($signature);
             }
-            Assertion::eq($is_encoded, $this->isPayloadEncoded($signature), 'Foreign payload encoding detected. The JWS cannot be converted.');
+            if (false === $this->isPayloadDetached()) {
+                Assertion::eq($is_encoded, $this->isPayloadEncoded($signature), 'Foreign payload encoding detected. The JWS cannot be converted.');
+            }
         }
     }
 }

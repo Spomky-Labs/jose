@@ -29,7 +29,7 @@ Tests vectors from [RFC 7520](http://tools.ietf.org/html/rfc7520) are fully impl
 
 This library supports JSON Web Key Thumbprint ([RFC 7638](https://tools.ietf.org/html/rfc7638)).
 
-The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unencoded Payload Option) is not yet supported.
+The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unencoded Payload Option) is also supported.
 
 # Provided Features
 
@@ -37,12 +37,19 @@ The [RFC7797](https://tools.ietf.org/html/rfc7797) (SON Web Signature (JWS) Unen
 
 JWS or JWE objects support every input that can be serialized:
 
-* [x] Plain text
-* [x] Array
-* [x] jwk+json content type (JWKInterface object)
-* [x] jwkset+json content type (JWKSetInterface object)
+* [x] String
+* [x] Any variable of object that can be encoded/decoded into JSON:
+    * [x] Primitives: integer, float...
+    * [x] Array
+    * [x] Objects that implement the `` interface such as:
+        * [x] jwk+json content type (JWKInterface object)
+        * [x] jwkset+json content type (JWKSetInterface object)
 
 The [detached content](https://tools.ietf.org/html/rfc7515#appendix-F) is also supported.
+
+Unencoded payload is supported. This means you can sign and verify payload without base64 encoding operation.
+As per the [RFC7797](https://tools.ietf.org/html/rfc7797), the `b64` header MUST be protected.
+When `b64` header is set, the `crit` protected header with value `b64` in its array of values is mandatory.
 
 ## Supported Serialization Modes
 
