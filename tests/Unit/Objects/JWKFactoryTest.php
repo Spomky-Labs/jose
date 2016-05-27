@@ -31,7 +31,7 @@ class JWKFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateFromKey()
     {
-        $jwk = JWKFactory::createFromKey(file_get_contents(__DIR__ . '/../Keys/EC/private.es256.encrypted.key'), 'test');
+        $jwk = JWKFactory::createFromKey(file_get_contents(__DIR__.'/../Keys/EC/private.es256.encrypted.key'), 'test');
         $this->assertEquals('{"kty":"EC","crv":"P-256","d":"q_VkzNnxTG39jHB0qkwA_SeVXud7yCHT7kb7kZv-0xQ","x":"vuYsP-QnrqAbM7Iyhzjt08hFSuzapyojCB_gFsBt65U","y":"oq-E2K-X0kPeqGuKnhlXkxc5fnxomRSC6KLby7Ij8AE"}', json_encode($jwk));
     }
 
