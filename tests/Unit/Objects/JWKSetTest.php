@@ -94,7 +94,7 @@ class JWKSetTest extends TestCase
 
     public function testCreateKeySetFromValues()
     {
-        $values = [ 'keys' => [[
+        $values = ['keys' => [[
             'kid' => '71ee230371d19630bc17fb90ccf20ae632ad8cf8',
             'kty' => 'RSA',
             'alg' => 'RS256',

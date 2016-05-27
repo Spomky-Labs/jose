@@ -398,7 +398,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * The library is able to support multiple payload encoding and conversion in JSON is available if payload is detached
+     * The library is able to support multiple payload encoding and conversion in JSON is available if payload is detached.
      */
     public function testCompactJSONWithUnencodedDetachedPayloadAndMultipleSignatures()
     {
@@ -453,7 +453,7 @@ class SignerTest extends TestCase
     }
 
     /**
-     * The library is able to support multiple payload encoding and conversion in JSON is not available if payload is not detached
+     * The library is able to support multiple payload encoding and conversion in JSON is not available if payload is not detached.
      *
      * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage  Foreign payload encoding detected. The JWS cannot be converted.

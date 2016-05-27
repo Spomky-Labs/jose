@@ -129,7 +129,7 @@ final class Signer implements SignerInterface
 
     /**
      * @param \Jose\Object\SignatureInterface $signature
-     * 
+     *
      * @throws \InvalidArgumentException
      */
     private function checkB64HeaderAndCrit(SignatureInterface $signature)
@@ -137,7 +137,7 @@ final class Signer implements SignerInterface
         if (!$signature->hasProtectedHeader('b64')) {
             return;
         }
-        
+
         Assertion::true($signature->hasProtectedHeader('crit'), 'The protected header parameter "crit" is mandatory when protected header parameter "b64" is set.');
         Assertion::isArray($signature->getProtectedHeader('crit'), 'The protected header parameter "crit" must be an array.');
         Assertion::inArray('b64', $signature->getProtectedHeader('crit'), 'The protected header parameter "crit" must contain "b64" when protected header parameter "b64" is set.');
