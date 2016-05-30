@@ -9,7 +9,7 @@ This page lists algorithms and supported key types.
 * `RS256`, `RS384`,  `RS512`, `PS256`, `PS384` and  `PS512`: `RSA` type,
 * `HS256`, `HS384` and `HS512`: `oct` type,
 * `none`: `none` type,
-* `Ed25519`: `OKP` type,
+* `Ed25519`, `Ed448`: `OKP` type.
 
 # Key encryption
 
@@ -19,3 +19,4 @@ This page lists algorithms and supported key types.
 * `PBES2-HS256+A128KW`, `PBES2-HS384+A192KW` and `PBES2-HS512+A256KW`: `oct` type,
 * `A256KW`, `A384KW` and `A512KW`: `oct` type,
 * `A256GCMKW`, `A384GCMKW` and `A512GCMKW`: `oct` type.
+* `X25519`, `X448`: `OKP` type.

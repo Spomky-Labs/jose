@@ -60,7 +60,7 @@ final class JWTLoader
     /**
      * @param \Jose\DecrypterInterface $decrypter
      */
-    public function enableEncryptionSupport(DecrypterInterface $decrypter)
+    public function enableDecryptionSupport(DecrypterInterface $decrypter)
     {
         $this->decrypter = $decrypter;
     }
@@ -74,11 +74,19 @@ final class JWTLoader
     }
 
     /**
+     * @return bool
+     */
+    public function isDecryptionSupportEnabled()
+    {
+        return null !== $this->decrypter;
+    }
+
+    /**
      * @return string[]
      */
     public function getSupportedKeyEncryptionAlgorithms()
     {
-        return null === $this->decrypter ? [] : $this->decrypter->getSupportedKeyEncryptionAlgorithms();
+        return false === $this->isDecryptionSupportEnabled() ? [] : $this->decrypter->getSupportedKeyEncryptionAlgorithms();
     }
 
     /**
@@ -86,7 +94,7 @@ final class JWTLoader
      */
     public function getSupportedContentEncryptionAlgorithms()
     {
-        return null === $this->decrypter ? [] : $this->decrypter->getSupportedContentEncryptionAlgorithms();
+        return false === $this->isDecryptionSupportEnabled() ? [] : $this->decrypter->getSupportedContentEncryptionAlgorithms();
     }
 
     /**
@@ -94,7 +102,7 @@ final class JWTLoader
      */
     public function getSupportedCompressionMethods()
     {
-        return null === $this->decrypter ? [] : $this->decrypter->getSupportedCompressionMethods();
+        return false === $this->isDecryptionSupportEnabled() ? [] : $this->decrypter->getSupportedCompressionMethods();
     }
 
     /**
@@ -111,7 +119,7 @@ final class JWTLoader
         $jwt = $this->loader->load($assertion);
         if ($jwt instanceof JWEInterface) {
             Assertion::notNull($encryption_key_set, 'Encryption key set is not available.');
-            Assertion::true($this->isEncryptionSupportEnabled(), 'Encryption support is not enabled.');
+            Assertion::true($this->isDecryptionSupportEnabled(), 'Encryption support is not enabled.');
             Assertion::inArray($jwt->getSharedProtectedHeader('alg'), $this->getSupportedKeyEncryptionAlgorithms(), sprintf('The key encryption algorithm "%s" is not allowed.', $jwt->getSharedProtectedHeader('alg')));
             Assertion::inArray($jwt->getSharedProtectedHeader('enc'), $this->getSupportedContentEncryptionAlgorithms(), sprintf('The content encryption algorithm "%s" is not allowed or not supported.', $jwt->getSharedProtectedHeader('enc')));
             $jwt = $this->decryptAssertion($jwt, $encryption_key_set);
@@ -123,11 +131,22 @@ final class JWTLoader
     }
 
     /**
-     * @return bool
+     * @param \Jose\Object\JWSInterface    $jws
+     * @param \Jose\Object\JWKSetInterface $signature_key_set
+     * @param string|null                  $detached_payload
+     *
+     * @return int
      */
-    private function isEncryptionSupportEnabled()
+    public function verify(JWSInterface $jws, JWKSetInterface $signature_key_set, $detached_payload = null)
     {
-        return null !== $this->decrypter;
+        Assertion::inArray($jws->getSignature(0)->getProtectedHeader('alg'), $this->getSupportedSignatureAlgorithms(), sprintf('The signature algorithm "%s" is not supported or not allowed.', $jws->getSignature(0)->getProtectedHeader('alg')));
+
+        $index = null;
+        $this->verifier->verifyWithKeySet($jws, $signature_key_set, $detached_payload, $index);
+        Assertion::notNull($index, 'JWS signature(s) verification failed.');
+        $this->checker_manager->checkJWS($jws, $index);
+
+        return $index;
     }
 
     /**
@@ -144,18 +163,5 @@ final class JWTLoader
         Assertion::isInstanceOf($jws, JWSInterface::class, 'The encrypted assertion does not contain a JWS.');
 
         return $jws;
-    }
-
-    /**
-     * @param \Jose\Object\JWSInterface    $jws
-     * @param \Jose\Object\JWKSetInterface $signature_key_set
-     */
-    public function verifySignature(JWSInterface $jws, JWKSetInterface $signature_key_set)
-    {
-        Assertion::inArray($jws->getSignature(0)->getProtectedHeader('alg'), $this->getSupportedSignatureAlgorithms(), sprintf('The signature algorithm "%s" is not supported or not allowed.', $jws->getSignature(0)->getProtectedHeader('alg')));
-
-        $index = null;
-        $this->verifier->verifyWithKeySet($jws, $signature_key_set, null, $index);
-        $this->checker_manager->checkJWS($jws, $index);
     }
 }

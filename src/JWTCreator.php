@@ -72,13 +72,30 @@ final class JWTCreator
      */
     public function encrypt($payload, array $encryption_protected_headers, JWKInterface $encryption_key)
     {
-        Assertion::notNull($this->encrypter, 'The encryption support is not enabled');
+        Assertion::true($this->isEncryptionSupportEnabled(), 'The encryption support is not enabled');
 
         $jwe = JWEFactory::createJWE($payload, $encryption_protected_headers);
         $jwe = $jwe->addRecipientInformation($encryption_key);
         $this->encrypter->encrypt($jwe);
 
         return $jwe->toCompactJSON(0);
+    }
+
+    /**
+     * @param mixed                     $payload
+     * @param array                     $signature_protected_headers
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $encryption_protected_headers
+     * @param \Jose\Object\JWKInterface $encryption_key
+     *
+     * @return string
+     */
+    public function signAndEncrypt($payload, array $signature_protected_headers, JWKInterface $signature_key, array $encryption_protected_headers, JWKInterface $encryption_key)
+    {
+        $jws = $this->sign($payload, $signature_protected_headers, $signature_key);
+        $jwe = $this->encrypt($jws, $encryption_protected_headers, $encryption_key);
+
+        return $jwe;
     }
 
     /**
@@ -94,7 +111,7 @@ final class JWTCreator
      */
     public function getSupportedKeyEncryptionAlgorithms()
     {
-        return null === $this->encrypter ? [] : $this->encrypter->getSupportedKeyEncryptionAlgorithms();
+        return false === $this->isEncryptionSupportEnabled() ? [] : $this->encrypter->getSupportedKeyEncryptionAlgorithms();
     }
 
     /**
@@ -102,7 +119,7 @@ final class JWTCreator
      */
     public function getSupportedContentEncryptionAlgorithms()
     {
-        return null === $this->encrypter ? [] : $this->encrypter->getSupportedContentEncryptionAlgorithms();
+        return false === $this->isEncryptionSupportEnabled() ? [] : $this->encrypter->getSupportedContentEncryptionAlgorithms();
     }
 
     /**
@@ -110,6 +127,14 @@ final class JWTCreator
      */
     public function getSupportedCompressionMethods()
     {
-        return null === $this->encrypter ? [] : $this->encrypter->getSupportedCompressionMethods();
+        return false === $this->isEncryptionSupportEnabled() ? [] : $this->encrypter->getSupportedCompressionMethods();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEncryptionSupportEnabled()
+    {
+        return null !== $this->encrypter;
     }
 }

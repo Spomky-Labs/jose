@@ -37,7 +37,7 @@ class LoaderAndCreatorTest extends TestCase
             Verifier::createVerifier(['HS512', 'RS512']),
             $this->getLogger()
         );
-        $jwt_loader->enableEncryptionSupport(Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
+        $jwt_loader->enableDecryptionSupport(Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
 
         $jws = $jwt_creator->sign(
             'Live long and Prosper.',
@@ -79,6 +79,6 @@ class LoaderAndCreatorTest extends TestCase
             $key_set,
             true
         );
-        $jwt_loader->verifySignature($loaded_jwe, $key_set, ['HS512']);
+        $jwt_loader->verify($loaded_jwe, $key_set);
     }
 }

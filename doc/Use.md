@@ -19,6 +19,13 @@ Before to start, you need to know object types provided by this library and the 
 * [Encrypt a message](operation/Encrypt.md)
 * [Decrypt a JWE](operation/Decrypt.md)
 
+# JWT Creator and JWTLoader
+
+In general, you will need to create and load JWS or encrypted JWS (JWS as payload of a JWE) in compact JSON serialization mode.
+To ease the creation and loading of such data, the library provides two classes that have convenient methods.
+
+Read the [dedicated page](operation/JWTCreator_And_JWTLoader.md) to know how to instantiate and use these classes.
+
 # PSR-3 Messages
 
 The `Signer`, `Verifier`, `Encrypter` and `Decrypter` classes are able to send debug messages compliant with the [PSR-3 Specification](http://www.php-fig.org/psr/psr-3/).
