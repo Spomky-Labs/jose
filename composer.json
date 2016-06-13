@@ -25,7 +25,7 @@
         }
     },
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=5.6",
         "lib-openssl": "*",
         "spomky-labs/base64url": "^1.0",
         "spomky-labs/aes-key-wrap": "^2.0",
@@ -36,21 +36,21 @@
         "symfony/polyfill-php56": "^1.1",
         "symfony/polyfill-mbstring": "^1.1",
         "symfony/polyfill-php70": "^1.1",
-        "fgrosse/phpasn1": "dev-compat/php5-5 as v1.3.1"
+        "fgrosse/phpasn1": "^1.5"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4.5|^5.0",
+        "phpunit/phpunit": "^5.0",
         "symfony/phpunit-bridge": "^3.0",
         "satooshi/php-coveralls": "^1.0",
-        "mdanter/ecc": "0.3"
+        "mdanter/ecc": "dev-master"
     },
    "suggest":{
         "ext-crypto": "Highly recommended when you use AES GCM based algorithms.",
-        "mdanter/ecc": "Required to use ECC based algorithms (only v0.3 is supported)."
+        "mdanter/ecc": "Required to use ECC based algorithms (only v0.4@dev is supported)."
    },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0.x-dev"
+            "dev-master": "4.0.x-dev"
         }
     }
 }

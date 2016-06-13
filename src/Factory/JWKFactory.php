@@ -85,6 +85,8 @@ final class JWKFactory
      */
     private static function encodeValue($value)
     {
+        $value = gmp_strval($value);
+
         return Base64Url::encode(self::convertDecToBin($value));
     }
 

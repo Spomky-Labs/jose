@@ -33,8 +33,8 @@ abstract class ECDSA implements SignatureAlgorithmInterface
         Assertion::true($key->has('d'), 'The EC key is not private');
 
         $p = $this->getGenerator();
-        $d = $this->convertBase64ToDec($key->get('d'));
-        $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
+        $d = $this->convertBase64ToGmp($key->get('d'));
+        $hash = $this->convertHexToGmp(hash($this->getHashAlgorithm(), $data));
 
         $k = RandomGeneratorFactory::getRandomGenerator()->generate($p->getOrder());
 
@@ -65,11 +65,11 @@ abstract class ECDSA implements SignatureAlgorithmInterface
         }
 
         $p = $this->getGenerator();
-        $x = $this->convertBase64ToDec($key->get('x'));
-        $y = $this->convertBase64ToDec($key->get('y'));
-        $R = $this->convertHexToDec(mb_substr($signature, 0, $part_length, '8bit'));
-        $S = $this->convertHexToDec(mb_substr($signature, $part_length, null, '8bit'));
-        $hash = $this->convertHexToDec(hash($this->getHashAlgorithm(), $data));
+        $x = $this->convertBase64ToGmp($key->get('x'));
+        $y = $this->convertBase64ToGmp($key->get('y'));
+        $R = $this->convertHexToGmp(mb_substr($signature, 0, $part_length, '8bit'));
+        $S = $this->convertHexToGmp(mb_substr($signature, $part_length, null, '8bit'));
+        $hash = $this->convertHexToGmp(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
 
@@ -120,29 +120,32 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function convertDecToHex($value)
     {
+        $value = gmp_strval($value);
+
         return EccFactory::getAdapter()->decHex($value);
     }
 
     /**
      * @param $value
      *
-     * @return int|string
+     * @return \GMP
      */
-    private function convertHexToDec($value)
+    private function convertHexToGmp($value)
     {
-        return EccFactory::getAdapter()->hexDec($value);
+        return gmp_init('0x'.$value);
     }
 
     /**
      * @param $value
      *
-     * @return int|string
+     * @return \GMP
      */
-    private function convertBase64ToDec($value)
+    private function convertBase64ToGmp($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
+        $value = $value[1];
 
-        return $this->convertHexToDec($value[1]);
+        return gmp_init('0x'.$value);
     }
 
     /**

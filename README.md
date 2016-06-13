@@ -125,12 +125,12 @@ The release process [is described here](doc/Release.md).
 # Prerequisites
 
 This library needs at least:
-* ![PHP 5.5.9+](https://img.shields.io/badge/PHP-5.5.9%2B-ff69b4.svg),
+* ![PHP 5.6+](https://img.shields.io/badge/PHP-5.6%2B-ff69b4.svg),
 * OpenSSL extension.
 
 Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
-* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.3` only).
+* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.4@dev` only).
 * For Ed25519 algorithm: [php-ed25519-ext](https://github.com/encedo/php-ed25519-ext) required
 * For X25519 algorithm: [php-curve25519-ext](https://github.com/encedo/php-curve25519-ext) required
 
@@ -138,7 +138,7 @@ Please read performance test results below concerning the ECC based algorithms. 
 
 # Continuous Integration
 
-It has been successfully tested using `PHP 5.5.9`, `PHP 5.6` and `PHP 7` and `HHVM` with all algorithms.
+It has been successfully tested using `PHP 5.6` and `PHP 7` and `HHVM` with all algorithms.
 
 We also track bugs and code quality using [Scrutinizer-CI](https://scrutinizer-ci.com/g/Spomky-Labs/JOSE) and [Sensio Insight](https://insight.sensiolabs.com/projects/9123fbfc-7ae1-4d63-9fda-170b8ad794ee).
 
@@ -150,21 +150,8 @@ Code coverage is analyzed by [Coveralls.io](https://coveralls.io/github/Spomky-L
 
 The preferred way to install this library is to rely on Composer:
 
-```json
-{
-    ....
-    "require": {
-        "spomky-labs/jose": "^3.0",
-        "fgrosse/phpasn1": "dev-compat/php5-5 as v1.3.1"
-    },
-    ...
-}
-```
-
-Then, you have to update your project dependencies:
-
 ```sh
-composer update
+composer require spomky-labs/jose
 ```
 
 # How to use

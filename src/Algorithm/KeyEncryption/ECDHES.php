@@ -17,8 +17,8 @@ use Jose\Factory\JWKFactory;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
 use Jose\Util\ConcatKDF;
+use Mdanter\Ecc\Crypto\EcDH\EcDH;
 use Mdanter\Ecc\EccFactory;
-use Mdanter\Ecc\Message\MessageFactory;
 
 /**
  * Class ECDHES.
@@ -90,17 +90,18 @@ final class ECDHES implements KeyAgreementInterface
             case 'P-521':
                 $p = $this->getGenerator($private_key);
 
-                $rec_x = $this->convertBase64ToDec($public_key->get('x'));
-                $rec_y = $this->convertBase64ToDec($public_key->get('y'));
-                $sen_d = $this->convertBase64ToDec($private_key->get('d'));
+                $rec_x = $this->convertBase64ToGmp($public_key->get('x'));
+                $rec_y = $this->convertBase64ToGmp($public_key->get('y'));
+                $sen_d = $this->convertBase64ToGmp($private_key->get('d'));
 
                 $priv_key = $p->getPrivateKeyFrom($sen_d);
                 $pub_key = $p->getPublicKeyFrom($rec_x, $rec_y);
 
-                $message = new MessageFactory(EccFactory::getAdapter());
-                $exchange = $priv_key->createExchange($message, $pub_key);
+                $ecdh = new EcDH(EccFactory::getAdapter());
+                $ecdh->setSenderKey($priv_key);
+                $ecdh->setRecipientKey($pub_key);
 
-                return $this->convertDecToBin($exchange->calculateSharedKey());
+                return $this->convertDecToBin($ecdh->calculateSharedKey());
             case 'X25519':
                 return curve25519_shared(
                     Base64Url::decode($private_key->get('d')),
@@ -204,15 +205,16 @@ final class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
-     * @return int|string
+     * @return \GMP
      */
-    private function convertBase64ToDec($value)
+    private function convertBase64ToGmp($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
+        $value = '0x'.$value[1];
 
-        return $this->convertHexToDec($value[1]);
+        return gmp_init($value);
     }
 
     /**
@@ -222,6 +224,7 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function convertDecToBin($value)
     {
+        $value = gmp_strval($value);
         $adapter = EccFactory::getAdapter();
 
         return hex2bin($adapter->decHex($value));
