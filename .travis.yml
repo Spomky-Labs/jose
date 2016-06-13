@@ -5,9 +5,6 @@ sudo: false
 matrix:
     fast_finish: true
     include:
-        - php: 5.5.9
-        - php: 5.5.9
-          env: WITH_CRYPTO=true
         - php: 5.6
         - php: 5.6
           env: WITH_CRYPTO=true
