@@ -81,7 +81,7 @@ final class AlgorithmManagerFactory
             'PS256'              => '\Jose\Algorithm\Signature\PS256',
             'PS384'              => '\Jose\Algorithm\Signature\PS384',
             'PS512'              => '\Jose\Algorithm\Signature\PS512',
-            'Ed25519'            => '\Jose\Algorithm\Signature\Ed25519',
+            'EdDSA'              => '\Jose\Algorithm\Signature\EdDSA',
             'A128GCM'            => '\Jose\Algorithm\ContentEncryption\A128GCM',
             'A192GCM'            => '\Jose\Algorithm\ContentEncryption\A192GCM',
             'A256GCM'            => '\Jose\Algorithm\ContentEncryption\A256GCM',

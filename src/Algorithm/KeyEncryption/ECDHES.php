@@ -195,16 +195,6 @@ final class ECDHES implements KeyAgreementInterface
     }
 
     /**
-     * @param $value
-     *
-     * @return int|string
-     */
-    private function convertHexToDec($value)
-    {
-        return EccFactory::getAdapter()->hexDec($value);
-    }
-
-    /**
      * @param string $value
      *
      * @return \GMP

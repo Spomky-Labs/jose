@@ -87,6 +87,9 @@ JWKSet is fully supported.
 * [x] Ed25519 ([third party extension required](https://github.com/encedo/php-ed25519-ext))
 * [ ] Ed448
 
+*Please note that the [EdDSA signature algorithm specification](https://tools.ietf.org/html/draft-ietf-jose-cfrg-curves)
+is not not yet approved. Support for algorithms `Ed25518` and `Ed448` may change. Use with caution.*
+
 ## Supported Key Encryption Algorithms
 
 * [x] dir
@@ -106,8 +109,11 @@ JWKSet is fully supported.
 * [x] A128GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A192GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
 * [x] A256GCMKW (for performance, this [third party extension is highly recommended](https://github.com/bukka/php-crypto))
-* [x] X25519 ([third party extension required](https://github.com/encedo/php-curve25519-ext)
+* [x] X25519 ([third party extension required](https://github.com/encedo/php-curve25519-ext))
 * [ ] X448
+
+*Please note that the [EdDSA encryption algorithm specification](https://tools.ietf.org/html/draft-ietf-jose-cfrg-curves)
+is not not yet approved. Support for algorithms `X25518` and `X448` may change. Use with caution.*
 
 ## Supported Content Encryption Algorithms
 

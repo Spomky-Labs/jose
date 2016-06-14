@@ -10,7 +10,7 @@
  */
 
 use Base64Url\Base64Url;
-use Jose\Algorithm\Signature\Ed25519;
+use Jose\Algorithm\Signature\EdDSA;
 use Jose\Factory\JWSFactory;
 use Jose\Loader;
 use Jose\Object\JWK;
@@ -19,20 +19,20 @@ use Jose\Test\TestCase;
 use Jose\Verifier;
 
 /**
- * Class Ed25519SignatureTest.
+ * Class EdDSASignatureTest.
  *
- * @group Ed25519
+ * @group EdDSA
  * @group Unit
  */
-class Ed25519SignatureTest extends TestCase
+class EdDSASignatureTest extends TestCase
 {
     /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-cfrg-curves-00#appendix-A.5
      */
-    public function testEd25519VerifyAlgorithm()
+    public function testEdDSAVerifyAlgorithm()
     {
         if (!function_exists('ed25519_sign')) {
-            $this->markTestSkipped('Ed25519 extension not available');
+            $this->markTestSkipped('EdDSA extension not available');
         }
 
         $key = new JWK([
@@ -42,20 +42,20 @@ class Ed25519SignatureTest extends TestCase
             'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
         ]);
 
-        $ed25519 = new Ed25519();
-        $input = 'eyJhbGciOiJFZDI1NTE5In0.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc';
-        $signature = Base64Url::decode('UxhIYLHGg39NVCLpQAVD_UcfOmnGSCzLFZoXYkLiIbFccmOb_qObsgjzLKsfJw-4NlccUgvYrEHrRbNV0HcZAQ');
+        $eddsa = new EdDSA();
+        $input = 'eyJhbGciOiJFZERTQSJ9.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc';
+        $signature = Base64Url::decode('hgyY0il_MGCjP0JzlnLWG1PPOt7-09PGcvMg3AIbQR6dWbhijcNR4ki4iylGjg5BhVsPt9g7sVvpAr_MuM0KAg');
 
-        $ed25519->verify($key, $input, $signature);
+        $eddsa->verify($key, $input, $signature);
     }
 
     /**
      * @see https://tools.ietf.org/html/draft-ietf-jose-cfrg-curves-00#appendix-A.5
      */
-    public function testEd25519SignAndVerifyAlgorithm()
+    public function testEdDSASignAndVerifyAlgorithm()
     {
         if (!function_exists('ed25519_sign')) {
-            $this->markTestSkipped('Ed25519 extension not available');
+            $this->markTestSkipped('EdDSA extension not available');
         }
 
         $key = new JWK([
@@ -65,16 +65,16 @@ class Ed25519SignatureTest extends TestCase
             'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
         ]);
 
-        $header = ['alg' => 'Ed25519'];
+        $header = ['alg' => 'EdDSA'];
         $input = Base64Url::decode('RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc');
 
         $jws = JWSFactory::createJWSToCompactJSON($input, $key, $header);
 
-        $this->assertEquals('eyJhbGciOiJFZDI1NTE5In0.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc.UxhIYLHGg39NVCLpQAVD_UcfOmnGSCzLFZoXYkLiIbFccmOb_qObsgjzLKsfJw-4NlccUgvYrEHrRbNV0HcZAQ', $jws);
+        $this->assertEquals('eyJhbGciOiJFZERTQSJ9.RXhhbXBsZSBvZiBFZDI1NTE5IHNpZ25pbmc.hgyY0il_MGCjP0JzlnLWG1PPOt7-09PGcvMg3AIbQR6dWbhijcNR4ki4iylGjg5BhVsPt9g7sVvpAr_MuM0KAg', $jws);
 
         $loader = new Loader();
         $loaded = $loader->load($jws);
-        $verifier = Verifier::createVerifier(['Ed25519']);
+        $verifier = Verifier::createVerifier(['EdDSA']);
 
         $this->assertInstanceOf(JWSInterface::class, $loaded);
         $this->assertEquals(1, $loaded->countSignatures());

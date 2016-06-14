@@ -19,7 +19,7 @@ use Jose\Object\JWKInterface;
 /**
  * Class Ed25519.
  */
-class Ed25519 implements SignatureAlgorithmInterface
+class EdDSA implements SignatureAlgorithmInterface
 {
     /**
      * {@inheritdoc}
@@ -32,9 +32,12 @@ class Ed25519 implements SignatureAlgorithmInterface
         $secret = Base64Url::decode($key->get('d'));
         $public = Base64Url::decode($key->get('x'));
 
-        $signature = ed25519_sign($data, $secret, $public);
-
-        return $signature;
+        switch ($key->get('crv')) {
+            case 'Ed25519':
+                return ed25519_sign($data, $secret, $public);
+            default:
+                throw new \InvalidArgumentException('Unsupported curve');
+        }
     }
 
     /**
@@ -46,7 +49,12 @@ class Ed25519 implements SignatureAlgorithmInterface
 
         $public = Base64Url::decode($key->get('x'));
 
-        return ed25519_sign_open($data, $public, $signature);
+        switch ($key->get('crv')) {
+            case 'Ed25519':
+                return ed25519_sign_open($data, $public, $signature);
+            default:
+                throw new \InvalidArgumentException('Unsupported curve');
+        }
     }
 
     /**
@@ -57,7 +65,7 @@ class Ed25519 implements SignatureAlgorithmInterface
         Assertion::eq($key->get('kty'), 'OKP', 'Wrong key type.');
         Assertion::true($key->has('x'), 'The key parameter "x" is missing.');
         Assertion::true($key->has('crv'), 'The key parameter "crv" is missing.');
-        Assertion::eq($key->get('crv'), 'Ed25519', 'Unsupported curve');
+        Assertion::inArray($key->get('crv'), ['Ed25519'], 'Unsupported curve');
     }
 
     /**
@@ -65,6 +73,6 @@ class Ed25519 implements SignatureAlgorithmInterface
      */
     public function getAlgorithmName()
     {
-        return 'Ed25519';
+        return 'EdDSA';
     }
 }
