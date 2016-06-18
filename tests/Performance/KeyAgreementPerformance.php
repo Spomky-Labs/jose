@@ -16,7 +16,7 @@ use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
 
-function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
+function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKInterface $recipient_key)
 {
     $header = [
         'alg' => $alg->getAlgorithmName(),
@@ -30,7 +30,7 @@ function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKIn
 
     $time_start = microtime(true);
     for ($i = 0; $i < $nb; $i++) {
-        $alg->getAgreementKey(512 / 8, 'A256GCM', $sender_key, $recipient_key, $header, $ahv);
+        $alg->getAgreementKey(512 / 8, 'A256GCM', $recipient_key, $header, $ahv);
     }
 
     $time_end = microtime(true);
@@ -50,13 +50,6 @@ function dataKeyAgreementPerformance()
                 'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
                 'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
             ]),
-            new JWK([
-                'kty' => 'EC',
-                'crv' => 'P-256',
-                'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-                'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-                'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd',
-            ]),
         ],
         [
             'With P-521 curve',
@@ -66,13 +59,6 @@ function dataKeyAgreementPerformance()
                 'crv' => 'P-521',
                 'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
                 'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-            ]),
-            new JWK([
-                'kty' => 'EC',
-                'crv' => 'P-521',
-                'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
-                'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
-                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
             ]),
         ],
     ];
@@ -85,7 +71,7 @@ print_r('# KEY AGREEMENT PERFORMANCE TESTS #'.PHP_EOL);
 print_r('###################################'.PHP_EOL);
 
 foreach ($environments as $environment) {
-    testKeyAgreementPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
+    testKeyAgreementPerformance($environment[0], $environment[1], $environment[2]);
 }
 
 print_r('###################################'.PHP_EOL);

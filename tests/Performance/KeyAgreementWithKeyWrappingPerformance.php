@@ -17,7 +17,6 @@ use Jose\Algorithm\KeyEncryption\ECDHESA256KW;
 use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 
 function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
 {
@@ -29,7 +28,7 @@ function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgree
         'nbf' => time(),
     ];
     $ahv = [];
-    $cek = StringUtil::generateRandomBytes(512);
+    $cek = random_bytes(512);
     $nb = 100;
 
     $time_start = microtime(true);
@@ -51,7 +50,7 @@ function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgree
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512 / 8);
+    $cek = random_bytes(512 / 8);
 
     $encrypted_cek = $alg->wrapAgreementKey($sender_key, $recipient_key, $cek, 128, $header, $header);
     $nb = 100;

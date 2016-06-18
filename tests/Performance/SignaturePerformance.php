@@ -11,7 +11,7 @@
 
 include_once __DIR__.'/../../vendor/autoload.php';
 
-use Jose\Algorithm\Signature\Ed25519;
+use Jose\Algorithm\Signature\EdDSA;
 use Jose\Algorithm\Signature\ES256;
 use Jose\Algorithm\Signature\ES384;
 use Jose\Algorithm\Signature\ES512;
@@ -232,7 +232,7 @@ function dataSignaturePerformance()
             ]),
         ],
         [
-            new Ed25519(),
+            new EdDSA(),
             new JWK([
                 'kty' => 'OKP',
                 'crv' => 'Ed25519',

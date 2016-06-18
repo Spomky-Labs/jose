@@ -19,7 +19,6 @@ use Jose\Algorithm\ContentEncryption\A192GCM;
 use Jose\Algorithm\ContentEncryption\A256CBCHS512;
 use Jose\Algorithm\ContentEncryption\A256GCM;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
-use Jose\Util\StringUtil;
 
 function testContentEncryptionPerformance(ContentEncryptionAlgorithmInterface $alg)
 {
@@ -30,10 +29,10 @@ function testContentEncryptionPerformance(ContentEncryptionAlgorithmInterface $a
         'iat' => time(),
         'nbf' => time(),
     ]));
-    $data = StringUtil::generateRandomBytes(1024);
-    $iv = StringUtil::generateRandomBytes($alg->getIVSize() / 8);
-    $cek = StringUtil::generateRandomBytes($alg->getCEKSize() / 8);
-    $aad = StringUtil::generateRandomBytes(128);
+    $data = random_bytes(1024);
+    $iv = random_bytes($alg->getIVSize() / 8);
+    $cek = random_bytes($alg->getCEKSize() / 8);
+    $aad = random_bytes(128);
     $nb = 100;
 
     $time_start = microtime(true);
@@ -55,10 +54,10 @@ function testContentDecryptionPerformance(ContentEncryptionAlgorithmInterface $a
         'iat' => time(),
         'nbf' => time(),
     ]));
-    $data = StringUtil::generateRandomBytes(1024);
-    $iv = StringUtil::generateRandomBytes($alg->getIVSize() / 8);
-    $cek = StringUtil::generateRandomBytes($alg->getCEKSize() / 8);
-    $aad = StringUtil::generateRandomBytes(128);
+    $data = random_bytes(1024);
+    $iv = random_bytes($alg->getIVSize() / 8);
+    $cek = random_bytes($alg->getCEKSize() / 8);
+    $aad = random_bytes(128);
     $encrypted_content = $alg->encryptContent($data, $cek, $iv, $aad, $header, $tag);
     $nb = 100;
 

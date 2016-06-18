@@ -23,7 +23,6 @@ use Jose\Algorithm\KeyEncryption\PBES2HS384A192KW;
 use Jose\Algorithm\KeyEncryption\PBES2HS512A256KW;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 
 function testKeyWrappinPerformance(KeyWrappingInterface $alg, JWKInterface $recipient_key)
 {
@@ -34,7 +33,7 @@ function testKeyWrappinPerformance(KeyWrappingInterface $alg, JWKInterface $reci
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512 / 8);
+    $cek = random_bytes(512 / 8);
     $nb = 100;
 
     $time_start = microtime(true);
@@ -56,7 +55,7 @@ function testKeyUnwrappingPerformance(KeyWrappingInterface $alg, JWKInterface $r
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512 / 8);
+    $cek = random_bytes(512 / 8);
 
     $encrypted_cek = $alg->wrapKey($recipient_key, $cek, $header, $header);
     $nb = 100;

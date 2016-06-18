@@ -17,7 +17,6 @@ use Jose\Algorithm\KeyEncryption\RSAOAEP;
 use Jose\Algorithm\KeyEncryption\RSAOAEP256;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
-use Jose\Util\StringUtil;
 
 function testKeyEncryptionPerformance(KeyEncryptionInterface $alg, JWKInterface $recipient_key)
 {
@@ -28,7 +27,7 @@ function testKeyEncryptionPerformance(KeyEncryptionInterface $alg, JWKInterface 
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512 / 8);
+    $cek = random_bytes(512 / 8);
     $nb = 100;
 
     $time_start = microtime(true);
@@ -50,7 +49,7 @@ function testKeyDecryptionPerformance(KeyEncryptionInterface $alg, JWKInterface 
         'iat' => time(),
         'nbf' => time(),
     ];
-    $cek = StringUtil::generateRandomBytes(512 / 8);
+    $cek = random_bytes(512 / 8);
 
     $encrypted_cek = $alg->encryptKey($recipient_key, $cek, $header, $header);
     $nb = 100;
