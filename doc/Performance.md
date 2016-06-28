@@ -11,13 +11,13 @@ The conclusions reached regarding these results are:
 * Signature operations:
   * The HMAC signature performances are very good.
   * The RSA signature performances are good.
-  * The ECC signature performances are very bad. This is due to the use of a pure PHP library.
+  * The ECC signature performances are poor. This is due to the use of a pure PHP library.
 * Key Encryption operations:
   * The algorithms based on RSA are very good.
   * The AES GCM Key Wrapping algorithms are very good if the extension is installed, else performances are bad.
   * The AES Key Wrapping algorithms are good.
   * The PBES2-* algorithms performances are bad, except if you use small salt and low count which is not what you intent to do.
-  * The ECC encryption performances are very bad. This is due to the use of a pure PHP library.
+  * The ECC encryption performances are poor. This is due to the use of a pure PHP library.
 * Content Encryption operations:
   * All A128CBC-* algorithms are very good. 
   * A128GCM-* algorithms are very good if the extension is installed, else performances are bad.
@@ -31,22 +31,22 @@ If you use public/private key pairs, you will prefer RSA algorithms for signatur
 
 Hereafter a table with all signature/verification test results.
 
-|  Algorithm  |    Signature    |  Verification   |
-|-------------|-----------------|-----------------|
-| none        |   0.002120 msec |   0.002561 msec |
-| HS256       |   0.063560 msec |   0.011048 msec |
-| HS384       |   0.008521 msec |   0.013590 msec |
-| HS512       |   0.009749 msec |   0.011101 msec |
-| RS256       |   3.185160 msec |   0.408080 msec |
-| RS384       |   2.673111 msec |   0.392590 msec |
-| RS512       |   2.616920 msec |   0.387020 msec |
-| PS256       |   2.711060 msec |   0.338850 msec |
-| PS384       |   2.658789 msec |   0.305960 msec |
-| PS512       |   2.691140 msec |   0.352941 msec |
-| ES256       | 119.703550 msec | 335.086281 msec |
-| ES384       | 201.914010 msec | 571.660171 msec |
-| ES512       | 316.626689 msec | 895.848720 msec |
-| Ed25519     |   0.042379 msec |   0.109930 msec |
+|    Algorithm    |    Signature    |  Verification   |
+|-----------------|-----------------|-----------------|
+| none            |   0.002120 msec |   0.002561 msec |
+| HS256           |   0.063560 msec |   0.011048 msec |
+| HS384           |   0.008521 msec |   0.013590 msec |
+| HS512           |   0.009749 msec |   0.011101 msec |
+| RS256           |   3.185160 msec |   0.408080 msec |
+| RS384           |   2.673111 msec |   0.392590 msec |
+| RS512           |   2.616920 msec |   0.387020 msec |
+| PS256           |   2.711060 msec |   0.338850 msec |
+| PS384           |   2.658789 msec |   0.305960 msec |
+| PS512           |   2.691140 msec |   0.352941 msec |
+| ES256           |  46.056359 msec |  85.660450 msec |
+| ES384           |  70.218148 msec | 143.770418 msec |
+| ES512           | 110.474162 msec | 202.372239 msec |
+| EdDSA (Ed25519) |   0.042379 msec |   0.109930 msec |
 
 # Key Encryption Operations
 
@@ -58,23 +58,23 @@ Not tested as there is no ciphering process with this algorithm.
 
 |    Algorithm    |  Key Agreement  |
 |-----------------|-----------------|
-| ECDH-ES (P-256) | 196.068900 msec |
-| ECDH-ES (P-384) | N/A             |
-| ECDH-ES (P-521) | 568.323238 msec |
+| ECDH-ES (P-256) | 126.203909 msec |
+| ECDH-ES (P-384) | 204.835088 msec |
+| ECDH-ES (P-521) | 304.262869 msec |
 
 ## Key Agreement With Key Wrapping
 
 |    Algorithm           |    Wrapping     |    Unwrapping   |
 |------------------------|-----------------|-----------------|
-| ECDH-ES+A128KW (P-256) | 201.839530 msec | 210.227959 msec |
-| ECDH-ES+A128KW (P-384) | N/A             | N/A             |
-| ECDH-ES+A128KW (P-521) | 577.361839 msec | 580.698538 msec |
-| ECDH-ES+A192KW (P-256) | 221.429391 msec | 227.398269 msec |
-| ECDH-ES+A192KW (P-384) | N/A             | N/A             |
-| ECDH-ES+A192KW (P-521) | 591.375620 msec | 591.996751 msec |
-| ECDH-ES+A256KW (P-256) | 204.114299 msec | 220.426919 msec |
-| ECDH-ES+A256KW (P-384) | N/A             | N/A             |
-| ECDH-ES+A256KW (P-521) | 596.029930 msec | 572.769132 msec |
+| ECDH-ES+A128KW (P-256) | 129.029691 msec |  39.483140 msec |
+| ECDH-ES+A128KW (P-384) | 196.413360 msec |  62.773380 msec |
+| ECDH-ES+A128KW (P-521) | 302.115850 msec | 104.237161 msec |
+| ECDH-ES+A192KW (P-256) | 117.906761 msec |  45.322330 msec |
+| ECDH-ES+A192KW (P-384) | 198.598192 msec |  82.638860 msec |
+| ECDH-ES+A192KW (P-521) | 309.309719 msec | 113.017519 msec |
+| ECDH-ES+A256KW (P-256) | 134.307990 msec |  46.188619 msec |
+| ECDH-ES+A256KW (P-384) | 198.677561 msec |  72.755859 msec |
+| ECDH-ES+A256KW (P-521) | 315.579700 msec | 103.662469 msec |
 
 ## Key Wrapping
 

@@ -202,9 +202,8 @@ final class ECDHES implements KeyAgreementInterface
     private function convertBase64ToGmp($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
-        $value = '0x'.$value[1];
 
-        return gmp_init($value);
+        return gmp_init($value[1], 16);
     }
 
     /**
@@ -214,7 +213,7 @@ final class ECDHES implements KeyAgreementInterface
      */
     private function convertDecToBin($value)
     {
-        $value = gmp_strval($value);
+        $value = gmp_strval($value, 10);
         $adapter = EccFactory::getAdapter();
 
         return hex2bin($adapter->decHex($value));

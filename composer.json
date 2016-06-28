@@ -36,17 +36,15 @@
         "symfony/polyfill-php56": "^1.1",
         "symfony/polyfill-mbstring": "^1.1",
         "symfony/polyfill-php70": "^1.1",
-        "fgrosse/phpasn1": "^1.5"
+        "fgrosse/phpasn1": "^1.5",
+        "mdanter/ecc": "0.4"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.0",
-        "symfony/phpunit-bridge": "^3.0",
-        "satooshi/php-coveralls": "^1.0",
-        "mdanter/ecc": "dev-master"
+        "satooshi/php-coveralls": "^1.0"
     },
    "suggest":{
-        "ext-crypto": "Highly recommended when you use AES GCM based algorithms.",
-        "mdanter/ecc": "Required to use ECC based algorithms (only v0.4@dev is supported)."
+        "ext-crypto": "Highly recommended when you use AES GCM based algorithms."
    },
     "extra": {
         "branch-alias": {

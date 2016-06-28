@@ -80,7 +80,7 @@ JWKSet is fully supported.
 ## Supported Signature Algorithms
 
 * [x] HS256, HS384, HS512
-* [x] ES256, ES384, ES512 ([third party library needed](https://github.com/phpecc/phpecc))
+* [x] ES256, ES384, ES512
 * [x] RS256, RS384, RS512
 * [x] PS256, PS384, PS512
 * [x] none (**Please note that this is not a secured algorithm. DO NOT USE IT PRODUCTION!**)
@@ -96,10 +96,10 @@ is not not yet approved. Support for algorithms `Ed25518` and `Ed448` may change
 * [x] RSA1_5
 * [x] RSA-OAEP
 * [x] RSA-OAEP-256
-* [x] ECDH-ES ([third party library needed](https://github.com/phpecc/phpecc))
-* [x] ECDH-ES+A128KW ([third party library needed](https://github.com/phpecc/phpecc))
-* [x] ECDH-ES+A192KW ([third party library needed](https://github.com/phpecc/phpecc))
-* [x] ECDH-ES+A256KW ([third party library needed](https://github.com/phpecc/phpecc))
+* [x] ECDH-ES
+* [x] ECDH-ES+A128KW
+* [x] ECDH-ES+A192KW
+* [x] ECDH-ES+A256KW
 * [x] A128KW
 * [x] A192KW
 * [x] A256KW
@@ -136,11 +136,11 @@ This library needs at least:
 
 Please consider the following optional requirements:
 * For AES-GCM based algorithms (`AxxxGCM` and `AxxxGCMKW`): [PHP Crypto](https://github.com/bukka/php-crypto) Extension (at least `v0.2.1`) is highly recommended as encryption/decryption is faster than the pure PHP implementation.
-* For ECC based algorithms: [PHP ECC](https://github.com/phpecc/phpecc) (`v0.4@dev` only).
 * For Ed25519 algorithm: [php-ed25519-ext](https://github.com/encedo/php-ed25519-ext) required
 * For X25519 algorithm: [php-curve25519-ext](https://github.com/encedo/php-curve25519-ext) required
 
-Please read performance test results below concerning the ECC based algorithms. As the time needed to perform operation is very long compared to the other algorithms, we do not recommend their use.
+Please read performance test results below concerning the ECC based algorithms.
+As the time needed to perform operation is long compared to the other algorithms, we do not recommend their use.
 
 # Continuous Integration
 

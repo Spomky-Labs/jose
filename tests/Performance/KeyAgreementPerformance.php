@@ -52,6 +52,16 @@ function dataKeyAgreementPerformance()
             ]),
         ],
         [
+            'With P-384 curve',
+            new ECDHES(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
+            ]),
+        ],
+        [
             'With P-521 curve',
             new ECDHES(),
             new JWK([

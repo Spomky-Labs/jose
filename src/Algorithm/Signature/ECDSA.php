@@ -18,6 +18,8 @@ use Jose\Object\JWKInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
+use Mdanter\Ecc\Serializer\Signature\DerSignatureSerializer;
+use phpseclib\Crypt\Base;
 
 /**
  * Class ECDSA.
@@ -120,7 +122,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function convertDecToHex($value)
     {
-        $value = gmp_strval($value);
+        $value = gmp_strval($value, 10);
 
         return EccFactory::getAdapter()->decHex($value);
     }
@@ -132,7 +134,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      */
     private function convertHexToGmp($value)
     {
-        return gmp_init('0x'.$value);
+        return gmp_init($value, 16);
     }
 
     /**
@@ -143,9 +145,8 @@ abstract class ECDSA implements SignatureAlgorithmInterface
     private function convertBase64ToGmp($value)
     {
         $value = unpack('H*', Base64Url::decode($value));
-        $value = $value[1];
 
-        return gmp_init('0x'.$value);
+        return gmp_init($value[1], 16);
     }
 
     /**

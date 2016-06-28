@@ -18,7 +18,7 @@ use Jose\Algorithm\KeyEncryption\KeyAgreementWrappingInterface;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
 
-function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
+function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key)
 {
     $header = [
         'alg' => $alg->getAlgorithmName(),
@@ -33,7 +33,7 @@ function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgree
 
     $time_start = microtime(true);
     for ($i = 0; $i < $nb; $i++) {
-        $alg->wrapAgreementKey($sender_key, $recipient_key, $cek, 128, $header, $ahv);
+        $alg->wrapAgreementKey($recipient_key, $cek, 128, $header, $ahv);
     }
     $time_end = microtime(true);
 
@@ -41,7 +41,7 @@ function testKeyAgreementWithKeyWrappingEncryptionPerformance($message, KeyAgree
     printf('%s: %f milliseconds/wrapping of key agreement (%s)'.PHP_EOL, $alg->getAlgorithmName(), $time, $message);
 }
 
-function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key, JWKInterface $sender_key)
+function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgreementWrappingInterface $alg, JWKInterface $recipient_key, array $ahv)
 {
     $header = [
         'alg' => $alg->getAlgorithmName(),
@@ -50,9 +50,13 @@ function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgree
         'iat' => time(),
         'nbf' => time(),
     ];
+    $header = array_merge(
+        $header,
+        $ahv
+    );
     $cek = random_bytes(512 / 8);
 
-    $encrypted_cek = $alg->wrapAgreementKey($sender_key, $recipient_key, $cek, 128, $header, $header);
+    $encrypted_cek = $alg->wrapAgreementKey($recipient_key, $cek, 128, $header, $header);
     $nb = 100;
 
     $time_start = microtime(true);
@@ -65,7 +69,7 @@ function testKeyAgreementWithKeyWrappingDecryptionPerformance($message, KeyAgree
     printf('%s: %f milliseconds/unwrapping of key agreement (%s)'.PHP_EOL, $alg->getAlgorithmName(), $time, $message);
 }
 
-function dataKeyAgreementWithKeyWrappingPerformance()
+function dataPrivateKeyAgreementWithKeyWrappingPerformance()
 {
     return [
         [
@@ -74,16 +78,195 @@ function dataKeyAgreementWithKeyWrappingPerformance()
             new JWK([
                 'kty' => 'EC',
                 'crv' => 'P-256',
-                'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-                'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-                'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
+                'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+                'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+                'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
             ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-256',
+                    'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
+                    'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
+                ]
+            ],
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA128KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
+                'd'   => 'GBwKLCdSIOz9I6_1Imogi_NvqrbTDMONi-tjpxNnJ4FTG5RfLurTgTfVyl0-WWBu',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-384',
+                    'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
+                    'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
+                ]
+            ],
+        ],
+        [
+            'With P-521 curve',
+            new ECDHESA128KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-521',
+                'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
+                'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
+                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-521',
+                    'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
+                    'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
+                ]
+            ],
+        ],
+        [
+            'With P-256 curve',
+            new ECDHESA192KW(),
             new JWK([
                 'kty' => 'EC',
                 'crv' => 'P-256',
                 'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
                 'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
                 'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-256',
+                    'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
+                    'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
+                ]
+            ],
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA192KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
+                'd'   => 'GBwKLCdSIOz9I6_1Imogi_NvqrbTDMONi-tjpxNnJ4FTG5RfLurTgTfVyl0-WWBu',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-384',
+                    'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
+                    'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
+                ]
+            ],
+        ],
+        [
+            'With P-521 curve',
+            new ECDHESA192KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-521',
+                'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
+                'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
+                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-521',
+                    'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
+                    'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
+                ]
+            ],
+        ],
+        [
+            'With P-256 curve',
+            new ECDHESA256KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-256',
+                'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+                'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+                'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-256',
+                    'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
+                    'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
+                ]
+            ],
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA256KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
+                'd'   => 'GBwKLCdSIOz9I6_1Imogi_NvqrbTDMONi-tjpxNnJ4FTG5RfLurTgTfVyl0-WWBu',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-384',
+                    'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
+                    'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
+                ]
+            ],
+        ],
+        [
+            'With P-521 curve',
+            new ECDHESA256KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-521',
+                'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
+                'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
+                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
+            ]),
+            [
+                'epk' => [
+                    'kty' => 'EC',
+                    'crv' => 'P-521',
+                    'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
+                    'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
+                ]
+            ],
+        ],
+    ];
+}
+
+function dataPublicKeyAgreementWithKeyWrappingPerformance()
+{
+    return [
+        [
+            'With P-256 curve',
+            new ECDHESA128KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-256',
+                'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
+                'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
+            ]),
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA128KW(),
+            new JWK([
+                'kty' => 'EC',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
             ]),
         ],
         [
@@ -92,16 +275,8 @@ function dataKeyAgreementWithKeyWrappingPerformance()
             new JWK([
                 'kty' => 'EC',
                 'crv' => 'P-521',
-                'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-                'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-                'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
-            ]),
-            new JWK([
-                'kty' => 'EC',
-                'crv' => 'P-521',
                 'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
                 'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
-                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
             ]),
         ],
         [
@@ -112,14 +287,16 @@ function dataKeyAgreementWithKeyWrappingPerformance()
                 'crv' => 'P-256',
                 'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
                 'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-                'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
             ]),
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA192KW(),
             new JWK([
                 'kty' => 'EC',
-                'crv' => 'P-256',
-                'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-                'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-                'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
             ]),
         ],
         [
@@ -128,16 +305,8 @@ function dataKeyAgreementWithKeyWrappingPerformance()
             new JWK([
                 'kty' => 'EC',
                 'crv' => 'P-521',
-                'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-                'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-                'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
-            ]),
-            new JWK([
-                'kty' => 'EC',
-                'crv' => 'P-521',
                 'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
                 'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
-                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
             ]),
         ],
         [
@@ -148,14 +317,16 @@ function dataKeyAgreementWithKeyWrappingPerformance()
                 'crv' => 'P-256',
                 'x'   => 'weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ',
                 'y'   => 'e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck',
-                'd'   => 'VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw',
             ]),
+        ],
+        [
+            'With P-384 curve',
+            new ECDHESA256KW(),
             new JWK([
                 'kty' => 'EC',
-                'crv' => 'P-256',
-                'x'   => 'gI0GAILBdu7T53akrFmMyGcsF3n5dO7MmwNBHKW5SV0',
-                'y'   => 'SLW_xSffzlPWrHEVI30DHM_4egVwt3NQqeUD7nMFpps',
-                'd'   => '0_NxaRPUMQoAJt50Gz8YiTr8gRTwyEaCumd-MToTmIo',
+                'crv' => 'P-384',
+                'x'   => 'IZ0VDYiwXq6qi19SdQe-rhX03T-hkGk7qZi7Y0sR-xXdngp2NCRkhE5eEqAUz2M0',
+                'y'   => 'SLv3QXabqdNMY5Ezolm7VqOWjG7kg5tXoGVWf6ooIuuRmrmnLG7_RzBGySzPXYn3',
             ]),
         ],
         [
@@ -164,31 +335,21 @@ function dataKeyAgreementWithKeyWrappingPerformance()
             new JWK([
                 'kty' => 'EC',
                 'crv' => 'P-521',
-                'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
-                'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
-                'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
-            ]),
-            new JWK([
-                'kty' => 'EC',
-                'crv' => 'P-521',
                 'x'   => 'AVpvo7TGpQk5P7ZLo0qkBpaT-fFDv6HQrWElBKMxcrJd_mRNapweATsVv83YON4lTIIRXzgGkmWeqbDr6RQO-1cS',
                 'y'   => 'AIs-MoRmLaiPyG2xmPwQCHX2CGX_uCZiT3iOxTAJEZuUbeSA828K4WfAA4ODdGiB87YVShhPOkiQswV3LpbpPGhC',
-                'd'   => 'Fp6KFKRiHIdR_7PP2VKxz6OkS_phyoQqwzv2I89-8zP7QScrx5r8GFLcN5mCCNJt3rN3SIgI4XoIQbNePlAj6vE',
             ]),
         ],
     ];
 }
 
-$environments = dataKeyAgreementWithKeyWrappingPerformance();
-
 print_r('#####################################################'.PHP_EOL);
 print_r('# KEY AGREEMENT WITH KEY WRAPPING PERFORMANCE TESTS #'.PHP_EOL);
 print_r('#####################################################'.PHP_EOL);
 
-foreach ($environments as $environment) {
-    testKeyAgreementWithKeyWrappingEncryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
+foreach (dataPublicKeyAgreementWithKeyWrappingPerformance() as $environment) {
+    testKeyAgreementWithKeyWrappingEncryptionPerformance($environment[0], $environment[1], $environment[2]);
 }
-foreach ($environments as $environment) {
+foreach (dataPrivateKeyAgreementWithKeyWrappingPerformance() as $environment) {
     testKeyAgreementWithKeyWrappingDecryptionPerformance($environment[0], $environment[1], $environment[2], $environment[3]);
 }
 
