@@ -18,8 +18,6 @@ use Jose\Object\JWKInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
 use Mdanter\Ecc\Random\RandomGeneratorFactory;
-use Mdanter\Ecc\Serializer\Signature\DerSignatureSerializer;
-use phpseclib\Crypt\Base;
 
 /**
  * Class ECDSA.
