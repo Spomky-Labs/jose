@@ -88,7 +88,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-256',
                     'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
                     'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
-                ]
+                ],
             ],
         ],
         [
@@ -107,7 +107,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-384',
                     'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
                     'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
-                ]
+                ],
             ],
         ],
         [
@@ -126,7 +126,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-521',
                     'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
                     'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
-                ]
+                ],
             ],
         ],
         [
@@ -145,7 +145,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-256',
                     'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
                     'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
-                ]
+                ],
             ],
         ],
         [
@@ -164,7 +164,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-384',
                     'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
                     'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
-                ]
+                ],
             ],
         ],
         [
@@ -183,7 +183,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-521',
                     'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
                     'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
-                ]
+                ],
             ],
         ],
         [
@@ -202,7 +202,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-256',
                     'x'   => 'TZ7_dXun_REsafV7tFkNayKPDyL6EdxZ8hQmvDeKH0Y',
                     'y'   => 'Z84xZQisnNDKfstsCuKidm-u7WYUYTHzo2UGtYgTcJ4',
-                ]
+                ],
             ],
         ],
         [
@@ -221,7 +221,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-384',
                     'x'   => 'Wyidjnd4VBA3nih1RZCJJ1EkKgHSApODejS_JCReqg6K0RhxaIzr9jh_NRslfjnd',
                     'y'   => 'kcGQFUrRDHqcj1dTwL_SOyaf6cnkp8dL5NX70WiV3Ti97bFLrCE1dfRGpnCPW4R6',
-                ]
+                ],
             ],
         ],
         [
@@ -240,7 +240,7 @@ function dataPrivateKeyAgreementWithKeyWrappingPerformance()
                     'crv' => 'P-521',
                     'x'   => 'Kv77LZEF4wD_L26EERJQ-iEZvEft-eWONIr2UjUNLoBZLhMvSV76lh3miGO0nzRGMi0vCx4OScDH3h-0I6wsF3Y',
                     'y'   => 'V-h7CW1Rd_ylxI1qNNq4o0d_Hgu7x0l2WIeZDWXOW7kODJEfDZpxArNwp3x4NeIhfbYOEZRfu1Ho6dq5LKR80vM',
-                ]
+                ],
             ],
         ],
     ];
