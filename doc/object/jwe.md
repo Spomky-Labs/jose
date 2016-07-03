@@ -19,7 +19,8 @@ $jwe = JWEFactory::createJWE(
 ```
 
 The first parameter is the payload (in this example, this is a message).
-The second parameter is the shared protected header. This header indicates the key encryption algorithm ('RSA-OAEP-256'), the content encryption algorithm ('A256CBC-HS512') and that the payload is compressed before encryption using the method 'DEF' (deflate).
+The second parameter is the shared protected header and contains all header parameters that are common for all recipients.
+In the above example, This header indicates the key encryption algorithm ('RSA-OAEP-256'), the content encryption algorithm ('A256CBC-HS512') and that the payload is compressed before encryption using the method 'DEF' (deflate).
 
 The variable `$jwe` now contains an object that implements `Jose\Object\JWEInterface`.
 

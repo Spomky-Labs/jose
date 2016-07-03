@@ -3,7 +3,7 @@ Decrypt a JWE
 
 This library provides a `Loader` object able to load and decrypt the payload of a JWE.
 
-# The Most Common Way
+# The Common Way
 
 To decrypt a JWE, you will need:
 

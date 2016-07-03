@@ -142,7 +142,7 @@ $jws = $jwt_loader->load(
 You also may need to know supported algorithms or if decryption is supported:
 
 * `getSupportedSignatureAlgorithms()`: returns the supported signature algorithms.
-* `getSupportedKeyEncryptionAlgorithms()`: returns the supported key decryption algorithms.
-* `getSupportedContentEncryptionAlgorithms()`: returns the supported content decryption algorithms.
+* `getSupportedKeyDecryptionAlgorithms()`: returns the supported key decryption algorithms.
+* `getSupportedContentDecryptionAlgorithms()`: returns the supported content decryption algorithms.
 * `getSupportedCompressionMethods()`: returns the supported compression methods.
 * `isDecryptionSupportEnabled()`: returns `true` if the decryption support is enabled or not.

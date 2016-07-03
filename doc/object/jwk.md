@@ -4,6 +4,7 @@ The JWK object
 # Overview
 
 The JWK object represents a key. Depending on the key properties, it can be used to sign, verify a signature, encrypt or decrypt.
+
 The class `Jose\Object\JWK` implements the interface `Jose\Object\JWKInterface` and provides the following methods:
 * `get($name)`: get the value at key `$name`. Throws an exception if the key does not exist.
 * `has($name)`: return true if the key has a key/value pair `$name`
@@ -32,44 +33,60 @@ $jwk = new JWK([
 
 # Key values
 
-Values depend on the key type. [Read this page](../Keys.md) to know which key types are supported.
+Each key must at least contain the parameter `kty` (key type).
+Other values depend on the key type.
 
-## None key (`none`)
+We recommend you to set the following values:
+* `kid`: the unique key ID
+* `use`: usage of the key (`sig` for signature/verification or `enc` for encryption/decryption)
+* `alg`: the algorithm for which the key is dedicated
 
-The value `kty` is mandatory.
+More details on [the JWK specification](http://tools.ietf.org/html/rfc7517#section-4).
+You can use custom key/value pairs depending on your needs.
+
+Unless otherwise stipulated, all required values are Base64 Url Safe encoded.
+
+# None key (`none`)
+
+This type of key does not require any other value.
+
 ```php
 $jwk = new JWK([
     'kty' => 'none',
 ]);
 ```
 
-## Symmetric key (`oct`)
+# Symmetric key (`oct`)
 
+This key type requires the following value:
+* `k`: a binary string that represent the shared key.
 
 ```php
-use Base64Url\Base64Url;
-
 $jwk = new JWK([
     'kty' => 'oct',
-    'k'   => Base64Url::encode($my_binary_string),
+    'k'   => 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow',
 ]);
 ```
 
-The value of `k` is your binary key encoded in base 64 url safe. This value is mandatory.
+# Asymmetric key
 
-## Asymmetric key
+*General Note: all private keys can use the method `toPublic()` to get the public key associated to the private one:*
 
-### RSA key
+```php
+$public_key = $private_key->toPublic();
+```
 
-`RSA` public and private keys are very similar. The difference is that a public key only contains `n` (modulus) and `e` (exponent) values.
-The values `kty`, `n` and `e` are mandatory.
-The key is considered as private when it contains a `d` value.
+## RSA key (`RSA`)
+
+`RSA` public and private keys are very similar.
+The difference is that a public key only contains `n` (modulus) and `e` (exponent) values. These values are mandatory.
+Private keys will also contain values `d`, `p` and `q`. They may also contain other prime values (`dp`, `dq` and `qi`)
 
 ```php
 // A public key
 $jwk = new JWK([
     'kty' => 'RSA',
-    'n'   => 'abcdef',
+    'n'   => 'sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw',
     'e'   => 'AQAB',
 ]);
 ```
@@ -78,32 +95,32 @@ $jwk = new JWK([
 // A private key
 $jwk = new JWK([
     'kty' => 'RSA',
-    'n'   => 'abcdef',
+    'n'   => 'sXchDaQebHnPiGvyDOAT4saGEUetSyo9MKLOoWFsueri23bOdgWp4Dy1WlUzewbgBHod5pcM9H95GQRV3JDXboIRROSBigeC5yjU1hGzHHyXss8UDprecbAYxknTcQkhslANGRUZmdTOQ5qTRsLAt6BTYuyvVRdhS8exSZEy_c4gs_7svlJJQ4H9_NxsiIoLwAEk7-Q3UXERGYw_75IDrGA84-lA_-Ct4eTlXHBIY2EaV7t7LjJaynVJCpkv4LKjTTAumiGUIuQhrNhZLuF_RJLqHpM2kgWFLU7-VTdL1VbC2tejvcI2BlMkEpk1BzBZI0KQB0GaDWFLN-aEAw3vRw',
     'e'   => 'AQAB',
-    'd'   => 'ghijkl',
-    'dp'   => '123456',
-    'dq'   => '987654',
-    'qi'   => 'ABCDEF',
+    'd'   => 'VFCWOqXr8nvZNyaaJLXdnNPXZKRaWCjkU5Q2egQQpTBMwhprMzWzpR8Sxq1OPThh_J6MUD8Z35wky9b8eEO0pwNS8xlh1lOFRRBoNqDIKVOku0aZb-rynq8cxjDTLZQ6Fz7jSjR1Klop-YKaUHc9GsEofQqYruPhzSA-QgajZGPbE_0ZaVDJHfyd7UUBUKunFMScbflYAAOYJqVIVwaYR5zWEEceUjNnTNo_CVSj-VvXLO5VZfCUAVLgW4dpf1SrtZjSt34YLsRarSb127reG_DUwg9Ch-KyvjT1SkHgUWRVGcyly7uvVGRSDwsXypdrNinPA4jlhoNdizK2zF2CWQ',
+    'p'   => '9gY2w6I6S6L0juEKsbeDAwpd9WMfgqFoeA9vEyEUuk4kLwBKcoe1x4HG68ik918hdDSE9vDQSccA3xXHOAFOPJ8R9EeIAbTi1VwBYnbTp87X-xcPWlEPkrdoUKW60tgs1aNd_Nnc9LEVVPMS390zbFxt8TN_biaBgelNgbC95sM',
+    'q'   => 'uKlCKvKv_ZJMVcdIs5vVSU_6cPtYI1ljWytExV_skstvRSNi9r66jdd9-yBhVfuG4shsp2j7rGnIio901RBeHo6TPKWVVykPu1iYhQXw1jIABfw-MVsN-3bQ76WLdt2SDxsHs7q7zPyUyHXmps7ycZ5c72wGkUwNOjYelmkiNS0',
+    'dp'  => 'w0kZbV63cVRvVX6yk3C8cMxo2qCM4Y8nsq1lmMSYhG4EcL6FWbX5h9yuvngs4iLEFk6eALoUS4vIWEwcL4txw9LsWH_zKI-hwoReoP77cOdSL4AVcraHawlkpyd2TWjE5evgbhWtOxnZee3cXJBkAi64Ik6jZxbvk-RR3pEhnCs',
+    'dq'  => 'o_8V14SezckO6CNLKs_btPdFiO9_kC1DsuUTd2LAfIIVeMZ7jn1Gus_Ff7B7IVx3p5KuBGOVF8L-qifLb6nQnLysgHDh132NDioZkhH7mI7hPG-PYE_odApKdnqECHWw0J-F0JWnUd6D2B_1TvF9mXA2Qx-iGYn8OVV1Bsmp6qU',
+    'qi'  => 'eNho5yRBEBxhGBtQRww9QirZsB66TrfFReG_CcteI1aCneT0ELGhYlRlCtUkTRclIfuEPmNsNDPbLoLqqCVznFbvdB7x-Tl-m0l_eFTj2KiqwGqE9PZB9nNTwMVvH3VRRSLWACvPnSiwP8N5Usy-WRXS-V7TbpxIhvepTfE0NNo',
 ]);
-
-$public_key = $jwk->toPublic();
 ```
 
-The values of `n`, `e`, `d`, `dp`, `dq` and `qi` are encoded in base 64 url safe.
+## ECC key (`EC`)
 
-### ECC key
+`ECC` public and private keys are very similar.
+The difference is that a public key only contains `crv` (curve), `x` and `y` values. These values are mandatory.
+Private keys will also contain a value `d`.
 
-As `RSA` keys, `EC` public and private keys are very similar. The difference is that a public key only contains `x` and `y` (coordinates) values.
-The values `kty`, x` and `y` are mandatory.
-A private key contains a `d` value.
+The value `crv` is not Base64 Url Safe encoded.
 
 ```php
 // A public key
 $jwk = new JWK([
     'kty' => 'EC',
-    'crv' => 'P-256',
-    'x'   => 'abcdefghij',
-    'y'   => '0123456789',
+    'crv' => 'P-521',
+    'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
+    'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
 ]);
 ```
 
@@ -111,26 +128,28 @@ $jwk = new JWK([
 // A private key
 $jwk = new JWK([
     'kty' => 'EC',
-    'crv' => 'P-256',
-    'x'   => 'abcdefghij',
-    'y'   => '0123456789',
-    'd'   => 'ABCDEFGHIJ',
+    'crv' => 'P-521',
+    'x'   => 'AekpBQ8ST8a8VcfVOTNl353vSrDCLLJXmPk06wTjxrrjcBpXp5EOnYG_NjFZ6OvLFV1jSfS9tsz4qUxcWceqwQGk',
+    'y'   => 'ADSmRA43Z1DSNx_RvcLI87cdL07l6jQyyBXMoxVg_l2Th-x3S1WDhjDly79ajL4Kkd0AZMaZmh9ubmf63e3kyMj2',
+    'd'   => 'AY5pb7A0UFiB3RELSD64fTLOSV_jazdF7fLYyuTw8lOfRhWg6Y6rUrPAxerEzgdRhajnu0ferB0d53vM9mE15j2C',
 ]);
 
-$public_key = $jwk->toPublic();
 ```
 
-The values of `x`, `y` and `d` are encoded in base 64 url safe.
+Supported curves are `P-256`, `P-384` and `P-521`.
 
 ## Octet key pair (`OKP`)
 
-This kind of key is used by the:
-- signature algorithms Ed25519 and Ed448
-- encryption algorithms X25519 nd X448
+This key type is used by the EdDSA algorithms.
+- signature with curves Ed25519 and Ed448
+- encryption with curves X25519 nd X448
 
-At the moment, only algorithm Ed25519 is supported.
+At the moment, only Ed25519 and X25519 curves are supported.
 
-A private key contains a `d` value.
+Public keys must contain `crv` (curve) and `x` values.
+Private keys will also contain a value `d`.
+
+The value `crv` is not Base64 Url Safe encoded.
 
 ```php
 // A private OKP key
@@ -144,34 +163,8 @@ $public = new JWK([
 $private = new JWK([
    'kty' => 'OKP',
    'crv' => 'Ed25519',
-   'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
    'x'   => '11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo',
-]);
-```
-
-The values of `x` and `d` are encoded in base 64 url safe.
-
-## Other Key/Value Pairs
-
-Depending on your needs, you may use other key/value pairs.
-
-We recommend you to use:
-
-* `kid`: the ID of the key
-* `use`: the usage of the key (`sig` for signature or `enc` for encryption operations)
-* `alg`: the algorithm allowed for this key
-
-More details on [the JWK specification](http://tools.ietf.org/html/rfc7517#section-4).
-
-You can use custom key/value pairs:
-
-```php
-$jwk = new JWK([
-    'kid' => 'MY_KEY_#1',
-    'alg' => 'HS256',
-    'kty' => 'oct',
-    'k'   => 'GawgguFyGrWKav7AX4VKUg',
-    'foo' => 'bar',
+   'd'   => 'nWGxne_9WmC6hEr0kuwsxERJxWl7MmkZcDusAxyuf2A',
 ]);
 ```
 

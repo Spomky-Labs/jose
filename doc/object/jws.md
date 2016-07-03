@@ -18,7 +18,8 @@ $jws = JWSFactory::createJWS([
 ]);
 ```
 
-If you want to create a JWS with a detaceh payload, just set `true` as second argument
+If you want to create a JWS with a detached payload, just set `true` as second argument
+
 ```php
 use Jose\Factory\JWSFactory;
 

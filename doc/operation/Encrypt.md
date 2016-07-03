@@ -128,7 +128,7 @@ We need to create a `Encrypter` object that will done this step.
 use Jose\Encrypter;
 
 // We create a Encrypter object with the key encryption and content encryption algorithms we want to use
-$encrypter = Signer::createEncrypter(
+$encrypter = Encrypter::createEncrypter(
     ['RSA-OAEP-256', 'A256GCMKW'], // The Key Encryption Algorithms to be used
     ['A128CBC-HS256'],             // The Content Encryption Algorithms to be used
     ['DEF']                        // The Compression Methods to be used
@@ -215,3 +215,25 @@ $jws = JWEFactory::createJWE(
 ```
 
 Please note that when a JWE object contains an AAD, it cannot be converted into Compact JSON.
+
+## Algorithms and Parameters
+
+The key encryption algorithms `PBES2-HS256+A128KW` `PBES2-HS384+A192KW` and `PBES2-HS512+A256KW` are instantiated using their default values:
+* Salt size: 512 bits (64 bytes)
+* Iterations: 4096
+
+These values may not fit on your needs. Let say you want to use a 4096 bits (512 bytes) salt and 100000 iterations.
+To do so, you just have to pass an instance of the algorithm with that parameters to the `Encrypter`.
+
+
+```php
+use Jose\Encrypter;
+use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
+
+$encrypter = Encrypter::createEncrypter(
+    [
+        new PBES2HS256A128KW(512, 10000), // The Key Encryption algorithm with a 4096 bits (512 bytes) salt and 100000 iterations
+    ],
+    ['A128CBC-HS256'],             // The Content Encryption Algorithms to be used
+);
+```
