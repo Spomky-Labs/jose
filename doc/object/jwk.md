@@ -43,7 +43,7 @@ $jwk = new JWK([
 ]);
 ```
 
-## Asymmetric key (`oct`)
+## Symmetric key (`oct`)
 
 
 ```php
@@ -57,7 +57,7 @@ $jwk = new JWK([
 
 The value of `k` is your binary key encoded in base 64 url safe. This value is mandatory.
 
-## Symmetric key
+## Asymmetric key
 
 ### RSA key
 
