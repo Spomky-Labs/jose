@@ -41,25 +41,15 @@ final class ECDHES implements KeyAgreementInterface
                 case 'P-256':
                 case 'P-384':
                 case 'P-521':
-                    $private_key = JWKFactory::createRandomECPrivateKey($public_key->get('crv'));
-                    $epk = [
-                        'kty' => $private_key->get('kty'),
-                        'crv' => $private_key->get('crv'),
-                        'x'   => $private_key->get('x'),
-                        'y'   => $private_key->get('y'),
-                    ];
+                    $private_key = JWKFactory::createECKey($public_key->get('crv'));
                     break;
                 case 'X25519':
-                    $private_key = JWKFactory::createRandomX25519PrivateKey();
-                    $epk = [
-                        'kty' => $private_key->get('kty'),
-                        'crv' => $private_key->get('crv'),
-                        'x'   => $private_key->get('x'),
-                    ];
+                    $private_key = JWKFactory::createOKPKey('X25519');
                     break;
                 default:
                     throw new \InvalidArgumentException(sprintf('The curve "%s" is not supported', $public_key->get('crv')));
             }
+            $epk = $private_key->toPublic()->getAll();
             $additional_header_values = array_merge($additional_header_values, [
                 'epk' => $epk,
             ]);

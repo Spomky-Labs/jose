@@ -247,7 +247,7 @@ class ECDHESKeyAgreementTest extends \PHPUnit_Framework_TestCase
         if (!function_exists('curve25519_public')) {
             $this->markTestSkipped('X25519 extension not available');
         }
-        $receiver_private_key = JWKFactory::createRandomX25519PrivateKey();
+        $receiver_private_key = JWKFactory::createOKPKey('X25519');
         $receiver_public_key = $receiver_private_key->toPublic();
 
         $header = [

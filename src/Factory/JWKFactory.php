@@ -14,6 +14,7 @@ namespace Jose\Factory;
 use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Mdanter\Ecc\Curves\CurveFactory;
@@ -23,12 +24,36 @@ use Mdanter\Ecc\EccFactory;
 final class JWKFactory
 {
     /**
+     * @param int   $size              Key size in bits
+     * @param array $additional_values
+     *
+     * @return \Jose\Object\JWKInterface
+     */
+    public static function createRSAKey($size, array $additional_values = [])
+    {
+        Assertion::true(0 === $size%8, 'Invalid key size.');
+        Assertion::greaterOrEqualThan($size, 384, 'Key length is too short. It needs to be at least 384 bits.');
+
+        $key = openssl_pkey_new([
+            'private_key_bits' => $size,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ]);
+        openssl_pkey_export($key, $out);
+        $rsa = new RSAKey($out);
+        $values = array_merge(
+            $additional_values,
+            $rsa->toArray()
+        );
+
+        return new JWK($values);
+    }
+    /**
      * @param string $curve
      * @param array  $additional_values
      *
      * @return \Jose\Object\JWKInterface
      */
-    public static function createRandomECPrivateKey($curve, array $additional_values = [])
+    public static function createECKey($curve, array $additional_values = [])
     {
         $curve_name = self::getNistName($curve);
         $generator = CurveFactory::getGeneratorByName($curve_name);
@@ -39,40 +64,70 @@ final class JWKFactory
             'crv' => $curve,
             'x'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getX()),
             'y'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getY()),
-            'd'   => self::encodeValue($private_key->getSecret()),
+            'd'   =>  self::encodeValue($private_key->getSecret()),
         ];
 
         $values = array_merge(
-            $values,
-            $additional_values
+            $additional_values,
+            $values
         );
 
         return new JWK($values);
     }
 
     /**
+     * @param int   $size              Key size in bits
      * @param array $additional_values
      *
      * @return \Jose\Object\JWKInterface
      */
-    public static function createRandomX25519PrivateKey(array $additional_values = [])
+    public static function createOctKey($size, array $additional_values = [])
     {
-        if (!function_exists('curve25519_public')) {
-            throw new \InvalidArgumentException('Unsupported X25519 curves.');
+        Assertion::true(0 === $size%8, 'Invalid key size.');
+        $values = array_merge(
+            $additional_values,
+            [
+                'kty' => 'oct',
+                'k'   => Base64Url::encode(random_bytes($size/8)),
+            ]
+        );
+        
+        return new JWK($values);
+    }
+
+    /**
+     * @param string $curve
+     * @param array  $additional_values
+     *
+     * @return \Jose\Object\JWKInterface
+     */
+    public static function createOKPKey($curve, array $additional_values = [])
+    {
+        switch ($curve) {
+            case 'X25519':
+                Assertion::true(function_exists('curve25519_public'), sprintf('Unsupported "%s" curve', $curve));
+                $d = random_bytes(32);
+                $x = curve25519_public($d);
+                break;
+            case 'Ed25519':
+                Assertion::methodExists(function_exists('ed25519_publickey'), sprintf('Unsupported "%s" curve', $curve));
+                $d = random_bytes(32);
+                $x = ed25519_publickey($d);
+                break;
+            default:
+                throw new \InvalidArgumentException(sprintf('Unsupported "%s" curve', $curve));
         }
-        $d = random_bytes(32);
-        $x = curve25519_public($d);
 
         $values = [
             'kty' => 'OKP',
-            'crv' => 'X25519',
+            'crv' => $curve,
             'x'   => Base64Url::encode($x),
             'd'   => Base64Url::encode($d),
         ];
 
         $values = array_merge(
-            $values,
-            $additional_values
+            $additional_values,
+            $values
         );
 
         return new JWK($values);

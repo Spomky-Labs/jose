@@ -12,6 +12,7 @@
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Test\TestCase;
+use Jose\Factory\JWKFactory;
 
 /**
  * @group RSAKeys
@@ -252,5 +253,19 @@ class RSAKeysTest extends TestCase
             'e'   => 'AQAB',
             'foo' => 'bar',
         ], $public_ec_key->toArray());
+    }
+
+    public function testCreateRSAKey()
+    {
+        $jwk = JWKFactory::createRSAKey(384);
+
+        $this->assertEquals('RSA', $jwk->get('kty'));
+        $this->assertTrue($jwk->has('p'));
+        $this->assertTrue($jwk->has('n'));
+        $this->assertTrue($jwk->has('q'));
+        $this->assertTrue($jwk->has('d'));
+        $this->assertTrue($jwk->has('dp'));
+        $this->assertTrue($jwk->has('dq'));
+        $this->assertTrue($jwk->has('qi'));
     }
 }
