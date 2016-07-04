@@ -232,7 +232,7 @@ use Jose\Algorithm\KeyEncryption\PBES2HS256A128KW;
 
 $encrypter = Encrypter::createEncrypter(
     [
-        new PBES2HS256A128KW(512, 10000), // The Key Encryption algorithm with a 4096 bits (512 bytes) salt and 100000 iterations
+        new PBES2HS256A128KW(512, 100000), // The Key Encryption algorithm with a 4096 bits (512 bytes) salt and 100000 iterations
     ],
     ['A128CBC-HS256'],             // The Content Encryption Algorithms to be used
 );
