@@ -278,3 +278,84 @@ use Jose\Factory\JWKFactory;
 
 $jwk = JWKFactory::createFromX5C($jws->getSignature(0)->getProtectedHeader('x5c'));
 ```
+
+## Create a Random Key
+
+The `JWKFactory` is able to easily create random keys. At the moment, the factory supports the following key types:
+
+* `oct`
+* `RSA`
+* `EC` with curves `P-256`, `P-384` and `P-521`
+* `OKP` with curves `Ed25519` and `X25519`
+
+### Create a Random `oct` Key
+
+The following example will create an `oct` key.
+The key size is 256 bits and that key will be used with the `HS256` algorithm for signature/verification only.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk = JWKFactory::createOctKey(
+    256,
+    [
+        'kid' => 'KEY1',
+        'alg' => 'HS256',
+        'use' => 'sig',
+    ]
+);
+```
+
+### Create a Random `RSA` Key
+
+The following example will create a `RSA` key.
+The key size is 4096 bits and that key will be used with the `RSA-OAEP` algorithm for encryption/decryption only.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk = JWKFactory::createRSAKey(
+    4096,
+    [
+        'kid' => 'KEY1',
+        'alg' => 'RSA-OAEP',
+        'use' => 'enc',
+    ]
+);
+```
+
+### Create a Random `EC` Key
+
+The following example will create an `EC` key.
+The key uses the `P-521` curve and will be used with the `ES512` algorithm for signature/verification only.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk = JWKFactory::createECKey(
+    'P-521',
+    [
+        'kid' => 'KEY1',
+        'alg' => 'ES512',
+        'use' => 'sig',
+    ]
+);
+```
+
+### Create a Random `OKP` Key
+
+The following example will create an `OKP` key.
+The key uses the `X25519` curve and will be used with the `ECDH-ES` algorithm for encryption/decryption only.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk = JWKFactory::createOKPKey(
+    'P-521',
+    [
+        'kid' => 'KEY1',
+        'alg' => 'ECDH-ES',
+        'use' => 'enc',
+    ]
+);
+```

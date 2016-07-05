@@ -31,7 +31,7 @@ final class JWKFactory
      */
     public static function createRSAKey($size, array $additional_values = [])
     {
-        Assertion::true(0 === $size%8, 'Invalid key size.');
+        Assertion::true(0 === $size % 8, 'Invalid key size.');
         Assertion::greaterOrEqualThan($size, 384, 'Key length is too short. It needs to be at least 384 bits.');
 
         $key = openssl_pkey_new([
@@ -47,6 +47,7 @@ final class JWKFactory
 
         return new JWK($values);
     }
+
     /**
      * @param string $curve
      * @param array  $additional_values
@@ -64,7 +65,7 @@ final class JWKFactory
             'crv' => $curve,
             'x'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getX()),
             'y'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getY()),
-            'd'   =>  self::encodeValue($private_key->getSecret()),
+            'd'   => self::encodeValue($private_key->getSecret()),
         ];
 
         $values = array_merge(
@@ -83,15 +84,15 @@ final class JWKFactory
      */
     public static function createOctKey($size, array $additional_values = [])
     {
-        Assertion::true(0 === $size%8, 'Invalid key size.');
+        Assertion::true(0 === $size % 8, 'Invalid key size.');
         $values = array_merge(
             $additional_values,
             [
                 'kty' => 'oct',
-                'k'   => Base64Url::encode(random_bytes($size/8)),
+                'k'   => Base64Url::encode(random_bytes($size / 8)),
             ]
         );
-        
+
         return new JWK($values);
     }
 
@@ -110,7 +111,7 @@ final class JWKFactory
                 $x = curve25519_public($d);
                 break;
             case 'Ed25519':
-                Assertion::methodExists(function_exists('ed25519_publickey'), sprintf('Unsupported "%s" curve', $curve));
+                Assertion::true(function_exists('ed25519_publickey'), sprintf('Unsupported "%s" curve', $curve));
                 $d = random_bytes(32);
                 $x = ed25519_publickey($d);
                 break;

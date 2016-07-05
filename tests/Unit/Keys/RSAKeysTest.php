@@ -9,10 +9,10 @@
  * of the MIT license.  See the LICENSE file for details.
  */
 
+use Jose\Factory\JWKFactory;
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Test\TestCase;
-use Jose\Factory\JWKFactory;
 
 /**
  * @group RSAKeys
