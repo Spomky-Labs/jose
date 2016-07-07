@@ -44,11 +44,11 @@ Hereafter a table with all signature/verification test results.
 | PS384           |   2.658789 msec |   0.305960 msec |
 | PS512           |   2.691140 msec |   0.352941 msec |
 | ES256           |   1.375458 msec |   0.685260 msec |
-| ES256*          |  46.056359 msec |  85.660450 msec |
+| ES256(1)        |  46.056359 msec |  85.660450 msec |
 | ES384           |   1.336381 msec |   1.702900 msec |
-| ES384*          |  70.218148 msec | 143.770418 msec |
+| ES384(1)        |  70.218148 msec | 143.770418 msec |
 | ES512           |   1.124258 msec |   1.578491 msec |
-| ES512*          | 110.474162 msec | 202.372239 msec |
+| ES512(1)        | 110.474162 msec | 202.372239 msec |
 | EdDSA (Ed25519) |   0.042379 msec |   0.109930 msec |
 
 * *(1) Tests using the PHPECC library in case the EC signature is not supported by OpenSSL*
