@@ -29,6 +29,10 @@ class OKPKeysTest extends TestCase
 
     public function testCreateOKPKeyWithCurveX25519()
     {
+        if (!function_exists('curve25519_public')) {
+            $this->markTestSkipped('EdDSA extension not available');
+        }
+        
         $jwk = JWKFactory::createOKPKey(
             'X25519',
             [
@@ -48,6 +52,10 @@ class OKPKeysTest extends TestCase
 
     public function testCreateOKPKeyWithCurveEd25519()
     {
+        if (!function_exists('ed25519_publickey')) {
+            $this->markTestSkipped('EdDSA extension not available');
+        }
+        
         $jwk = JWKFactory::createOKPKey(
             'Ed25519',
             [
