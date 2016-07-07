@@ -20,6 +20,7 @@ use Jose\Object\JWKSet;
 use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
+use Psr\Cache\CacheItemPoolInterface;
 
 final class JWKFactory
 {
@@ -266,28 +267,31 @@ final class JWKFactory
     }
 
     /**
-     * @param string $jku
-     * @param bool   $allow_unsecured_connection
+     * @param string                                 $jku
+     * @param bool                                   $allow_unsecured_connection
+     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
      *
      * @return \Jose\Object\JWKSetInterface
      */
-    public static function createFromJKU($jku, $allow_unsecured_connection = false)
+    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
     {
-        $content = self::downloadContent($jku, $allow_unsecured_connection);
+        $content = self::getContent($jku, $allow_unsecured_connection, $cache);
+
         Assertion::keyExists($content, 'keys', 'Invalid content.');
 
         return new JWKSet($content);
     }
 
     /**
-     * @param string $x5u
-     * @param bool   $allow_unsecured_connection
+     * @param string                                 $x5u
+     * @param bool                                   $allow_unsecured_connection
+     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
      *
      * @return \Jose\Object\JWKSetInterface
      */
-    public static function createFromX5U($x5u, $allow_unsecured_connection = false)
+    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
     {
-        $content = self::downloadContent($x5u, $allow_unsecured_connection);
+        $content = self::getContent($x5u, $allow_unsecured_connection, $cache);
 
         $jwkset = new JWKSet();
         foreach ($content as $kid => $cert) {
@@ -300,6 +304,32 @@ final class JWKFactory
         }
 
         return $jwkset;
+    }
+
+    /**
+     * @param string                                 $url
+     * @param bool                                   $allow_unsecured_connection
+     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
+     *
+     * @return array
+     */
+    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null)
+    {
+        $cache_key = sprintf('%s-%s', 'JWKFactory-Content', hash('sha512', $url));
+        if (null !== $cache) {
+            $item = $cache->getItem($cache_key);
+            if (!$item->isHit()) {
+                $content = self::downloadContent($url, $allow_unsecured_connection);
+                $item->set($content);
+                $cache->save($item);
+
+                return $content;
+            } else {
+                return $item->get();
+            }
+        }
+
+        return self::downloadContent($url, $allow_unsecured_connection);
     }
 
     /**
