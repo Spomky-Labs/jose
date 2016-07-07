@@ -33,7 +33,6 @@
         "phpseclib/phpseclib": "^2.0",
         "beberlei/assert": "^2.0",
         "psr/log": "^1.0",
-        "symfony/polyfill-php56": "^1.1",
         "symfony/polyfill-mbstring": "^1.1",
         "symfony/polyfill-php70": "^1.1",
         "fgrosse/phpasn1": "^1.5",
@@ -42,14 +41,15 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^5.0",
-        "satooshi/php-coveralls": "^1.0"
+        "satooshi/php-coveralls": "^1.0",
+        "symfony/cache": "^2.7|^3.0"
     },
    "suggest":{
         "ext-crypto": "Highly recommended when you use AES GCM based algorithms."
    },
     "extra": {
         "branch-alias": {
-            "dev-master": "4.0.x-dev"
+            "dev-master": "4.1.x-dev"
         }
     }
 }
