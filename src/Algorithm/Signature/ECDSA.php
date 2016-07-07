@@ -13,7 +13,11 @@ namespace Jose\Algorithm\Signature;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
+use FG\ASN1\Object;
+use FG\ASN1\Universal\Integer;
+use FG\ASN1\Universal\Sequence;
 use Jose\Algorithm\SignatureAlgorithmInterface;
+use Jose\KeyConverter\ECKey;
 use Jose\Object\JWKInterface;
 use Mdanter\Ecc\Crypto\Signature\Signature;
 use Mdanter\Ecc\EccFactory;
@@ -32,6 +36,46 @@ abstract class ECDSA implements SignatureAlgorithmInterface
         $this->checkKey($key);
         Assertion::true($key->has('d'), 'The EC key is not private');
 
+        if (defined('OPENSSL_KEYTYPE_EC')) {
+            return $this->getOpenSSLSignature($key, $data);
+        }
+
+        return $this->getPHPECCSignature($key, $data);
+    }
+
+    /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $data
+     *
+     * @return string
+     */
+    private function getOpenSSLSignature(JWKInterface $key, $data)
+    {
+        $pem = (new ECKey($key))->toPEM();
+        $result = openssl_sign($data, $signature, $pem, $this->getHashAlgorithm());
+
+        Assertion::true($result, 'Signature failed');
+
+        $asn = Object::fromBinary($signature);
+        Assertion::isInstanceOf($asn, Sequence::class, 'Invalid signature');
+
+        $res = '';
+        foreach ($asn->getChildren() as $child) {
+            Assertion::isInstanceOf($child, Integer::class, 'Invalid signature');
+            $res .= str_pad($this->convertDecToHex($child->getContent()), $this->getSignaturePartLength(), '0', STR_PAD_LEFT);
+        }
+
+        return $this->convertHexToBin($res);
+    }
+
+    /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $data
+     *
+     * @return string
+     */
+    private function getPHPECCSignature(JWKInterface $key, $data)
+    {
         $p = $this->getGenerator();
         $d = $this->convertBase64ToGmp($key->get('d'));
         $hash = $this->convertHexToGmp(hash($this->getHashAlgorithm(), $data));
@@ -63,19 +107,64 @@ abstract class ECDSA implements SignatureAlgorithmInterface
         if (mb_strlen($signature, '8bit') !== 2 * $part_length) {
             return false;
         }
+        $R = mb_substr($signature, 0, $part_length, '8bit');
+        $S = mb_substr($signature, $part_length, null, '8bit');
 
+        if (defined('OPENSSL_KEYTYPE_EC')) {
+            return $this->verifyOpenSSLSignature($key, $data, $R, $S);
+        }
+
+        return $this->verifyPHPECCSignature($key, $data, $R, $S);
+    }
+
+    /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $data
+     * @param string                    $R
+     * @param string                    $S
+     *
+     * @return string
+     */
+    private function verifyOpenSSLSignature(JWKInterface $key, $data, $R, $S)
+    {
+        $pem = ECKey::toPublic(new ECKey($key))->toPEM();
+
+        $oid_sequence = new Sequence();
+        $oid_sequence->addChildren([
+            new Integer(gmp_strval($this->convertHexToGmp($R), 10)),
+            new Integer(gmp_strval($this->convertHexToGmp($S), 10)),
+        ]);
+
+        return 1 === openssl_verify($data, $oid_sequence->getBinary(), $pem, $this->getHashAlgorithm());
+    }
+
+    /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $data
+     * @param string                    $R
+     * @param string                    $S
+     *
+     * @return string
+     */
+    private function verifyPHPECCSignature(JWKInterface $key, $data, $R, $S)
+    {
         $p = $this->getGenerator();
         $x = $this->convertBase64ToGmp($key->get('x'));
         $y = $this->convertBase64ToGmp($key->get('y'));
-        $R = $this->convertHexToGmp(mb_substr($signature, 0, $part_length, '8bit'));
-        $S = $this->convertHexToGmp(mb_substr($signature, $part_length, null, '8bit'));
         $hash = $this->convertHexToGmp(hash($this->getHashAlgorithm(), $data));
 
         $public_key = $p->getPublicKeyFrom($x, $y);
 
         $signer = EccFactory::getSigner();
 
-        return $signer->verify($public_key, new Signature($R, $S), $hash);
+        return $signer->verify(
+            $public_key,
+            new Signature(
+                $this->convertHexToGmp($R),
+                $this->convertHexToGmp($S)
+            ),
+            $hash
+        );
     }
 
     /**

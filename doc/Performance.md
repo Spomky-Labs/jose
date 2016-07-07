@@ -11,7 +11,7 @@ The conclusions reached regarding these results are:
 * Signature operations:
   * The HMAC signature performances are very good.
   * The RSA signature performances are good.
-  * The ECC signature performances are poor. This is due to the use of a pure PHP library.
+  * The ECC signature performances very good **only if OpenSSL supports EC signatures**.
 * Key Encryption operations:
   * The algorithms based on RSA are very good.
   * The AES GCM Key Wrapping algorithms are very good if the extension is installed, else performances are bad.
@@ -25,7 +25,7 @@ The conclusions reached regarding these results are:
 To conclude, if you use shared keys, you will prefer HMAC signature algorithms and AES/AES GCM key wrapping algorithms.
 If you use public/private key pairs, you will prefer RSA algorithms for signature and key encryption.
 
-**At this moment, we do not recommend the use of ECC algorithms with our library.**
+**At this moment, we do not recommend the use of ECC algorithms for encryption/decryption with our library.**
 
 # Signature/Verification Operations
 
@@ -43,10 +43,15 @@ Hereafter a table with all signature/verification test results.
 | PS256           |   2.711060 msec |   0.338850 msec |
 | PS384           |   2.658789 msec |   0.305960 msec |
 | PS512           |   2.691140 msec |   0.352941 msec |
-| ES256           |  46.056359 msec |  85.660450 msec |
-| ES384           |  70.218148 msec | 143.770418 msec |
-| ES512           | 110.474162 msec | 202.372239 msec |
+| ES256           |   1.375458 msec |   0.685260 msec |
+| ES256*          |  46.056359 msec |  85.660450 msec |
+| ES384           |   1.336381 msec |   1.702900 msec |
+| ES384*          |  70.218148 msec | 143.770418 msec |
+| ES512           |   1.124258 msec |   1.578491 msec |
+| ES512*          | 110.474162 msec | 202.372239 msec |
 | EdDSA (Ed25519) |   0.042379 msec |   0.109930 msec |
+
+* *(1) Tests using the PHPECC library in case the EC signature is not supported by OpenSSL*
 
 # Key Encryption Operations
 
