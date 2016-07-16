@@ -11,11 +11,7 @@
 
 namespace Jose\Factory;
 
-use Assert\Assertion;
 use Jose\Object\JWKInterface;
-use Jose\Object\JWS;
-use Jose\Signer;
-use Psr\Log\LoggerInterface;
 
 interface JWSFactoryInterface
 {
@@ -28,41 +24,40 @@ interface JWSFactoryInterface
     public static function createJWS($payload, $is_payload_detached = false);
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
      *
      * @return string
      */
     public static function createJWSToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers);
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
      *
      * @return string
      */
     public static function createJWSWithDetachedPayloadToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers);
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param array                         $headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
+     * @param array                     $headers
      *
      * @return string
      */
     public static function createJWSToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = []);
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param array                         $headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
+     * @param array                     $headers
      *
      * @return string
      */
     public static function createJWSWithDetachedPayloadToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = []);
-
 }

@@ -84,11 +84,11 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param string                        $input
-     * @param \Jose\Object\JWKSetInterface  $jwk_set
-     * @param array                         $allowed_key_encryption_algorithms
-     * @param array                         $allowed_content_encryption_algorithms
-     * @param null|int                      $recipient_index
+     * @param string                       $input
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     * @param array                        $allowed_key_encryption_algorithms
+     * @param array                        $allowed_content_encryption_algorithms
+     * @param null|int                     $recipient_index
      *
      * @return \Jose\Object\JWEInterface
      */
@@ -104,11 +104,11 @@ final class Loader implements LoaderInterface
     }
 
     /**
-     * @param string                        $input
-     * @param \Jose\Object\JWKSetInterface  $jwk_set
-     * @param array                         $allowed_algorithms
-     * @param string|null                   $detached_payload
-     * @param null|int                      $signature_index
+     * @param string                       $input
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     * @param array                        $allowed_algorithms
+     * @param string|null                  $detached_payload
+     * @param null|int                     $signature_index
      *
      * @return \Jose\Object\JWSInterface
      */
@@ -130,11 +130,9 @@ final class Loader implements LoaderInterface
     {
         $json = $this->convert($input);
         if (array_key_exists('signatures', $json)) {
-
             return JWSLoader::loadSerializedJsonJWS($json);
         }
         if (array_key_exists('recipients', $json)) {
-
             return JWELoader::loadSerializedJsonJWE($json);
         }
     }
@@ -148,17 +146,13 @@ final class Loader implements LoaderInterface
     {
         if (is_array($data = json_decode($input, true))) {
             if (array_key_exists('signatures', $data) || array_key_exists('recipients', $data)) {
-
                 return $data;
             } elseif (array_key_exists('signature', $data)) {
-
                 return $this->fromFlattenedSerializationSignatureToSerialization($data);
             } elseif (array_key_exists('ciphertext', $data)) {
-
                 return $this->fromFlattenedSerializationRecipientToSerialization($data);
             }
         } elseif (is_string($input)) {
-
             return $this->fromCompactSerializationToSerialization($input);
         }
         throw new \InvalidArgumentException('Unsupported input');

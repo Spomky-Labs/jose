@@ -12,9 +12,7 @@
 namespace Jose\Object;
 
 use Assert\Assertion;
-use Base64Url\Base64Url;
 use Jose\Factory\JWKFactory;
-use Webmozart\Assert\Assert;
 
 /**
  * Class RotatableJWK.
@@ -64,9 +62,10 @@ final class RotatableJWK implements JWKInterface
         if (null === $this->jwk) {
             $this->createJWK();
         }
+
         return $this->jwk;
     }
-    
+
     private function loadJWK()
     {
     }

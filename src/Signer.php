@@ -70,7 +70,6 @@ final class Signer implements SignerInterface
     private function computeSignature(JWSInterface $jws, SignatureInterface &$signature)
     {
         if (null === $signature->getSignatureKey()) {
-
             return;
         }
         $this->checkKeyUsage($signature->getSignatureKey(), 'signature');
@@ -90,7 +89,6 @@ final class Signer implements SignerInterface
             $signature->getEncodedProtectedHeaders(),
             $signature->getHeaders()
         );
-
     }
 
     /**

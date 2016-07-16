@@ -137,7 +137,6 @@ final class Encrypter implements EncrypterInterface
                                       array &$additional_headers
     ) {
         if (null === $recipient->getRecipientKey()) {
-
             return;
         }
         $complete_headers = array_merge(

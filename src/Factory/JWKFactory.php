@@ -34,7 +34,7 @@ final class JWKFactory implements JWKFactoryInterface
         $kty = $config['kty'];
         Assertion::keyExists($supported_types, $kty, sprintf('The key type "%s" is not supported. Please use one of %s', $kty, json_encode(array_keys($supported_types))));
         $method = sprintf('create%sKey', $supported_types[$kty]);
-        
+
         return self::$method($config);
     }
 

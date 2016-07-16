@@ -12,7 +12,6 @@
 namespace Jose;
 
 use Jose\Object\JWSInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Signer Interface.

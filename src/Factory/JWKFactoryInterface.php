@@ -116,7 +116,7 @@ interface JWKFactoryInterface
      * @return \Jose\Object\JWKSetInterface
      */
     public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null);
-    
+
     /**
      * @param array $x5c
      * @param array $additional_values
