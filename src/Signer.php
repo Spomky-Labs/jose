@@ -17,20 +17,16 @@ use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\CommonSigningMethods;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasLogger;
 use Jose\Factory\AlgorithmManagerFactory;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\Signature;
 use Jose\Object\SignatureInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 final class Signer implements SignerInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasLogger;
     use CommonSigningMethods;
 
     /**
@@ -48,12 +44,9 @@ final class Signer implements SignerInterface
     /**
      * {@inheritdoc}
      */
-    public static function createSigner(array $signature_algorithms, LoggerInterface $logger = null)
+    public static function createSigner(array $signature_algorithms)
     {
         $signer = new self($signature_algorithms);
-        if (null !== $logger) {
-            $signer->enableLogging($logger);
-        }
 
         return $signer;
     }
@@ -63,13 +56,11 @@ final class Signer implements SignerInterface
      */
     public function sign(JWSInterface &$jws)
     {
-        $this->log(LogLevel::INFO, 'Trying to sign the JWS object', ['jws' => $jws]);
         $nb_signatures = $jws->countSignatures();
 
         for ($i = 0; $i < $nb_signatures; $i++) {
             $this->computeSignature($jws, $jws->getSignature($i));
         }
-        $this->log(LogLevel::INFO, 'JWS object signed!');
     }
 
     /**
@@ -78,9 +69,7 @@ final class Signer implements SignerInterface
      */
     private function computeSignature(JWSInterface $jws, SignatureInterface &$signature)
     {
-        $this->log(LogLevel::DEBUG, 'Creation of the signature');
         if (null === $signature->getSignatureKey()) {
-            $this->log(LogLevel::DEBUG, 'The signature key is not set. Aborting.');
 
             return;
         }
@@ -88,7 +77,6 @@ final class Signer implements SignerInterface
 
         $signature_algorithm = $this->getSignatureAlgorithm($signature->getAllHeaders(), $signature->getSignatureKey());
 
-        $this->log(LogLevel::DEBUG, 'Trying to compute the signature');
         $input = $this->getInputToSign($jws, $signature);
 
         $value = $signature_algorithm->sign(
@@ -96,7 +84,6 @@ final class Signer implements SignerInterface
             $input
         );
 
-        $this->log(LogLevel::DEBUG, 'Signature computation done');
 
         $signature = Signature::createSignatureFromLoadedData(
             $value,
@@ -104,7 +91,6 @@ final class Signer implements SignerInterface
             $signature->getHeaders()
         );
 
-        $this->log(LogLevel::DEBUG, 'The signature is done', ['signature' => $signature]);
     }
 
     /**
@@ -151,10 +137,7 @@ final class Signer implements SignerInterface
      */
     private function getSignatureAlgorithm(array $complete_header, JWKInterface $key)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to find the algorithm used to sign');
         Assertion::keyExists($complete_header, 'alg', 'No "alg" parameter set in the header.');
-
-        $this->log(LogLevel::DEBUG, 'The algorithm is {alg}', ['alg' => $complete_header['alg']]);
 
         Assertion::false(
             $key->has('alg') && $key->get('alg') !== $complete_header['alg'],
@@ -163,8 +146,6 @@ final class Signer implements SignerInterface
 
         $signature_algorithm = $this->getJWAManager()->getAlgorithm($complete_header['alg']);
         Assertion::isInstanceOf($signature_algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported.', $complete_header['alg']));
-
-        $this->log(LogLevel::DEBUG, 'The algorithm {alg} is supported', ['alg' => $complete_header['alg'], 'handler' => $signature_algorithm]);
 
         return $signature_algorithm;
     }

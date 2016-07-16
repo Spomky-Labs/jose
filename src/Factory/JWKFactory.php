@@ -22,16 +22,31 @@ use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
 use Psr\Cache\CacheItemPoolInterface;
 
-final class JWKFactory
+final class JWKFactory implements JWKFactoryInterface
 {
     /**
-     * @param int   $size              Key size in bits
-     * @param array $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
-    public static function createRSAKey($size, array $additional_values = [])
+    public static function createKey(array $config)
     {
+        Assertion::keyExists($config, 'kty', 'The key "kty" must be set');
+        $supported_types = ['RSA' => 'RSA', 'OKP' => 'OKP', 'EC' => 'EC', 'oct' => 'Oct', 'none' => 'None'];
+        $kty = $config['kty'];
+        Assertion::keyExists($supported_types, $kty, sprintf('The key type "%s" is not supported. Please use one of %s', $kty, json_encode(array_keys($supported_types))));
+        $method = sprintf('create%sKey', $supported_types[$kty]);
+        
+        return self::$method($config);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRSAKey(array $values)
+    {
+        Assertion::keyExists($values, 'size', 'The key size is not set.');
+        $size = $values['size'];
+        unset($values['size']);
+
         Assertion::true(0 === $size % 8, 'Invalid key size.');
         Assertion::greaterOrEqualThan($size, 384, 'Key length is too short. It needs to be at least 384 bits.');
 
@@ -42,7 +57,7 @@ final class JWKFactory
         openssl_pkey_export($key, $out);
         $rsa = new RSAKey($out);
         $values = array_merge(
-            $additional_values,
+            $values,
             $rsa->toArray()
         );
 
@@ -50,44 +65,41 @@ final class JWKFactory
     }
 
     /**
-     * @param string $curve
-     * @param array  $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
-    public static function createECKey($curve, array $additional_values = [])
+    public static function createECKey(array $values)
     {
+        Assertion::keyExists($values, 'crv', 'The curve is not set.');
+        $curve = $values['crv'];
         $curve_name = self::getNistName($curve);
         $generator = CurveFactory::getGeneratorByName($curve_name);
         $private_key = $generator->createPrivateKey();
 
-        $values = [
-            'kty' => 'EC',
-            'crv' => $curve,
-            'x'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getX()),
-            'y'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getY()),
-            'd'   => self::encodeValue($private_key->getSecret()),
-        ];
-
         $values = array_merge(
-            $additional_values,
-            $values
+            $values,
+            [
+                'kty' => 'EC',
+                'crv' => $curve,
+                'x'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getX()),
+                'y'   => self::encodeValue($private_key->getPublicKey()->getPoint()->getY()),
+                'd'   => self::encodeValue($private_key->getSecret()),
+            ]
         );
 
         return new JWK($values);
     }
 
     /**
-     * @param int   $size              Key size in bits
-     * @param array $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
-    public static function createOctKey($size, array $additional_values = [])
+    public static function createOctKey(array $values)
     {
+        Assertion::keyExists($values, 'size', 'The key size is not set.');
+        $size = $values['size'];
+        unset($values['size']);
         Assertion::true(0 === $size % 8, 'Invalid key size.');
         $values = array_merge(
-            $additional_values,
+            $values,
             [
                 'kty' => 'oct',
                 'k'   => Base64Url::encode(random_bytes($size / 8)),
@@ -98,13 +110,12 @@ final class JWKFactory
     }
 
     /**
-     * @param string $curve
-     * @param array  $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
-    public static function createOKPKey($curve, array $additional_values = [])
+    public static function createOKPKey(array $values)
     {
+        Assertion::keyExists($values, 'crv', 'The curve is not set.');
+        $curve = $values['crv'];
         switch ($curve) {
             case 'X25519':
                 Assertion::true(function_exists('curve25519_public'), sprintf('Unsupported "%s" curve', $curve));
@@ -120,16 +131,14 @@ final class JWKFactory
                 throw new \InvalidArgumentException(sprintf('Unsupported "%s" curve', $curve));
         }
 
-        $values = [
-            'kty' => 'OKP',
-            'crv' => $curve,
-            'x'   => Base64Url::encode($x),
-            'd'   => Base64Url::encode($d),
-        ];
-
         $values = array_merge(
-            $additional_values,
-            $values
+            $values,
+            [
+                'kty' => 'OKP',
+                'crv' => $curve,
+                'x'   => Base64Url::encode($x),
+                'd'   => Base64Url::encode($d),
+            ]
         );
 
         return new JWK($values);
@@ -181,9 +190,7 @@ final class JWKFactory
     }
 
     /**
-     * @param array $values
-     *
-     * @return \Jose\Object\JWKInterface|\Jose\Object\JWKSetInterface
+     * {@inheritdoc}
      */
     public static function createFromValues(array $values)
     {
@@ -195,10 +202,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string $file
-     * @param array  $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromCertificateFile($file, array $additional_values = [])
     {
@@ -209,10 +213,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string $certificate
-     * @param array  $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromCertificate($certificate, array $additional_values = [])
     {
@@ -223,10 +224,7 @@ final class JWKFactory
     }
 
     /**
-     * @param resource $res
-     * @param array    $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromX509Resource($res, array $additional_values = [])
     {
@@ -237,11 +235,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string      $file
-     * @param null|string $password
-     * @param array       $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromKeyFile($file, $password = null, array $additional_values = [])
     {
@@ -252,11 +246,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string      $key
-     * @param null|string $password
-     * @param array       $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromKey($key, $password = null, array $additional_values = [])
     {
@@ -267,11 +257,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string                                 $jku
-     * @param bool                                   $allow_unsecured_connection
-     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     *
-     * @return \Jose\Object\JWKSetInterface
+     * {@inheritdoc}
      */
     public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
     {
@@ -283,11 +269,7 @@ final class JWKFactory
     }
 
     /**
-     * @param string                                 $x5u
-     * @param bool                                   $allow_unsecured_connection
-     * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     *
-     * @return \Jose\Object\JWKSetInterface
+     * {@inheritdoc}
      */
     public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
     {
@@ -333,10 +315,7 @@ final class JWKFactory
     }
 
     /**
-     * @param array $x5c
-     * @param array $additional_values
-     *
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
     public static function createFromX5C(array $x5c, array $additional_values = [])
     {

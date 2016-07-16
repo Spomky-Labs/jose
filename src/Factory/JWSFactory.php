@@ -17,13 +17,10 @@ use Jose\Object\JWS;
 use Jose\Signer;
 use Psr\Log\LoggerInterface;
 
-final class JWSFactory
+final class JWSFactory implements JWSFactoryInterface
 {
     /**
-     * @param mixed $payload
-     * @param bool  $is_payload_detached
-     *
-     * @return \Jose\Object\JWSInterface
+     * {@inheritdoc}
      */
     public static function createJWS($payload, $is_payload_detached = false)
     {
@@ -39,47 +36,41 @@ final class JWSFactory
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param \Psr\Log\LoggerInterface|null $logger
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public static function createJWSToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers, LoggerInterface $logger = null)
+    public static function createJWSToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers)
     {
-        $jws = self::createJWSAndSign($payload, $signature_key, $protected_headers, [], $logger);
+        $jws = self::createJWSAndSign($payload, $signature_key, $protected_headers, []);
 
         return $jws->toCompactJSON(0);
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param \Psr\Log\LoggerInterface|null $logger
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public static function createJWSWithDetachedPayloadToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers, LoggerInterface $logger = null)
+    public static function createJWSWithDetachedPayloadToCompactJSON($payload, JWKInterface $signature_key, array $protected_headers)
     {
-        $jws = self::createJWSWithDetachedPayloadAndSign($payload, $signature_key, $protected_headers, [], $logger);
+        $jws = self::createJWSWithDetachedPayloadAndSign($payload, $signature_key, $protected_headers, []);
 
         return $jws->toCompactJSON(0);
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param array                         $headers
-     * @param \Psr\Log\LoggerInterface|null $logger
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public static function createJWSToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
+    public static function createJWSToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [])
     {
-        $jws = self::createJWSAndSign($payload, $signature_key, $protected_headers, $headers, $logger);
+        $jws = self::createJWSAndSign($payload, $signature_key, $protected_headers, $headers);
+
+        return $jws->toFlattenedJSON(0);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createJWSWithDetachedPayloadToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [])
+    {
+        $jws = self::createJWSWithDetachedPayloadAndSign($payload, $signature_key, $protected_headers, $headers);
 
         return $jws->toFlattenedJSON(0);
     }
@@ -88,27 +79,10 @@ final class JWSFactory
      * @param mixed                         $payload
      * @param \Jose\Object\JWKInterface     $signature_key
      * @param array                         $protected_headers
-     * @param array                         $headers
-     * @param \Psr\Log\LoggerInterface|null $logger
-     *
-     * @return string
-     */
-    public static function createJWSWithDetachedPayloadToFlattenedJSON($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
-    {
-        $jws = self::createJWSWithDetachedPayloadAndSign($payload, $signature_key, $protected_headers, $headers, $logger);
-
-        return $jws->toFlattenedJSON(0);
-    }
-
-    /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
-     * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWSInterface
      */
-    private static function createJWSAndSign($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
+    private static function createJWSAndSign($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [])
     {
         $jws = self::createJWS($payload);
 
@@ -116,7 +90,7 @@ final class JWSFactory
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
-        $signer = Signer::createSigner([$complete_headers['alg']], $logger);
+        $signer = Signer::createSigner([$complete_headers['alg']]);
         $signer->sign($jws);
 
         return $jws;
@@ -126,11 +100,10 @@ final class JWSFactory
      * @param mixed                         $payload
      * @param \Jose\Object\JWKInterface     $signature_key
      * @param array                         $protected_headers
-     * @param \Psr\Log\LoggerInterface|null $logger
      *
      * @return \Jose\Object\JWSInterface
      */
-    private static function createJWSWithDetachedPayloadAndSign($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [], LoggerInterface $logger = null)
+    private static function createJWSWithDetachedPayloadAndSign($payload, JWKInterface $signature_key, array $protected_headers = [], $headers = [])
     {
         $jws = self::createJWS($payload, true);
 
@@ -138,7 +111,7 @@ final class JWSFactory
 
         $complete_headers = array_merge($protected_headers, $headers);
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header');
-        $signer = Signer::createSigner([$complete_headers['alg']], $logger);
+        $signer = Signer::createSigner([$complete_headers['alg']]);
         $signer->sign($jws);
 
         return $jws;

@@ -17,21 +17,17 @@ use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\Behaviour\CommonSigningMethods;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasLogger;
 use Jose\Factory\AlgorithmManagerFactory;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 use Jose\Object\SignatureInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 final class Verifier implements VerifierInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
-    use HasLogger;
     use CommonSigningMethods;
 
     /**
@@ -48,12 +44,9 @@ final class Verifier implements VerifierInterface
     /**
      * {@inheritdoc}
      */
-    public static function createVerifier(array $signature_algorithms, LoggerInterface $logger = null)
+    public static function createVerifier(array $signature_algorithms)
     {
         $verifier = new self($signature_algorithms);
-        if (null !== $logger) {
-            $verifier->enableLogging($logger);
-        }
 
         return $verifier;
     }
@@ -65,7 +58,6 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null, &$recipient_index = null)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key', ['jws' => $jws, 'jwk' => $jwk, 'detached_payload' => $detached_payload]);
         $jwk_set = new JWKSet();
         $jwk_set->addKey($jwk);
 
@@ -77,7 +69,6 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to verify the JWS with the key set', ['jwk' => $jws, 'jwk_set' => $jwk_set, 'detached_payload' => $detached_payload]);
 
         $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
@@ -166,7 +157,6 @@ final class Verifier implements VerifierInterface
     private function checkSignatures(JWSInterface $jws)
     {
         Assertion::greaterThan($jws->countSignatures(), 0, 'The JWS does not contain any signature.');
-        $this->log(LogLevel::INFO, 'The JWS contains {nb} signature(s)', ['nb' => $jws->countSignatures()]);
     }
 
     /**
@@ -175,7 +165,6 @@ final class Verifier implements VerifierInterface
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
         Assertion::greaterThan($jwk_set->countKeys(), 0, 'There is no key in the key set.');
-        $this->log(LogLevel::INFO, 'The JWK Set contains {nb} key(s)', ['nb' => count($jwk_set)]);
     }
 
     /**

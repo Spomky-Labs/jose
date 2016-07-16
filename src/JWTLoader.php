@@ -18,7 +18,7 @@ use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
 use Psr\Log\LoggerInterface;
 
-final class JWTLoader
+final class JWTLoader implements JWTLoaderInterface
 {
     /**
      * @var \Jose\LoaderInterface
@@ -45,20 +45,16 @@ final class JWTLoader
      *
      * @param \Jose\Checker\CheckerManagerInterface $checker_manager
      * @param \Jose\VerifierInterface               $verifier
-     * @param \Psr\Log\LoggerInterface|null         $logger
      */
-    public function __construct(CheckerManagerInterface $checker_manager, VerifierInterface $verifier, LoggerInterface $logger = null)
+    public function __construct(CheckerManagerInterface $checker_manager, VerifierInterface $verifier)
     {
         $this->checker_manager = $checker_manager;
         $this->verifier = $verifier;
         $this->loader = new Loader();
-        if (null !== $logger) {
-            $this->loader->enableLogging($logger);
-        }
     }
 
     /**
-     * @param \Jose\DecrypterInterface $decrypter
+     * {@inheritdoc}
      */
     public function enableDecryptionSupport(DecrypterInterface $decrypter)
     {
@@ -66,7 +62,7 @@ final class JWTLoader
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedSignatureAlgorithms()
     {
@@ -82,7 +78,7 @@ final class JWTLoader
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedKeyEncryptionAlgorithms()
     {
@@ -90,7 +86,7 @@ final class JWTLoader
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedContentEncryptionAlgorithms()
     {
@@ -98,7 +94,7 @@ final class JWTLoader
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedCompressionMethods()
     {
@@ -106,11 +102,7 @@ final class JWTLoader
     }
 
     /**
-     * @param string                            $assertion
-     * @param \Jose\Object\JWKSetInterface|null $encryption_key_set
-     * @param bool                              $is_encryption_required
-     *
-     * @return \Jose\Object\JWSInterface
+     * {@inheritdoc}
      */
     public function load($assertion, JWKSetInterface $encryption_key_set = null, $is_encryption_required = false)
     {
@@ -131,11 +123,7 @@ final class JWTLoader
     }
 
     /**
-     * @param \Jose\Object\JWSInterface    $jws
-     * @param \Jose\Object\JWKSetInterface $signature_key_set
-     * @param string|null                  $detached_payload
-     *
-     * @return int
+     * {@inheritdoc}
      */
     public function verify(JWSInterface $jws, JWKSetInterface $signature_key_set, $detached_payload = null)
     {

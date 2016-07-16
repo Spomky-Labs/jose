@@ -24,7 +24,6 @@ use Jose\Behaviour\CommonCipheringMethods;
 use Jose\Behaviour\HasCompressionManager;
 use Jose\Behaviour\HasJWAManager;
 use Jose\Behaviour\HasKeyChecker;
-use Jose\Behaviour\HasLogger;
 use Jose\Factory\AlgorithmManagerFactory;
 use Jose\Factory\CompressionManagerFactory;
 use Jose\Object\JWEInterface;
@@ -32,27 +31,20 @@ use Jose\Object\JWKInterface;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\RecipientInterface;
-use Psr\Log\LoggerInterface;
-use Psr\Log\LogLevel;
 
 final class Decrypter implements DecrypterInterface
 {
     use HasKeyChecker;
     use HasJWAManager;
     use HasCompressionManager;
-    use HasLogger;
     use CommonCipheringMethods;
 
     /**
      * {@inheritdoc}
      */
-    public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'], LoggerInterface $logger = null)
+    public static function createDecrypter(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods = ['DEF', 'ZLIB', 'GZ'])
     {
         $decrypter = new self($key_encryption_algorithms, $content_encryption_algorithms, $compression_methods);
-
-        if (null !== $logger) {
-            $decrypter->enableLogging($logger);
-        }
 
         return $decrypter;
     }
@@ -95,13 +87,11 @@ final class Decrypter implements DecrypterInterface
      */
     public function decryptUsingKeySet(JWEInterface &$jwe, JWKSetInterface $jwk_set, &$recipient_index = null)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to decrypt the JWE.');
         $this->checkJWKSet($jwk_set);
         $this->checkPayload($jwe);
         $this->checkRecipients($jwe);
 
         $nb_recipients = $jwe->countRecipients();
-        $this->log(LogLevel::DEBUG, 'The JWE contains {nb} recipient(s).', ['nb' => $nb_recipients]);
 
         for ($i = 0; $i < $nb_recipients; $i++) {
             if (is_int($result = $this->decryptRecipientKey($jwe, $jwk_set, $i))) {
@@ -123,7 +113,6 @@ final class Decrypter implements DecrypterInterface
      */
     private function decryptRecipientKey(JWEInterface &$jwe, JWKSetInterface $jwk_set, $i)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to decrypt the encrypted key of recipient #{nb}.', ['nb' => $i]);
         $recipient = $jwe->getRecipient($i);
         $complete_headers = array_merge(
             $jwe->getSharedProtectedHeaders(),
@@ -163,7 +152,6 @@ final class Decrypter implements DecrypterInterface
     {
         if (0 === $jwe->countRecipients()) {
             $exception = new \InvalidArgumentException('The JWE does not contain any recipient.');
-            $this->log(LogLevel::ERROR, 'The JWE does not contain any recipient.', ['exception' => $exception]);
             throw $exception;
         }
     }
@@ -173,10 +161,8 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkPayload(JWEInterface $jwe)
     {
-        $this->log(LogLevel::DEBUG, 'Checking the payload.', ['payload' => $jwe->getPayload()]);
         if (null !== $jwe->getPayload()) {
             $exception = new \InvalidArgumentException('The JWE is already decrypted.');
-            $this->log(LogLevel::ERROR, 'The JWE is already decrypted.', ['exception' => $exception]);
             throw $exception;
         }
     }
@@ -186,13 +172,10 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
-        $this->log(LogLevel::DEBUG, 'Checking the key set.', ['jwkset' => $jwk_set]);
         if (0 === count($jwk_set)) {
             $exception = new \InvalidArgumentException('No key in the key set.');
-            $this->log(LogLevel::ERROR, 'There is no key in the key set.', ['exception' => $exception]);
             throw $exception;
         }
-        $this->log(LogLevel::DEBUG, 'Checking the key set.', ['jwkset' => $jwk_set]);
     }
 
     /**
@@ -275,19 +258,14 @@ final class Decrypter implements DecrypterInterface
      */
     private function decompressIfNeeded(&$payload, array $complete_headers)
     {
-        $this->log(LogLevel::DEBUG, 'Checking if payload is compressed.', ['payload' => $payload]);
         if (array_key_exists('zip', $complete_headers)) {
-            $this->log(LogLevel::DEBUG, 'Header indicates the payload is compressed with method {compress}.', ['compress' => $complete_headers['zip']]);
             $compression_method = $this->getCompressionMethod($complete_headers['zip']);
             $payload = $compression_method->uncompress($payload);
             if (!is_string($payload)) {
                 $exception = new \InvalidArgumentException('Decompression failed');
-                $this->log(LogLevel::ERROR, 'Unable to decompress the payload.', ['exception' => $exception]);
                 throw $exception;
             }
-            $this->log(LogLevel::DEBUG, 'The payload has been decompressed.');
         } else {
-            $this->log(LogLevel::DEBUG, 'The payload is not compressed.');
         }
     }
 
@@ -298,15 +276,12 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkCompleteHeader(array $complete_headers)
     {
-        $this->log(LogLevel::DEBUG, 'Checking for mandatory parameters.');
         foreach (['enc', 'alg'] as $key) {
             if (!array_key_exists($key, $complete_headers)) {
                 $exception = new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
-                $this->log(LogLevel::ERROR, 'Parameter is missing.', ['exception' => $exception]);
                 throw $exception;
             }
         }
-        $this->log(LogLevel::DEBUG, 'Mandatory parameters found.');
     }
 
     /**
@@ -316,15 +291,12 @@ final class Decrypter implements DecrypterInterface
      */
     private function getKeyEncryptionAlgorithm(array $complete_headers)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to find key encryption algorithm');
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
         if (!$key_encryption_algorithm instanceof KeyEncryptionAlgorithmInterface) {
             $exception = new \InvalidArgumentException(sprintf('The key encryption algorithm "%s" is not supported or does not implement KeyEncryptionAlgorithmInterface.', $complete_headers['alg']));
-            $this->log(LogLevel::ERROR, 'The key encryption algorithm {alg} is not supported or does not implement KeyEncryptionAlgorithmInterface.', ['alg' => $complete_headers['alg'], 'exception' => $exception]);
             throw $exception;
         }
 
-        $this->log(LogLevel::DEBUG, 'Key encryption algorithm {algorithm} found', ['algorithm' => $complete_headers['alg'], 'service' > $key_encryption_algorithm]);
 
         return $key_encryption_algorithm;
     }
@@ -336,15 +308,12 @@ final class Decrypter implements DecrypterInterface
      */
     private function getContentEncryptionAlgorithm(array $complete_headers)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to find content encryption algorithm');
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['enc']);
         if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
             $exception = new \InvalidArgumentException(sprintf('The key encryption algorithm "%s" is not supported or does not implement ContentEncryptionInterface.', $complete_headers['enc']));
-            $this->log(LogLevel::ERROR, 'The key encryption algorithm {alg} is not supported or does not implement ContentEncryptionInterface.', ['alg' => $complete_headers['enc'], 'exception' => $exception]);
             throw $exception;
         }
 
-        $this->log(LogLevel::DEBUG, 'Content encryption algorithm {algorithm} found', ['algorithm' => $complete_headers['enc'], 'service' > $content_encryption_algorithm]);
 
         return $content_encryption_algorithm;
     }
@@ -358,15 +327,11 @@ final class Decrypter implements DecrypterInterface
      */
     private function getCompressionMethod($method)
     {
-        $this->log(LogLevel::DEBUG, 'Trying to find compression method {method}', ['method' => $method]);
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
         if (null === $compression_method) {
             $exception = new \InvalidArgumentException(sprintf('Compression method "%s" not supported', $method));
-            $this->log(LogLevel::ERROR, 'Compression method {method} not supported', ['method' => $method, 'exception' => $exception]);
             throw $exception;
         }
-
-        $this->log(LogLevel::DEBUG, 'Compression method {method} found', ['method' => $method, 'service' => $compression_method]);
 
         return $compression_method;
     }

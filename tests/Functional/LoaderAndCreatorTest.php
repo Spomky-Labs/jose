@@ -29,13 +29,12 @@ class LoaderAndCreatorTest extends TestCase
     public function testSignAndLoadUsingJWTCreatorAndJWTLoader()
     {
         $checker = \Jose\Factory\CheckerManagerFactory::createClaimCheckerManager();
-        $jwt_creator = new JWTCreator(Signer::createSigner(['HS512'], $this->getLogger()));
+        $jwt_creator = new JWTCreator(Signer::createSigner(['HS512']));
         $jwt_creator->enableEncryptionSupport(Encrypter::createEncrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
 
         $jwt_loader = new JWTLoader(
             $checker,
-            Verifier::createVerifier(['HS512', 'RS512']),
-            $this->getLogger()
+            Verifier::createVerifier(['HS512', 'RS512'])
         );
         $jwt_loader->enableDecryptionSupport(Decrypter::createDecrypter(['A256GCMKW'], ['A128CBC-HS256'], ['DEF']));
 

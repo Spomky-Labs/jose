@@ -16,7 +16,7 @@ use Jose\Factory\JWEFactory;
 use Jose\Factory\JWSFactory;
 use Jose\Object\JWKInterface;
 
-final class JWTCreator
+final class JWTCreator implements JWTCreatorInterface
 {
     /**
      * @var \Jose\EncrypterInterface|null
@@ -47,11 +47,7 @@ final class JWTCreator
     }
 
     /**
-     * @param mixed                     $payload
-     * @param array                     $signature_protected_headers
-     * @param \Jose\Object\JWKInterface $signature_key
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function sign($payload, array $signature_protected_headers, JWKInterface $signature_key)
     {
@@ -64,11 +60,7 @@ final class JWTCreator
     }
 
     /**
-     * @param string                    $payload
-     * @param array                     $encryption_protected_headers
-     * @param \Jose\Object\JWKInterface $encryption_key
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function encrypt($payload, array $encryption_protected_headers, JWKInterface $encryption_key)
     {
@@ -82,13 +74,7 @@ final class JWTCreator
     }
 
     /**
-     * @param mixed                     $payload
-     * @param array                     $signature_protected_headers
-     * @param \Jose\Object\JWKInterface $signature_key
-     * @param array                     $encryption_protected_headers
-     * @param \Jose\Object\JWKInterface $encryption_key
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function signAndEncrypt($payload, array $signature_protected_headers, JWKInterface $signature_key, array $encryption_protected_headers, JWKInterface $encryption_key)
     {
@@ -99,7 +85,7 @@ final class JWTCreator
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedSignatureAlgorithms()
     {
@@ -107,7 +93,7 @@ final class JWTCreator
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedKeyEncryptionAlgorithms()
     {
@@ -115,7 +101,7 @@ final class JWTCreator
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedContentEncryptionAlgorithms()
     {
@@ -123,7 +109,7 @@ final class JWTCreator
     }
 
     /**
-     * @return string[]
+     * {@inheritdoc}
      */
     public function getSupportedCompressionMethods()
     {
