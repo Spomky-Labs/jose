@@ -69,7 +69,6 @@ final class Verifier implements VerifierInterface
      */
     public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
-
         $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
 

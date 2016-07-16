@@ -14,7 +14,6 @@ namespace Jose;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Verifier Interface.

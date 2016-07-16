@@ -56,12 +56,12 @@ final class JWEFactory implements JWEFactoryInterface
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $recipient_key
-     * @param array                         $shared_protected_headers
-     * @param array                         $shared_headers
-     * @param array                         $recipient_headers
-     * @param string|null                   $aad
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $recipient_key
+     * @param array                     $shared_protected_headers
+     * @param array                     $shared_headers
+     * @param array                     $recipient_headers
+     * @param string|null               $aad
      *
      * @return \Jose\Object\JWSInterface
      */

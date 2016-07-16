@@ -16,7 +16,6 @@ use Jose\Checker\CheckerManagerInterface;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWSInterface;
-use Psr\Log\LoggerInterface;
 
 final class JWTLoader implements JWTLoaderInterface
 {

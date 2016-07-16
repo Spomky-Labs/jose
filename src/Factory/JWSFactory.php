@@ -15,7 +15,6 @@ use Assert\Assertion;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWS;
 use Jose\Signer;
-use Psr\Log\LoggerInterface;
 
 final class JWSFactory implements JWSFactoryInterface
 {
@@ -76,9 +75,9 @@ final class JWSFactory implements JWSFactoryInterface
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
      *
      * @return \Jose\Object\JWSInterface
      */
@@ -97,9 +96,9 @@ final class JWSFactory implements JWSFactoryInterface
     }
 
     /**
-     * @param mixed                         $payload
-     * @param \Jose\Object\JWKInterface     $signature_key
-     * @param array                         $protected_headers
+     * @param mixed                     $payload
+     * @param \Jose\Object\JWKInterface $signature_key
+     * @param array                     $protected_headers
      *
      * @return \Jose\Object\JWSInterface
      */

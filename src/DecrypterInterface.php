@@ -14,7 +14,6 @@ namespace Jose;
 use Jose\Object\JWEInterface;
 use Jose\Object\JWKInterface;
 use Jose\Object\JWKSetInterface;
-use Psr\Log\LoggerInterface;
 
 /**
  * Decrypter Interface.
