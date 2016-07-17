@@ -35,6 +35,11 @@ final class RotatableJWK implements JWKInterface
     private $ttl;
 
     /**
+     * @var int|null
+     */
+    private $expires_at = 0;
+
+    /**
      * @var array
      */
     private $parameters;
@@ -48,7 +53,10 @@ final class RotatableJWK implements JWKInterface
      */
     public function __construct($filename, array $parameters, $ttl = 0)
     {
-        Assertion::directory(basename($filename), 'The selected directory does not exist.');
+        Assertion::directory(dirname($filename), 'The selected directory does not exist.');
+        Assertion::writeable(dirname($filename), 'The selected directory is not writable.');
+        Assertion::integer($ttl, 'The parameter must an integer');
+        Assertion::greaterOrEqualThan($ttl, 0, 'The parameter must be at least 0');
         $this->filename = $filename;
         $this->parameters = $parameters;
         $this->ttl = $ttl;
@@ -60,6 +68,9 @@ final class RotatableJWK implements JWKInterface
     private function getJWK()
     {
         if (null === $this->jwk) {
+            $this->loadJWK();
+        }
+        if (0 !== $this->expires_at && $this->expires_at < time()) {
             $this->createJWK();
         }
 
@@ -68,11 +79,37 @@ final class RotatableJWK implements JWKInterface
 
     private function loadJWK()
     {
+        if (file_exists($this->filename)) {
+            $content = file_get_contents($this->filename);
+            if (false === $content) {
+                $this->createJWK();
+            }
+            $content = json_decode($content, true);
+            if (!is_array($content) || !array_key_exists('expires_at', $content) || !array_key_exists('jwk', $content)) {
+                $this->createJWK();
+            }
+            if (0 !== $content['expires_at'] && $content['expires_at'] < time()) {
+                $this->createJWK();
+            }
+            $this->jwk = new JWK($content['jwk']);
+        } else {
+            $this->createJWK();
+        }
     }
 
     private function createJWK()
     {
-        $jwk = JWKFactory::createKey($this->parameters);
+        $this->jwk = JWKFactory::createKey($this->parameters);
+        if (0 !== $this->ttl) {
+            $this->expires_at = time() + $this->ttl;
+        }
+        file_put_contents(
+            $this->filename,
+            json_encode([
+                'expires_at' => $this->expires_at,
+                'jwk' => $this->jwk,
+            ])
+        );
     }
 
     /**

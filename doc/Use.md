@@ -25,18 +25,3 @@ In general, you will need to create and load JWS or encrypted JWS (JWS as payloa
 To ease the creation and loading of such data, the library provides two classes that have convenient methods.
 
 Read the [dedicated page](operation/JWTCreator_And_JWTLoader.md) to know how to instantiate and use these classes.
-
-# PSR-3 Messages
-
-The `Signer`, `Verifier`, `Encrypter` and `Decrypter` classes are able to send debug messages compliant with the [PSR-3 Specification](http://www.php-fig.org/psr/psr-3/).
-All you have to do is to call the method `enableLogging($logger)` (`$logger` is a valid `Psr\Log\LoggerInterface` object.
-
-Factories also support logging messages (except the `JWKFactory`), but the logger is passed as an argument of all static methods:
-In general, it is the last argument.
-
-Example
--------
-
-```php
-$jwe = JWEFactory::createJWEToCompactJSON($payload, $recipient_key, $shared_protected_headers, $logger);
-```
