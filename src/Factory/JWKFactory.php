@@ -17,6 +17,7 @@ use Jose\KeyConverter\KeyConverter;
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Object\RotatableJWK;
 use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
@@ -24,6 +25,14 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class JWKFactory implements JWKFactoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRotatableKey($filename, array $parameters, $ttl = 0)
+    {
+        return new RotatableJWK($filename, $parameters, $ttl);
+    }
+
     /**
      * {@inheritdoc}
      */
