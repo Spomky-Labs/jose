@@ -50,6 +50,7 @@ Hereafter a table with all signature/verification test results.
 | ES512           |   1.124258 msec |   1.578491 msec |
 | ES512(1)        | 110.474162 msec | 202.372239 msec |
 | EdDSA (Ed25519) |   0.042379 msec |   0.109930 msec |
+| EdDSA (Ed448)   |        N/A msec |        N/A msec |
 
 * *(1) Tests using the PHPECC library in case the EC signature is not supported by OpenSSL*
 
@@ -61,11 +62,13 @@ Not tested as there is no ciphering process with this algorithm.
 
 ## Key Agreement
 
-|    Algorithm    |  Key Agreement  |
-|-----------------|-----------------|
-| ECDH-ES (P-256) | 126.203909 msec |
-| ECDH-ES (P-384) | 204.835088 msec |
-| ECDH-ES (P-521) | 304.262869 msec |
+|    Algorithm     |  Key Agreement  |
+|------------------|-----------------|
+| ECDH-ES (P-256)  | 126.203909 msec |
+| ECDH-ES (P-384)  | 204.835088 msec |
+| ECDH-ES (P-521)  | 304.262869 msec |
+| ECDH-ES (X25519) |   1.099138 msec |
+| ECDH-ES (X448)   |        N/A msec |
 
 ## Key Agreement With Key Wrapping
 

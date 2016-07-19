@@ -13,6 +13,7 @@ include_once __DIR__.'/../../vendor/autoload.php';
 
 use Jose\Algorithm\KeyEncryption\ECDHES;
 use Jose\Algorithm\KeyEncryption\KeyAgreementInterface;
+use Jose\Factory\JWKFactory;
 use Jose\Object\JWK;
 use Jose\Object\JWKInterface;
 
@@ -41,6 +42,16 @@ function testKeyAgreementPerformance($message, KeyAgreementInterface $alg, JWKIn
 function dataKeyAgreementPerformance()
 {
     return [
+        [
+            'With X25519 curve',
+            new ECDHES(),
+            JWKFactory::createOKPKey([
+                'crv' => 'X25519',
+                'kid' => 'KEY1',
+                'alg' => 'ECDH-ES',
+                'use' => 'enc',
+            ])->toPublic(),
+        ],
         [
             'With P-256 curve',
             new ECDHES(),

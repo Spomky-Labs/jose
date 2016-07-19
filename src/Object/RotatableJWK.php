@@ -12,6 +12,7 @@
 namespace Jose\Object;
 
 use Assert\Assertion;
+use Base64Url\Base64Url;
 use Jose\Factory\JWKFactory;
 
 /**
@@ -99,7 +100,10 @@ final class RotatableJWK implements JWKInterface
 
     private function createJWK()
     {
-        $this->jwk = JWKFactory::createKey($this->parameters);
+        $data = JWKFactory::createKey($this->parameters)->getAll();
+        $data['kid'] = Base64Url::encode(random_bytes(64));
+        $this->jwk = JWKFactory::createFromValues($data);
+
         if (0 !== $this->ttl) {
             $this->expires_at = time() + $this->ttl;
         }
@@ -110,6 +114,7 @@ final class RotatableJWK implements JWKInterface
                 'jwk' => $this->jwk,
             ])
         );
+        chmod($this->filename, 740);
     }
 
     /**

@@ -291,19 +291,18 @@ The `JWKFactory` is able to easily create random keys. At the moment, the factor
 ### Create a Random `oct` Key
 
 The following example will create an `oct` key.
-The key size is 256 bits and that key will be used with the `HS256` algorithm for signature/verification only.
+The key size is 256 bits (`'size' => 256`) and that key will be used with the `HS256` algorithm for signature/verification only.
 
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk = JWKFactory::createOctKey(
-    256,
-    [
-        'kid' => 'KEY1',
-        'alg' => 'HS256',
-        'use' => 'sig',
-    ]
-);
+$jwk = JWKFactory::createKey([
+        'kty'  => 'oct',
+        'size' => 256,
+        'kid'  => 'KEY1',
+        'alg'  => 'HS256',
+        'use'  => 'sig',
+]);
 ```
 
 ### Create a Random `RSA` Key
@@ -314,14 +313,13 @@ The key size is 4096 bits and that key will be used with the `RSA-OAEP` algorith
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk = JWKFactory::createRSAKey(
-    4096,
-    [
-        'kid' => 'KEY1',
-        'alg' => 'RSA-OAEP',
-        'use' => 'enc',
-    ]
-);
+$jwk = JWKFactory::createKey([
+        'kty'  => 'RSA',
+        'size' => 4096,
+        'kid'  => 'KEY1',
+        'alg'  => 'RSA-OAEP',
+        'use'  => 'enc',
+]);
 ```
 
 ### Create a Random `EC` Key
@@ -332,14 +330,13 @@ The key uses the `P-521` curve and will be used with the `ES512` algorithm for s
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk = JWKFactory::createECKey(
-    'P-521',
-    [
+$jwk = JWKFactory::createKey([
+        'kty' => 'EC',
+        'crv' => 'P-521',
         'kid' => 'KEY1',
         'alg' => 'ES512',
         'use' => 'sig',
-    ]
-);
+]);
 ```
 
 ### Create a Random `OKP` Key
@@ -350,12 +347,34 @@ The key uses the `X25519` curve and will be used with the `ECDH-ES` algorithm fo
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk = JWKFactory::createOKPKey(
-    'P-521',
-    [
+$jwk = JWKFactory::createOKPKey([
+        'kty' => 'OKP',
+        'crv' => 'X25519',
         'kid' => 'KEY1',
         'alg' => 'ECDH-ES',
         'use' => 'enc',
-    ]
+]);
+```
+
+## Create a Rotatable Key
+
+Some applications may require that the keys change after a period of time.
+This library is able to generate and manage these keys without effort.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$rotatable_key = JWKFactory::createRotatableKey(
+    '/path/to/the/storage/file.key', // The file which will contain the key
+    [
+        'kty' => 'OKP',     // Key specifications
+        'crv' => 'X25519',  // Please note that the parameter 'kid' automatically set by the factory.
+        'alg' => 'ECDH-ES',
+        'use' => 'enc',
+    ],
+    3600                    // This key will change after 3600 seconds (1 hour)
 );
 ```
+
+The key can be used like any other keys. After 3600 seconds, the values of that key will be updated.
+If the key exists in the storage and is not expired then it is loaded.
