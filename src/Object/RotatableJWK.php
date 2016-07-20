@@ -114,7 +114,6 @@ final class RotatableJWK implements JWKInterface
                 'jwk' => $this->jwk,
             ])
         );
-        chmod($this->filename, 740);
     }
 
     /**
