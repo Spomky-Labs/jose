@@ -90,30 +90,16 @@ final class Encrypter implements EncrypterInterface
         $additional_headers = [];
 
         // CEK
-        $cek = $this->determineCEK(
-            $jwe,
-            $content_encryption_algorithm,
-            $key_management_mode,
-            $additional_headers
-        );
+        $cek = $this->determineCEK($jwe, $content_encryption_algorithm, $key_management_mode, $additional_headers);
 
         $nb_recipients = $jwe->countRecipients();
 
         for ($i = 0; $i < $nb_recipients; $i++) {
-            $this->processRecipient(
-                $jwe,
-                $jwe->getRecipient($i),
-                $cek,
-                $content_encryption_algorithm,
-                $additional_headers
-            );
+            $this->processRecipient($jwe, $jwe->getRecipient($i), $cek, $content_encryption_algorithm, $additional_headers);
         }
 
         if (!empty($additional_headers) && 1 === $jwe->countRecipients()) {
-            $jwe = $jwe->withSharedProtectedHeaders(array_merge(
-                $jwe->getSharedProtectedHeaders(),
-                $additional_headers
-            ));
+            $jwe = $jwe->withSharedProtectedHeaders(array_merge($jwe->getSharedProtectedHeaders(), $additional_headers));
         }
 
         // IV
@@ -139,36 +125,18 @@ final class Encrypter implements EncrypterInterface
         if (null === $recipient->getRecipientKey()) {
             return;
         }
-        $complete_headers = array_merge(
-            $jwe->getSharedProtectedHeaders(),
-            $jwe->getSharedHeaders(),
-            $recipient->getHeaders()
-        );
+        $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $recipient->getHeaders());
 
         $key_encryption_algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
 
         // We check keys (usage and algorithm if restrictions are set)
-        $this->checkKeys(
-            $key_encryption_algorithm,
-            $content_encryption_algorithm,
-            $recipient->getRecipientKey()
-        );
+        $this->checkKeys($key_encryption_algorithm, $content_encryption_algorithm, $recipient->getRecipientKey());
 
-        $encrypted_content_encryption_key = $this->getEncryptedKey(
-            $complete_headers,
-            $cek,
-            $key_encryption_algorithm,
-            $content_encryption_algorithm,
-            $additional_headers,
-            $recipient->getRecipientKey()
-        );
+        $encrypted_content_encryption_key = $this->getEncryptedKey($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient->getRecipientKey());
 
         $recipient_headers = $recipient->getHeaders();
         if (!empty($additional_headers) && 1 !== $jwe->countRecipients()) {
-            $recipient_headers = array_merge(
-                $recipient_headers,
-                $additional_headers
-            );
+            $recipient_headers = array_merge($recipient_headers, $additional_headers);
             $additional_headers = [];
         }
 
