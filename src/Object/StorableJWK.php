@@ -16,9 +16,9 @@ use Base64Url\Base64Url;
 use Jose\Factory\JWKFactory;
 
 /**
- * Class RotatableJWK.
+ * Class StorableJWK
  */
-final class RotatableJWK implements JWKInterface
+final class StorableJWK implements JWKInterface
 {
     /**
      * @var \Jose\Object\JWKInterface
@@ -31,21 +31,6 @@ final class RotatableJWK implements JWKInterface
     private $filename;
 
     /**
-     * @var int
-     */
-    private $ttl;
-
-    /**
-     * @var int
-     */
-    private $first_ttl;
-
-    /**
-     * @var int|null
-     */
-    private $expires_at = 0;
-
-    /**
      * @var array
      */
     private $parameters;
@@ -55,21 +40,13 @@ final class RotatableJWK implements JWKInterface
      *
      * @param string $filename
      * @param array  $parameters
-     * @param int    $ttl
-     * @param int    $first_ttl
      */
-    public function __construct($filename, array $parameters, $ttl = 0, $first_ttl = 0)
+    public function __construct($filename, array $parameters)
     {
         Assertion::directory(dirname($filename), 'The selected directory does not exist.');
         Assertion::writeable(dirname($filename), 'The selected directory is not writable.');
-        Assertion::integer($ttl, 'The parameter must an integer');
-        Assertion::greaterOrEqualThan($ttl, 0, 'The parameter must be at least 0');
-        Assertion::integer($first_ttl, 'The parameter must an integer');
-        Assertion::greaterOrEqualThan($first_ttl, 0, 'The parameter must be at least 0');
         $this->filename = $filename;
         $this->parameters = $parameters;
-        $this->ttl = $ttl;
-        $this->first_ttl = $first_ttl;
     }
 
     /**
@@ -79,9 +56,6 @@ final class RotatableJWK implements JWKInterface
     {
         if (null === $this->jwk) {
             $this->loadJWK();
-        }
-        if (0 !== $this->expires_at && $this->expires_at < time()) {
-            $this->createJWK();
         }
 
         return $this->jwk;
@@ -95,13 +69,10 @@ final class RotatableJWK implements JWKInterface
                 $this->createJWK();
             }
             $content = json_decode($content, true);
-            if (!is_array($content) || !array_key_exists('expires_at', $content) || !array_key_exists('jwk', $content)) {
+            if (!is_array($content)) {
                 $this->createJWK();
             }
-            if (0 !== $content['expires_at'] && $content['expires_at'] <= time()) {
-                $this->createJWK();
-            }
-            $this->jwk = new JWK($content['jwk']);
+            $this->jwk = new JWK($content);
         } else {
             $this->createJWK();
         }
@@ -113,19 +84,9 @@ final class RotatableJWK implements JWKInterface
         $data['kid'] = Base64Url::encode(random_bytes(64));
         $this->jwk = JWKFactory::createFromValues($data);
 
-        if (0 !== $this->ttl) {
-            if (!file_exists($this->filename) && 0 !== $this->first_ttl) {
-                $this->expires_at = time() + $this->first_ttl;
-            } else {
-                $this->expires_at = time() + $this->ttl;
-            }
-        }
         file_put_contents(
             $this->filename,
-            json_encode([
-                'expires_at' => $this->expires_at,
-                'jwk' => $this->jwk,
-            ])
+            json_encode($this->jwk)
         );
     }
 
