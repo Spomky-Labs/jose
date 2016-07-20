@@ -187,7 +187,7 @@ final class ECDHES implements KeyAgreementInterface
     /**
      * @param string $value
      *
-     * @return \GMP
+     * @return resource
      */
     private function convertBase64ToGmp($value)
     {
