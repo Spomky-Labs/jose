@@ -123,7 +123,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      * @param string                    $R
      * @param string                    $S
      *
-     * @return string
+     * @return boolean
      */
     private function verifyOpenSSLSignature(JWKInterface $key, $data, $R, $S)
     {
@@ -144,7 +144,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
      * @param string                    $R
      * @param string                    $S
      *
-     * @return string
+     * @return boolean
      */
     private function verifyPHPECCSignature(JWKInterface $key, $data, $R, $S)
     {
@@ -215,9 +215,9 @@ abstract class ECDSA implements SignatureAlgorithmInterface
     }
 
     /**
-     * @param $value
+     * @param string $value
      *
-     * @return \GMP
+     * @return resource
      */
     private function convertHexToGmp($value)
     {
@@ -227,7 +227,7 @@ abstract class ECDSA implements SignatureAlgorithmInterface
     /**
      * @param $value
      *
-     * @return \GMP
+     * @return resource
      */
     private function convertBase64ToGmp($value)
     {
