@@ -194,18 +194,12 @@ final class Encrypter implements EncrypterInterface
                 return $this->createCEK($content_encryption_algorithm->getCEKSize());
             case KeyEncryptionInterface::MODE_AGREEMENT:
                 Assertion::eq(1, $jwe->countRecipients(), 'Unable to encrypt for multiple recipients using key agreement algorithms.');
-
-                $complete_headers = array_merge(
-                    $jwe->getSharedProtectedHeaders(),
-                    $jwe->getSharedHeaders(),
-                    $jwe->getRecipient(0)->getHeaders()
-                );
+                $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $jwe->getRecipient(0)->getHeaders());
                 $algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
 
                 return $algorithm->getAgreementKey($content_encryption_algorithm->getCEKSize(), $content_encryption_algorithm->getAlgorithmName(), $jwe->getRecipient(0)->getRecipientKey(), $complete_headers, $additional_headers);
             case KeyEncryptionInterface::MODE_DIRECT:
                 Assertion::eq(1, $jwe->countRecipients(), 'Unable to encrypt for multiple recipients using key agreement algorithms.');
-
                 Assertion::eq($jwe->getRecipient(0)->getRecipientKey()->get('kty'), 'oct', 'Wrong key type.');
                 Assertion::true($jwe->getRecipient(0)->getRecipientKey()->has('k'), 'The key parameter "k" is missing.');
 
@@ -226,11 +220,7 @@ final class Encrypter implements EncrypterInterface
         $recipients = $jwe->getRecipients();
 
         foreach ($recipients as $recipient) {
-            $complete_headers = array_merge(
-                $jwe->getSharedProtectedHeaders(),
-                $jwe->getSharedHeaders(),
-                $recipient->getHeaders()
-            );
+            $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $recipient->getHeaders());
             Assertion::keyExists($complete_headers, 'alg', 'Parameter "alg" is missing.');
 
             $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
@@ -239,10 +229,7 @@ final class Encrypter implements EncrypterInterface
             if (null === $mode) {
                 $mode = $key_encryption_algorithm->getKeyManagementMode();
             } else {
-                Assertion::true(
-                    $this->areKeyManagementModesCompatible($mode, $key_encryption_algorithm->getKeyManagementMode()),
-                    'Foreign key management mode forbidden.'
-                );
+                Assertion::true($this->areKeyManagementModesCompatible($mode, $key_encryption_algorithm->getKeyManagementMode()), 'Foreign key management mode forbidden.');
             }
         }
 
@@ -260,11 +247,7 @@ final class Encrypter implements EncrypterInterface
         $nb_recipients = $jwe->countRecipients();
 
         for ($i = 0; $i < $nb_recipients; $i++) {
-            $complete_headers = array_merge(
-                $jwe->getSharedProtectedHeaders(),
-                $jwe->getSharedHeaders(),
-                $jwe->getRecipient($i)->getHeaders()
-            );
+            $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $jwe->getRecipient($i)->getHeaders());
             if (array_key_exists('zip', $complete_headers)) {
                 if (null === $method) {
                     if (0 === $i) {
@@ -386,24 +369,7 @@ final class Encrypter implements EncrypterInterface
         $enc = KeyEncryptionAlgorithmInterface::MODE_ENCRYPT;
         $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
 
-        $supported_key_management_mode_combinations = [
-            $enc.$enc     => true,
-            $enc.$wrap    => true,
-            $wrap.$enc    => true,
-            $wrap.$wrap   => true,
-            $agree.$agree => false,
-            $agree.$dir   => false,
-            $agree.$enc   => false,
-            $agree.$wrap  => false,
-            $dir.$agree   => false,
-            $dir.$dir     => false,
-            $dir.$enc     => false,
-            $dir.$wrap    => false,
-            $enc.$agree   => false,
-            $enc.$dir     => false,
-            $wrap.$agree  => false,
-            $wrap.$dir    => false,
-        ];
+        $supported_key_management_mode_combinations = [$enc.$enc     => true,$enc.$wrap    => true,$wrap.$enc    => true,$wrap.$wrap   => true,$agree.$agree => false,$agree.$dir   => false,$agree.$enc   => false,$agree.$wrap  => false,$dir.$agree   => false,$dir.$dir     => false,$dir.$enc     => false,$dir.$wrap    => false,$enc.$agree   => false,$enc.$dir     => false,$wrap.$agree  => false,$wrap.$dir    => false,];
 
         if (array_key_exists($current.$new, $supported_key_management_mode_combinations)) {
             return $supported_key_management_mode_combinations[$current.$new];
