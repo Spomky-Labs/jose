@@ -18,7 +18,7 @@ use Jose\Factory\JWKFactory;
 /**
  * Class StorableJWK
  */
-final class StorableJWK implements JWKInterface
+final class StorableJWK implements StorableJWKInterface
 {
     /**
      * @var \Jose\Object\JWKInterface
@@ -50,44 +50,11 @@ final class StorableJWK implements JWKInterface
     }
 
     /**
-     * @return \Jose\Object\JWKInterface
+     * {@inheritdoc}
      */
-    private function getJWK()
+    public function getFilename()
     {
-        if (null === $this->jwk) {
-            $this->loadJWK();
-        }
-
-        return $this->jwk;
-    }
-
-    private function loadJWK()
-    {
-        if (file_exists($this->filename)) {
-            $content = file_get_contents($this->filename);
-            if (false === $content) {
-                $this->createJWK();
-            }
-            $content = json_decode($content, true);
-            if (!is_array($content)) {
-                $this->createJWK();
-            }
-            $this->jwk = new JWK($content);
-        } else {
-            $this->createJWK();
-        }
-    }
-
-    private function createJWK()
-    {
-        $data = JWKFactory::createKey($this->parameters)->getAll();
-        $data['kid'] = Base64Url::encode(random_bytes(64));
-        $this->jwk = JWKFactory::createFromValues($data);
-
-        file_put_contents(
-            $this->filename,
-            json_encode($this->jwk)
-        );
+        return $this->filename;
     }
 
     /**
@@ -136,5 +103,46 @@ final class StorableJWK implements JWKInterface
     public function jsonSerialize()
     {
         return $this->getJWK()->jsonSerialize();
+    }
+
+    /**
+     * @return \Jose\Object\JWKInterface
+     */
+    private function getJWK()
+    {
+        if (null === $this->jwk) {
+            $this->loadJWK();
+        }
+
+        return $this->jwk;
+    }
+
+    private function loadJWK()
+    {
+        if (file_exists($this->filename)) {
+            $content = file_get_contents($this->filename);
+            if (false === $content) {
+                $this->createJWK();
+            }
+            $content = json_decode($content, true);
+            if (!is_array($content)) {
+                $this->createJWK();
+            }
+            $this->jwk = new JWK($content);
+        } else {
+            $this->createJWK();
+        }
+    }
+
+    private function createJWK()
+    {
+        $data = JWKFactory::createKey($this->parameters)->getAll();
+        $data['kid'] = Base64Url::encode(random_bytes(64));
+        $this->jwk = JWKFactory::createFromValues($data);
+
+        file_put_contents(
+            $this->filename,
+            json_encode($this->jwk)
+        );
     }
 }
