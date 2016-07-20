@@ -54,18 +54,12 @@ final class Encrypter implements EncrypterInterface
      * @param string[]|\Jose\Algorithm\ContentEncryptionAlgorithmInterface[] $content_encryption_algorithms
      * @param string[]|\Jose\Compression\CompressionInterface[]              $compression_methods
      */
-    public function __construct(
-        array $key_encryption_algorithms,
-        array $content_encryption_algorithms,
-        array $compression_methods
-    ) {
+    public function __construct(array $key_encryption_algorithms, array $content_encryption_algorithms, array $compression_methods)
+    {
         $this->setKeyEncryptionAlgorithms($key_encryption_algorithms);
         $this->setContentEncryptionAlgorithms($content_encryption_algorithms);
         $this->setCompressionMethods($compression_methods);
-        $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager(array_merge(
-            $key_encryption_algorithms,
-            $content_encryption_algorithms
-        )));
+        $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager(array_merge($key_encryption_algorithms, $content_encryption_algorithms)));
         $this->setCompressionManager(CompressionManagerFactory::createCompressionManager($compression_methods));
     }
 
@@ -77,19 +71,10 @@ final class Encrypter implements EncrypterInterface
         Assertion::false($jwe->isEncrypted(), 'The JWE is already encrypted.');
         Assertion::greaterThan($jwe->countRecipients(), 0, 'The JWE does not contain recipient.');
 
-        // Content Encryption Algorithm
         $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe);
-
-        // Compression Method
         $compression_method = $this->getCompressionMethod($jwe);
-
-        // Key Management Mode
         $key_management_mode = $this->getKeyManagementMode($jwe);
-
-        // Additional Headers
         $additional_headers = [];
-
-        // CEK
         $cek = $this->determineCEK($jwe, $content_encryption_algorithm, $key_management_mode, $additional_headers);
 
         $nb_recipients = $jwe->countRecipients();
@@ -102,7 +87,6 @@ final class Encrypter implements EncrypterInterface
             $jwe = $jwe->withSharedProtectedHeaders(array_merge($jwe->getSharedProtectedHeaders(), $additional_headers));
         }
 
-        // IV
         $iv_size = $content_encryption_algorithm->getIVSize();
         $iv = $this->createIV($iv_size);
 
@@ -116,24 +100,15 @@ final class Encrypter implements EncrypterInterface
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      * @param array                                               $additional_headers
      */
-    private function processRecipient(JWEInterface $jwe,
-                                      RecipientInterface &$recipient,
-                                      $cek,
-                                      ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
-                                      array &$additional_headers
-    ) {
+    private function processRecipient(JWEInterface $jwe, RecipientInterface &$recipient, $cek, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, array &$additional_headers)
+    {
         if (null === $recipient->getRecipientKey()) {
             return;
         }
         $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $recipient->getHeaders());
-
         $key_encryption_algorithm = $this->findKeyEncryptionAlgorithm($complete_headers);
-
-        // We check keys (usage and algorithm if restrictions are set)
         $this->checkKeys($key_encryption_algorithm, $content_encryption_algorithm, $recipient->getRecipientKey());
-
         $encrypted_content_encryption_key = $this->getEncryptedKey($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient->getRecipientKey());
-
         $recipient_headers = $recipient->getHeaders();
         if (!empty($additional_headers) && 1 !== $jwe->countRecipients()) {
             $recipient_headers = array_merge($recipient_headers, $additional_headers);
@@ -151,11 +126,8 @@ final class Encrypter implements EncrypterInterface
      *
      * @return string
      */
-    private function determineCEK(JWEInterface $jwe,
-                                  ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
-                                  $key_management_mode,
-                                  array &$additional_headers
-    ) {
+    private function determineCEK(JWEInterface $jwe, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, $key_management_mode, array &$additional_headers)
+    {
         switch ($key_management_mode) {
             case KeyEncryptionInterface::MODE_ENCRYPT:
             case KeyEncryptionInterface::MODE_WRAP:
@@ -251,11 +223,7 @@ final class Encrypter implements EncrypterInterface
         $algorithm = null;
 
         foreach ($jwe->getRecipients() as $recipient) {
-            $complete_headers = array_merge(
-                $jwe->getSharedProtectedHeaders(),
-                $jwe->getSharedHeaders(),
-                $recipient->getHeaders()
-            );
+            $complete_headers = array_merge($jwe->getSharedProtectedHeaders(), $jwe->getSharedHeaders(), $recipient->getHeaders());
             Assertion::keyExists($complete_headers, 'enc', 'Parameter "enc" is missing.');
             if (null === $algorithm) {
                 $algorithm = $complete_headers['enc'];
@@ -277,33 +245,19 @@ final class Encrypter implements EncrypterInterface
      * @param string                                              $iv
      * @param \Jose\Compression\CompressionInterface|null         $compression_method
      */
-    private function encryptJWE(JWEInterface &$jwe,
-                                ContentEncryptionAlgorithmInterface $content_encryption_algorithm,
-                                $cek,
-                                $iv,
-                                CompressionInterface $compression_method = null
-    ) {
+    private function encryptJWE(JWEInterface &$jwe, ContentEncryptionAlgorithmInterface $content_encryption_algorithm, $cek, $iv, CompressionInterface $compression_method = null)
+    {
         if (!empty($jwe->getSharedProtectedHeaders())) {
             $jwe = $jwe->withEncodedSharedProtectedHeaders(Base64Url::encode(json_encode($jwe->getSharedProtectedHeaders())));
         }
 
-        // We encrypt the payload and get the tag
         $tag = null;
         $payload = $this->preparePayload($jwe->getPayload(), $compression_method);
-
-        $ciphertext = $content_encryption_algorithm->encryptContent(
-            $payload,
-            $cek,
-            $iv,
-            null === $jwe->getAAD() ? null : Base64Url::encode($jwe->getAAD()),
-            $jwe->getEncodedSharedProtectedHeaders(),
-            $tag
-        );
-
+        $aad = null === $jwe->getAAD() ? null : Base64Url::encode($jwe->getAAD());
+        $ciphertext = $content_encryption_algorithm->encryptContent($payload, $cek, $iv, $aad, $jwe->getEncodedSharedProtectedHeaders(), $tag);
         $jwe = $jwe->withCiphertext($ciphertext);
         $jwe = $jwe->withIV($iv);
 
-        // Tag
         if (null !== $tag) {
             $jwe = $jwe->withTag($tag);
         }
@@ -336,7 +290,6 @@ final class Encrypter implements EncrypterInterface
         $dir = KeyEncryptionAlgorithmInterface::MODE_DIRECT;
         $enc = KeyEncryptionAlgorithmInterface::MODE_ENCRYPT;
         $wrap = KeyEncryptionAlgorithmInterface::MODE_WRAP;
-
         $supported_key_management_mode_combinations = [$enc.$enc     => true,$enc.$wrap    => true,$wrap.$enc    => true,$wrap.$wrap   => true,$agree.$agree => false,$agree.$dir   => false,$agree.$enc   => false,$agree.$wrap  => false,$dir.$agree   => false,$dir.$dir     => false,$dir.$enc     => false,$dir.$wrap    => false,$enc.$agree   => false,$enc.$dir     => false,$wrap.$agree  => false,$wrap.$dir    => false,];
 
         if (array_key_exists($current.$new, $supported_key_management_mode_combinations)) {
@@ -355,7 +308,6 @@ final class Encrypter implements EncrypterInterface
     private function preparePayload($payload, CompressionInterface $compression_method = null)
     {
         $prepared = is_string($payload) ? $payload : json_encode($payload);
-
         Assertion::notNull($prepared, 'The payload is empty or cannot encoded into JSON.');
 
         if (null === $compression_method) {
@@ -386,8 +338,6 @@ final class Encrypter implements EncrypterInterface
         } elseif ($key_encryption_algorithm instanceof KeyAgreementWrappingInterface) {
             return $this->getEncryptedKeyFromKeyAgreementAndKeyWrappingAlgorithm($complete_headers, $cek, $key_encryption_algorithm, $content_encryption_algorithm, $additional_headers, $recipient_key);
         }
-
-        // Using KeyAgreementInterface or DirectEncryptionInterface, the encrypted key is an empty string
     }
 
     /**
@@ -418,12 +368,7 @@ final class Encrypter implements EncrypterInterface
      */
     private function getEncryptedKeyFromKeyEncryptionAlgorithm(array $complete_headers, $cek, KeyEncryptionInterface $key_encryption_algorithm, JWKInterface $recipient_key, array &$additional_headers)
     {
-        return $key_encryption_algorithm->encryptKey(
-            $recipient_key,
-            $cek,
-            $complete_headers,
-            $additional_headers
-        );
+        return $key_encryption_algorithm->encryptKey($recipient_key,  $cek, $complete_headers, $additional_headers);
     }
 
     /**
@@ -437,12 +382,7 @@ final class Encrypter implements EncrypterInterface
      */
     private function getEncryptedKeyFromKeyWrappingAlgorithm(array $complete_headers, $cek, KeyWrappingInterface $key_encryption_algorithm, JWKInterface $recipient_key, &$additional_headers)
     {
-        return $key_encryption_algorithm->wrapKey(
-            $recipient_key,
-            $cek,
-            $complete_headers,
-            $additional_headers
-        );
+        return $key_encryption_algorithm->wrapKey($recipient_key, $cek, $complete_headers, $additional_headers);
     }
 
     /**
@@ -453,7 +393,6 @@ final class Encrypter implements EncrypterInterface
     private function findKeyEncryptionAlgorithm(array $complete_headers)
     {
         Assertion::keyExists($complete_headers, 'alg', 'Parameter "alg" is missing.');
-
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
         Assertion::isInstanceOf($key_encryption_algorithm, KeyEncryptionAlgorithmInterface::class, sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_headers['alg']));
 
