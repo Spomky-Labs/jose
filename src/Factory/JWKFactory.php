@@ -28,9 +28,9 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createRotatableKey($filename, array $parameters, $ttl = 0)
+    public static function createRotatableKey($filename, array $parameters, $ttl = 0, $first_ttl = 0)
     {
-        return new RotatableJWK($filename, $parameters, $ttl);
+        return new RotatableJWK($filename, $parameters, $ttl, $first_ttl);
     }
 
     /**

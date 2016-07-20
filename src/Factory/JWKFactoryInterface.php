@@ -21,10 +21,11 @@ interface JWKFactoryInterface
      * @param string $filename
      * @param array  $parameters
      * @param int    $ttl
+     * @param int    $first_ttl
      *
      * @return \Jose\Object\JWKInterface
      */
-    public static function createRotatableKey($filename, array $parameters, $ttl = 0);
+    public static function createRotatableKey($filename, array $parameters, $ttl = 0, $first_ttl = 0);
 
     /**
      * @param array $config
