@@ -11,6 +11,7 @@
 
 namespace Jose\Factory;
 
+use Assert\Assertion;
 use Jose\Checker\CheckerManager;
 use Jose\Checker\CheckerManagerInterface;
 use Jose\Checker\ClaimCheckerInterface;
@@ -103,10 +104,9 @@ final class CheckerManagerFactory
      */
     private static function getClaimClass($claim)
     {
-        if (true === self::isClaimSupported($claim)) {
-            return self::getSupportedClaims()[$claim];
-        }
-        throw new \InvalidArgumentException(sprintf('Claim "%s" is not supported. Please add an instance of ClaimCheckerInterface directly.', $claim));
+        Assertion::true(self::isClaimSupported($claim), sprintf('Claim "%s" is not supported. Please add an instance of ClaimCheckerInterface directly.', $claim));
+
+        return self::getSupportedClaims()[$claim];
     }
 
     /**
@@ -118,10 +118,9 @@ final class CheckerManagerFactory
      */
     private static function getHeaderClass($header)
     {
-        if (true === self::isHeaderSupported($header)) {
-            return self::getSupportedHeaders()[$header];
-        }
-        throw new \InvalidArgumentException(sprintf('Header "%s" is not supported. Please add an instance of HeaderCheckerInterface directly.', $header));
+        Assertion::true(self::isHeaderSupported($header), sprintf('Header "%s" is not supported. Please add an instance of HeaderCheckerInterface directly.', $header));
+
+        return self::getSupportedHeaders()[$header];
     }
 
     /**

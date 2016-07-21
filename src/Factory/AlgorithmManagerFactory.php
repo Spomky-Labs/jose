@@ -11,6 +11,7 @@
 
 namespace Jose\Factory;
 
+use Assert\Assertion;
 use Jose\Algorithm\JWAInterface;
 use Jose\Algorithm\JWAManager;
 
@@ -56,10 +57,9 @@ final class AlgorithmManagerFactory
      */
     private static function getAlgorithmClass($algorithm)
     {
-        if (self::isAlgorithmSupported($algorithm)) {
-            return self::getSupportedAlgorithms()[$algorithm];
-        }
-        throw new \InvalidArgumentException(sprintf('Algorithm "%s" is not supported.', $algorithm));
+        Assertion::true(self::isAlgorithmSupported($algorithm), sprintf('Algorithm "%s" is not supported.', $algorithm));
+
+        return self::getSupportedAlgorithms()[$algorithm];
     }
 
     /**

@@ -11,6 +11,7 @@
 
 namespace Jose\Factory;
 
+use Assert\Assertion;
 use Jose\Compression\CompressionInterface;
 use Jose\Compression\CompressionManager;
 
@@ -59,10 +60,9 @@ final class CompressionManagerFactory
      */
     private static function getMethodClass($method)
     {
-        if (self::isAlgorithmSupported($method)) {
-            return self::getSupportedMethods()[$method];
-        }
-        throw new \InvalidArgumentException(sprintf('Compression method "%s" is not supported.', $method));
+        Assertion::true(self::isAlgorithmSupported($method), sprintf('Compression method "%s" is not supported.', $method));
+
+        return self::getSupportedMethods()[$method];
     }
 
     private static function getSupportedMethods()
