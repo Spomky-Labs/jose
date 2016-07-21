@@ -156,7 +156,7 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
-        Assertion::eq(count($jwk_set), 0, 'No key in the key set.');
+        Assertion::greaterThan(count($jwk_set), 0, 'No key in the key set.');
     }
 
     /**
