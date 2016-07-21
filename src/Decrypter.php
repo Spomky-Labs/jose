@@ -103,7 +103,7 @@ final class Decrypter implements DecrypterInterface
      * @param \Jose\Object\JWKSetInterface $jwk_set
      * @param int                          $i
      *
-     * @return mixed
+     * @return int|null
      */
     private function decryptRecipientKey(JWEInterface &$jwe, JWKSetInterface $jwk_set, $i)
     {
