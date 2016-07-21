@@ -11,6 +11,7 @@
 
 namespace Jose;
 
+use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Algorithm\ContentEncryptionAlgorithmInterface;
 use Jose\Algorithm\JWAInterface;
@@ -139,9 +140,7 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkRecipients(JWEInterface $jwe)
     {
-        if (0 === $jwe->countRecipients()) {
-            throw new \InvalidArgumentException('The JWE does not contain any recipient.');
-        }
+        Assertion::eq($jwe->countRecipients(), 0, 'The JWE does not contain any recipient.');
     }
 
     /**
@@ -149,9 +148,7 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkPayload(JWEInterface $jwe)
     {
-        if (null !== $jwe->getPayload()) {
-            throw new \InvalidArgumentException('The JWE is already decrypted.');
-        }
+        Assertion::notNull($jwe->getPayload(), 'The JWE is already decrypted.');
     }
 
     /**
@@ -159,9 +156,7 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkJWKSet(JWKSetInterface $jwk_set)
     {
-        if (0 === count($jwk_set)) {
-            throw new \InvalidArgumentException('No key in the key set.');
-        }
+        Assertion::eq(count($jwk_set), 0, 'No key in the key set.');
     }
 
     /**
@@ -221,10 +216,7 @@ final class Decrypter implements DecrypterInterface
         if (array_key_exists('zip', $complete_headers)) {
             $compression_method = $this->getCompressionMethod($complete_headers['zip']);
             $payload = $compression_method->uncompress($payload);
-            if (!is_string($payload)) {
-                throw new \InvalidArgumentException('Decompression failed');
-            }
-        } else {
+            Assertion::string($payload, 'Decompression failed');
         }
     }
 
@@ -236,9 +228,7 @@ final class Decrypter implements DecrypterInterface
     private function checkCompleteHeader(array $complete_headers)
     {
         foreach (['enc', 'alg'] as $key) {
-            if (!array_key_exists($key, $complete_headers)) {
-                throw new \InvalidArgumentException(sprintf("Parameters '%s' is missing.", $key));
-            }
+            Assertion::keyExists($complete_headers, $key, sprintf("Parameters '%s' is missing.", $key));
         }
     }
 
@@ -250,9 +240,7 @@ final class Decrypter implements DecrypterInterface
     private function getKeyEncryptionAlgorithm(array $complete_headers)
     {
         $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
-        if (!$key_encryption_algorithm instanceof KeyEncryptionAlgorithmInterface) {
-            throw new \InvalidArgumentException(sprintf('The key encryption algorithm "%s" is not supported or does not implement KeyEncryptionAlgorithmInterface.', $complete_headers['alg']));
-        }
+        Assertion::isInstanceOf($key_encryption_algorithm, KeyEncryptionAlgorithmInterface::class, sprintf('The key encryption algorithm "%s" is not supported or does not implement KeyEncryptionAlgorithmInterface.', $complete_headers['alg']));
 
         return $key_encryption_algorithm;
     }
@@ -265,9 +253,7 @@ final class Decrypter implements DecrypterInterface
     private function getContentEncryptionAlgorithm(array $complete_headers)
     {
         $content_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['enc']);
-        if (!$content_encryption_algorithm instanceof ContentEncryptionAlgorithmInterface) {
-            throw new \InvalidArgumentException(sprintf('The key encryption algorithm "%s" is not supported or does not implement ContentEncryptionInterface.', $complete_headers['enc']));
-        }
+        Assertion::isInstanceOf($content_encryption_algorithm, ContentEncryptionAlgorithmInterface::class, sprintf('The key encryption algorithm "%s" is not supported or does not implement ContentEncryptionInterface.', $complete_headers['enc']));
 
         return $content_encryption_algorithm;
     }
@@ -282,9 +268,7 @@ final class Decrypter implements DecrypterInterface
     private function getCompressionMethod($method)
     {
         $compression_method = $this->getCompressionManager()->getCompressionAlgorithm($method);
-        if (null === $compression_method) {
-            throw new \InvalidArgumentException(sprintf('Compression method "%s" not supported', $method));
-        }
+        Assertion::notNull($compression_method, sprintf('Compression method "%s" not supported', $method));
 
         return $compression_method;
     }
