@@ -11,9 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWSInterface;
-
 interface JWTLoaderInterface
 {
     /**
@@ -53,7 +50,7 @@ interface JWTLoaderInterface
      *
      * @return \Jose\Object\JWSInterface
      */
-    public function load($assertion, JWKSetInterface $encryption_key_set = null, $is_encryption_required = false);
+    public function load($assertion, Object\JWKSetInterface $encryption_key_set = null, $is_encryption_required = false);
 
     /**
      * @param \Jose\Object\JWSInterface    $jws
@@ -62,5 +59,5 @@ interface JWTLoaderInterface
      *
      * @return int
      */
-    public function verify(JWSInterface $jws, JWKSetInterface $signature_key_set, $detached_payload = null);
+    public function verify(Object\JWSInterface $jws, Object\JWKSetInterface $signature_key_set, $detached_payload = null);
 }

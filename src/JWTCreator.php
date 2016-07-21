@@ -12,9 +12,6 @@
 namespace Jose;
 
 use Assert\Assertion;
-use Jose\Factory\JWEFactory;
-use Jose\Factory\JWSFactory;
-use Jose\Object\JWKInterface;
 
 final class JWTCreator implements JWTCreatorInterface
 {
@@ -49,9 +46,9 @@ final class JWTCreator implements JWTCreatorInterface
     /**
      * {@inheritdoc}
      */
-    public function sign($payload, array $signature_protected_headers, JWKInterface $signature_key)
+    public function sign($payload, array $signature_protected_headers, Object\JWKInterface $signature_key)
     {
-        $jws = JWSFactory::createJWS($payload);
+        $jws = Factory\JWSFactory::createJWS($payload);
 
         $jws = $jws->addSignatureInformation($signature_key, $signature_protected_headers);
         $this->signer->sign($jws);
@@ -62,11 +59,11 @@ final class JWTCreator implements JWTCreatorInterface
     /**
      * {@inheritdoc}
      */
-    public function encrypt($payload, array $encryption_protected_headers, JWKInterface $encryption_key)
+    public function encrypt($payload, array $encryption_protected_headers, Object\JWKInterface $encryption_key)
     {
         Assertion::true($this->isEncryptionSupportEnabled(), 'The encryption support is not enabled');
 
-        $jwe = JWEFactory::createJWE($payload, $encryption_protected_headers);
+        $jwe = Factory\JWEFactory::createJWE($payload, $encryption_protected_headers);
         $jwe = $jwe->addRecipientInformation($encryption_key);
         $this->encrypter->encrypt($jwe);
 
@@ -76,7 +73,7 @@ final class JWTCreator implements JWTCreatorInterface
     /**
      * {@inheritdoc}
      */
-    public function signAndEncrypt($payload, array $signature_protected_headers, JWKInterface $signature_key, array $encryption_protected_headers, JWKInterface $encryption_key)
+    public function signAndEncrypt($payload, array $signature_protected_headers, Object\JWKInterface $signature_key, array $encryption_protected_headers, Object\JWKInterface $encryption_key)
     {
         $jws = $this->sign($payload, $signature_protected_headers, $signature_key);
         $jwe = $this->encrypt($jws, $encryption_protected_headers, $encryption_key);

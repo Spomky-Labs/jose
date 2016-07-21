@@ -13,22 +13,12 @@ namespace Jose;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use Jose\Algorithm\SignatureAlgorithmInterface;
-use Jose\Behaviour\CommonSigningMethods;
-use Jose\Behaviour\HasJWAManager;
-use Jose\Behaviour\HasKeyChecker;
-use Jose\Factory\AlgorithmManagerFactory;
-use Jose\Object\JWKInterface;
-use Jose\Object\JWKSet;
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWSInterface;
-use Jose\Object\SignatureInterface;
 
 final class Verifier implements VerifierInterface
 {
-    use HasKeyChecker;
-    use HasJWAManager;
-    use CommonSigningMethods;
+    use Behaviour\HasKeyChecker;
+    use Behaviour\HasJWAManager;
+    use Behaviour\CommonSigningMethods;
 
     /**
      * Verifier constructor.
@@ -38,7 +28,7 @@ final class Verifier implements VerifierInterface
     public function __construct(array $signature_algorithms)
     {
         $this->setSignatureAlgorithms($signature_algorithms);
-        $this->setJWAManager(AlgorithmManagerFactory::createAlgorithmManager($signature_algorithms));
+        $this->setJWAManager(Factory\AlgorithmManagerFactory::createAlgorithmManager($signature_algorithms));
     }
 
     /**
@@ -56,9 +46,9 @@ final class Verifier implements VerifierInterface
      *
      * @throws \InvalidArgumentException
      */
-    public function verifyWithKey(JWSInterface $jws, JWKInterface $jwk, $detached_payload = null, &$recipient_index = null)
+    public function verifyWithKey(Object\JWSInterface $jws, Object\JWKInterface $jwk, $detached_payload = null, &$recipient_index = null)
     {
-        $jwk_set = new JWKSet();
+        $jwk_set = new Object\JWKSet();
         $jwk_set->addKey($jwk);
 
         $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
@@ -67,7 +57,7 @@ final class Verifier implements VerifierInterface
     /**
      * {@inheritdoc}
      */
-    public function verifyWithKeySet(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
+    public function verifyWithKeySet(Object\JWSInterface $jws, Object\JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
         $this->verifySignatures($jws, $jwk_set, $detached_payload, $recipient_index);
     }
@@ -80,7 +70,7 @@ final class Verifier implements VerifierInterface
      *
      * @return bool
      */
-    private function verifySignature(JWSInterface $jws, JWKSetInterface $jwk_set, SignatureInterface $signature, $detached_payload = null)
+    private function verifySignature(Object\JWSInterface $jws, Object\JWKSetInterface $jwk_set, Object\SignatureInterface $signature, $detached_payload = null)
     {
         $input = $this->getInputToVerify($jws, $signature, $detached_payload);
 
@@ -108,7 +98,7 @@ final class Verifier implements VerifierInterface
      *
      * @return string
      */
-    private function getInputToVerify(JWSInterface $jws, SignatureInterface $signature, $detached_payload)
+    private function getInputToVerify(Object\JWSInterface $jws, Object\SignatureInterface $signature, $detached_payload)
     {
         $encoded_protected_headers = $signature->getEncodedProtectedHeaders();
         $payload = empty($jws->getPayload()) ? $detached_payload : $jws->getPayload();
@@ -128,7 +118,7 @@ final class Verifier implements VerifierInterface
      * @param string|null                  $detached_payload
      * @param int|null                     $recipient_index
      */
-    private function verifySignatures(JWSInterface $jws, JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
+    private function verifySignatures(Object\JWSInterface $jws, Object\JWKSetInterface $jwk_set, $detached_payload = null, &$recipient_index = null)
     {
         $this->checkPayload($jws, $detached_payload);
         $this->checkJWKSet($jwk_set);
@@ -153,7 +143,7 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\JWSInterface $jws
      */
-    private function checkSignatures(JWSInterface $jws)
+    private function checkSignatures(Object\JWSInterface $jws)
     {
         Assertion::greaterThan($jws->countSignatures(), 0, 'The JWS does not contain any signature.');
     }
@@ -161,7 +151,7 @@ final class Verifier implements VerifierInterface
     /**
      * @param \Jose\Object\JWKSetInterface $jwk_set
      */
-    private function checkJWKSet(JWKSetInterface $jwk_set)
+    private function checkJWKSet(Object\JWKSetInterface $jwk_set)
     {
         Assertion::greaterThan($jwk_set->countKeys(), 0, 'There is no key in the key set.');
     }
@@ -170,7 +160,7 @@ final class Verifier implements VerifierInterface
      * @param \Jose\Object\JWSInterface $jws
      * @param null|string               $detached_payload
      */
-    private function checkPayload(JWSInterface $jws, $detached_payload = null)
+    private function checkPayload(Object\JWSInterface $jws, $detached_payload = null)
     {
         Assertion::false(
             null !== $detached_payload && !empty($jws->getPayload()),
@@ -187,7 +177,7 @@ final class Verifier implements VerifierInterface
      *
      * @return \Jose\Algorithm\SignatureAlgorithmInterface
      */
-    private function getAlgorithm(SignatureInterface $signature)
+    private function getAlgorithm(Object\SignatureInterface $signature)
     {
         $complete_headers = array_merge(
             $signature->getProtectedHeaders(),
@@ -196,7 +186,7 @@ final class Verifier implements VerifierInterface
         Assertion::keyExists($complete_headers, 'alg', 'No "alg" parameter set in the header.');
 
         $algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
-        Assertion::isInstanceOf($algorithm, SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $complete_headers['alg']));
+        Assertion::isInstanceOf($algorithm, Algorithm\SignatureAlgorithmInterface::class, sprintf('The algorithm "%s" is not supported or does not implement SignatureInterface.', $complete_headers['alg']));
 
         return $algorithm;
     }

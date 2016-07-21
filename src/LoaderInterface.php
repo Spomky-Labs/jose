@@ -11,9 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWKInterface;
-use Jose\Object\JWKSetInterface;
-
 /**
  * Loader Interface.
  */
@@ -39,7 +36,7 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface|\Jose\Object\JWEInterface If the data has been loaded.
      */
-    public function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null);
+    public function loadAndDecryptUsingKey($input, Object\JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null);
 
     /**
      * @param string                       $input
@@ -50,7 +47,7 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWEInterface If the data has been loaded.
      */
-    public function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null);
+    public function loadAndDecryptUsingKeySet($input, Object\JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null);
 
     /**
      * @param string                    $input
@@ -60,7 +57,7 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface If the data has been loaded.
      */
-    public function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, &$signature_index = null);
+    public function loadAndVerifySignatureUsingKey($input, Object\JWKInterface $jwk, array $allowed_algorithms, &$signature_index = null);
 
     /**
      * @param string                       $input
@@ -70,7 +67,7 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface If the data has been loaded.
      */
-    public function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, &$signature_index = null);
+    public function loadAndVerifySignatureUsingKeySet($input, Object\JWKSetInterface $jwk_set, array $allowed_algorithms, &$signature_index = null);
 
     /**
      * @param string                    $input
@@ -81,7 +78,7 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface If the data has been loaded.
      */
-    public function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, &$signature_index = null);
+    public function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, Object\JWKInterface $jwk, array $allowed_algorithms, $detached_payload, &$signature_index = null);
 
     /**
      * @param string                       $input
@@ -92,5 +89,5 @@ interface LoaderInterface
      *
      * @return \Jose\Object\JWSInterface If the data has been loaded.
      */
-    public function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, &$signature_index = null);
+    public function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, Object\JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, &$signature_index = null);
 }

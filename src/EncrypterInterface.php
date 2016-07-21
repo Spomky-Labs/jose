@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWEInterface;
-
 /**
  * Encrypter Interface.
  */
@@ -45,5 +43,5 @@ interface EncrypterInterface
     /**
      * @param \Jose\Object\JWEInterface $jwe
      */
-    public function encrypt(JWEInterface &$jwe);
+    public function encrypt(Object\JWEInterface &$jwe);
 }

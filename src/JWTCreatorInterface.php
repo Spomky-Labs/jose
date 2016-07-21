@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWKInterface;
-
 interface JWTCreatorInterface
 {
     /**
@@ -27,7 +25,7 @@ interface JWTCreatorInterface
      *
      * @return string
      */
-    public function sign($payload, array $signature_protected_headers, JWKInterface $signature_key);
+    public function sign($payload, array $signature_protected_headers, Object\JWKInterface $signature_key);
 
     /**
      * @param string                    $payload
@@ -36,7 +34,7 @@ interface JWTCreatorInterface
      *
      * @return string
      */
-    public function encrypt($payload, array $encryption_protected_headers, JWKInterface $encryption_key);
+    public function encrypt($payload, array $encryption_protected_headers, Object\JWKInterface $encryption_key);
 
     /**
      * @param mixed                     $payload
@@ -47,7 +45,7 @@ interface JWTCreatorInterface
      *
      * @return string
      */
-    public function signAndEncrypt($payload, array $signature_protected_headers, JWKInterface $signature_key, array $encryption_protected_headers, JWKInterface $encryption_key);
+    public function signAndEncrypt($payload, array $signature_protected_headers, Object\JWKInterface $signature_key, array $encryption_protected_headers, Object\JWKInterface $encryption_key);
 
     /**
      * @return string[]

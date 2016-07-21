@@ -12,13 +12,6 @@
 namespace Jose;
 
 use Assert\Assertion;
-use Jose\Object\JWEInterface;
-use Jose\Object\JWKInterface;
-use Jose\Object\JWKSet;
-use Jose\Object\JWKSetInterface;
-use Jose\Object\JWSInterface;
-use Jose\Util\JWELoader;
-use Jose\Util\JWSLoader;
 
 /**
  * Class able to load JWS or JWE.
@@ -29,9 +22,9 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndDecryptUsingKey($input, JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
+    public function loadAndDecryptUsingKey($input, Object\JWKInterface $jwk, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
     {
-        $jwk_set = new JWKSet();
+        $jwk_set = new Object\JWKSet();
         $jwk_set->addKey($jwk);
 
         return $this->loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $recipient_index);
@@ -40,7 +33,7 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndDecryptUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
+    public function loadAndDecryptUsingKeySet($input, Object\JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
     {
         return $this->loadAndDecrypt($input, $jwk_set, $allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, $recipient_index);
     }
@@ -48,9 +41,9 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndVerifySignatureUsingKey($input, JWKInterface $jwk, array $allowed_algorithms, &$signature_index = null)
+    public function loadAndVerifySignatureUsingKey($input, Object\JWKInterface $jwk, array $allowed_algorithms, &$signature_index = null)
     {
-        $jwk_set = new JWKSet();
+        $jwk_set = new Object\JWKSet();
         $jwk_set->addKey($jwk);
 
         return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $signature_index);
@@ -59,7 +52,7 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndVerifySignatureUsingKeySet($input, JWKSetInterface $jwk_set, array $allowed_algorithms, &$signature_index = null)
+    public function loadAndVerifySignatureUsingKeySet($input, Object\JWKSetInterface $jwk_set, array $allowed_algorithms, &$signature_index = null)
     {
         return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, null, $signature_index);
     }
@@ -67,9 +60,9 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, JWKInterface $jwk, array $allowed_algorithms, $detached_payload, &$signature_index = null)
+    public function loadAndVerifySignatureUsingKeyAndDetachedPayload($input, Object\JWKInterface $jwk, array $allowed_algorithms, $detached_payload, &$signature_index = null)
     {
-        $jwk_set = new JWKSet();
+        $jwk_set = new Object\JWKSet();
         $jwk_set->addKey($jwk);
 
         return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $signature_index);
@@ -78,7 +71,7 @@ final class Loader implements LoaderInterface
     /**
      * {@inheritdoc}
      */
-    public function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, &$signature_index = null)
+    public function loadAndVerifySignatureUsingKeySetAndDetachedPayload($input, Object\JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload, &$signature_index = null)
     {
         return $this->loadAndVerifySignature($input, $jwk_set, $allowed_algorithms, $detached_payload, $signature_index);
     }
@@ -92,10 +85,10 @@ final class Loader implements LoaderInterface
      *
      * @return \Jose\Object\JWEInterface
      */
-    private function loadAndDecrypt($input, JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
+    private function loadAndDecrypt($input, Object\JWKSetInterface $jwk_set, array $allowed_key_encryption_algorithms, array $allowed_content_encryption_algorithms, &$recipient_index = null)
     {
         $jwt = $this->load($input);
-        Assertion::isInstanceOf($jwt, JWEInterface::class, 'The input is not a valid JWE');
+        Assertion::isInstanceOf($jwt, Object\JWEInterface::class, 'The input is not a valid JWE');
         $decrypted = Decrypter::createDecrypter($allowed_key_encryption_algorithms, $allowed_content_encryption_algorithms, ['DEF', 'ZLIB', 'GZ']);
 
         $decrypted->decryptUsingKeySet($jwt, $jwk_set, $recipient_index);
@@ -112,10 +105,10 @@ final class Loader implements LoaderInterface
      *
      * @return \Jose\Object\JWSInterface
      */
-    private function loadAndVerifySignature($input, JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, &$signature_index = null)
+    private function loadAndVerifySignature($input, Object\JWKSetInterface $jwk_set, array $allowed_algorithms, $detached_payload = null, &$signature_index = null)
     {
         $jwt = $this->load($input);
-        Assertion::isInstanceOf($jwt, JWSInterface::class, 'The input is not a valid JWS.');
+        Assertion::isInstanceOf($jwt, Object\JWSInterface::class, 'The input is not a valid JWS.');
         $verifier = Verifier::createVerifier($allowed_algorithms);
 
         $verifier->verifyWithKeySet($jwt, $jwk_set, $detached_payload, $signature_index);
@@ -130,10 +123,10 @@ final class Loader implements LoaderInterface
     {
         $json = $this->convert($input);
         if (array_key_exists('signatures', $json)) {
-            return JWSLoader::loadSerializedJsonJWS($json);
+            return Util\JWSLoader::loadSerializedJsonJWS($json);
         }
         if (array_key_exists('recipients', $json)) {
-            return JWELoader::loadSerializedJsonJWE($json);
+            return Util\JWELoader::loadSerializedJsonJWE($json);
         }
     }
 
@@ -221,10 +214,8 @@ final class Loader implements LoaderInterface
         $parts = explode('.', $input);
         switch (count($parts)) {
             case 3:
-
                 return $this->fromCompactSerializationSignatureToSerialization($parts);
             case 5:
-
                 return $this->fromCompactSerializationRecipientToSerialization($parts);
             default:
                 throw new \InvalidArgumentException('Unsupported input');

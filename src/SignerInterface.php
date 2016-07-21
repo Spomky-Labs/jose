@@ -11,8 +11,6 @@
 
 namespace Jose;
 
-use Jose\Object\JWSInterface;
-
 /**
  * Signer Interface.
  */
@@ -35,5 +33,5 @@ interface SignerInterface
     /**
      * @param \Jose\Object\JWSInterface $jws
      */
-    public function sign(JWSInterface &$jws);
+    public function sign(Object\JWSInterface &$jws);
 }
