@@ -148,7 +148,7 @@ final class Decrypter implements DecrypterInterface
      */
     private function checkPayload(JWEInterface $jwe)
     {
-        Assertion::notNull($jwe->getPayload(), 'The JWE is already decrypted.');
+        Assertion::null($jwe->getPayload(), 'The JWE is already decrypted.');
     }
 
     /**
