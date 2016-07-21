@@ -57,7 +57,10 @@ final class Encrypter implements EncrypterInterface
         Assertion::greaterThan($jwe->countRecipients(), 0, 'The JWE does not contain recipient.');
         $additional_headers = [];
         $nb_recipients = $jwe->countRecipients();
-        $this->prepareEncryptionProcess($jwe, $content_encryption_algorithm, $compression_method, $key_management_mode, $cek, $additional_headers);
+        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe);
+        $compression_method = $this->getCompressionMethod($jwe);
+        $key_management_mode = $this->getKeyManagementMode($jwe);
+        $cek = $this->determineCEK($jwe, $content_encryption_algorithm, $key_management_mode, $additional_headers);
 
         for ($i = 0; $i < $nb_recipients; $i++) {
             $this->processRecipient($jwe, $jwe->getRecipient($i), $cek, $content_encryption_algorithm, $additional_headers);
@@ -120,21 +123,6 @@ final class Encrypter implements EncrypterInterface
 
         if (null !== $tag) {
             $jwe = $jwe->withTag($tag);
-        }
-    }
-
-    /**
-     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
-     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
-     * @param \Jose\Object\JWKInterface                           $recipient_key
-     */
-    private function checkKeys(Algorithm\KeyEncryptionAlgorithmInterface $key_encryption_algorithm, Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm, Object\JWKInterface $recipient_key)
-    {
-        $this->checkKeyUsage($recipient_key, 'encryption');
-        if ('dir' !== $key_encryption_algorithm->getAlgorithmName()) {
-            $this->checkKeyAlgorithm($recipient_key, $key_encryption_algorithm->getAlgorithmName());
-        } else {
-            $this->checkKeyAlgorithm($recipient_key, $content_encryption_algorithm->getAlgorithmName());
         }
     }
 
@@ -236,15 +224,5 @@ final class Encrypter implements EncrypterInterface
         Assertion::isInstanceOf($key_encryption_algorithm, Algorithm\KeyEncryptionAlgorithmInterface::class, sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_headers['alg']));
 
         return $key_encryption_algorithm;
-    }
-
-    /**
-     * @param int $size
-     *
-     * @return string
-     */
-    private function createIV($size)
-    {
-        return random_bytes($size / 8);
     }
 }

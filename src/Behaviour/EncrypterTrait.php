@@ -20,19 +20,18 @@ use Jose\Object;
 trait EncrypterTrait
 {
     /**
-     * @param \Jose\Object\JWEInterface $jwe
-     * @param null                      $content_encryption_algorithm
-     * @param null                      $compression_method
-     * @param null                      $key_management_mode
-     * @param null                      $cek
-     * @param array                     $additional_headers
+     * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
+     * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
+     * @param \Jose\Object\JWKInterface                           $recipient_key
      */
-    private function prepareEncryptionProcess(Object\JWEInterface &$jwe, &$content_encryption_algorithm, &$compression_method, &$key_management_mode, &$cek, array &$additional_headers)
+    private function checkKeys(Algorithm\KeyEncryptionAlgorithmInterface $key_encryption_algorithm, Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm, Object\JWKInterface $recipient_key)
     {
-        $content_encryption_algorithm = $this->getContentEncryptionAlgorithm($jwe);
-        $compression_method = $this->getCompressionMethod($jwe);
-        $key_management_mode = $this->getKeyManagementMode($jwe);
-        $cek = $this->determineCEK($jwe, $content_encryption_algorithm, $key_management_mode, $additional_headers);
+        $this->checkKeyUsage($recipient_key, 'encryption');
+        if ('dir' !== $key_encryption_algorithm->getAlgorithmName()) {
+            $this->checkKeyAlgorithm($recipient_key, $key_encryption_algorithm->getAlgorithmName());
+        } else {
+            $this->checkKeyAlgorithm($recipient_key, $content_encryption_algorithm->getAlgorithmName());
+        }
     }
 
     /**
@@ -182,6 +181,16 @@ trait EncrypterTrait
      * @return string
      */
     private function createCEK($size)
+    {
+        return random_bytes($size / 8);
+    }
+
+    /**
+     * @param int $size
+     *
+     * @return string
+     */
+    private function createIV($size)
     {
         return random_bytes($size / 8);
     }
