@@ -20,8 +20,8 @@ use Jose\Checker\HeaderCheckerInterface;
 final class CheckerManagerFactory
 {
     /**
-     * @param string[] $claims
-     * @param string[] $headers
+     * @param string[]|\Jose\Checker\ClaimCheckerInterface[]  $claims
+     * @param string[]|\Jose\Checker\HeaderCheckerInterface[] $headers
      *
      * @return \Jose\Checker\CheckerManagerInterface
      */
@@ -41,16 +41,13 @@ final class CheckerManagerFactory
      */
     private static function populateClaimCheckers(CheckerManagerInterface &$checker_manager, array $claims)
     {
-        foreach ($claims as $key => $value) {
-            if ($value instanceof ClaimCheckerInterface) {
-                $checker_manager->addClaimChecker($value);
+        foreach ($claims as $claim) {
+            if ($claim instanceof ClaimCheckerInterface) {
+                $checker_manager->addClaimChecker($claim);
             } else {
-                if (is_string($key)) {
-                    $class = self::getClaimClass($key);
-                } else {
-                    $class = self::getClaimClass($value);
-                }
-                $checker_manager->addClaimChecker(new $class($value));
+                Assertion::string($claim, 'Bad argument: must be a list with either claim names (string) or instances of ClaimCheckerInterface.');
+                $class = self::getClaimClass($claim);
+                $checker_manager->addClaimChecker(new $class());
             }
         }
     }
@@ -61,16 +58,13 @@ final class CheckerManagerFactory
      */
     private static function populateHeaderCheckers(CheckerManagerInterface &$checker_manager, array $headers)
     {
-        foreach ($headers as $key => $value) {
-            if ($value instanceof HeaderCheckerInterface) {
-                $checker_manager->addHeaderChecker($value);
+        foreach ($headers as $claim) {
+            if ($claim instanceof HeaderCheckerInterface) {
+                $checker_manager->addHeaderChecker($claim);
             } else {
-                if (is_string($key)) {
-                    $class = self::getHeaderClass($key);
-                } else {
-                    $class = self::getHeaderClass($value);
-                }
-                $checker_manager->addHeaderChecker(new $class($value));
+                Assertion::string($claim, 'Bad argument: must be a list with either header names (string) or instances of HeaderCheckerInterface.');
+                $class = self::getHeaderClass($claim);
+                $checker_manager->addHeaderChecker(new $class());
             }
         }
     }

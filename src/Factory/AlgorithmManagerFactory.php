@@ -18,7 +18,7 @@ use Jose\Algorithm\JWAManager;
 final class AlgorithmManagerFactory
 {
     /**
-     * @param array $algorithms
+     * @param string[]|\Jose\Algorithm\JWAInterface[] $algorithms
      *
      * @return \Jose\Algorithm\JWAManagerInterface
      */
@@ -30,6 +30,7 @@ final class AlgorithmManagerFactory
             if ($algorithm instanceof JWAInterface) {
                 $jwa_manager->addAlgorithm($algorithm);
             } else {
+                Assertion::string($algorithm, 'Bad argument: must be a list with either algorithm names (string) or instances of JWAInterface.');
                 $class = self::getAlgorithmClass($algorithm);
                 $jwa_manager->addAlgorithm(new $class());
             }

@@ -18,7 +18,7 @@ use Jose\Compression\CompressionManager;
 final class CompressionManagerFactory
 {
     /**
-     * @param array $methods
+     * @param string[]|\Jose\Compression\CompressionInterface[] $methods
      *
      * @return \Jose\Compression\CompressionManagerInterface
      */
@@ -26,15 +26,13 @@ final class CompressionManagerFactory
     {
         $compression_manager = new CompressionManager();
 
-        foreach ($methods as $key => $value) {
-            if ($value instanceof CompressionInterface) {
-                $compression_manager->addCompressionAlgorithm($value);
-            } elseif (is_string($value)) {
-                $class = self::getMethodClass($value);
-                $compression_manager->addCompressionAlgorithm(new $class());
+        foreach ($methods as $method) {
+            if ($methods instanceof CompressionInterface) {
+                $compression_manager->addCompressionAlgorithm($method);
             } else {
-                $class = self::getMethodClass($key);
-                $compression_manager->addCompressionAlgorithm(new $class($value));
+                Assertion::string($method, 'Bad argument: must be a list with either method names (string) or instances of CompressionInterface.');
+                $class = self::getMethodClass($method);
+                $compression_manager->addCompressionAlgorithm(new $class());
             }
         }
 
