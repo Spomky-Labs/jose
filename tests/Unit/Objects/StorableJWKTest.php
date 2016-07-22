@@ -30,8 +30,16 @@ class StorableJWKTest extends \PHPUnit_Framework_TestCase
             ]
         );
 
+        $this->assertEquals(sys_get_temp_dir().'/JWK.key', $jwk->getFilename());
         $all = $jwk->getAll();
         $this->assertEquals($all, $jwk->getAll());
+        $this->assertTrue($jwk->has('kty'));
+        $this->assertTrue($jwk->has('crv'));
+        $this->assertEquals('EC', $jwk->get('kty'));
+        $this->assertEquals('P-256', $jwk->get('crv'));
+        $this->assertTrue(is_string($jwk->thumbprint('sha256')));
+        $this->assertTrue(is_string(json_encode($jwk)));
+        $this->assertInstanceOf(\Jose\Object\JWKInterface::class, $jwk->toPublic());
 
         $jwk = new StorableJWK(
             sys_get_temp_dir().'/JWK.key',
