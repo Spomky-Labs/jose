@@ -31,7 +31,7 @@ trait HasJWAManager
     /**
      * @return \Jose\Algorithm\JWAManagerInterface
      */
-    private function getJWAManager()
+    protected function getJWAManager()
     {
         return $this->jwa_manager;
     }

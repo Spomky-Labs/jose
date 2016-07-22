@@ -20,6 +20,26 @@ use Jose\Object;
 trait EncrypterTrait
 {
     /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $usage
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return bool
+     */
+    abstract protected function checkKeyUsage(Object\JWKInterface $key, $usage);
+
+    /**
+     * @return \Jose\Algorithm\JWAManagerInterface
+     */
+    abstract protected function getJWAManager();
+
+    /**
+     * @return \Jose\Compression\CompressionManagerInterface
+     */
+    abstract protected function getCompressionManager();
+
+    /**
      * @param \Jose\Algorithm\KeyEncryptionAlgorithmInterface     $key_encryption_algorithm
      * @param \Jose\Algorithm\ContentEncryptionAlgorithmInterface $content_encryption_algorithm
      * @param \Jose\Object\JWKInterface                           $recipient_key
@@ -193,5 +213,19 @@ trait EncrypterTrait
     private function createIV($size)
     {
         return random_bytes($size / 8);
+    }
+
+    /**
+     * @param array $complete_headers
+     *
+     * @return \Jose\Algorithm\KeyEncryptionAlgorithmInterface
+     */
+    private function findKeyEncryptionAlgorithm(array $complete_headers)
+    {
+        Assertion::keyExists($complete_headers, 'alg', 'Parameter "alg" is missing.');
+        $key_encryption_algorithm = $this->getJWAManager()->getAlgorithm($complete_headers['alg']);
+        Assertion::isInstanceOf($key_encryption_algorithm, Algorithm\KeyEncryptionAlgorithmInterface::class, sprintf('The key encryption algorithm "%s" is not supported or not a key encryption algorithm instance.', $complete_headers['alg']));
+
+        return $key_encryption_algorithm;
     }
 }

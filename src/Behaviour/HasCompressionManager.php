@@ -31,7 +31,7 @@ trait HasCompressionManager
     /**
      * @return \Jose\Compression\CompressionManagerInterface
      */
-    private function getCompressionManager()
+    protected function getCompressionManager()
     {
         return $this->compression_manager;
     }

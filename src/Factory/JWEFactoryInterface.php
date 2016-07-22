@@ -42,7 +42,7 @@ interface JWEFactoryInterface
      * @param array                     $recipient_headers
      * @param string|null               $aad
      *
-     * @return \Jose\Object\JWSInterface
+     * @return string
      */
     public static function createJWEToFlattenedJSON($payload, JWKInterface $recipient_key, array $shared_protected_headers = [], $shared_headers = [], $recipient_headers = [], $aad = null);
 }

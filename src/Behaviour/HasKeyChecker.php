@@ -24,7 +24,7 @@ trait HasKeyChecker
      *
      * @return bool
      */
-    private function checkKeyUsage(JWKInterface $key, $usage)
+    protected function checkKeyUsage(JWKInterface $key, $usage)
     {
         if ($key->has('use')) {
             return $this->checkUsage($key, $usage);
