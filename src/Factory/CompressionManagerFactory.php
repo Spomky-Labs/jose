@@ -27,7 +27,7 @@ final class CompressionManagerFactory
         $compression_manager = new CompressionManager();
 
         foreach ($methods as $method) {
-            if ($methods instanceof CompressionInterface) {
+            if ($method instanceof CompressionInterface) {
                 $compression_manager->addCompressionAlgorithm($method);
             } else {
                 Assertion::string($method, 'Bad argument: must be a list with either method names (string) or instances of CompressionInterface.');
