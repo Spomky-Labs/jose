@@ -64,7 +64,7 @@ $checker->checkJWS($jws, 0);
 
 // You can get headers or claims contained in this object
 $jws->getSignature(0)->hasProtectedHeader('alg'); // true
-$jws->getSignature(0)->hasProtectedHeader('alg'); // RS256
+$jws->getSignature(0)->getProtectedHeader('alg'); // RS256
 $jws->getSignature(0)->getProtectedHeaders(); // ['alg'=>'RS256']
 $jws->hasClaim('foo'); // false
 $jws->hasClaim('iss'); // true

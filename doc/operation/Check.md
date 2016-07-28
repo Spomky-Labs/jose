@@ -36,7 +36,7 @@ In the following lazy example, we check is the claim `animal` is set. If it is s
 namespace Acme\Checker;
 
 use Assert\Assertion;
-use Jose\Checker\ClaimCheckerInterface
+use Jose\Checker\ClaimCheckerInterface;
 use Jose\Object\JWTInterface;
 
 class AnimalChecker implements ClaimCheckerInterface
@@ -57,7 +57,7 @@ class AnimalChecker implements ClaimCheckerInterface
         $animal = $jwt->getClaim('animal');
         Assertion::inArray($animal, ['bog', 'cat', 'owl'], 'Bad animal.');
 
-        // We return an array with the checked claims (here only 'animal'.
+        // We return an array with the checked claims (here only 'animal').
         return ['animal'];
     }
 }
@@ -69,12 +69,12 @@ The Checker Manager will handle all checkers and verify a JWS.
 After the manager is created, you have to add the checkers. Then, you will be able to check the JWS.
 
 ```php
-use Jose\Factory\CheckerManager;
-use Jose\Factory\AudienceChecker;
-use Jose\Factory\CriticalHeaderChecker;
-use Jose\Factory\ExpirationTimeChecker;
-use Jose\Factory\IssuedAtChecker;
-use Jose\Factory\NotBeforeChecker;
+use Jose\Checker\CheckerManager;
+use Jose\Checker\AudienceChecker;
+use Jose\Checker\CriticalHeaderChecker;
+use Jose\Checker\ExpirationTimeChecker;
+use Jose\Checker\IssuedAtChecker;
+use Jose\Checker\NotBeforeChecker;
 
 // We create an instance of CheckerManager.
 $checker_manager = new CheckerManager();
@@ -83,7 +83,7 @@ $checker_manager = new CheckerManager();
 $checker_manager->addClaimChecker(new ExpirationTimeChecker());
 $checker_manager->addClaimChecker(new IssuedAtChecker());
 $checker_manager->addClaimChecker(new NotBeforeChecker());
-$checker_manager->addClaimChecker(new AudienceChecker('My Server));
+$checker_manager->addClaimChecker(new AudienceChecker('My Server'));
 
 // We add the header checker (crit).
 $checker_manager->addHeaderChecker(new CriticalHeaderChecker());
@@ -122,13 +122,14 @@ This factory is also able to receive Checkers in the list of arguments:
 
 ```php
 use Acme\Checker\AnimalChecker;
+use Jose\Checker\AudienceChecker;
 use Jose\Factory\CheckerManagerFactory;
 
 $claim_checker_list = [
     'exp',
     'iat',
     'nbf',
-    new Audience('My Server'),
+    new AudienceChecker('My Server'),
     new AnimalChecker(),
 ];
 
