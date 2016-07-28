@@ -13,7 +13,7 @@ namespace Jose\Algorithm\Signature;
 
 use Assert\Assertion;
 use Jose\Algorithm\SignatureAlgorithmInterface;
-use Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWKInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
@@ -22,6 +22,16 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
  */
 abstract class RSA implements SignatureAlgorithmInterface
 {
+    /**
+     * Probabilistic Signature Scheme
+     */
+    const SIGNATURE_PSS = 1;
+
+    /**
+     * Use the PKCS#1
+     */
+    const SIGNATURE_PKCS1 = 2;
+
     /**
      * @return mixed
      */
@@ -39,17 +49,16 @@ abstract class RSA implements SignatureAlgorithmInterface
     {
         $this->checkKey($key);
 
-        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e']));
-        $rsa = KeyConverter::fromArrayToRSACrypt($values);
+        $pem = RSAKey::toPublic(new RSAKey($key))->toPEM();
 
-        $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
-            $rsa->setMGFHash($this->getAlgorithm());
-            $rsa->setSaltLength(0);
+        if ($this->getSignatureMethod() === self::SIGNATURE_PSS) {
+            $rsa = $this->getRsaObject();
+            $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
+
+            return $rsa->verify($input, $signature);
+        } else {
+            return 1 === openssl_verify($input, $signature, $pem, $this->getAlgorithm());
         }
-        $rsa->setSignatureMode($this->getSignatureMethod());
-
-        return $rsa->verify($input, $signature);
     }
 
     /**
@@ -58,32 +67,44 @@ abstract class RSA implements SignatureAlgorithmInterface
     public function sign(JWKInterface $key, $input)
     {
         $this->checkKey($key);
+        Assertion::true($key->has('d'), 'The key is not a private key');
 
-        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
-        $rsa = KeyConverter::fromArrayToRSACrypt($values);
+        $pem = (new RSAKey($key))->toPEM();
 
-        if ($rsa->getPrivateKey() === false) {
-            throw new \InvalidArgumentException('The key is not a private key');
+        if ($this->getSignatureMethod() === self::SIGNATURE_PSS) {
+            $rsa = $this->getRsaObject();
+            $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
+            $result = $rsa->sign($input);
+            Assertion::string($result, 'An error occurred during the creation of the signature');
+
+            return $result;
+        } else {
+            $result = openssl_sign($input, $signature, $pem, $this->getAlgorithm());
+            Assertion::true($result, 'Unable to sign');
+
+            return $signature;
         }
-
-        $rsa->setHash($this->getAlgorithm());
-        if ($this->getSignatureMethod() === PHPSecLibRSA::SIGNATURE_PSS) {
-            $rsa->setMGFHash($this->getAlgorithm());
-            $rsa->setSaltLength(0);
-        }
-        $rsa->setSignatureMode($this->getSignatureMethod());
-
-        $result = $rsa->sign($input);
-        Assertion::string($result, 'An error occurred during the creation of the signature');
-
-        return $result;
     }
 
     /**
      * @param JWKInterface $key
      */
-    protected function checkKey(JWKInterface $key)
+    private function checkKey(JWKInterface $key)
     {
         Assertion::eq($key->get('kty'), 'RSA', 'Wrong key type.');
+    }
+
+    /**
+     * @return \phpseclib\Crypt\RSA
+     */
+    private function getRsaObject()
+    {
+        $rsa = new PHPSecLibRSA();
+        $rsa->setHash($this->getAlgorithm());
+        $rsa->setMGFHash($this->getAlgorithm());
+        $rsa->setSaltLength(0);
+        $rsa->setSignatureMode(PHPSecLibRSA::SIGNATURE_PSS);
+
+        return $rsa;
     }
 }

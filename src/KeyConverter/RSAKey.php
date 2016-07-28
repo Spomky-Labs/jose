@@ -99,7 +99,7 @@ final class RSAKey extends Sequence
         Assertion::eq($jwk['kty'], 'RSA', 'The JWK is not a RSA key');
 
         $this->values = $jwk;
-        if (array_key_exists('p', $jwk)) {
+        if (array_key_exists('d', $jwk)) {
             $this->values['dp'] = isset($jwk['dp']) ? $jwk['dp'] : Base64Url::encode(0);
             $this->values['dq'] = isset($jwk['dq']) ? $jwk['dq'] : Base64Url::encode(0);
             $this->values['qi'] = isset($jwk['qi']) ? $jwk['qi'] : Base64Url::encode(0);

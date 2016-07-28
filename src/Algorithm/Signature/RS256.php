@@ -11,8 +11,6 @@
 
 namespace Jose\Algorithm\Signature;
 
-use phpseclib\Crypt\RSA as PHPSecLibRSA;
-
 /**
  * Class RS256.
  */
@@ -31,7 +29,7 @@ final class RS256 extends RSA
      */
     protected function getSignatureMethod()
     {
-        return PHPSecLibRSA::SIGNATURE_PKCS1;
+        return self::SIGNATURE_PKCS1;
     }
 
     /**

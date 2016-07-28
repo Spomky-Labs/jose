@@ -11,8 +11,6 @@
 
 namespace Jose\Algorithm\Signature;
 
-use phpseclib\Crypt\RSA as PHPSecLibRSA;
-
 /**
  * Class PS512.
  */
@@ -31,7 +29,7 @@ final class PS512 extends RSA
      */
     protected function getSignatureMethod()
     {
-        return PHPSecLibRSA::SIGNATURE_PSS;
+        return self::SIGNATURE_PSS;
     }
 
     /**

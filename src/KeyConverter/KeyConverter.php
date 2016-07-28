@@ -13,7 +13,6 @@ namespace Jose\KeyConverter;
 
 use Assert\Assertion;
 use Base64Url\Base64Url;
-use phpseclib\Crypt\RSA;
 
 /**
  * This class will help you to load an EC key or a RSA key/certificate (private or public) and get values to create a JWK object.
@@ -175,22 +174,6 @@ final class KeyConverter
     }
 
     /**
-     * @param array $data
-     *
-     * @throws \Exception
-     *
-     * @return \phpseclib\Crypt\RSA
-     */
-    public static function fromArrayToRSACrypt(array $data)
-    {
-        $xml = self::fromArrayToXML($data);
-        $rsa = new RSA();
-        $rsa->loadKey($xml);
-
-        return $rsa;
-    }
-
-    /**
      * @param array $x5c
      *
      * @return array
@@ -201,7 +184,7 @@ final class KeyConverter
         $last_issuer = null;
         $last_subject = null;
         foreach ($x5c as $cert) {
-            $current_cert = "-----BEGIN CERTIFICATE-----\n$cert\n-----END CERTIFICATE-----";
+            $current_cert = '-----BEGIN CERTIFICATE-----'.PHP_EOL.$cert.PHP_EOL.'-----END CERTIFICATE-----';
             $x509 = openssl_x509_read($current_cert);
             if (false === $x509) {
                 $last_issuer = null;
@@ -237,64 +220,6 @@ final class KeyConverter
         );
 
         return self::loadKeyFromCertificate($certificate);
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public static function fromArrayToXML(array $data)
-    {
-        $result = "<RSAKeyPair>\n";
-        foreach ($data as $key => $value) {
-            $element = self::getElement($key);
-            $value = strtr($value, '-_', '+/');
-
-            switch (mb_strlen($value, '8bit') % 4) {
-                case 0:
-                    break; // No pad chars in this case
-                case 2:
-                    $value .= '==';
-                    break; // Two pad chars
-                case 3:
-                    $value .= '=';
-                    break; // One pad char
-                default:
-                    throw new \Exception('Invalid data');
-            }
-
-            $result .= "\t<$element>$value</$element>\n";
-        }
-        $result .= '</RSAKeyPair>';
-
-        return $result;
-    }
-
-    /**
-     * @param $key
-     *
-     * @return string
-     */
-    private static function getElement($key)
-    {
-        $values = [
-            'n'  => 'Modulus',
-            'e'  => 'Exponent',
-            'p'  => 'P',
-            'd'  => 'D',
-            'q'  => 'Q',
-            'dp' => 'DP',
-            'dq' => 'DQ',
-            'qi' => 'InverseQ',
-        ];
-        if (array_key_exists($key, $values)) {
-            return $values[$key];
-        } else {
-            throw new \InvalidArgumentException('Unsupported key data');
-        }
     }
 
     /**

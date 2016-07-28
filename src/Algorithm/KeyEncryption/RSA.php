@@ -12,7 +12,7 @@
 namespace Jose\Algorithm\KeyEncryption;
 
 use Assert\Assertion;
-use Jose\KeyConverter\KeyConverter;
+use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWKInterface;
 use phpseclib\Crypt\RSA as PHPSecLibRSA;
 
@@ -27,8 +27,10 @@ abstract class RSA implements KeyEncryptionInterface
     public function encryptKey(JWKInterface $key, $cek, array $complete_headers, array &$additional_headers)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e']));
-        $rsa = $this->getRsaObject($values);
+
+        $pem = RSAKey::toPublic(new RSAKey($key))->toPEM();
+        $rsa = $this->getRsaObject();
+        $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
 
         $encrypted = $rsa->encrypt($cek);
         Assertion::string($encrypted, 'Unable to encrypt the data.');
@@ -42,8 +44,11 @@ abstract class RSA implements KeyEncryptionInterface
     public function decryptKey(JWKInterface $key, $encrypted_key, array $header)
     {
         $this->checkKey($key);
-        $values = array_intersect_key($key->getAll(), array_flip(['n', 'e', 'p', 'd', 'q', 'dp', 'dq', 'qi']));
-        $rsa = $this->getRsaObject($values);
+        Assertion::true($key->has('d'), 'The key is not a private key');
+
+        $pem = (new RSAKey($key))->toPEM();
+        $rsa = $this->getRsaObject();
+        $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
 
         $decrypted = $rsa->decrypt($encrypted_key);
         Assertion::string($decrypted, 'Unable to decrypt the data.');
@@ -60,13 +65,11 @@ abstract class RSA implements KeyEncryptionInterface
     }
 
     /**
-     * @param array $values
-     *
      * @return \phpseclib\Crypt\RSA
      */
-    private function getRsaObject(array $values)
+    private function getRsaObject()
     {
-        $rsa = KeyConverter::fromArrayToRSACrypt($values);
+        $rsa = new PHPSecLibRSA();
         $encryption_mode = $this->getEncryptionMode();
         $rsa->setEncryptionMode($encryption_mode);
         if (PHPSecLibRSA::ENCRYPTION_OAEP === $encryption_mode) {
