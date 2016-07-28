@@ -82,6 +82,8 @@ final class JWSLoader
         }
         if (array_key_exists('payload', $data)) {
             $payload = $data['payload'];
+            $jws = $jws->withAttachedPayload();
+            $jws = $jws->withEncodedPayload($payload);
             if (false !== $is_encoded) {
                 $payload = Base64Url::decode($payload);
             }
@@ -90,6 +92,8 @@ final class JWSLoader
                 $payload = $json;
             }
             $jws = $jws->withPayload($payload);
+        } else {
+            $jws = $jws->withDetachedPayload();
         }
     }
 
