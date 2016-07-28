@@ -283,10 +283,10 @@ $jwk = JWKFactory::createFromX5C($jws->getSignature(0)->getProtectedHeader('x5c'
 
 The `JWKFactory` is able to easily create random keys. At the moment, the factory supports the following key types:
 
-* `oct`
-* `RSA`
-* `EC` with curves `P-256`, `P-384` and `P-521`
-* `OKP` with curves `Ed25519` and `X25519`
+* `oct` (key size depends on the signature/encryption algorithm).
+* `RSA` (key size depends on the signature/encryption algorithm).
+* `EC` with curves `P-256`, `P-384` and `P-521`.
+* `OKP` with curves `Ed25519` and `X25519`.
 
 ### Create a Random `oct` Key
 
