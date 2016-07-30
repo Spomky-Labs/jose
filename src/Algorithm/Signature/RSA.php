@@ -15,7 +15,7 @@ use Assert\Assertion;
 use Jose\Algorithm\SignatureAlgorithmInterface;
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWKInterface;
-use phpseclib\Crypt\RSA as PHPSecLibRSA;
+use Jose\Util\RSA as JoseRSA;
 
 /**
  * Class RSA.
@@ -23,12 +23,12 @@ use phpseclib\Crypt\RSA as PHPSecLibRSA;
 abstract class RSA implements SignatureAlgorithmInterface
 {
     /**
-     * Probabilistic Signature Scheme
+     * Probabilistic Signature Scheme.
      */
     const SIGNATURE_PSS = 1;
 
     /**
-     * Use the PKCS#1
+     * Use the PKCS#1.
      */
     const SIGNATURE_PKCS1 = 2;
 
@@ -49,15 +49,14 @@ abstract class RSA implements SignatureAlgorithmInterface
     {
         $this->checkKey($key);
 
-        $pem = RSAKey::toPublic(new RSAKey($key))->toPEM();
+        $pub = RSAKey::toPublic(new RSAKey($key));
 
         if ($this->getSignatureMethod() === self::SIGNATURE_PSS) {
-            $rsa = $this->getRsaObject();
-            $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
 
-            return $rsa->verify($input, $signature);
+            return JoseRSA::verify($pub, $input, $signature, $this->getAlgorithm());
         } else {
-            return 1 === openssl_verify($input, $signature, $pem, $this->getAlgorithm());
+
+            return 1 === openssl_verify($input, $signature, $pub->toPEM(), $this->getAlgorithm());
         }
     }
 
@@ -69,17 +68,15 @@ abstract class RSA implements SignatureAlgorithmInterface
         $this->checkKey($key);
         Assertion::true($key->has('d'), 'The key is not a private key');
 
-        $pem = (new RSAKey($key))->toPEM();
+        $priv = new RSAKey($key);
 
         if ($this->getSignatureMethod() === self::SIGNATURE_PSS) {
-            $rsa = $this->getRsaObject();
-            $rsa->loadKey($pem, PHPSecLibRSA::PRIVATE_FORMAT_PKCS1);
-            $result = $rsa->sign($input);
+            $result = JoseRSA::sign($priv, $input, $this->getAlgorithm());
             Assertion::string($result, 'An error occurred during the creation of the signature');
 
             return $result;
         } else {
-            $result = openssl_sign($input, $signature, $pem, $this->getAlgorithm());
+            $result = openssl_sign($input, $signature, $priv->toPEM(), $this->getAlgorithm());
             Assertion::true($result, 'Unable to sign');
 
             return $signature;
@@ -92,19 +89,5 @@ abstract class RSA implements SignatureAlgorithmInterface
     private function checkKey(JWKInterface $key)
     {
         Assertion::eq($key->get('kty'), 'RSA', 'Wrong key type.');
-    }
-
-    /**
-     * @return \phpseclib\Crypt\RSA
-     */
-    private function getRsaObject()
-    {
-        $rsa = new PHPSecLibRSA();
-        $rsa->setHash($this->getAlgorithm());
-        $rsa->setMGFHash($this->getAlgorithm());
-        $rsa->setSaltLength(0);
-        $rsa->setSignatureMode(PHPSecLibRSA::SIGNATURE_PSS);
-
-        return $rsa;
     }
 }
