@@ -30,6 +30,11 @@ trait EncrypterTrait
     abstract protected function checkKeyUsage(Object\JWKInterface $key, $usage);
 
     /**
+     * @param \Jose\Object\JWKInterface $key
+     * @param string                    $algorithm
+     */
+    abstract protected function checkKeyAlgorithm(Object\JWKInterface $key, $algorithm);
+    /**
      * @return \Jose\Algorithm\JWAManagerInterface
      */
     abstract protected function getJWAManager();

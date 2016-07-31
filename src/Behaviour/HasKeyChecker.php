@@ -99,7 +99,7 @@ trait HasKeyChecker
      * @param \Jose\Object\JWKInterface $key
      * @param string                    $algorithm
      */
-    private function checkKeyAlgorithm(JWKInterface $key, $algorithm)
+    protected function checkKeyAlgorithm(JWKInterface $key, $algorithm)
     {
         if (!$key->has('alg')) {
             return;

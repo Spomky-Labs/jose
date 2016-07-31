@@ -77,7 +77,7 @@ final class BigInteger
     }
 
     /**
-     * @param string $value
+     * @param int $value
      *
      * @return \Jose\Util\BigInteger
      */
@@ -89,7 +89,7 @@ final class BigInteger
     }
 
     /**
-     * Converts a BigInteger to a byte string (eg. base-256).
+     * Converts a BigInteger to a binary string.
      *
      * @return string
      */
@@ -100,7 +100,7 @@ final class BigInteger
         }
 
         $temp = gmp_strval(gmp_abs($this->value), 16);
-        $temp = (strlen($temp) & 1) ? '0'.$temp : $temp;
+        $temp = mb_strlen($temp, '8bit') & 1 ? '0'.$temp : $temp;
         $temp = hex2bin($temp);
 
         return ltrim($temp, chr(0));
@@ -154,7 +154,7 @@ final class BigInteger
      * @param \Jose\Util\BigInteger $e
      * @param \Jose\Util\BigInteger $n
      *
-     * @return \Jose\Util\BigInteger|bool
+     * @return \Jose\Util\BigInteger
      */
     public function modPow(BigInteger $e, BigInteger $n)
     {
@@ -182,12 +182,14 @@ final class BigInteger
      *
      * @param \Jose\Util\BigInteger $n
      *
-     * @return \Jose\Util\BigInteger|bool
+     * @return \Jose\Util\BigInteger
      */
     public function modInverse(BigInteger $n)
     {
         $value = gmp_invert($this->value, $n->value);
-        return false === $value ? false : self::createFromGMPResource($value);
+        Assertion::isInstanceOf($value, \GMP::class);
+
+        return self::createFromGMPResource($value);
     }
 
     /**

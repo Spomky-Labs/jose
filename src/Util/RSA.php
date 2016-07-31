@@ -55,7 +55,7 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger
      */
-    private static function _exponentiate(RSAKey $key, $c)
+    private static function exponentiate(RSAKey $key, $c)
     {
         if ($key->isPublic() || empty($key->getPrimes())) {
             return $c->modPow($key->getExponent(), $key->getModulus());
@@ -83,13 +83,13 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function _rsaep(RSAKey $key, BigInteger $m)
+    private static function RSAEP(RSAKey $key, BigInteger $m)
     {
-        if ($m->compare(BigInteger::createFromDecimalString('0')) < 0 || $m->compare($key->getModulus()) > 0) {
+        if ($m->compare(BigInteger::createFromDecimal(0)) < 0 || $m->compare($key->getModulus()) > 0) {
             return false;
         }
 
-        return self::_exponentiate($key, $m);
+        return self::exponentiate($key, $m);
     }
 
     /**
@@ -100,13 +100,13 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function _rsadp(RSAKey $key, BigInteger $c)
+    private static function RSADP(RSAKey $key, BigInteger $c)
     {
-        if ($c->compare(BigInteger::createFromDecimalString('0')) < 0 || $c->compare($key->getModulus()) > 0) {
+        if ($c->compare(BigInteger::createFromDecimal(0)) < 0 || $c->compare($key->getModulus()) > 0) {
             return false;
         }
 
-        return self::_exponentiate($key, $c);
+        return self::exponentiate($key, $c);
     }
 
     /**
@@ -117,13 +117,13 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function _rsasp1(RSAKey $key, BigInteger $m)
+    private static function RSASP1(RSAKey $key, BigInteger $m)
     {
-        if ($m->compare(BigInteger::createFromDecimalString('0')) < 0 || $m->compare($key->getModulus()) > 0) {
+        if ($m->compare(BigInteger::createFromDecimal(0)) < 0 || $m->compare($key->getModulus()) > 0) {
             return false;
         }
 
-        return self::_exponentiate($key, $m);
+        return self::exponentiate($key, $m);
     }
 
     /**
@@ -136,11 +136,11 @@ final class RSA
      */
     private static function _rsavp1(RSAKey $key, BigInteger $s)
     {
-        if ($s->compare(BigInteger::createFromDecimalString('0')) < 0 || $s->compare($key->getModulus()) > 0) {
+        if ($s->compare(BigInteger::createFromDecimal(0)) < 0 || $s->compare($key->getModulus()) > 0) {
             return false;
         }
 
-        return self::_exponentiate($key, $s);
+        return self::exponentiate($key, $s);
     }
 
     /**
@@ -161,7 +161,7 @@ final class RSA
             $t .= $mgfHash->hash($mgfSeed.$c);
         }
 
-        return substr($t, 0, $maskLen);
+        return mb_substr($t, 0, $maskLen, '8bit');
     }
 
     /**
@@ -173,9 +173,9 @@ final class RSA
      *
      * @return string
      */
-    private static function _rsaes_oaep_encrypt(RSAKey $key, $m, Hash $hash)
+    private static function RSAESOAEPEncrypt(RSAKey $key, $m, Hash $hash)
     {
-        $mLen = strlen($m);
+        $mLen = mb_strlen($m, '8bit');
         $lHash = $hash->hash('');
         $ps = str_repeat(chr(0), $key->getModulusLength() - $mLen - 2 * $hash->getLength() - 2);
         $db = $lHash.$ps.chr(1).$m;
@@ -187,7 +187,7 @@ final class RSA
         $em = chr(0).$maskedSeed.$maskedDB;
 
         $m = self::convertOctetStringToInteger($em);
-        $c = self::_rsaep($key, $m);
+        $c = self::RSAEP($key, $m);
         $c = self::convertIntegerToOctetString($c, $key->getModulusLength());
 
         return $c;
@@ -202,32 +202,26 @@ final class RSA
      *
      * @return string
      */
-    private static function _rsaes_oaep_decrypt(RSAKey $key, $c, Hash $hash)
+    private static function RSAESOAEPDecrypt(RSAKey $key, $c, Hash $hash)
     {
         $c = self::convertOctetStringToInteger($c);
-        $m = self::_rsadp($key, $c);
-
+        $m = self::RSADP($key, $c);
         Assertion::isInstanceOf($m, BigInteger::class);
-
         $em = self::convertIntegerToOctetString($m, $key->getModulusLength());
-
         $lHash = $hash->hash('');
-        $maskedSeed = substr($em, 1, $hash->getLength());
-        $maskedDB = substr($em, $hash->getLength() + 1);
+        $maskedSeed = mb_substr($em, 1, $hash->getLength(), '8bit');
+        $maskedDB = mb_substr($em, $hash->getLength() + 1, null, '8bit');
         $seedMask = self::_mgf1($maskedDB, $hash->getLength(), $hash/*MGF*/);
         $seed = $maskedSeed ^ $seedMask;
         $dbMask = self::_mgf1($seed, $key->getModulusLength() - $hash->getLength() - 1, $hash/*MGF*/);
         $db = $maskedDB ^ $dbMask;
-        $lHash2 = substr($db, 0, $hash->getLength());
-        $m = substr($db, $hash->getLength());
-
+        $lHash2 = mb_substr($db, 0, $hash->getLength(), '8bit');
+        $m = mb_substr($db, $hash->getLength(), null, '8bit');
         Assertion::eq($lHash, $lHash2);
-
         $m = ltrim($m, chr(0));
-
         Assertion::eq(ord($m[0]), 1);
 
-        return substr($m, 1);
+        return mb_substr($m, 1, null, '8bit');
     }
 
     /**
@@ -239,19 +233,12 @@ final class RSA
      *
      * @return string|bool
      */
-    private static function _emsa_pss_encode($m, $emBits, Hash $hash)
+    private static function encodeEMSAPSS($m, $emBits, Hash $hash)
     {
-        // if $m is larger than two million terrabytes and you're using sha1, PKCS#1 suggests a "Label too long" error
-        // be output.
-
-        $emLen = ($emBits + 1) >> 3; // ie. ceil($emBits / 8)
+        $emLen = ($emBits + 1) >> 3;
         $sLen = $hash->getLength();
-
         $mHash = $hash->hash($m);
-        if ($emLen < $hash->getLength() + $sLen + 2) {
-            return false;
-        }
-
+        Assertion::greaterThan($emLen , $hash->getLength() + $sLen + 2);
         $salt = random_bytes($sLen);
         $m2 = "\0\0\0\0\0\0\0\0".$mHash.$salt;
         $h = $hash->hash($m2);
@@ -275,37 +262,24 @@ final class RSA
      *
      * @return string
      */
-    private static function _emsa_pss_verify($m, $em, $emBits, Hash $hash)
+    private static function verifyEMSAPSS($m, $em, $emBits, Hash $hash)
     {
-        // if $m is larger than two million terrabytes and you're using sha1, PKCS#1 suggests a "Label too long" error
-        // be output.
-
-        $emLen = ($emBits + 1) >> 3; // ie. ceil($emBits / 8);
+        $emLen = ($emBits + 1) >> 3;
         $sLen = $hash->getLength();
-
         $mHash = $hash->hash($m);
-        if ($emLen < $hash->getLength() + $sLen + 2) {
-            return false;
-        }
-
-        if ($em[strlen($em) - 1] != chr(0xBC)) {
-            return false;
-        }
-
-        $maskedDB = substr($em, 0, -$hash->getLength() - 1);
-        $h = substr($em, -$hash->getLength() - 1, $hash->getLength());
+        Assertion::greaterThan($emLen, $hash->getLength() + $sLen + 2);
+        Assertion::eq($em[mb_strlen($em, '8bit') - 1], chr(0xBC));
+        $maskedDB = mb_substr($em, 0, -$hash->getLength() - 1, '8bit');
+        $h = mb_substr($em, -$hash->getLength() - 1, $hash->getLength(), '8bit');
         $temp = chr(0xFF << ($emBits & 7));
-        if ((~$maskedDB[0] & $temp) != $temp) {
-            return false;
-        }
+        Assertion::eq(~$maskedDB[0] & $temp, $temp);
         $dbMask = self::_mgf1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
         $db = $maskedDB ^ $dbMask;
         $db[0] = ~chr(0xFF << ($emBits & 7)) & $db[0];
         $temp = $emLen - $hash->getLength() - $sLen - 2;
-        if (substr($db, 0, $temp) != str_repeat(chr(0), $temp) || ord($db[$temp]) != 1) {
-            return false;
-        }
-        $salt = substr($db, $temp + 1); // should be $sLen long
+        Assertion::eq(mb_substr($db, 0, $temp, '8bit'), str_repeat(chr(0), $temp));
+        Assertion::eq(ord($db[$temp]), 1);
+        $salt = mb_substr($db, $temp + 1, null, '8bit'); // should be $sLen long
         $m2 = "\0\0\0\0\0\0\0\0".$mHash.$salt;
         $h2 = $hash->hash($m2);
 
@@ -323,15 +297,16 @@ final class RSA
      */
     public static function encrypt(RSAKey $key, $plaintext, $hash_algorithm)
     {
+        /**
+         * @var $hash Hash
+         */
         $hash = Hash::$hash_algorithm();
         $length = $key->getModulusLength() - 2 * $hash->getLength() - 2;
-
         Assertion::greaterThan($length, 0);
-
         $plaintext = str_split($plaintext, $length);
         $ciphertext = '';
         foreach ($plaintext as $m) {
-            $ciphertext .= self::_rsaes_oaep_encrypt($key, $m, $hash);
+            $ciphertext .= self::RSAESOAEPEncrypt($key, $m, $hash);
         }
 
         return $ciphertext;
@@ -349,19 +324,12 @@ final class RSA
     public static function decrypt(RSAKey $key, $ciphertext, $hash_algorithm)
     {
         Assertion::greaterThan($key->getModulusLength(), 0);
-
         $hash = Hash::$hash_algorithm();
-
         $ciphertext = str_split($ciphertext, $key->getModulusLength());
         $ciphertext[count($ciphertext) - 1] = str_pad($ciphertext[count($ciphertext) - 1], $key->getModulusLength(), chr(0), STR_PAD_LEFT);
-
         $plaintext = '';
-
         foreach ($ciphertext as $c) {
-            $temp = self::_rsaes_oaep_decrypt($key, $c, $hash);
-            if ($temp === false) {
-                return false;
-            }
+            $temp = self::RSAESOAEPDecrypt($key, $c, $hash);
             $plaintext .= $temp;
         }
 
@@ -382,19 +350,13 @@ final class RSA
         Assertion::string($message);
         Assertion::string($hash);
         Assertion::inArray($hash, ['sha256', 'sha384', 'sha512']);
-
-        $em = self::_emsa_pss_encode($message, 8 * $key->getModulusLength() - 1, Hash::$hash());
-
+        $em = self::encodeEMSAPSS($message, 8 * $key->getModulusLength() - 1, Hash::$hash());
         Assertion::string($em);
-
         $message = self::convertOctetStringToInteger($em);
-        $signature = self::_rsasp1($key, $message);
-
+        $signature = self::RSASP1($key, $message);
         Assertion::isInstanceOf($signature, BigInteger::class);
 
-        $signature = self::convertIntegerToOctetString($signature, $key->getModulusLength());
-
-        return $signature;
+        return self::convertIntegerToOctetString($signature, $key->getModulusLength());
     }
 
     /**
@@ -414,16 +376,12 @@ final class RSA
         Assertion::string($hash);
         Assertion::inArray($hash, ['sha256', 'sha384', 'sha512']);
         Assertion::eq(strlen($signature), $key->getModulusLength());
-
         $modBits = 8 * $key->getModulusLength();
-
         $s2 = self::convertOctetStringToInteger($signature);
         $m2 = self::_rsavp1($key, $s2);
-
         Assertion::isInstanceOf($m2, BigInteger::class);
-
         $em = self::convertIntegerToOctetString($m2, $modBits >> 3);
 
-        return self::_emsa_pss_verify($message, $em, $modBits - 1, Hash::$hash());
+        return self::verifyEMSAPSS($message, $em, $modBits - 1, Hash::$hash());
     }
 }

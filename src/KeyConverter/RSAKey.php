@@ -171,13 +171,54 @@ final class RSAKey extends Sequence
     }
 
     /**
-     * @param string $value
+     * @param \Jose\KeyConverter\RSAKey $private
      *
-     * @return \Jose\Util\BigInteger
+     * @return \Jose\KeyConverter\RSAKey
      */
-    private function convertBase64StringToBigInteger($value)
+    public static function toPublic(RSAKey $private)
     {
-        return BigInteger::createFromBinaryString(Base64Url::decode($value));
+        $data = $private->toArray();
+        $keys = ['p', 'd', 'q', 'dp', 'dq', 'qi'];
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $data)) {
+                unset($data[$key]);
+            }
+        }
+
+        return new self($data);
+    }
+
+    public function __toString()
+    {
+        return $this->toPEM();
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->values;
+    }
+
+    /**
+     * @return string
+     */
+    public function toDER()
+    {
+        return $this->getBinary();
+    }
+
+    /**
+     * @return string
+     */
+    public function toPEM()
+    {
+        $result = '-----BEGIN '.($this->isPrivate() ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
+        $result .= chunk_split(base64_encode($this->getBinary()), 64, PHP_EOL);
+        $result .= '-----END '.($this->isPrivate() ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
+
+        return $result;
     }
 
     /**
@@ -290,11 +331,11 @@ final class RSAKey extends Sequence
         $n = new Integer($this->fromBase64ToInteger($this->values['n']));
         $e = new Integer($this->fromBase64ToInteger($this->values['e']));
         $d = new Integer($this->fromBase64ToInteger($this->values['d']));
-        $p = new Integer($this->fromBase64ToInteger($this->values['p']));
-        $q = new Integer($this->fromBase64ToInteger($this->values['q']));
-        $dp = new Integer($this->fromBase64ToInteger($this->values['dp']));
-        $dq = new Integer($this->fromBase64ToInteger($this->values['dq']));
-        $qi = new Integer($this->fromBase64ToInteger($this->values['qi']));
+        $p = array_key_exists('p', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['p'])) : new Integer(0);
+        $q = array_key_exists('q', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['q'])) : new Integer(0);
+        $dp = array_key_exists('dp', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['dp'])) : new Integer(0);
+        $dq = array_key_exists('dq', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['dq'])) : new Integer(0);
+        $qi = array_key_exists('qi', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['qi'])) : new Integer(0);
 
         $key_sequence = new Sequence();
         $key_sequence->addChild($v);
@@ -320,57 +361,6 @@ final class RSAKey extends Sequence
         return gmp_strval(gmp_init(current(unpack('H*', Base64Url::decode($value))), 16), 10);
     }
 
-    /**
-     * @param \Jose\KeyConverter\RSAKey $private
-     *
-     * @return \Jose\KeyConverter\RSAKey
-     */
-    public static function toPublic(RSAKey $private)
-    {
-        $data = $private->toArray();
-        $keys = ['p', 'd', 'q', 'dp', 'dq', 'qi'];
-        foreach ($keys as $key) {
-            if (array_key_exists($key, $data)) {
-                unset($data[$key]);
-            }
-        }
-
-        return new self($data);
-    }
-
-    public function __toString()
-    {
-        return $this->toPEM();
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->values;
-    }
-
-    /**
-     * @return string
-     */
-    public function toDER()
-    {
-        return $this->getBinary();
-    }
-
-    /**
-     * @return string
-     */
-    public function toPEM()
-    {
-        $result = '-----BEGIN '.($this->isPrivate() ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
-        $result .= chunk_split(base64_encode($this->getBinary()), 64, PHP_EOL);
-        $result .= '-----END '.($this->isPrivate() ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
-
-        return $result;
-    }
-
     private function populateBigIntegers()
     {
         $this->modulus = $this->convertBase64StringToBigInteger($this->values['n']);
@@ -380,15 +370,27 @@ final class RSAKey extends Sequence
         if (true === $this->isPrivate()) {
             $this->private_exponent = $this->convertBase64StringToBigInteger($this->values['d']);
 
-            $this->primes = [
-                $this->convertBase64StringToBigInteger($this->values['p']),
-                $this->convertBase64StringToBigInteger($this->values['q']),
-            ];
-            $this->exponents = [
-                $this->convertBase64StringToBigInteger($this->values['dp']),
-                $this->convertBase64StringToBigInteger($this->values['dq']),
-            ];
-            $this->coefficient = $this->convertBase64StringToBigInteger($this->values['qi']);
+            if (array_key_exists('p', $this->values) && array_key_exists('q', $this->values)) {
+                $this->primes = [
+                    $this->convertBase64StringToBigInteger($this->values['p']),
+                    $this->convertBase64StringToBigInteger($this->values['q']),
+                ];
+                $this->exponents = [
+                    $this->convertBase64StringToBigInteger($this->values['dp']),
+                    $this->convertBase64StringToBigInteger($this->values['dq']),
+                ];
+                $this->coefficient = $this->convertBase64StringToBigInteger($this->values['qi']);
+            }
         }
+    }
+
+    /**
+     * @param string $value
+     *
+     * @return \Jose\Util\BigInteger
+     */
+    private function convertBase64StringToBigInteger($value)
+    {
+        return BigInteger::createFromBinaryString(Base64Url::decode($value));
     }
 }
