@@ -77,6 +77,18 @@ final class BigInteger
     }
 
     /**
+     * @param string $value
+     *
+     * @return \Jose\Util\BigInteger
+     */
+    public static function createFromDecimal($value)
+    {
+        Assertion::integer($value);
+
+        return new self($value, 10);
+    }
+
+    /**
      * Converts a BigInteger to a byte string (eg. base-256).
      *
      * @return string
@@ -95,21 +107,45 @@ final class BigInteger
     }
 
     /**
-     * Divides two BigIntegers.
+     * Adds two BigIntegers.
      *
-     * @param \Jose\Util\BigInteger $y
+     *  @param \Jose\Util\BigInteger $y
      *
-     * @return \Jose\Util\BigInteger[]
+     *  @return \Jose\Util\BigInteger
      */
-    public function divide(BigInteger $y)
+    public function add(BigInteger $y)
     {
-        list($quotient_value, $remainder_value) = gmp_div_qr($this->value, $y->value);
+        $value = gmp_add($this->value, $y->value);
 
-        if (gmp_sign($remainder_value) < 0) {
-            $remainder_value = gmp_add($remainder_value, gmp_abs($y->value));
-        }
+        return self::createFromGMPResource($value);
+    }
 
-        return [self::createFromGMPResource($quotient_value), self::createFromGMPResource($remainder_value)];
+    /**
+     * Subtracts two BigIntegers.
+     *
+     *  @param \Jose\Util\BigInteger $y
+     *
+     *  @return \Jose\Util\BigInteger
+     */
+    public function subtract(BigInteger $y)
+    {
+        $value = gmp_sub($this->value, $y->value);
+
+        return self::createFromGMPResource($value);
+    }
+
+    /**
+     * Multiplies two BigIntegers.
+     *
+     * @param \Jose\Util\BigInteger $x
+     *
+     *  @return \Jose\Util\BigInteger
+     */
+    public function multiply(BigInteger $x)
+    {
+        $value = gmp_mul($this->value, $x->value);
+
+        return self::createFromGMPResource($value);
     }
 
     /**
@@ -128,15 +164,30 @@ final class BigInteger
     }
 
     /**
-     * Absolute value.
+     * Performs modular exponentiation.
+     *
+     * @param \Jose\Util\BigInteger $d
      *
      * @return \Jose\Util\BigInteger
      */
-    public function abs()
+    public function mod(BigInteger $d)
     {
-        $value = gmp_abs($this->value);
+        $value = gmp_mod($this->value, $d->value);
 
         return self::createFromGMPResource($value);
+    }
+
+    /**
+     * Calculates modular inverses.
+     *
+     * @param \Jose\Util\BigInteger $n
+     *
+     * @return \Jose\Util\BigInteger|bool
+     */
+    public function modInverse(BigInteger $n)
+    {
+        $value = gmp_invert($this->value, $n->value);
+        return false === $value ? false : self::createFromGMPResource($value);
     }
 
     /**

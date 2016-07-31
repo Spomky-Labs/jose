@@ -48,15 +48,31 @@ final class RSA
 
     /**
      * Exponentiate with or without Chinese Remainder Theorem.
+     * Operation with primes 'p' and 'q' is appox. 2x faster.
      *
      * @param \Jose\KeyConverter\RSAKey $key
-     * @param \Jose\Util\BigInteger     $x
+     * @param \Jose\Util\BigInteger     $c
      *
      * @return \Jose\Util\BigInteger
      */
-    private static function _exponentiate(RSAKey $key, $x)
+    private static function _exponentiate(RSAKey $key, $c)
     {
-        return $x->modPow($key->getExponent(), $key->getModulus());
+        if ($key->isPublic() || empty($key->getPrimes())) {
+            return $c->modPow($key->getExponent(), $key->getModulus());
+        }
+
+        $p = $key->getPrimes()[0];
+        $q = $key->getPrimes()[1];
+        $dP = $key->getExponents()[0];
+        $dQ = $key->getExponents()[1];
+        $qInv = $key->getCoefficient();
+
+        $m1 = $c->modPow($dP, $p);
+        $m2 = $c->modPow($dQ, $q);
+        $h = $qInv->multiply($m1->subtract($m2))->mod($p);
+        $m = $m2->add($h->multiply($q));
+
+        return $m;
     }
 
     /**

@@ -30,6 +30,42 @@ final class RSAKey extends Sequence
     private $values = [];
 
     /**
+     * @var \Jose\Util\BigInteger
+     */
+    private $modulus;
+
+    /**
+     * @var int
+     */
+    private $modulus_length;
+
+    /**
+     * @var \Jose\Util\BigInteger
+     */
+    private $public_exponent;
+
+    /**
+     * @var \Jose\Util\BigInteger|null
+     */
+    private $private_exponent = null;
+
+    /**
+     * @var \Jose\Util\BigInteger[]
+     */
+    private $primes = [];
+
+    /**
+     * @var \Jose\Util\BigInteger[]
+     */
+    private $exponents = [];
+
+    /**
+     * @var \Jose\Util\BigInteger|null
+     */
+    private $coefficient = null;
+
+
+    /**
      * @param \Jose\Object\JWKInterface|string|array $data
      */
     public function __construct($data)
@@ -45,6 +81,8 @@ final class RSAKey extends Sequence
         } else {
             throw new \InvalidArgumentException('Unsupported input');
         }
+
+        $this->populateBigIntegers();
     }
 
     /**
@@ -68,7 +106,7 @@ final class RSAKey extends Sequence
      */
     public function getModulus()
     {
-        return $this->convertBase64StringToBigInteger($this->values['n']);
+        return $this->modulus;
     }
 
     /**
@@ -76,7 +114,7 @@ final class RSAKey extends Sequence
      */
     public function getModulusLength()
     {
-        return strlen($this->getModulus()->toBytes());
+        return $this->modulus_length;
     }
 
     /**
@@ -84,9 +122,11 @@ final class RSAKey extends Sequence
      */
     public function getExponent()
     {
-        if (array_key_exists('d', $this->values)) {
-            return $this->getPrivateExponent();
+        $d = $this->getPrivateExponent();
+        if (null !== $d) {
+            return $d;
         }
+
         return $this->getPublicExponent();
     }
 
@@ -95,7 +135,7 @@ final class RSAKey extends Sequence
      */
     public function getPublicExponent()
     {
-        return $this->convertBase64StringToBigInteger($this->values['e']);
+        return $this->public_exponent;
     }
 
     /**
@@ -103,9 +143,7 @@ final class RSAKey extends Sequence
      */
     public function getPrivateExponent()
     {
-        Assertion::keyExists($this->values, 'd');
-
-        return $this->convertBase64StringToBigInteger($this->values['d']);
+        return $this->private_exponent;
     }
 
     /**
@@ -113,14 +151,7 @@ final class RSAKey extends Sequence
      */
     public function getPrimes()
     {
-        if (array_key_exists('p', $this->values) && array_key_exists('q', $this->values)) {
-            return [
-                $this->convertBase64StringToBigInteger($this->values['p']),
-                $this->convertBase64StringToBigInteger($this->values['q']),
-            ];
-        }
-
-        return [];
+        return $this->primes;
     }
 
     /**
@@ -128,14 +159,7 @@ final class RSAKey extends Sequence
      */
     public function getExponents()
     {
-        if (array_key_exists('dp', $this->values) && array_key_exists('dq', $this->values) && array_key_exists('qi', $this->values)) {
-            return [
-                $this->convertBase64StringToBigInteger($this->values['dp']),
-                $this->convertBase64StringToBigInteger($this->values['dq']),
-            ];
-        }
-
-        return [];
+        return $this->exponents;
     }
 
     /**
@@ -143,9 +167,7 @@ final class RSAKey extends Sequence
      */
     public function getCoefficient()
     {
-        if (array_key_exists('qi', $this->values)) {
-            return $this->convertBase64StringToBigInteger($this->values['qi']);
-        }
+        return $this->coefficient;
     }
 
     /**
@@ -206,13 +228,33 @@ final class RSAKey extends Sequence
 
         $this->values = $jwk;
         if (array_key_exists('d', $jwk)) {
-            $this->values['dp'] = isset($jwk['dp']) ? $jwk['dp'] : Base64Url::encode(0);
-            $this->values['dq'] = isset($jwk['dq']) ? $jwk['dq'] : Base64Url::encode(0);
-            $this->values['qi'] = isset($jwk['qi']) ? $jwk['qi'] : Base64Url::encode(0);
+            $this->populateCRT();
             $this->initPrivateKey();
         } else {
             $this->initPublicKey();
         }
+    }
+
+    /**
+     * This method adds Chinese Remainder Theorem (CRT) parameters if primes 'p' and 'q' are available.
+     */
+    private function populateCRT()
+    {
+        if (!array_key_exists('p', $this->values) && !array_key_exists('q', $this->values)) {
+            return;
+        }
+        if (array_key_exists('dp', $this->values) && array_key_exists('dq', $this->values) && array_key_exists('qi', $this->values)) {
+            return;
+        }
+
+        $one = BigInteger::createFromDecimal(1);
+        $d = BigInteger::createFromBinaryString(Base64Url::decode($this->values['d']));
+        $p = BigInteger::createFromBinaryString(Base64Url::decode($this->values['p']));
+        $q = BigInteger::createFromBinaryString(Base64Url::decode($this->values['q']));
+
+        $this->values['dp'] = Base64Url::encode($d->mod($p->subtract($one))->toBytes());
+        $this->values['dq'] = Base64Url::encode($d->mod($q->subtract($one))->toBytes());
+        $this->values['qi'] = Base64Url::encode($q->modInverse($p)->toBytes());
     }
 
     /**
@@ -237,7 +279,7 @@ final class RSAKey extends Sequence
 
     private function initPrivateKey()
     {
-        $this->addChild(new Integer(0));
+        $this->ddChild(new Integer(0));
 
         $oid_sequence = new Sequence();
         $oid_sequence->addChild(new ObjectIdentifier('1.2.840.113549.1.1.1'));
@@ -327,5 +369,26 @@ final class RSAKey extends Sequence
         $result .= '-----END '.($this->isPrivate() ? 'RSA PRIVATE' : 'PUBLIC').' KEY-----'.PHP_EOL;
 
         return $result;
+    }
+
+    private function populateBigIntegers()
+    {
+        $this->modulus = $this->convertBase64StringToBigInteger($this->values['n']);
+        $this->modulus_length = mb_strlen($this->getModulus()->toBytes(), '8bit');
+        $this->public_exponent = $this->convertBase64StringToBigInteger($this->values['e']);
+
+        if (true === $this->isPrivate()) {
+            $this->private_exponent = $this->convertBase64StringToBigInteger($this->values['d']);
+
+            $this->primes = [
+                $this->convertBase64StringToBigInteger($this->values['p']),
+                $this->convertBase64StringToBigInteger($this->values['q']),
+            ];
+            $this->exponents = [
+                $this->convertBase64StringToBigInteger($this->values['dp']),
+                $this->convertBase64StringToBigInteger($this->values['dq']),
+            ];
+            $this->coefficient = $this->convertBase64StringToBigInteger($this->values['qi']);
+        }
     }
 }
