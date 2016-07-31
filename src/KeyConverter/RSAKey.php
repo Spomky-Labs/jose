@@ -222,7 +222,7 @@ final class RSAKey extends Sequence
     }
 
     /**
-     * @param $data
+     * @param string $data
      *
      * @throws \Exception
      * @throws \FG\ASN1\Exception\ParserException
