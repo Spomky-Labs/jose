@@ -69,7 +69,7 @@ final class RSA
 
         $m1 = $c->modPow($dP, $p);
         $m2 = $c->modPow($dQ, $q);
-        $h = $qInv->multiply($m1->subtract($m2))->mod($p);
+        $h = $qInv->multiply($m1->subtract($m2)->add($p))->mod($p);
         $m = $m2->add($h->multiply($q));
 
         return $m;
