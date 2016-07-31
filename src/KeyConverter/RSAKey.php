@@ -279,7 +279,7 @@ final class RSAKey extends Sequence
 
     private function initPrivateKey()
     {
-        $this->ddChild(new Integer(0));
+        $this->addChild(new Integer(0));
 
         $oid_sequence = new Sequence();
         $oid_sequence->addChild(new ObjectIdentifier('1.2.840.113549.1.1.1'));
