@@ -22,7 +22,7 @@ matrix:
 before_script:
     - composer self-update
     - sh -c 'if [ "$WITH_CRYPTO" != "" ]; then pecl install crypto-0.2.2; fi;'
-    - if [[ $deps = low ]]; then composer install --no-interaction --prefer-lowest ; fi
+    - if [[ $deps = low ]]; then composer update --no-interaction --prefer-lowest ; fi
     - if [[ !$deps ]]; then composer install --no-interaction ; fi
     - mkdir -p build/logs
 
