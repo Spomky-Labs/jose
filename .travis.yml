@@ -6,17 +6,23 @@ matrix:
     fast_finish: true
     include:
         - php: 5.6
+          env: deps=low
         - php: 5.6
           env: WITH_CRYPTO=true
         - php: 7.0
+          env: deps=low
         - php: 7.0
           env: WITH_CRYPTO=true
+        - php: 7.1
         - php: hhvm
+        - php: hhvm
+          env: deps=low
         - php: nightly
 
 before_script:
     - sh -c 'if [ "$WITH_CRYPTO" != "" ]; then pecl install crypto-0.2.2; fi;'
-    - composer install --no-interaction
+    - if [[ $deps = low ]]; then composer install --no-interaction --prefer-lowest ; fi
+    - if [[ !$deps ]]; then composer install --no-interaction ; fi
     - mkdir -p build/logs
 
 script:
