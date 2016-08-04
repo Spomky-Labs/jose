@@ -18,10 +18,10 @@ use Jose\Loader;
 
 // In this example, our input is a JWS string in compact serialization format
 // See Signature2.php to know to generate such string
-$input = '{"signature":"WXfhjDeRv-PCm-5eIgsTkVkUiCXsVe5FODvYjwKHEofZuzJteiNtiDTuSTOKrbsjXIEDbkP8BvYtToZJikjVvw","protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar","123":"ABC"}}';
+$input = '{"protected":"eyJhbGciOiJIUzUxMiJ9","header":{"foo":"bar","123":"ABC"},"signature":"WXfhjDeRv-PCm-5eIgsTkVkUiCXsVe5FODvYjwKHEofZuzJteiNtiDTuSTOKrbsjXIEDbkP8BvYtToZJikjVvw"}';
 
 // The payload is detached.
-$detached_payload = 'TGl2ZSBsb25nIGFuZCBwcm9zcGVyLg';
+$detached_payload = 'Live long and prosper.';
 
 // To verify a JWS, we need a key.
 // We create our key object (JWK) using a shared key
