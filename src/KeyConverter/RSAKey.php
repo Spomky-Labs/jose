@@ -281,9 +281,8 @@ final class RSAKey extends Sequence
      */
     private function populateCRT()
     {
-        if (!array_key_exists('p', $this->values) && !array_key_exists('q', $this->values)) {
-            return;
-        }
+        Assertion::keyExists($this->values, 'p', 'The prime "p" is not available.');
+        Assertion::keyExists($this->values, 'q', 'The prime "q" is not available.');
         if (array_key_exists('dp', $this->values) && array_key_exists('dq', $this->values) && array_key_exists('qi', $this->values)) {
             return;
         }
@@ -331,8 +330,8 @@ final class RSAKey extends Sequence
         $n = new Integer($this->fromBase64ToInteger($this->values['n']));
         $e = new Integer($this->fromBase64ToInteger($this->values['e']));
         $d = new Integer($this->fromBase64ToInteger($this->values['d']));
-        $p = array_key_exists('p', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['p'])) : new Integer(0);
-        $q = array_key_exists('q', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['q'])) : new Integer(0);
+        $p = new Integer($this->fromBase64ToInteger($this->values['p']));
+        $q = new Integer($this->fromBase64ToInteger($this->values['q']));
         $dp = array_key_exists('dp', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['dp'])) : new Integer(0);
         $dq = array_key_exists('dq', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['dq'])) : new Integer(0);
         $qi = array_key_exists('qi', $this->values) ? new Integer($this->fromBase64ToInteger($this->values['qi'])) : new Integer(0);
