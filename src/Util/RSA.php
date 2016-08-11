@@ -55,7 +55,7 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger
      */
-    private static function exponentiate(RSAKey $key, $c)
+    private static function exponentiate(RSAKey $key, BigInteger $c)
     {
         if ($key->isPublic() || empty($key->getPrimes())) {
             return $c->modPow($key->getExponent(), $key->getModulus());
