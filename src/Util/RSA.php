@@ -76,14 +76,14 @@ final class RSA
     }
 
     /**
-     * RSAEP.
+     * RSA EP.
      *
      * @param \Jose\KeyConverter\RSAKey $key
      * @param \Jose\Util\BigInteger     $m
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function RSAEP(RSAKey $key, BigInteger $m)
+    private static function getRSAEP(RSAKey $key, BigInteger $m)
     {
         if ($m->compare(BigInteger::createFromDecimal(0)) < 0 || $m->compare($key->getModulus()) > 0) {
             return false;
@@ -93,14 +93,14 @@ final class RSA
     }
 
     /**
-     * RSADP.
+     * RSA DP.
      *
      * @param \Jose\KeyConverter\RSAKey $key
      * @param \Jose\Util\BigInteger     $c
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function RSADP(RSAKey $key, BigInteger $c)
+    private static function getRSADP(RSAKey $key, BigInteger $c)
     {
         if ($c->compare(BigInteger::createFromDecimal(0)) < 0 || $c->compare($key->getModulus()) > 0) {
             return false;
@@ -110,14 +110,14 @@ final class RSA
     }
 
     /**
-     * RSASP1.
+     * RSA SP1.
      *
      * @param \Jose\KeyConverter\RSAKey $key
      * @param \Jose\Util\BigInteger     $m
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function RSASP1(RSAKey $key, BigInteger $m)
+    private static function getRSASP1(RSAKey $key, BigInteger $m)
     {
         if ($m->compare(BigInteger::createFromDecimal(0)) < 0 || $m->compare($key->getModulus()) > 0) {
             return false;
@@ -134,7 +134,7 @@ final class RSA
      *
      * @return \Jose\Util\BigInteger|false
      */
-    private static function _rsavp1(RSAKey $key, BigInteger $s)
+    private static function getRSAVP1(RSAKey $key, BigInteger $s)
     {
         if ($s->compare(BigInteger::createFromDecimal(0)) < 0 || $s->compare($key->getModulus()) > 0) {
             return false;
@@ -152,7 +152,7 @@ final class RSA
      *
      * @return string
      */
-    private static function _mgf1($mgfSeed, $maskLen, Hash $mgfHash)
+    private static function getMGF1($mgfSeed, $maskLen, Hash $mgfHash)
     {
         $t = '';
         $count = ceil($maskLen / $mgfHash->getLength());
@@ -173,21 +173,21 @@ final class RSA
      *
      * @return string
      */
-    private static function RSAESOAEPEncrypt(RSAKey $key, $m, Hash $hash)
+    private static function encryptRSAESOAEP(RSAKey $key, $m, Hash $hash)
     {
         $mLen = mb_strlen($m, '8bit');
         $lHash = $hash->hash('');
         $ps = str_repeat(chr(0), $key->getModulusLength() - $mLen - 2 * $hash->getLength() - 2);
         $db = $lHash.$ps.chr(1).$m;
         $seed = random_bytes($hash->getLength());
-        $dbMask = self::_mgf1($seed, $key->getModulusLength() - $hash->getLength() - 1, $hash/*MGF*/);
+        $dbMask = self::getMGF1($seed, $key->getModulusLength() - $hash->getLength() - 1, $hash/*MGF*/);
         $maskedDB = $db ^ $dbMask;
-        $seedMask = self::_mgf1($maskedDB, $hash->getLength(), $hash/*MGF*/);
+        $seedMask = self::getMGF1($maskedDB, $hash->getLength(), $hash/*MGF*/);
         $maskedSeed = $seed ^ $seedMask;
         $em = chr(0).$maskedSeed.$maskedDB;
 
         $m = self::convertOctetStringToInteger($em);
-        $c = self::RSAEP($key, $m);
+        $c = self::getRSAEP($key, $m);
         $c = self::convertIntegerToOctetString($c, $key->getModulusLength());
 
         return $c;
@@ -202,18 +202,18 @@ final class RSA
      *
      * @return string
      */
-    private static function RSAESOAEPDecrypt(RSAKey $key, $c, Hash $hash)
+    private static function getRSAESOAEP(RSAKey $key, $c, Hash $hash)
     {
         $c = self::convertOctetStringToInteger($c);
-        $m = self::RSADP($key, $c);
+        $m = self::getRSADP($key, $c);
         Assertion::isInstanceOf($m, BigInteger::class);
         $em = self::convertIntegerToOctetString($m, $key->getModulusLength());
         $lHash = $hash->hash('');
         $maskedSeed = mb_substr($em, 1, $hash->getLength(), '8bit');
         $maskedDB = mb_substr($em, $hash->getLength() + 1, null, '8bit');
-        $seedMask = self::_mgf1($maskedDB, $hash->getLength(), $hash/*MGF*/);
+        $seedMask = self::getMGF1($maskedDB, $hash->getLength(), $hash/*MGF*/);
         $seed = $maskedSeed ^ $seedMask;
-        $dbMask = self::_mgf1($seed, $key->getModulusLength() - $hash->getLength() - 1, $hash/*MGF*/);
+        $dbMask = self::getMGF1($seed, $key->getModulusLength() - $hash->getLength() - 1, $hash/*MGF*/);
         $db = $maskedDB ^ $dbMask;
         $lHash2 = mb_substr($db, 0, $hash->getLength(), '8bit');
         $m = mb_substr($db, $hash->getLength(), null, '8bit');
@@ -244,7 +244,7 @@ final class RSA
         $h = $hash->hash($m2);
         $ps = str_repeat(chr(0), $emLen - $sLen - $hash->getLength() - 2);
         $db = $ps.chr(1).$salt;
-        $dbMask = self::_mgf1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
+        $dbMask = self::getMGF1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
         $maskedDB = $db ^ $dbMask;
         $maskedDB[0] = ~chr(0xFF << ($emBits & 7)) & $maskedDB[0];
         $em = $maskedDB.$h.chr(0xBC);
@@ -273,7 +273,7 @@ final class RSA
         $h = mb_substr($em, -$hash->getLength() - 1, $hash->getLength(), '8bit');
         $temp = chr(0xFF << ($emBits & 7));
         Assertion::eq(~$maskedDB[0] & $temp, $temp);
-        $dbMask = self::_mgf1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
+        $dbMask = self::getMGF1($h, $emLen - $hash->getLength() - 1, $hash/*MGF*/);
         $db = $maskedDB ^ $dbMask;
         $db[0] = ~chr(0xFF << ($emBits & 7)) & $db[0];
         $temp = $emLen - $hash->getLength() - $sLen - 2;
@@ -306,7 +306,7 @@ final class RSA
         $plaintext = str_split($plaintext, $length);
         $ciphertext = '';
         foreach ($plaintext as $m) {
-            $ciphertext .= self::RSAESOAEPEncrypt($key, $m, $hash);
+            $ciphertext .= self::encryptRSAESOAEP($key, $m, $hash);
         }
 
         return $ciphertext;
@@ -329,7 +329,7 @@ final class RSA
         $ciphertext[count($ciphertext) - 1] = str_pad($ciphertext[count($ciphertext) - 1], $key->getModulusLength(), chr(0), STR_PAD_LEFT);
         $plaintext = '';
         foreach ($ciphertext as $c) {
-            $temp = self::RSAESOAEPDecrypt($key, $c, $hash);
+            $temp = self::getRSAESOAEP($key, $c, $hash);
             $plaintext .= $temp;
         }
 
@@ -353,7 +353,7 @@ final class RSA
         $em = self::encodeEMSAPSS($message, 8 * $key->getModulusLength() - 1, Hash::$hash());
         Assertion::string($em);
         $message = self::convertOctetStringToInteger($em);
-        $signature = self::RSASP1($key, $message);
+        $signature = self::getRSASP1($key, $message);
         Assertion::isInstanceOf($signature, BigInteger::class);
 
         return self::convertIntegerToOctetString($signature, $key->getModulusLength());
@@ -378,7 +378,7 @@ final class RSA
         Assertion::eq(strlen($signature), $key->getModulusLength());
         $modBits = 8 * $key->getModulusLength();
         $s2 = self::convertOctetStringToInteger($signature);
-        $m2 = self::_rsavp1($key, $s2);
+        $m2 = self::getRSAVP1($key, $s2);
         Assertion::isInstanceOf($m2, BigInteger::class);
         $em = self::convertIntegerToOctetString($m2, $modBits >> 3);
 
