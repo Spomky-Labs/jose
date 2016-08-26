@@ -26,7 +26,7 @@ class IssuedAtChecker implements ClaimCheckerInterface
         }
 
         $iat = (int) $jwt->getClaim('iat');
-        Assertion::lessOrEqualThan($iat, time(), 'The JWT is issued in the futur.');
+        Assertion::lessOrEqualThan($iat, time(), 'The JWT is issued in the future.');
 
         return ['iat'];
     }
