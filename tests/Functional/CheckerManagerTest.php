@@ -42,7 +42,7 @@ class CheckerManagerTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The JWT is issued in the futur.
+     * @expectedExceptionMessage The JWT is issued in the future.
      */
     public function testJWTIssuedInTheFuture()
     {
