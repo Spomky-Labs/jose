@@ -41,7 +41,13 @@ class AudienceChecker implements ClaimCheckerInterface
         }
 
         $audience = $jwt->getClaim('aud');
-        Assertion::eq($audience, $this->getAudience(), 'Bad audience.');
+        if (is_string($audience)) {
+            Assertion::eq($audience, $this->getAudience(), 'Bad audience.');
+        } elseif (is_array($audience)) {
+            Assertion::inArray($this->getAudience(), $audience, 'Bad audience.');
+        } else {
+            throw new \InvalidArgumentException('Bad audience.');
+        }
 
         return ['aud'];
     }
