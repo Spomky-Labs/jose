@@ -111,6 +111,54 @@ class CheckerManagerTest extends TestCase
 
     /**
      * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Bad audience.
+     */
+    public function testJWTNotForAudience2()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'aud' => ['Other Service'],
+            ]
+        );
+        $jws = $jws->addSignatureInformation(
+            new JWK(['kty' => 'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage Bad audience.
+     */
+    public function testJWTNotForAudience3()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'aud' => ['Other Service'],
+            ]
+        );
+        $jws = $jws->addSignatureInformation(
+            new JWK(['kty' => 'none']),
+            [
+                'alg' => 'HS512',
+            ]
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    /**
+     * @expectedException \InvalidArgumentException
      * @expectedExceptionMessage One or more claims are marked as critical, but they are missing or have not been checked (["iss"]).
      */
     public function testJWTHasCriticalClaimsNotSatisfied()
@@ -231,6 +279,33 @@ class CheckerManagerTest extends TestCase
                 'iss' => 'ISS1',
                 'sub' => 'SUB1',
                 'aud' => 'My Service',
+            ]
+        );
+        $jws = $jws->addSignatureInformation(
+            new JWK(['kty' => 'none']),
+            [
+                'enc'  => 'A256CBC-HS512',
+                'alg'  => 'HS512',
+                'zip'  => 'DEF',
+                'crit' => ['exp', 'iss', 'sub', 'aud', 'jti'],
+            ]
+
+        );
+
+        $this->getCheckerManager()->checkJWS($jws, 0);
+    }
+
+    public function testJWTSuccessfullyCheckedWithCriticalHeaders2()
+    {
+        $jws = JWSFactory::createJWS(
+            [
+                'jti' => 'JTI1',
+                'exp' => time() + 3600,
+                'iat' => time() - 100,
+                'nbf' => time() - 100,
+                'iss' => 'ISS1',
+                'sub' => 'SUB1',
+                'aud' => ['My Service'],
             ]
         );
         $jws = $jws->addSignatureInformation(
