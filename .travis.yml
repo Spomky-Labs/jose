@@ -27,7 +27,7 @@ before_script:
     - mkdir -p build/logs
 
 script:
-    - composer test-with-covrage
+    - composer test-with-coverage
 
 after_script:
     - vendor/bin/coveralls --no-interaction
