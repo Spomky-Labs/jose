@@ -40,13 +40,17 @@
     "require-dev": {
         "phpunit/phpunit": "^5.0",
         "satooshi/php-coveralls": "^1.0",
-        "symfony/cache": "^2.8|^3.0"
+        "symfony/cache": "^2.0|^3.0"
     },
    "suggest":{
         "ext-crypto": "Highly recommended when you use AES GCM based algorithms.",
         "ext-ed25519": "For EdDSA with Ed25519 curves support.",
         "ext-curve25519": "For EdDSA with X25519 curves support."
    },
+  "scripts":{
+    "test": "phpunit",
+    "test-with-coverage": "phpunit --verbose --coverage-clover build/logs/clover.xml"
+  },
     "extra": {
         "branch-alias": {
             "dev-master": "5.1.x-dev"
