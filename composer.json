@@ -43,7 +43,9 @@
         "symfony/cache": "^2.8|^3.0"
     },
    "suggest":{
-        "ext-crypto": "Highly recommended when you use AES GCM based algorithms."
+        "ext-crypto": "Highly recommended when you use AES GCM based algorithms.",
+        "ext-ed25519": "For EdDSA with Ed25519 curves support.",
+        "ext-curve25519": "For EdDSA with X25519 curves support."
    },
     "extra": {
         "branch-alias": {
