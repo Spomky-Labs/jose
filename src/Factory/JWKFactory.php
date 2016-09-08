@@ -154,6 +154,22 @@ final class JWKFactory implements JWKFactoryInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function createNoneKey(array $values)
+    {
+        $values = array_merge(
+            $values,
+            [
+                'kty' => 'none',
+                'alg' => 'none',
+            ]
+        );
+
+        return new JWK($values);
+    }
+
+    /**
      * @param string $value
      *
      * @return string
