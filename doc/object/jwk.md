@@ -53,6 +53,7 @@ This type of key does not require any other value.
 ```php
 $jwk = new JWK([
     'kty' => 'none',
+    'alg' => 'none', //Not mandatory, but as the key is only used with that algorithm this key/value pair is recommended
 ]);
 ```
 
@@ -347,12 +348,28 @@ The key uses the `X25519` curve and will be used with the `ECDH-ES` algorithm fo
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk = JWKFactory::createOKPKey([
+$jwk = JWKFactory::createKey([
         'kty' => 'OKP',
         'crv' => 'X25519',
         'kid' => 'KEY1',
         'alg' => 'ECDH-ES',
         'use' => 'enc',
+]);
+```
+
+### Create a Random `None` Key
+
+This is not really a random key as the `none` key type does not contain any random key/value pair.
+However you may need to create such key the same way you create other keys.
+
+The key will at least contain the `kty` and the `alg` key with value `none` and the key `use` with `sig` as this kind of kind can only be used to sign JWT using the `none` algorithm.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk = JWKFactory::createKey([
+        'kty' => 'none',
+        'kid' => 'KEY1',
 ]);
 ```
 
