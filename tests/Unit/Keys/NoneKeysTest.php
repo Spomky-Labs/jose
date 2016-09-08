@@ -27,10 +27,11 @@ class NoneKeysTest extends TestCase
         $key = new JWK([
             'kty' => 'none',
             'alg' => 'none',
+            'use' => 'sig',
             'kid' => '2011-04-29',
         ]);
 
-        $this->assertEquals('{"kty":"none","alg":"none","kid":"2011-04-29"}', json_encode($key));
+        $this->assertEquals('{"kty":"none","alg":"none","use":"sig","kid":"2011-04-29"}', json_encode($key));
         $this->assertEquals('BC69Ls25CLRh1KQrXvQAAB22oyuW3eQabDSMdv9xMNk', $key->thumbprint('sha256'));
         $this->assertEquals('hCnBo6v87V-Gz5Bp7eoFTrdvkGA', $key->thumbprint('sha1'));
         $this->assertEquals('JI3gujreJtPt2gzxlbGnLQ', $key->thumbprint('md5'));
@@ -42,6 +43,7 @@ class NoneKeysTest extends TestCase
 
         $this->assertEquals('none', $key->get('kty'));
         $this->assertEquals('none', $key->get('alg'));
+        $this->assertEquals('sig', $key->get('use'));
         $this->assertEquals('NONE_KEY', $key->get('kid'));
 
         $this->assertEquals('BC69Ls25CLRh1KQrXvQAAB22oyuW3eQabDSMdv9xMNk', $key->thumbprint('sha256'));
@@ -55,6 +57,7 @@ class NoneKeysTest extends TestCase
 
         $this->assertEquals('none', $key->get('kty'));
         $this->assertEquals('none', $key->get('alg'));
+        $this->assertEquals('sig', $key->get('use'));
         $this->assertEquals('NONE_KEY', $key->get('kid'));
 
         $this->assertEquals('BC69Ls25CLRh1KQrXvQAAB22oyuW3eQabDSMdv9xMNk', $key->thumbprint('sha256'));

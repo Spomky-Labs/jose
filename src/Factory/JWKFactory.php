@@ -163,6 +163,7 @@ final class JWKFactory implements JWKFactoryInterface
             [
                 'kty' => 'none',
                 'alg' => 'none',
+                'use' => 'sig',
             ]
         );
 

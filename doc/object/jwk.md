@@ -54,6 +54,7 @@ This type of key does not require any other value.
 $jwk = new JWK([
     'kty' => 'none',
     'alg' => 'none', //Not mandatory, but as the key is only used with that algorithm this key/value pair is recommended
+    'use' => 'sig',  //Not mandatory, but as the key is only used to sign JWT, this key/value pair is recommended
 ]);
 ```
 
