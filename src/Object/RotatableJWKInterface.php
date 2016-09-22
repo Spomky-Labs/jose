@@ -12,14 +12,8 @@
 namespace Jose\Object;
 
 /**
- * Interface StorableJWKInterface.
+ * Interface RotatableJWKInterface.
  */
-interface StorableJWKInterface extends JWKInterface
+interface RotatableJWKInterface extends StorableJWKInterface
 {
-    /**
-     * @deprecated This method will be removed in v6.x
-     *
-     * @return string
-     */
-    public function getFilename();
 }

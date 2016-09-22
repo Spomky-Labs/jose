@@ -17,7 +17,10 @@ use Jose\KeyConverter\KeyConverter;
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Object\RotatableJWK;
+use Jose\Object\RotatableJWKSet;
 use Jose\Object\StorableJWK;
+use Jose\Object\StorableJWKSet;
 use Mdanter\Ecc\Curves\CurveFactory;
 use Mdanter\Ecc\Curves\NistCurve;
 use Mdanter\Ecc\EccFactory;
@@ -31,6 +34,30 @@ final class JWKFactory implements JWKFactoryInterface
     public static function createStorableKey($filename, array $parameters)
     {
         return new StorableJWK($filename, $parameters);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRotatableKey($filename, array $parameters, $ttl)
+    {
+        return new RotatableJWK($filename, $parameters, $ttl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createRotatableKeySet($filename, array $parameters, $nb_keys, $ttl)
+    {
+        return new RotatableJWKSet($filename, $parameters, $nb_keys, $ttl);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createStorableKeySet($filename, array $parameters, $nb_keys)
+    {
+        return new StorableJWKSet($filename, $parameters, $nb_keys);
     }
 
     /**
@@ -318,17 +345,19 @@ final class JWKFactory implements JWKFactoryInterface
      * @param string                                 $url
      * @param bool                                   $allow_unsecured_connection
      * @param \Psr\Cache\CacheItemPoolInterface|null $cache
+     * @param int                                    $ttl
      *
      * @return array
      */
-    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null)
+    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null, $ttl = 300)
     {
-        $cache_key = sprintf('%s-%s', 'JWKFactory-Content', hash('sha512', $url));
+        $cache_key = sprintf('JWKFactory-Content-%s', hash('sha512', $url));
         if (null !== $cache) {
             $item = $cache->getItem($cache_key);
             if (!$item->isHit()) {
                 $content = self::downloadContent($url, $allow_unsecured_connection);
                 $item->set($content);
+                $item->expiresAfter($ttl);
                 $cache->save($item);
 
                 return $content;
@@ -367,7 +396,7 @@ final class JWKFactory implements JWKFactoryInterface
             'Invalid URL.'
         );
         Assertion::false(
-            false === $allow_unsecured_connection && 'https://' !==  mb_substr($url, 0, 8, '8bit'),
+            false === $allow_unsecured_connection && 'https://' !== mb_substr($url, 0, 8, '8bit'),
             'Unsecured connection.'
         );
 
