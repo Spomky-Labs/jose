@@ -313,9 +313,9 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
+    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300)
     {
-        $content = self::getContent($jku, $allow_unsecured_connection, $cache);
+        $content = self::getContent($jku, $allow_unsecured_connection, $cache, $ttl);
 
         Assertion::keyExists($content, 'keys', 'Invalid content.');
 
@@ -325,9 +325,9 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null)
+    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300)
     {
-        $content = self::getContent($x5u, $allow_unsecured_connection, $cache);
+        $content = self::getContent($x5u, $allow_unsecured_connection, $cache, $ttl);
 
         $jwkset = new JWKSet();
         foreach ($content as $kid => $cert) {
