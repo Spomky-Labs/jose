@@ -45,6 +45,9 @@ final class RotatableJWKSet extends StorableJWKSet implements RotatableJWKSetInt
     protected function getJWKSet()
     {
         $mtime = $this->getLastModificationTime();
+        if (null === $this->jwkset) {
+            $this->loadJWKSet();
+        }
         if (null !== $mtime) {
             if ($mtime + $this->ttl <= time()) {
                 $keys = $this->jwkset->getKeys();

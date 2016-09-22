@@ -17,6 +17,7 @@ use Jose\KeyConverter\KeyConverter;
 use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
+use Jose\Object\JWKSetInterface;
 use Jose\Object\RotatableJWK;
 use Jose\Object\RotatableJWKSet;
 use Jose\Object\StorableJWK;
@@ -378,6 +379,16 @@ final class JWKFactory implements JWKFactoryInterface
         $values = array_merge($values, $additional_values);
 
         return new JWK($values);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createFromKeySet(JWKSetInterface $jwk_set, $key_index)
+    {
+        Assertion::integer($key_index);
+
+        return $jwk_set->getKey($key_index);
     }
 
     /**

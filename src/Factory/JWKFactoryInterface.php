@@ -11,6 +11,7 @@
 
 namespace Jose\Factory;
 
+use Jose\Object\JWKSetInterface;
 use Psr\Cache\CacheItemPoolInterface;
 
 interface JWKFactoryInterface
@@ -175,4 +176,12 @@ interface JWKFactoryInterface
      * @return \Jose\Object\JWKInterface
      */
     public static function createFromX5C(array $x5c, array $additional_values = []);
+
+    /**
+     * @param \Jose\Object\JWKSetInterface $jwk_set
+     * @param int                          $key_index
+     *
+     * @return \Jose\Object\JWKInterface
+     */
+    public static function createFromKeySet(JWKSetInterface $jwk_set, $key_index);
 }
