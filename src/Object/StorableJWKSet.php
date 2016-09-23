@@ -31,11 +31,6 @@ class StorableJWKSet implements StorableJWKSetInterface
     protected $filename;
 
     /**
-     * @var int
-     */
-    protected $last_modification_time = null;
-
-    /**
      * @var array
      */
     protected $parameters;
@@ -44,6 +39,11 @@ class StorableJWKSet implements StorableJWKSetInterface
      * @var int
      */
     protected $nb_keys;
+
+    /**
+     * @var null|int
+     */
+    protected $file_last_modification_time = null;
 
     /**
      * StorableJWKSet constructor.
@@ -200,14 +200,6 @@ class StorableJWKSet implements StorableJWKSetInterface
     }
 
     /**
-     * @return string
-     */
-    protected function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function jsonSerialize()
@@ -216,18 +208,29 @@ class StorableJWKSet implements StorableJWKSetInterface
     }
 
     /**
+     * @return string
+     */
+    protected function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
      * @return \Jose\Object\JWKSetInterface
      */
     protected function getJWKSet()
     {
-        $this->loadJWKSet();
+        $this->loadJWKSetIfNeeded();
 
         return $this->jwkset;
     }
 
-    protected function loadJWKSet()
+    /**
+     * This function loads or creates it the file if needed.
+     */
+    protected function loadJWKSetIfNeeded()
     {
-        if (false === $this->hasJWKSetBeenUpdated()) {
+        if (false === $this->hasFileBeenUpdated()) {
             return;
         }
         $content = $this->getFileContent();
@@ -235,11 +238,33 @@ class StorableJWKSet implements StorableJWKSetInterface
             $this->createJWKSet();
         } else {
             $this->jwkset = new JWKSet($content);
+            $this->file_last_modification_time = $this->getFileLastModificationTime();
         }
     }
 
     /**
-     * @return null|string
+     * @return bool
+     */
+    protected function hasFileBeenUpdated()
+    {
+        if (null === $this->file_last_modification_time || null === $this->getFileLastModificationTime()) {
+            return true;
+        }
+
+        return $this->file_last_modification_time !== $this->getFileLastModificationTime();
+    }
+
+    protected function getFileLastModificationTime()
+    {
+        if (file_exists($this->getFilename())) {
+            return filemtime($this->getFilename());
+        }
+    }
+
+    /**
+     * This function returns the content of the file only if it is an array.
+     *
+     * @return null|array
      */
     protected function getFileContent()
     {
@@ -259,18 +284,8 @@ class StorableJWKSet implements StorableJWKSetInterface
     }
 
     /**
-     * @return bool
+     * This method creates the JWKSet and populate it with keys.
      */
-    protected function hasJWKSetBeenUpdated()
-    {
-        if (null !== $this->last_modification_time) {
-            return $this->last_modification_time !== $this->getLastModificationTime();
-        }
-
-        return true;
-    }
-
-
     protected function createJWKSet()
     {
         $this->jwkset = new JWKSet();
@@ -294,18 +309,14 @@ class StorableJWKSet implements StorableJWKSetInterface
     }
 
     /**
-     * @return int|null
+     * This method saves the JWKSet in the file.
      */
-    protected function getLastModificationTime()
-    {
-        if (file_exists($this->getFilename())) {
-            return filemtime($this->getFilename());
-        }
-    }
-
     protected function save()
     {
+        if (file_exists($this->getFilename())) {
+            unlink($this->getFilename());
+        }
         file_put_contents($this->getFilename(), json_encode($this->jwkset));
-        $this->last_modification_time = filemtime($this->getFilename());
+        $this->file_last_modification_time = $this->getFileLastModificationTime();
     }
 }

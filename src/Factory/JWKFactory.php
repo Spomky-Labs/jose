@@ -18,6 +18,8 @@ use Jose\KeyConverter\RSAKey;
 use Jose\Object\JWK;
 use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
+use Jose\Object\JWKSets;
+use Jose\Object\PublicJWKSet;
 use Jose\Object\RotatableJWK;
 use Jose\Object\RotatableJWKSet;
 use Jose\Object\StorableJWK;
@@ -29,6 +31,22 @@ use Psr\Cache\CacheItemPoolInterface;
 
 final class JWKFactory implements JWKFactoryInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public static function createPublicKeySet(JWKSetInterface $jwkset)
+    {
+        return new PublicJWKSet($jwkset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function createKeySets(array $jwksets)
+    {
+        return new JWKSets($jwksets);
+    }
+
     /**
      * {@inheritdoc}
      */
