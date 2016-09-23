@@ -28,7 +28,7 @@ interface JWKFactoryInterface
      *
      * @return \Jose\Object\JWKSetInterface
      */
-    public static function createKeySets(array $jwksets);
+    public static function createKeySets(array $jwksets = []);
 
     /**
      * @param string $filename
@@ -161,7 +161,7 @@ interface JWKFactoryInterface
      * @param string                                 $jku
      * @param bool                                   $allow_unsecured_connection
      * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     * @param int                                    $ttl
+     * @param int|null                               $ttl
      *
      * @return \Jose\Object\JWKSetInterface
      */
@@ -171,7 +171,7 @@ interface JWKFactoryInterface
      * @param string                                 $x5u
      * @param bool                                   $allow_unsecured_connection
      * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     * @param int                                    $ttl
+     * @param int|null                               $ttl
      *
      * @return \Jose\Object\JWKSetInterface
      */

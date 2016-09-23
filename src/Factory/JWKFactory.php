@@ -42,7 +42,7 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createKeySets(array $jwksets)
+    public static function createKeySets(array $jwksets = [])
     {
         return new JWKSets($jwksets);
     }
@@ -331,7 +331,7 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300)
+    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 604800)
     {
         $content = self::getContent($jku, $allow_unsecured_connection, $cache, $ttl);
 
@@ -343,7 +343,7 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300)
+    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 604800)
     {
         $content = self::getContent($x5u, $allow_unsecured_connection, $cache, $ttl);
 
@@ -364,19 +364,22 @@ final class JWKFactory implements JWKFactoryInterface
      * @param string                                 $url
      * @param bool                                   $allow_unsecured_connection
      * @param \Psr\Cache\CacheItemPoolInterface|null $cache
-     * @param int                                    $ttl
+     * @param int|null                               $ttl
      *
      * @return array
      */
-    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null, $ttl = 300)
+    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null, $ttl = 604800)
     {
+        Assertion::nullOrInteger($ttl);
         $cache_key = sprintf('JWKFactory-Content-%s', hash('sha512', $url));
         if (null !== $cache) {
             $item = $cache->getItem($cache_key);
             if (!$item->isHit()) {
                 $content = self::downloadContent($url, $allow_unsecured_connection);
                 $item->set($content);
-                $item->expiresAfter($ttl);
+                if (null !== $ttl) {
+                    $item->expiresAfter($ttl);
+                }
                 $cache->save($item);
 
                 return $content;

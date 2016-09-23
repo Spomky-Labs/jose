@@ -16,7 +16,7 @@ use Assert\Assertion;
 /**
  * Class JWKSets.
  */
-final class JWKSets implements JWKSetInterface
+final class JWKSets implements JWKSetsInterface
 {
     use BaseJWKSet;
 
@@ -38,9 +38,7 @@ final class JWKSets implements JWKSetInterface
     }
 
     /**
-     * PublicJWKSet constructor.
-     *
-     * @param \Jose\Object\JWKSetInterface $jwkset
+     * {@inheritdoc}
      */
     public function addKeySet(JWKSetInterface $jwkset)
     {
