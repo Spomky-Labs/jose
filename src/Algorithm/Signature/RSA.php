@@ -70,7 +70,7 @@ abstract class RSA implements SignatureAlgorithmInterface
 
         if ($this->getSignatureMethod() === self::SIGNATURE_PSS) {
             $signature = JoseRSA::sign($priv, $input, $this->getAlgorithm());
-            $result = is_string($result);
+            $result = is_string($signature);
         } else {
             $result = openssl_sign($input, $signature, $priv->toPEM(), $this->getAlgorithm());
         }
