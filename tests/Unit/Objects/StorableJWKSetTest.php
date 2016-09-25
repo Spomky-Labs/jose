@@ -13,25 +13,24 @@ use Jose\Factory\JWKFactory;
 use Jose\Object\JWKInterface;
 
 /**
- * Class RotatableJWKSetTest.
+ * Class StorableJWKSetTest.
  *
  * @group Unit
- * @group RotatableJWKSet
+ * @group StorableJWKSet
  */
-class RotatableJWKSetTest extends \PHPUnit_Framework_TestCase
+class StorableJWKSetTest extends \PHPUnit_Framework_TestCase
 {
     public function testKey()
     {
-        @unlink(sys_get_temp_dir().'/JWKSet.key');
         $jwkset = JWKFactory::createRotatableKeySet(
             sys_get_temp_dir().'/JWKSet.key',
             [
                 'kty'   => 'EC',
                 'crv'   => 'P-256',
             ],
-            3,
-            10
+            3
         );
+        $this->assertEquals(sys_get_temp_dir().'/JWKSet.key', $jwkset->getFilename());
 
         $this->assertEquals(3, $jwkset->count());
         $this->assertEquals(3, $jwkset->countKeys());
@@ -51,17 +50,26 @@ class RotatableJWKSetTest extends \PHPUnit_Framework_TestCase
 
         $actual_content = json_encode($jwkset);
 
-        sleep(5);
-
         $this->assertEquals($actual_content, json_encode($jwkset));
 
-        sleep(6);
+        $jwkset->rotate();
 
         $this->assertNotEquals($actual_content, json_encode($jwkset));
 
         $jwkset[] = JWKFactory::createKey(['kty' => 'EC', 'crv' => 'P-521']);
+        $this->assertEquals(3, $jwkset->count());
+        $this->assertEquals(3, $jwkset->countKeys());
+
         unset($jwkset[count($jwkset) - 1]);
+        $this->assertEquals(3, $jwkset->count());
+        $this->assertEquals(3, $jwkset->countKeys());
+
         $jwkset->addKey(JWKFactory::createKey(['kty' => 'EC', 'crv' => 'P-521']));
+        $this->assertEquals(3, $jwkset->count());
+        $this->assertEquals(3, $jwkset->countKeys());
+
         $jwkset->removeKey(count($jwkset) - 1);
+        $this->assertEquals(3, $jwkset->count());
+        $this->assertEquals(3, $jwkset->countKeys());
     }
 }

@@ -16,4 +16,8 @@ namespace Jose\Object;
  */
 interface StorableJWKSetInterface extends JWKSetInterface
 {
+    /**
+     * @return string
+     */
+    public function getFilename();
 }

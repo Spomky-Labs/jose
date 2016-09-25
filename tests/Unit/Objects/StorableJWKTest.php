@@ -12,24 +12,24 @@
 use Jose\Factory\JWKFactory;
 
 /**
- * Class RotatableJWKTest.
+ * Class StorableJWKTest.
  *
  * @group Unit
- * @group RotatableJWK
+ * @group StorableJWK
  */
-class RotatableJWKTest extends \PHPUnit_Framework_TestCase
+class StorableJWKTest extends \PHPUnit_Framework_TestCase
 {
     public function testKey()
     {
         @unlink(sys_get_temp_dir().'/JWK.key');
-        $jwk = JWKFactory::createRotatableKey(
+        $jwk = JWKFactory::createStorableKey(
             sys_get_temp_dir().'/JWK.key',
             [
                 'kty'   => 'EC',
                 'crv'   => 'P-256',
-            ],
-            10
+            ]
         );
+        $this->assertEquals(sys_get_temp_dir().'/JWK.key', $jwk->getFilename());
 
         $all = $jwk->getAll();
         $this->assertEquals($all, $jwk->getAll());
@@ -41,11 +41,9 @@ class RotatableJWKTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_string(json_encode($jwk)));
         $this->assertInstanceOf(\Jose\Object\JWKInterface::class, $jwk->toPublic());
 
-        sleep(5);
-
         $this->assertEquals($all, $jwk->getAll());
 
-        sleep(6);
+        $jwk->delete();
 
         $this->assertNotEquals($all, $jwk->getAll());
         $all = $jwk->getAll();

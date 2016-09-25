@@ -20,15 +20,7 @@ use Jose\Factory\JWKFactory;
  */
 class StorableJWKSet implements StorableJWKSetInterface
 {
-    /**
-     * @var \Jose\Object\JWKSetInterface
-     */
-    protected $jwkset;
-
-    /**
-     * @var string
-     */
-    protected $filename;
+    use Storable;
 
     /**
      * @var array
@@ -41,11 +33,6 @@ class StorableJWKSet implements StorableJWKSetInterface
     protected $nb_keys;
 
     /**
-     * @var null|int
-     */
-    protected $file_last_modification_time = null;
-
-    /**
      * StorableJWKSet constructor.
      *
      * @param string $filename
@@ -54,11 +41,9 @@ class StorableJWKSet implements StorableJWKSetInterface
      */
     public function __construct($filename, array $parameters, $nb_keys)
     {
-        Assertion::directory(dirname($filename), 'The selected directory does not exist.');
-        Assertion::writeable(dirname($filename), 'The selected directory is not writable.');
         Assertion::integer($nb_keys, 'The key set must contain at least one key.');
         Assertion::greaterThan($nb_keys, 0, 'The key set must contain at least one key.');
-        $this->filename = $filename;
+        $this->setFilename($filename);
         $this->parameters = $parameters;
         $this->nb_keys = $nb_keys;
     }
@@ -124,7 +109,7 @@ class StorableJWKSet implements StorableJWKSetInterface
      */
     public function offsetSet($offset, $value)
     {
-        return $this->getJWKSet()->offsetSet($offset, $value);
+        // Not available
     }
 
     /**
@@ -132,7 +117,7 @@ class StorableJWKSet implements StorableJWKSetInterface
      */
     public function offsetUnset($offset)
     {
-        return $this->getJWKSet()->offsetUnset($offset);
+        // Not available
     }
 
     /**
@@ -164,7 +149,7 @@ class StorableJWKSet implements StorableJWKSetInterface
      */
     public function addKey(JWKInterface $key)
     {
-        return $this->getJWKSet()->addKey($key);
+        // Not available
     }
 
     /**
@@ -172,7 +157,7 @@ class StorableJWKSet implements StorableJWKSetInterface
      */
     public function removeKey($index)
     {
-        return $this->getJWKSet()->removeKey($index);
+        // Not available
     }
 
     /**
@@ -208,93 +193,37 @@ class StorableJWKSet implements StorableJWKSetInterface
     }
 
     /**
-     * @return string
-     */
-    protected function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
      * @return \Jose\Object\JWKSetInterface
      */
     protected function getJWKSet()
     {
-        $this->loadJWKSetIfNeeded();
+        $this->loadObjectIfNeeded();
 
-        return $this->jwkset;
+        return $this->getObject();
     }
 
     /**
-     * This function loads or creates it the file if needed.
-     */
-    protected function loadJWKSetIfNeeded()
-    {
-        if (false === $this->hasFileBeenUpdated()) {
-            return;
-        }
-        $content = $this->getFileContent();
-        if (null === $content) {
-            $this->createJWKSet();
-        } else {
-            $this->jwkset = new JWKSet($content);
-            $this->file_last_modification_time = $this->getFileLastModificationTime();
-        }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function hasFileBeenUpdated()
-    {
-        if (null === $this->file_last_modification_time || null === $this->getFileLastModificationTime()) {
-            return true;
-        }
-
-        return $this->file_last_modification_time !== $this->getFileLastModificationTime();
-    }
-
-    protected function getFileLastModificationTime()
-    {
-        if (file_exists($this->getFilename())) {
-            return filemtime($this->getFilename());
-        }
-    }
-
-    /**
-     * This function returns the content of the file only if it is an array.
+     * @param array $file_content
      *
-     * @return null|array
+     * @return \JsonSerializable
      */
-    protected function getFileContent()
+    protected function createObjectFromFileContent(array $file_content)
     {
-        if (!file_exists($this->getFilename())) {
-            return;
-        }
-        $content = file_get_contents($this->getFilename());
-        if (false === $content) {
-            return;
-        }
-        $content = json_decode($content, true);
-        if (!is_array($content)) {
-            return;
-        }
-
-        return $content;
+        return new JWKSet($file_content);
     }
 
     /**
      * This method creates the JWKSet and populate it with keys.
      */
-    protected function createJWKSet()
+    protected function createNewObject()
     {
-        $this->jwkset = new JWKSet();
+        $jwkset = new JWKSet();
         for ($i = 0; $i < $this->nb_keys; $i++) {
             $key = $this->createJWK();
-            $this->jwkset->addKey($key);
+            $jwkset->addKey($key);
         }
 
-        $this->save();
+        return $jwkset;
     }
 
     /**
@@ -306,17 +235,5 @@ class StorableJWKSet implements StorableJWKSetInterface
         $data['kid'] = Base64Url::encode(random_bytes(64));
 
         return JWKFactory::createFromValues($data);
-    }
-
-    /**
-     * This method saves the JWKSet in the file.
-     */
-    protected function save()
-    {
-        if (file_exists($this->getFilename())) {
-            unlink($this->getFilename());
-        }
-        file_put_contents($this->getFilename(), json_encode($this->jwkset));
-        $this->file_last_modification_time = $this->getFileLastModificationTime();
     }
 }

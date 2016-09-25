@@ -20,7 +20,6 @@ use Jose\Object\JWKSet;
 use Jose\Object\JWKSetInterface;
 use Jose\Object\JWKSets;
 use Jose\Object\PublicJWKSet;
-use Jose\Object\RotatableJWK;
 use Jose\Object\RotatableJWKSet;
 use Jose\Object\StorableJWK;
 use Jose\Object\StorableJWKSet;
@@ -58,17 +57,9 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createRotatableKey($filename, array $parameters, $ttl)
+    public static function createRotatableKeySet($filename, array $parameters, $nb_keys)
     {
-        return new RotatableJWK($filename, $parameters, $ttl);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function createRotatableKeySet($filename, array $parameters, $nb_keys, $ttl)
-    {
-        return new RotatableJWKSet($filename, $parameters, $nb_keys, $ttl);
+        return new RotatableJWKSet($filename, $parameters, $nb_keys);
     }
 
     /**

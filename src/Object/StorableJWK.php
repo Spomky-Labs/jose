@@ -11,7 +11,6 @@
 
 namespace Jose\Object;
 
-use Assert\Assertion;
 use Base64Url\Base64Url;
 use Jose\Factory\JWKFactory;
 
@@ -20,15 +19,7 @@ use Jose\Factory\JWKFactory;
  */
 class StorableJWK implements StorableJWKInterface
 {
-    /**
-     * @var \Jose\Object\JWKInterface
-     */
-    protected $jwk;
-
-    /**
-     * @var string
-     */
-    protected $filename;
+    use Storable;
 
     /**
      * @var array
@@ -43,9 +34,7 @@ class StorableJWK implements StorableJWKInterface
      */
     public function __construct($filename, array $parameters)
     {
-        Assertion::directory(dirname($filename), 'The selected directory does not exist.');
-        Assertion::writeable(dirname($filename), 'The selected directory is not writable.');
-        $this->filename = $filename;
+        $this->setFilename($filename);
         $this->parameters = $parameters;
     }
 
@@ -110,39 +99,28 @@ class StorableJWK implements StorableJWKInterface
      */
     protected function getJWK()
     {
-        $this->loadJWK();
+        $this->loadObjectIfNeeded();
 
-        return $this->jwk;
+        return $this->getObject();
     }
 
-    protected function loadJWK()
-    {
-        if (file_exists($this->filename)) {
-            $content = file_get_contents($this->filename);
-            if (false === $content) {
-                $this->createJWK();
-            }
-            $content = json_decode($content, true);
-            if (!is_array($content)) {
-                $this->createJWK();
-            }
-            $this->jwk = new JWK($content);
-        } else {
-            $this->createJWK();
-        }
-    }
-
-    protected function createJWK()
+    protected function createNewObject()
     {
         $data = JWKFactory::createKey($this->parameters)->getAll();
         $data['kid'] = Base64Url::encode(random_bytes(64));
-        $this->jwk = JWKFactory::createFromValues($data);
 
-        $this->save();
+        return JWKFactory::createFromValues($data);
     }
 
-    protected function save()
+    /**
+     * @param array $file_content
+     *
+     * @return \JsonSerializable
+     */
+    protected function createObjectFromFileContent(array $file_content)
     {
-        file_put_contents($this->getFilename(), json_encode($this->jwk));
+        return new JWK($file_content);
     }
+
+
 }

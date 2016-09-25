@@ -16,4 +16,9 @@ namespace Jose\Object;
  */
 interface RotatableJWKSetInterface extends StorableJWKSetInterface
 {
+    /**
+     * This method create a new key and add it to the key set
+     * The oldest key is removed.
+     */
+    public function rotate();
 }
