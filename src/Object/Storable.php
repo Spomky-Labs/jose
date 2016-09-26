@@ -131,7 +131,7 @@ trait Storable
     /**
      * @return int|null
      */
-    protected function getFileModificationTime()
+    public function getLastModificationTime()
     {
         if (file_exists($this->getFilename())) {
             return filemtime($this->getFilename());
@@ -143,11 +143,11 @@ trait Storable
      */
     protected function hasFileBeenUpdated()
     {
-        if (null === $this->file_modification_time || null === $this->getFileModificationTime()) {
+        if (null === $this->file_modification_time || null === $this->getLastModificationTime()) {
             return true;
         }
 
-        return $this->file_modification_time !== $this->getFileModificationTime();
+        return $this->file_modification_time !== $this->getLastModificationTime();
     }
 
     /**

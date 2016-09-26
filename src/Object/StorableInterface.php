@@ -12,9 +12,9 @@
 namespace Jose\Object;
 
 /**
- * Interface StorableJWKInterface.
+ * Interface StorableInterface
  */
-interface StorableJWKInterface extends JWKInterface
+interface StorableInterface
 {
     /**
      * Regenerate a completely new JWK
@@ -25,4 +25,9 @@ interface StorableJWKInterface extends JWKInterface
      * Delete the JWK
      */
     public function delete();
+
+    /**
+     * @return int|null
+     */
+    public function getLastModificationTime();
 }

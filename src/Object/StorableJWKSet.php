@@ -18,7 +18,7 @@ use Jose\Factory\JWKFactory;
 /**
  * Class StorableJWKSet.
  */
-class StorableJWKSet implements StorableJWKSetInterface
+class StorableJWKSet implements StorableInterface, JWKSetInterface
 {
     use Storable;
 

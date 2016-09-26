@@ -12,9 +12,9 @@
 namespace Jose\Object;
 
 /**
- * Interface RotatableJWKSetInterface.
+ * Interface RotatableJInterface.
  */
-interface RotatableJWKSetInterface extends StorableJWKSetInterface
+interface RotatableInterface extends StorableInterface
 {
     /**
      * This method create a new key and add it to the key set

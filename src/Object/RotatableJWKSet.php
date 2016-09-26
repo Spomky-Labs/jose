@@ -14,7 +14,7 @@ namespace Jose\Object;
 /**
  * Class RotatableJWKSet.
  */
-final class RotatableJWKSet extends StorableJWKSet implements RotatableJWKSetInterface
+final class RotatableJWKSet extends StorableJWKSet implements RotatableInterface, JWKSetInterface
 {
     /**
      * {@inheritdoc}
