@@ -17,7 +17,12 @@ namespace Jose\Object;
 interface StorableJWKSetInterface extends JWKSetInterface
 {
     /**
-     * @return string
+     * Regenerate a completely new JWKSet
      */
-    public function getFilename();
+    public function regen();
+
+    /**
+     * Delete the JWKSet
+     */
+    public function delete();
 }

@@ -42,9 +42,28 @@ trait Storable
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function regen()
+    {
+        $this->delete();
+        $this->loadObjectIfNeeded();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function delete()
+    {
+        if (file_exists($this->getFilename())) {
+            unlink($this->getFilename());
+        }
+    }
+
+    /**
      * @return string
      */
-    public function getFilename()
+    protected function getFilename()
     {
         return $this->filename;
     }
@@ -145,12 +164,5 @@ trait Storable
     {
         file_put_contents($this->getFilename(), json_encode($object));
         $this->file_modification_time = filemtime($this->getFilename());
-    }
-
-    public function delete()
-    {
-        if (file_exists($this->getFilename())) {
-            unlink($this->getFilename());
-        }
     }
 }

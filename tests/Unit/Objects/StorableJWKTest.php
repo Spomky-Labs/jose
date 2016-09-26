@@ -29,7 +29,6 @@ class StorableJWKTest extends \PHPUnit_Framework_TestCase
                 'crv'   => 'P-256',
             ]
         );
-        $this->assertEquals(sys_get_temp_dir().'/JWK.key', $jwk->getFilename());
 
         $all = $jwk->getAll();
         $this->assertEquals($all, $jwk->getAll());
@@ -43,10 +42,12 @@ class StorableJWKTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($all, $jwk->getAll());
 
-        $jwk->delete();
+        $jwk->regen();
 
         $this->assertNotEquals($all, $jwk->getAll());
         $all = $jwk->getAll();
         $this->assertEquals($all, $jwk->getAll());
+
+        $jwk->delete();
     }
 }

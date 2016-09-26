@@ -39,14 +39,6 @@ class StorableJWK implements StorableJWKInterface
     }
 
     /**
-     * @return string
-     */
-    public function getFilename()
-    {
-        return $this->filename;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function getAll()

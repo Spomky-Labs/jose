@@ -30,7 +30,6 @@ class StorableJWKSetTest extends \PHPUnit_Framework_TestCase
             ],
             3
         );
-        $this->assertEquals(sys_get_temp_dir().'/JWKSet.key', $jwkset->getFilename());
 
         $this->assertEquals(3, $jwkset->count());
         $this->assertEquals(3, $jwkset->countKeys());
@@ -71,5 +70,7 @@ class StorableJWKSetTest extends \PHPUnit_Framework_TestCase
         $jwkset->removeKey(count($jwkset) - 1);
         $this->assertEquals(3, $jwkset->count());
         $this->assertEquals(3, $jwkset->countKeys());
+
+        $jwkset->delete();
     }
 }

@@ -29,8 +29,7 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
                 'kty' => 'EC',
                 'crv' => 'P-256',
             ],
-            3,
-            10
+            3
         );
 
         $public_jwkset = new PublicJWKSet($jwkset);
@@ -39,6 +38,8 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
         foreach ($public_jwkset as $key) {
             $this->assertEquals(json_encode($key), json_encode($key->toPublic()));
         }
+
+        $jwkset->delete();
     }
 
     public function testWithMultipleKeySets()
@@ -52,8 +53,7 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
                 'kty' => 'EC',
                 'crv' => 'P-256',
             ],
-            3,
-            10
+            3
         );
         $jwkset2 = JWKFactory::createRotatableKeySet(
             sys_get_temp_dir().'/keyset2.2',
@@ -61,8 +61,7 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
                 'kty'  => 'oct',
                 'size' => 256,
             ],
-            2,
-            10
+            2
         );
         $jwkset3 = JWKFactory::createRotatableKeySet(
             sys_get_temp_dir().'/keyset3.3',
@@ -70,8 +69,7 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
                 'kty'  => 'RSA',
                 'size' => 4096,
             ],
-            4,
-            10
+            4
         );
 
         $jwksets = new \Jose\Object\JWKSets([$jwkset1, $jwkset2, $jwkset3]);
@@ -94,5 +92,9 @@ class PublicJWKSetTest extends \PHPUnit_Framework_TestCase
         for ($i = 3; $i < 7; $i++) {
             $this->assertEquals(json_encode($public_jwkset[$i]), json_encode($jwkset3->getKey($i - 3)->toPublic()));
         }
+
+        $jwkset1->delete();
+        $jwkset2->delete();
+        $jwkset3->delete();
     }
 }

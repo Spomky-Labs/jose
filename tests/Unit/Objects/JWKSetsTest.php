@@ -22,7 +22,6 @@ class JWKSetsTest extends \PHPUnit_Framework_TestCase
 {
     public function testKey()
     {
-        @unlink(sys_get_temp_dir().'/Public_JWKSet.keyset');
         $jwkset1 = JWKFactory::createStorableKeySet(
             sys_get_temp_dir().'/keyset1',
             [
@@ -68,5 +67,9 @@ class JWKSetsTest extends \PHPUnit_Framework_TestCase
         for ($i = 4; $i < 6; $i++) {
             $this->assertEquals(json_encode($jwkset[$i]), json_encode($jwkset3->getKey($i - 4)));
         }
+
+        $jwkset1->delete();
+        $jwkset2->delete();
+        $jwkset3->delete();
     }
 }
