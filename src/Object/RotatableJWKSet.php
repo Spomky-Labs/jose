@@ -21,6 +21,7 @@ final class RotatableJWKSet extends StorableJWKSet implements RotatableInterface
      */
     public function rotate()
     {
+        $this->loadObjectIfNeeded();
         $jwkset = $this->getObject();
 
         $keys = $jwkset->getKeys();
