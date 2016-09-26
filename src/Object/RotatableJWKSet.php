@@ -30,7 +30,6 @@ final class RotatableJWKSet extends StorableJWKSet implements RotatableJWKSetInt
         foreach ($keys as $key) {
             $jwkset->addKey($key);
         }
-        $this->jwkset = $jwkset;
         $this->setObject($jwkset);
         $this->saveObject($jwkset);
     }
