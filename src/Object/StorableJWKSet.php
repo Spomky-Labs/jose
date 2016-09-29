@@ -21,6 +21,7 @@ use Jose\Factory\JWKFactory;
 class StorableJWKSet implements StorableInterface, JWKSetInterface
 {
     use Storable;
+    use JWKSetPEM;
 
     /**
      * @var array
