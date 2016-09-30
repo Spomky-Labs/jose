@@ -96,6 +96,37 @@ use Jose\Factory\JWKFactory;
 $jwk_set = JWKFactory::createFromJKU('https://www.googleapis.com/oauth2/v2/certs');
 ```
 
+### Unsecured Connections
+
+The URL to get the JWKSet is supposed to be secured as per the specification.
+However, you may need to retrieve your JWKSet through an unsecured connection (e.g. during tests).
+
+Unsecured connections are:
+- Connections with the `http` scheme
+- Connection to a server that provides self-signed certificates or invalid certificates.
+
+The method `createFromJKU` allows unsecured connection. Just set the second as `true`:
+
+```php
+use Jose\Factory\JWKFactory;
+
+$jwk_set = JWKFactory::createFromJKU('http://www.example.com/certs', true);
+```
+
+### Caching Support
+
+To avoid calls to a server each time you need a certificate, the `createFromJKU` supports PSR-7 compatible cache item pools.
+
+```php
+use Jose\Factory\JWKFactory;
+
+$cacheItemPool = YourValidCacheItemPool //An instance of a class that implements Psr\Cache\CacheItemPoolInterface
+$ttl = 300; //Cache lifetime (in seconds. Default is 604800)
+
+$jwk_set = JWKFactory::createFromJKU('http://www.example.com/certs', false, $cacheItemPool, $ttl);
+```
+
+
 ## Create a Key from a X509 Certificate Url (`x5u`)
 
 This method will try to load keys from an Url.
@@ -106,8 +137,12 @@ The following example will try to load Google public keys:
 ```php
 use Jose\Factory\JWKFactory;
 
-$jwk_set = JWKFactory::createFromJKU('https://www.googleapis.com/oauth2/v1/certs');
+$jwk_set = JWKFactory::createFromX5U('https://www.googleapis.com/oauth2/v1/certs');
 ```
+
+### Unsecured Connections and Caching Support
+
+The method `createFromX5U` supports the same arguments as the method `createFromJKU` for unsecured connections or caching support.
 
 ## Create a Key Set with Random keys
 
