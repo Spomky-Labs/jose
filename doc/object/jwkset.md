@@ -121,7 +121,7 @@ To avoid calls to a server each time you need a certificate, the `createFromJKU`
 use Jose\Factory\JWKFactory;
 
 $cacheItemPool = YourValidCacheItemPool //An instance of a class that implements Psr\Cache\CacheItemPoolInterface
-$ttl = 300; //Cache lifetime (in seconds. Default is 604800)
+$ttl = 300; //Cache lifetime in seconds. Default is 86400 = 24 hrs.
 
 $jwk_set = JWKFactory::createFromJKU('http://www.example.com/certs', false, $cacheItemPool, $ttl);
 ```
