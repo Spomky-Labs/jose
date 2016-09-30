@@ -155,7 +155,7 @@ interface JWKFactoryInterface
      *
      * @return \Jose\Object\JWKSetInterface
      */
-    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300);
+    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 86400);
 
     /**
      * @param string                                 $x5u
@@ -165,7 +165,7 @@ interface JWKFactoryInterface
      *
      * @return \Jose\Object\JWKSetInterface
      */
-    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 300);
+    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 86400);
 
     /**
      * @param array $x5c
