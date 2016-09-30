@@ -115,7 +115,7 @@ $jwk_set = JWKFactory::createFromJKU('http://www.example.com/certs', true);
 
 ### Caching Support
 
-To avoid calls to a server each time you need a certificate, the `createFromJKU` supports PSR-7 compatible cache item pools.
+To avoid calls to a server each time you need a certificate, the `createFromJKU` supports [PSR-6: Caching Interface](http://www.php-fig.org/psr/psr-6/) compatible cache item pools.
 
 ```php
 use Jose\Factory\JWKFactory;
