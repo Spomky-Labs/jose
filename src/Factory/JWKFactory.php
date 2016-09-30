@@ -322,7 +322,7 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 604800)
+    public static function createFromJKU($jku, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 86400)
     {
         $content = self::getContent($jku, $allow_unsecured_connection, $cache, $ttl);
 
@@ -334,7 +334,7 @@ final class JWKFactory implements JWKFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 604800)
+    public static function createFromX5U($x5u, $allow_unsecured_connection = false, CacheItemPoolInterface $cache = null, $ttl = 86400)
     {
         $content = self::getContent($x5u, $allow_unsecured_connection, $cache, $ttl);
 
@@ -359,7 +359,7 @@ final class JWKFactory implements JWKFactoryInterface
      *
      * @return array
      */
-    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null, $ttl = 604800)
+    private static function getContent($url, $allow_unsecured_connection, CacheItemPoolInterface $cache = null, $ttl = 86400)
     {
         Assertion::nullOrInteger($ttl);
         $cache_key = sprintf('JWKFactory-Content-%s', hash('sha512', $url));
