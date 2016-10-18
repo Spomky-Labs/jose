@@ -67,14 +67,52 @@ final class ECKey extends Sequence
         $asnObject = Object::fromBinary($data);
 
         Assertion::isInstanceOf($asnObject, Sequence::class);
-
         $children = $asnObject->getChildren();
+        if (self::isPKCS8($children)) {
+            $children = self::loadPKCS8($children);
+        }
+
         if (4 === count($children)) {
             return $this->loadPrivatePEM($children);
         } elseif (2 === count($children)) {
             return $this->loadPublicPEM($children);
         }
         throw new \Exception('Unable to load the key');
+    }
+
+    /**
+     * @param array $children
+     *
+     * @return array
+     */
+    private function loadPKCS8(array $children)
+    {
+        $binary = hex2bin($children[2]->getContent());
+        $asnObject = Object::fromBinary($binary);
+        Assertion::isInstanceOf($asnObject, Sequence::class);
+
+        return $asnObject->getChildren();
+    }
+
+    /**
+     * @param array $children
+     *
+     * @return bool
+     */
+    private function isPKCS8(array $children)
+    {
+        if (3 !== count($children)) {
+            return false;
+        }
+
+        $classes = [0 => Integer::class, 1 => Sequence::class, 2 => OctetString::class];
+        foreach ($classes as $k => $class) {
+            if (!$children[$k] instanceof $class) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -202,7 +240,6 @@ final class ECKey extends Sequence
     private function loadPrivatePEM(array $children)
     {
         $this->verifyVersion($children[0]);
-
         $x = null;
         $y = null;
         $d = $this->getD($children[1]);
