@@ -38,6 +38,9 @@ script:
     - php ./examples/Load2.php
     - php ./examples/Load3.php
     - php ./examples/Load4.php
+    - php ./examples/Load4.php
+    - php ./examples/NestedTokens.php
+    - php ./examples/LoadNestedTokens.php
 
 after_success:
     - vendor/bin/coveralls --no-interaction
