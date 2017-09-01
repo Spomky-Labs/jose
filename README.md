@@ -1,7 +1,11 @@
 PHP JOSE Library
 ================
 
-[![Join the chat at https://gitter.im/Spomky-Labs/jose](https://badges.gitter.im/Spomky-Labs/jose.svg)](https://gitter.im/Spomky-Labs/jose?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+If you really love that library, then you can help me out for a couple of :beers:!
+
+[![Beerpay](https://beerpay.io/Spomky-Labs/jose/badge.svg?style=beer-square)](https://beerpay.io/Spomky-Labs/jose)  [![Beerpay](https://beerpay.io/Spomky-Labs/jose/make-wish.svg?style=flat-square)](https://beerpay.io/Spomky-Labs/jose?focus=wish)
+
+----
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
@@ -164,10 +168,6 @@ Requests for new features, bug fixed and all other ideas to make this library us
 If you feel comfortable writting code, you could try to fix [opened issues where help is wanted](https://github.com/Spomky-Labs/jose/labels/help+wanted) or [those that are easy to fix](https://github.com/Spomky-Labs/jose/labels/easy-pick).
 
 Do not forget to [follow these best practices](doc/Contributing.md).
-
-If you really love that library, then you can help me out for a couple of :beers:!
-
-[![Beerpay](https://beerpay.io/Spomky-Labs/jose/badge.svg?style=beer-square)](https://beerpay.io/Spomky-Labs/jose)  [![Beerpay](https://beerpay.io/Spomky-Labs/jose/make-wish.svg?style=flat-square)](https://beerpay.io/Spomky-Labs/jose?focus=wish)
 
 # Licence
 
