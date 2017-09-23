@@ -36,6 +36,9 @@ trait Storable
     public function setFilename($filename)
     {
         Assertion::string($filename, 'Invalid filename.');
+        if (!is_dir(dirname($filename))) {
+            mkdir(dirname($filename), 0777, true);
+        }
         Assertion::directory(dirname($filename), 'The selected directory does not exist.');
         Assertion::writeable(dirname($filename), 'The selected directory is not writable.');
         $this->filename = $filename;
