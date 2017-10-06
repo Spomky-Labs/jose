@@ -14,9 +14,8 @@ namespace Jose\Object;
 /**
  * Class PublicJWKSet.
  */
-final class PublicJWKSet implements JWKSetInterface
+final class PublicJWKSet extends BaseJWKSet implements JWKSetInterface
 {
-    use BaseJWKSet;
     use JWKSetPEM;
 
     /**
@@ -57,6 +56,14 @@ final class PublicJWKSet implements JWKSetInterface
     public function addKey(JWKInterface $key)
     {
         $this->jwkset->addKey($key);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prependKey(JWKInterface $key)
+    {
+        $this->jwkset->prependKey($key);
     }
 
     /**

@@ -16,7 +16,7 @@ use Assert\Assertion;
 /**
  * Class BaseJWKSet.
  */
-trait BaseJWKSet
+abstract class BaseJWKSet
 {
     /**
      * @var int
@@ -172,7 +172,8 @@ trait BaseJWKSet
         Assertion::nullOrString($algorithm);
 
         $result = [];
-        foreach ($this->getKeys() as $key) {
+        $keys = $this->getKeys();
+        foreach ($keys as $key) {
             $ind = 0;
 
             // Check usage

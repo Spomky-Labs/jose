@@ -17,9 +17,8 @@ use Psr\Cache\CacheItemPoolInterface;
 /**
  * Class DownloadedJWKSet.
  */
-abstract class DownloadedJWKSet implements JWKSetInterface
+abstract class DownloadedJWKSet extends BaseJWKSet implements JWKSetInterface
 {
-    use BaseJWKSet;
     use JWKSetPEM;
 
     /**
@@ -74,6 +73,14 @@ abstract class DownloadedJWKSet implements JWKSetInterface
      * {@inheritdoc}
      */
     public function addKey(JWKInterface $key)
+    {
+        //Not available
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prependKey(JWKInterface $key)
     {
         //Not available
     }

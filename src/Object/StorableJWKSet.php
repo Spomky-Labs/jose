@@ -156,6 +156,14 @@ class StorableJWKSet implements StorableInterface, JWKSetInterface
     /**
      * {@inheritdoc}
      */
+    public function prependKey(JWKInterface $key)
+    {
+        //Not available
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function removeKey($index)
     {
         // Not available

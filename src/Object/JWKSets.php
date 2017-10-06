@@ -16,9 +16,8 @@ use Assert\Assertion;
 /**
  * Class JWKSets.
  */
-final class JWKSets implements JWKSetsInterface
+final class JWKSets extends BaseJWKSet implements JWKSetsInterface
 {
-    use BaseJWKSet;
     use JWKSetPEM;
 
     /**
@@ -67,6 +66,14 @@ final class JWKSets implements JWKSetsInterface
      * {@inheritdoc}
      */
     public function addKey(JWKInterface $key)
+    {
+        //Not available
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function prependKey(JWKInterface $key)
     {
         //Not available
     }
