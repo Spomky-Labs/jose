@@ -33,8 +33,8 @@
         "beberlei/assert": "^2.4",
         "symfony/polyfill-mbstring": "^1.1",
         "symfony/polyfill-php70": "^1.1",
-        "fgrosse/phpasn1": "^1.5",
-        "mdanter/ecc": "0.4.*",
+        "fgrosse/phpasn1": "^2.0",
+        "mdanter/ecc": "0.5.*",
         "psr/cache": "^1.0"
     },
     "require-dev": {
