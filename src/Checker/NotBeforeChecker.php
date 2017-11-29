@@ -17,6 +17,20 @@ use Jose\Object\JWTInterface;
 class NotBeforeChecker implements ClaimCheckerInterface
 {
     /**
+     * @var int
+     */
+    private $tolerance;
+
+    /**
+     * @param int $tolerance
+     */
+    public function __construct($tolerance = 0)
+    {
+        Assertion::greaterOrEqualThan($tolerance, 0, 'Tolerance value must be >=0');
+        $this->tolerance = (int) $tolerance;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function checkClaim(JWTInterface $jwt)
@@ -25,7 +39,7 @@ class NotBeforeChecker implements ClaimCheckerInterface
             return [];
         }
 
-        $nbf = (int) $jwt->getClaim('nbf');
+        $nbf = (int) $jwt->getClaim('nbf') - $this->tolerance;
         Assertion::lessOrEqualThan($nbf, time(), 'The JWT can not be used yet.');
 
         return ['nbf'];
