@@ -7,6 +7,17 @@ If you really love that library, then you can help me out for a couple of :beers
 
 ----
 
+<p align="center">:warning::warning::warning:</p>
+
+We highly recommend you to use the new [JWT Framework project](https://travis-ci.org/web-token/jwt-framework) instead of this library.
+
+* Active support of this library is provided until **end of 2018**.
+* Security support will be provided **from 2019 and up to end of 2020**.
+
+A migration guide will be/is available in [the documentation of the new project](https://web-token.spomky-labs.com/migration/spomky-labs-jose/).
+
+<p align="center">:warning::warning::warning:</p>
+
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/Spomky-Labs/jose/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/Spomky-Labs/jose/?branch=master)
 [![Coverage Status](https://coveralls.io/repos/github/Spomky-Labs/jose/badge.svg?branch=master)](https://coveralls.io/github/Spomky-Labs/jose?branch=master)
 
