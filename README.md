@@ -9,7 +9,7 @@ If you really love that library, then you can help me out for a couple of :beers
 
 <p align="center">:warning::warning::warning:</p>
 
-We highly recommend you to use the new [JWT Framework project](https://travis-ci.org/web-token/jwt-framework) instead of this library.
+We highly recommend you to use the new [JWT Framework project](https://github.com/web-token/jwt-framework) instead of this library.
 
 * Active support of this library is provided until **end of 2018**.
 * Security support will be provided **from 2019 and up to end of 2020**.
